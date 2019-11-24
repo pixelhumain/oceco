@@ -1,0 +1,492 @@
+$color-orga : #93C020; //vert
+$color-person: #FFC600; //jaune
+$color-event: #FFA200; //orange
+$color-project: #8C5AA1; // violet
+$color-poi: #20C06B; // vert poi
+$color-classified: #2BB0C6; //
+$color-room: #229296;
+
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #E33551 !default;
+$calm:                            #229296 !default;
+$balanced:                        #51e335 !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #324553 !default;
+
+$ionicons-font-path: "/fonts" !default;
+
+$font-family-base : Raleway !default;
+$font-src : '/fonts/Raleway-Regular.ttf';
+
+$secondary-font-family-base : Ubuntu !default;
+$secondary-font-src : '/fonts/Ubuntu-Light.ttf';
+
+$secondary-font-family-base : Ubuntu !default;
+$secondary-font-src : '/fonts/Ubuntu-Light.ttf';
+
+
+$big-bg:      '/images/fabric_plaid.png';
+
+@font-face {
+  font-family: $font-family-base;
+  src: url($font-src) format('truetype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: $secondary-font-family-base;
+  src: url($secondary-font-src) format('truetype');
+  font-weight: 200;
+}
+
+@font-face
+{
+  font-family: Homestead;
+  src: url('/fonts/Homestead-Regular.ttf');
+}
+
+.homestead{font-family:"Homestead"}
+
+@import 'ionic';
+@import 'ionicons';
+
+body *, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $font-family-base , Fallback, sans-serif;
+}
+
+.secondary-font {
+  font-family: $secondary-font-family-base , Fallback, sans-serif;
+}
+
+input, button, select, textarea {
+  font-family: $font-family-base , Fallback, sans-serif;
+}
+.bold {font-weight:bold;}
+.text-right {text-align: right;}
+.text-left {text-align: left;}
+.text-center {text-align: center;}
+.uppercase {text-transform:uppercase;}
+
+$default-screen-background : '';
+$sidebar-profile-background : '';
+.no-margin {margin:0;}
+.rubyonic-pane .ruby-button-clear {border:none; background:none;}
+
+.scroll-bg {
+  background-color: #E8E8E8;
+}
+
+.logo {padding:20px 0 0 0; text-align: center;}
+
+
+#iron-router-progress {
+  background-color : #E33551;
+  box-shadow       : 0 0 5px #E33551;
+}
+#iron-router-progress.spinner:before {
+  border-color : #E33551;
+}
+
+
+.meteor-status {
+  z-index:100;
+  background-color: #324553;
+}
+.avatar{
+  float: left;
+  margin-right: 16px;
+  width: 40px;
+  height: 40px;
+}
+
+
+/*svg {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 3500px;
+  z-index: -1;
+  background-color: #ffffff;
+}*/
+
+body, .view{
+  background-color: #ffffff;
+}
+
+.dark{
+  color: $dark;
+}
+
+.bar.bar-dark .title {
+  font-family: "Homestead";
+  color: #E33551;
+  text-align: center;
+}
+
+.stable{
+  color: $dark;
+}
+
+.bar.bar-stable .title {
+  font-family: "Homestead";
+  color: #E33551;
+  text-align: center;
+}
+
+.logo{
+  text-align: center;
+  img{
+    width:95%;
+  }
+}
+
+.signup-form,.login-form{
+  .input-label{
+    width:10%;
+  }
+}
+
+.bypixel{
+  height:25px;
+  margin-top:-50px;
+  position:relative;
+}
+
+.popover {
+  height: auto;
+}
+
+#map {
+  min-height: 350px;
+  min-width: 100%;
+}
+
+.item {
+  &.item-image  {
+    p{
+      text-align: left;
+      background: rgba($light, 0.4);
+      padding: $content-padding;
+      color: $positive;
+      border-radius: 2%;
+      &.right-top {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      &.left-top { position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+      &.right-bottom { position: absolute;
+        bottom: 10px;
+        right: 10px;
+      }
+      &.left-bottom { position: absolute;
+        bottom: 10px;
+        left: 10px;
+      }
+    }
+  }
+}
+
+@mixin border-color-contrast($color,$method)
+{
+  // $color - the specified color
+  /*
+  $method the algorithm to find the best contrast.
+  if the color scheme doesn't go well with the
+  text color (like red background with black text).
+  Switching between "simple" and "w3c" should fix this
+  */
+  @if($method == "simple")
+  {
+    @if(lightness($color) < 51, #FFF, #000){
+    border-color : transparentize(white, 0.8);
+  } @else {
+    border-color : transparentize(black, 0.8);
+    }
+  }
+
+  @if($method == "w3c")
+  {
+    $color-brightness: round((red($color) * 299) + (green($color) * 587) + (blue($color) * 114) / 1000);
+    $light-color: round((red(#ffffff) * 299) + (green(#ffffff) * 587) + (blue(#ffffff) * 114) / 1000);
+
+    @if abs($color-brightness) < ($light-color/2){
+      border-color : transparentize(white, 0.8);
+    }
+
+    @else {
+      border-color : transparentize(black, 0.8);
+    }
+  }
+
+}
+
+$brand-base-color: $positive;
+$brand-analogous-color: $positive;
+$brand-contrast-color: $dark;
+$color-algorithm : w3c;
+
+// BUTTONS START
+$button-orga-bg:              $color-orga !default;
+$button-orga-text:            #fff !default;
+$button-orga-border:          darken($color-orga, 10%) !default;
+$button-orga-active-bg:       darken($color-orga, 10%) !default;
+$button-orga-active-border:   darken($color-orga, 10%) !default;
+
+$button-person-bg:              $color-person !default;
+$button-person-text:            #fff !default;
+$button-person-border:          darken($color-person, 10%) !default;
+$button-person-active-bg:       darken($color-person, 10%) !default;
+$button-person-active-border:   darken($color-person, 10%) !default;
+
+$button-event-bg:              $color-event !default;
+$button-event-text:            #fff !default;
+$button-event-border:          darken($color-event, 10%) !default;
+$button-event-active-bg:       darken($color-event, 10%) !default;
+$button-event-active-border:   darken($color-event, 10%) !default;
+
+$button-project-bg:              $color-project !default;
+$button-project-text:            #fff !default;
+$button-project-border:          darken($color-project, 10%) !default;
+$button-project-active-bg:       darken($color-project, 10%) !default;
+$button-project-active-border:   darken($color-project, 10%) !default;
+
+$button-poi-bg:              $color-poi !default;
+$button-poi-text:            #fff !default;
+$button-poi-border:          darken($color-poi, 10%) !default;
+$button-poi-active-bg:       darken($color-poi, 10%) !default;
+$button-poi-active-border:   darken($color-poi, 10%) !default;
+
+$button-classified-bg:              $color-classified !default;
+$button-classified-text:            #fff !default;
+$button-classified-border:          darken($color-classified, 10%) !default;
+$button-classified-active-bg:       darken($color-classified, 10%) !default;
+$button-classified-active-border:   darken($color-classified, 10%) !default;
+
+$button-follower-bg:              $assertive !default;
+$button-follower-text:            #fff !default;
+$button-follower-border:          darken($assertive, 10%) !default;
+$button-follower-active-bg:       darken($assertive, 10%) !default;
+$button-follower-active-border:   darken($assertive, 10%) !default;
+
+.button{
+  &.button-organization {
+    @include button-style($button-orga-bg, $button-orga-border, $button-orga-active-bg, $button-orga-active-border, $button-orga-text);
+    @include button-clear($button-orga-border);
+    @include button-outline($button-orga-border);
+  }
+  &.button-person {
+    @include button-style($button-person-bg, $button-person-border, $button-person-active-bg, $button-person-active-border, $button-person-text);
+    @include button-clear($button-person-bg);
+    @include button-outline($button-person-bg);
+  }
+  &.button-event {
+    @include button-style($button-event-bg, $button-event-border, $button-event-active-bg, $button-event-active-border, $button-event-text);
+    @include button-clear($button-event-bg);
+    @include button-outline($button-event-bg);
+  }
+  &.button-project {
+    @include button-style($button-project-bg, $button-project-border, $button-project-active-bg, $button-project-active-border, $button-project-text);
+    @include button-clear($button-project-bg);
+    @include button-outline($button-project-bg);
+  }
+  &.button-poi {
+    @include button-style($button-poi-bg, $button-poi-border, $button-poi-active-bg, $button-poi-active-border, $button-poi-text);
+    @include button-clear($button-poi-bg);
+    @include button-outline($button-poi-bg);
+  }
+  &.button-classified {
+    @include button-style($button-classified-bg, $button-classified-border, $button-classified-active-bg, $button-classified-active-border, $button-classified-text);
+    @include button-clear($button-classified-bg);
+    @include button-outline($button-classified-bg);
+  }
+  &.button-follower {
+    @include button-style($button-follower-bg, $button-follower-border, $button-follower-active-bg, $button-follower-active-border, $button-follower-text);
+    @include button-clear($button-follower-bg);
+    @include button-outline($button-follower-bg);
+  }
+}
+
+.organization, a.organization {
+  color: $color-orga;
+}
+.organization-bg {
+  background-color: $color-orga;
+}
+.person, a.person {
+  color: $color-person;
+}
+.person-bg {
+  background-color: $color-person;
+}
+.event, a.event {
+  color: $color-event;
+}
+.event-bg {
+  background-color: $color-event;
+}
+.project, a.project {
+  color: $color-project;
+}
+.project-bg {
+  background-color: $color-project;
+}
+.poi, a.poi {
+  color: $color-poi;
+}
+.poi-bg {
+  background-color: $color-poi;
+}
+.classified, a.classified {
+  color: $color-classified;
+}
+.classified-bg {
+  background-color: $color-classified;
+}
+.room, a.room {
+  color: $color-room;
+}
+.room-bg {
+  background-color: $color-room;
+}
+// BUTTONS END
+
+.yellow{
+   color:#FFC600 !important;
+ }
+ .green{
+   color:#93C020 !important;
+ }
+ .orange{
+   color:#FFA200 !important;
+ }
+ .purple{
+   color:#8C5AA1 !important;
+ }
+ .red{
+   color:#E33551 !important;
+ }
+ .azure{
+   color:#2BB0C6 !important;
+ }
+ .prune{
+   color:#C32372 !important;
+ }
+
+.menu-left{
+  background-color: $stable;
+}
+
+.chat-ui-screen{
+  background-color: #ccc;
+}
+  .bar{
+    &.bar-chat {
+      min-height:75px;
+      .button-clear.button-clear {}
+      .buttons {margin-top: 10px;}
+      .title {
+        text-align: left;
+        overflow:visible; margin:0;
+        .chat-bar-contact-name {
+          padding-left:70px; position:relative; padding-top:15px;
+          .contact-title{ margin-top:0; margin-bottom:0;}
+          .chat-contact-thumb {@include border-radius(500px); position:absolute; left:0; top:5px; width:60px; border:5px solid transparentize($brand-analogous-color, 0.65);}
+        }
+      }
+    }
+  }
+.chat-window {
+  margin-top: 40px;
+  .chat-message {
+    padding: 10px; border-radius: 5px;
+    overflow: hidden;
+    img {
+    	width:100%;
+    	@include border-radius(5px);
+    	@include border-color-contrast($brand-base-color,$color-algorithm);
+    	border-width:5px;
+    	border-style:solid;
+    }
+    .chat-label {font-size:10px; text-transform:uppercase; clear:both; opacity:0.7; margin:5px 0;
+      .text-shift-right {float:right; display:inline-block;}
+    }
+    &.is-inbound {margin: 10px 50px 10px 10px; background: transparentize(darken($brand-base-color, 10%), 0.2);}
+    &.is-outbound {margin: 10px 10px 10px 50px; background: transparentize(darken($brand-base-color, 20%), 0.2);}
+  }
+}
+
+
+
+// Contact Name, Location, and Thumb
+
+// Message Bubbles
+.new-notification-bubble {
+  display: inline-block;
+  position: absolute;
+  top: 5px;
+  right: -2px;
+  border-radius: 90%;
+  z-index: 5;
+  background: $brand-base-color;
+  color: $brand-contrast-color;
+  font-size: 11px;
+  line-height: 1;
+  padding: 1px;
+  min-width: 13px;}
+
+
+
+// Message Input Section
+.chat-footer-bar {background:lighten($brand-base-color, 10%); border-top-width:1px; border-top-style:solid; border-top-color:$brand-contrast-color;}
+.chat-footer-bar, .chat-footer-bar .row {padding:0;}
+.chat-footer-bar .button {background:transparent; border:none;}
+.chat-text-input[type="text"] {
+	width:100%;
+	background:transparent;
+	// @include input-placeholder($brand-base-color, $color-algorithm);
+	// @include text-color-contrast($brand-base-color, w3c);
+}
+
+//map
+#inputs,
+#errors,
+#directions {
+    position: absolute;
+    width: 33.3333%;
+    max-width: 300px;
+    min-width: 200px;
+}
+
+#inputs {
+    z-index: 10;
+    top: 10px;
+    left: 10px;
+}
+
+#directions {
+    z-index: 99;
+    background: rgba(0,0,0,.8);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#errors {
+    z-index: 8;
+    opacity: 0;
+    padding: 10px;
+    border-radius: 0 0 3px 3px;
+    background: rgba(0,0,0,.25);
+    top: 90px;
+    left: 10px;
+}

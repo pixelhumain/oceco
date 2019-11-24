@@ -1,0 +1,78 @@
+<template name="collections">
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "collections"}}</h1>
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+
+  {{> Collections_view scope=scope}}
+
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+{{> loading}}
+{{/if}}
+</template>
+
+<template name="Collections_search">
+  <label class="item item-input">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input id="search" type="text" placeholder="{{__ "Search..."}}" value="{{search}}">
+  </label>
+</template>
+
+<template name="Collections_button_bar">
+  <div class="button-bar button-positive">
+    {{> Button_toggle condition=(equals view 'all') classOff="button button-small button-dark all" classOn="button button-small button-dark all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
+
+    {{> Button_toggle condition=(equals view 'citoyens') classOff="button button-small button-person citoyens" classOn="button button-small button-person citoyens activated" iconOff="icon fa fa-user" iconOn="icon fa fa-user positive"}}
+    {{> Button_toggle condition=(equals view 'organizations') classOff="button button-small button-organization organizations" classOn="button button-small button-organization organizations activated" iconOff="icon fa fa-users" iconOn="icon fa fa-users positive"}}
+    {{> Button_toggle condition=(equals view 'projects') classOff="button button-small button-project projects" classOn="button button-small button-project projects activated" iconOff="icon fa fa-lightbulb-o" iconOn="icon fa fa-lightbulb-o positive"}}
+    {{> Button_toggle condition=(equals view 'events') classOff="button button-small button-event events" classOn="button button-small button-event events activated" iconOff="icon fa fa-calendar" iconOn="icon fa fa-calendar positive"}}
+    {{> Button_toggle condition=(equals view 'poi') classOff="button button-small button-poi poi" classOn="button button-small button-poi poi activated" iconOff="icon fa fa-map-marker" iconOn="icon fa fa-map-marker positive"}}
+    {{> Button_toggle condition=(equals view 'Classified') classOff="button button-small button-classified classified" classOn="button button-small button-classified classified activated" iconOff="icon fa fa-bullhorn" iconOn="icon fa fa-bullhorn positive"}}
+
+  </div>
+</template>
+
+<template name="Collections_view">
+  <div class="list">
+  {{> Collections_search search=search}}
+  {{> Collections_button_bar view=view}}
+  {{#if equals view 'all'}}
+  {{#each viewItem in viewArray}}
+
+  {{#if equals view 'citoyens'}}
+  {{> listCollections count=(scope.countCollections 'favorites' viewItem search) listCollections=(scope.listCollections 'favorites' viewItem search) view=viewItem person=true }}
+  {{else}}
+  {{> listCollections count=(scope.countCollections 'favorites' viewItem search) listCollections=(scope.listCollections 'favorites' viewItem search) view=viewItem person=false }}
+  {{/if}}
+  {{/each}}
+
+  {{else if equals view 'citoyens'}}
+  {{> listCollections count=(scope.countCollections 'favorites' view search) listCollections=(scope.listCollections 'favorites' view search) view=view person=true }}
+  {{else}}
+  {{> listCollections count=(scope.countCollections 'favorites' view search) listCollections=(scope.listCollections 'favorites' view search) view=view person=false }}
+  {{/if}}
+  </div>
+</template>
+
+
+<template name="listCollections ">
+  {{#if count}}
+      <div class="item item-divider">
+        <i class="icon fa fa-map-marker"></i> {{__ view}} <span class="badge badge-dark">{{count}}</span>
+      </div>
+      {{> Directory_list list=listCollections isConnect="isFavorites" person=person scope=view}}
+  {{/if}}
+</template>

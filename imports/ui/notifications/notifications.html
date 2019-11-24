@@ -1,0 +1,125 @@
+<template name="notifications">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "notifications"}}</h1>
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView hide-nav-bar="true"}}
+  {{#ionContent}}
+  {{> notificationsListSwip notifications=notifications notificationsCount=notificationsCount}}
+  {{/ionContent}}
+  {{/ionView}}
+  {{/if}}
+</template>
+
+
+<template name="notificationsListSwipMenu">
+<div class="list" data-snap-ignore="true">
+  <div class="item item-stable item-checkbox item-checkbox-right no-swipe">
+    <label class="checkbox checkbox-positive all-read">
+      <input type="checkbox" checked="{{allReadChecked}}">
+    </label>
+    {{__ "All read"}}
+  </div>
+  {{#if currentUser}}
+  {{> notificationsList notifications=notifications}}
+  {{/if}}
+</div>
+</template>
+
+<template name="notificationsListSwip">
+<div class="list" data-snap-ignore="true">
+  <div class="item item-divider no-swipe">
+    <i class="icon ion-speakerphone"></i> {{__ "notifications"}} <span class="badge badge-dark">{{notificationsCount}}</span>
+  </div>
+  {{> notificationsList notifications=notifications}}
+</div>
+</template>
+
+
+<template name="notificationsList">
+
+{{#transition in="zoomIn" out="bounceOut"}}
+{{#each notifications}}
+{{#if notify.url}}
+<div class="item item-icon-left item-text-wrap animated out clickGo removeMe" data-ion-menu-close>
+  <p>
+  <i class="icon fa {{notify.icon}} positive"></i> {{notifyDisplay notify}}
+  </p>
+  <p>{{livestamp created}}</p>
+</div>
+{{else}}
+<div class="item item-icon-left item-text-wrap animated out">
+  <p>
+    <i class="icon fa {{notify.icon}} positive"></i> {{notifyDisplay notify}}
+  </p>
+    <p>{{livestamp created}}</p>
+</div>
+{{/if}}
+{{else}}
+<div class="item no-swipe">
+{{__ "not notifications"}}
+</div>
+{{/each}}
+{{/transition}}
+
+</template>
+
+<template name="notificationsListOld">
+{{#if dataReady}}
+{{#transition in="zoomIn" out="bounceOut"}}
+{{#each notifications}}
+{{#if link}}
+<div class="item item-avatar animated out clickGo removeMe" data-ion-menu-close>
+  {{> imgDoc imageDoc=(imageDoc author)}}
+  <h2>{{title}}</h2>
+  <p>
+    {{text}}
+  </p>
+  <p><i class="icon ion-clock"></i> {{livestamp addedAt}}</p>
+  <p><i class="icon ion-person"></i> {{authorNotify.name}}</p>
+</div>
+<div class="item tabs tabs-secondary tabs-icon-left">
+  <a class="tab-item removeMe" href="#">
+    <i class="icon ion-trash-a"></i>
+    {{__ "delete"}}
+  </a>
+  {{#if news.likesCount}}
+  <a class="tab-item" href="#">
+    <i class="icon ion-thumbsup"></i>
+    {{news.likesCount}} {{__ "like"}}
+  </a>
+  {{/if}}
+</div>
+{{else}}
+<div class="item animated out">
+  <h2>{{title}}</h2>
+  <p>
+    {{text}}
+  </p>
+    <p><i class="icon ion-clock"></i> {{livestamp addedAt}}</p>
+    <p><i class="icon ion-person"></i> {{authorNotify.name}}</p>
+</div>
+<div class="item tabs tabs-secondary tabs-icon-left">
+  <a class="tab-item removeMe" href="#">
+    <i class="icon ion-trash-a"></i>
+    {{__ "delete"}}
+  </a>
+</div>
+{{/if}}
+{{else}}
+{{#ionItem}}
+{{__ "not notifications"}}
+{{/ionItem}}
+{{/each}}
+{{/transition}}
+{{/if}}
+</template>

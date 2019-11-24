@@ -1,0 +1,1571 @@
+{
+  "_namespace": "",
+  "_locale": "en",
+  "Image Library": "Image Library",
+  "Take photo": "Take photo",
+  "Retake": "Retake",
+  "Use Photo": "Use Photo",
+  "Cancel": "Cancel",
+  "Waiting for camera permissions": "Waiting for camera permissions",
+  "Close":"Close",
+  "Add event":"Add event",
+  "notifications":"Notifications",
+  "not notifications":"Not notifications",
+  "highlight":"Highlight",
+  "return_news":"return_news",
+  "home":"Home",
+  "events":"Events",
+  "projects":"Project",
+  "poi":"Poi",
+  "classified":"Classified",
+  "point of interest":"point of interest",
+  "persons":"Persons",
+  "organizations":"Organizations",
+  "All read":"Read all",
+  "No found":"No found",
+  "No Cities found":"No Cities found",
+  "Location":"Location",
+  "Use the location of your profile":"Use the location of your profile",
+  "email":"Email",
+  "password":"Password",
+  "username":"Username",
+  "loggin":"Sign in",
+  "create an account":"Create an account",
+  "name":"Name",
+  "repassword":"Re-password",
+  "postcode":"Postcode",
+  "signin":"Sign up",
+  "already have an account":"Already have an account",
+  "Welcome":"Welcome",
+  "users online":"Users online",
+  "on":"On",
+  "start":"Start",
+  "end":"End",
+  "duration":"Duration",
+  "distance":"Distance",
+  "news":"News",
+  "more":"more",
+  "author":"Author",
+  "post a news":"Post a news",
+  "publish":"Publish",
+  "creator":"Creator",
+  "like":"Like",
+  "delete":"Delete",
+  "news-name":"Title",
+  "news-text":"Message",
+  "edit a news":"Edit a news",
+  "edit":"Edit",
+  "create":"Publier",
+  "cancel":"Cancel",
+  "Communecter Login Failed":"Communecter Login Failed",
+  "Email not valid":"Email not valid",
+  "Email not unique":"Email not unique",
+  "Not completed all fields":"Not completed all fields",
+  "Postcode must be 5 digits":"Postcode must be 5 digits",
+  "Name is Too short":"Name is Too short",
+  "Password is Too short":"Password is Too short",
+  "Not the same password":"Not the same password",
+  "The-username-is-incorrect": "The username is incorrect: Only the characters A-Z, a-z, 0-9 and '-' are accepted.",
+  "are you sure you want to delete":"Are you sure you want to delete ?",
+  "Current":"Current",
+  "Upcoming":"Upcoming",
+  "History":"Past",
+  "Create a event":"Create a event",
+  "Edit a event":"Edit a event",
+  "Error not postal code match":"Error not postal code match",
+  "Invite":"Invite",
+  "Reset":"Reset",
+  "Send":"Send",
+  "Send invite":"Send an invitation",
+  "Search":"Search...",
+  "No Items found":"No contact found",
+  "Enter a search term":"Enter a search term. minimum 4 characters",
+  "attendees":"Attendees",
+  "members":"Members",
+  "contributors":"Contributors",
+  "follows":"Follows",
+  "loading":"loading...",
+  "online":"online",
+  "offline":"offline",
+  "settings":"Settings",
+  "radius":"Radius",
+  "tracking geolocation":"Tracking geolocation",
+  "Invitations contacts":"Phone contact",
+  "Change location":"Change location",
+  "Search a city or postal code":"Search a city or postal code",
+  "accountPending":"You've been invited : please resume the registration process in order to log in.",
+  "betaTestNotOpen":"Our developpers are fighting to open soon ! Check your mail that will happen soon !",
+  "notValidatedEmail":"Your account is not validated : please check your mailbox to validate your email address.",
+  "emailNotFound":"Impossible to find an account for this username or password.",
+  "emailAndPassNotMatch":"Email or password does not march. Please try again !",
+  "Add organization":"Add organization",
+  "Create a organization":"Create a organization",
+  "Edit a organization":"Edit a organization",
+  "Something went really bad An organization with the same name allready exists":"An organization with the same name allready exists",
+  "Participate":"Participate",
+  "QR Scanner":"QR Scanner",
+  "Become a member":"Become a member",
+  "Become a contributor":"Become a contributor",
+  "Follow this person":"Follow this person",
+  "Unfollow this person":"Unfollow this person",
+  "Edit a citoyen":"Edit a citoyen",
+  "Add project":"Add project",
+  "Create a project":"Create a project",
+  "Edit a project":"Edit a project",
+  "Add point of interest":"Add point of interest",
+  "Create a point of interest":"Create a point of interest",
+  "Edit a point of interest":"Edit a point of interest",
+  "Add classified":"Add classified",
+  "Create a classified":"Create a classified",
+  "Edit a classified":"Edit a classified",
+  "Cities":"Cities",
+  "community":"Community",
+  "favorites":"Favorites",
+  "search":"Search",
+  "searchPlaceholder":"Search by name, #tag...",
+  "redirect":"redirect",
+  "connect":"connect",
+  "yes":"yes",
+  "no":"no",
+  "successful connection":"Successful connection",
+  "would you like to connect to this":"Would you like to connect to this ?",
+  "edit info":"edit info",
+  "edit network":"edit network",
+  "edit description":"edit description",
+  "edit address":"edit address",
+  "edit dates":"edit dates",
+  "edit privacy settings":"edit privacy settings",
+  "Waiting for a response":"Waiting for a response",
+  "wants to become a member of the organization":"wants to become a member of the organization",
+  "wants to become a contributor to the project":"wants to become a contributor to the project",
+  "share":"share",
+  "share content with your network":"share content with your network",
+  "Photo":"Photo",
+  "Do you want to add another photo to this news":"Do you want to add another photo to this news?",
+  "finish":"Finish",
+  "other picture":"Other picture",
+  "Want to take a picture":"Want to take a picture?",
+  "Use the position of this city":"Use the position of this city",
+  "Use your current location":"Use your current location?",
+  "edit a comment":"edit a comment",
+  "comment":"comment",
+  "comments":"comments",
+  "Close and reopen the application to get the new version":"Close and reopen the application to get the new version!",
+  "Add":"Add",
+  "a organization":"a organization",
+  "a project":"a project",
+  "a event":"a event",
+  "a point of interest":"a point of interest",
+  "a classified":"a classified",
+  "organizer":"organizer",
+  "video call":"video call",
+  "endPhoneCall":"Finished calling",
+  "You are receiving a phone call":"You are receiving a video phone call",
+  "Answer":"Answer",
+  "Ignore":"Ignore",
+  "onTerminateCall":"call terminated",
+  "activitystream":{
+    "verb":{
+      "share":"shared",
+      "create":"created",
+      "publish": "publish"
+    },
+    "type":{
+      "organizations":"an organization",
+      "events":"an event",
+      "projects":"an project",
+      "news":"a publication of",
+      "actions":"an action",
+      "proposals":"a proposal",
+      "resolutions":"a resolution",
+      "rooms":"a cooperative space",
+      "poi":"a point of interest"
+    },
+    "notification":{
+      "whoNumber": "and __count__ others",
+      "whoNumber_plural": "and __count__ others",
+"who_is_following_where": "__who__ is following __where__",
+"who_are_following_where": "__who__ are following __where__",
+"who_is_following_you": "__who__ is following you",
+"who_are_following_you": "__who__ are following you",
+"who_participates_to_where": "__who__ participates to __where__",
+"who_participate_to_where": "__who__ participate to __where__",
+"who_joins_where": "__who__ joins __where__",
+"who_join_where": "__who__ join __where__",
+"who_contributes_where": "__who__ contributes __where__",
+"who_contribute_where": "__who__ contribute __where__",
+"who_becomes_administrator_of_where": "__who__ becomes administrator of __where__",
+"who_become_administrator_of_where": "__who__ become administrator of __where__",
+"who_wants_to_join_where": "__who__ wants to join __where__",
+"who_want_to_join_where": "__who__ want to join __where__",
+"who_wants_to_administrate_where": "__who__ wants to administrate __where__",
+"who_want_to_administrate_where": "__who__ want to administrate __where__",
+"author_confirmed_who_to_join_where": "__author__ confirmed __who__ to join __where__",
+"author_confirmed_who_to_administrate_where": "__author__ confirmed __who__ to administrate __where__",
+"author_confirmed_your_request_to_join_where": "__author__ confirmed your request to join __where__",
+"author_confirmed_your_request_to_administrate_where": "__author__ confirmed your request to administrate __where__",
+"author_invited_who_to_join_where": "__author__ invited __who__ to join __where__",
+"author_invited_who_to_administrate_where": "__author__ invited __who__ to administrate __where__",
+"author_invited_you_to_join_where": "__author__ invited you to join __where__",
+"author_invited_you_to_administrate_where": "__author__ invited you to administrate __where__",
+"who_confirmed_the_invitation_to_join_where": "__who__ confirmed the invitation to join __where__",
+"who_have_confirmed_the_invitation_to_join_where": "__who__ have confirmed the invitation to join __where__",
+"who_confirmed_the_invitation_to_administrate_where": "__who__ confirmed the invitation to administrate __where__",
+"who_have_confirmed_the_invitation_to_administrate_where": "__who__ have confirmed the invitation to administrate __where__",
+"who_commented_on_your_news_what": "__who__ commented on your news __what__",
+"who_added_comments_on_your_news_what": "__who__ added comments on your news __what__",
+"who_commented_a_news_what_posted_on_where": "__who__ commented a news __what__ posted on __where__",
+"who_added_comments_on_a_news_what_posted_on_where": "__who__ added comments on a news __what__ posted on __where__",
+"who_added_few_comments_on_your_news_what": "__who__ added few comments on your news __what__",
+"who_added_few_comments_on_a_news_what_posted_on_where": "__who__ added few comments on a news __what__ posted on __where__",
+"who_answered_to_your_comment_posted_on_where": "__who__ answered to your comment posted on __where__",
+"who_added_comments_on_your_comments_posted_on_where": "__who__ added comments on your comments posted on __where__",
+"who_added_few_comments_on_your_comments_posted_on_where": "__who__ added few comments on your comments posted on __where__",
+"who_commented_on_proposal_what_in_where": "__who__ commented on proposal __what__ in __where__",
+"who_added_comments_on_proposal_what_in_where": "__who__ added comments on proposal __what__ in __where__",
+"who_commented_on_action_what_in_where": "__who__ commented on action __what__ in __where__",
+"who_added_comments_on_action_what_in_where": "__who__ added comments on action __what__ in __where__",
+"who_commented_on_discussion_what_in_where": "__who__ commented on discussion __what__ in __where__",
+"who_added_comments_on_discussion_what_in_where": "__who__ added comments on discussion __what__ in __where__",
+"who_added_few_comments_on_proposal_what_in_where": "__who__ added few comments on proposal __what__ in __where__",
+"who_added_few_comments_on_action_what_in_where": "__who__ added few comments on action __what__ in __where__",
+"of_creation": "of creation",
+"shared": "shared",
+"who_likes_a_news_what_from_where": "__who__ likes a news __what__ from __where__",
+"who_like_a_news_what_from_where": "__who__ like a news __what__ from __where__",
+"who_likes_your_news_what": "__who__ likes your news __what__",
+"who_like_your_news_what": "__who__ like your news __what__",
+"who_likes_your_comment_on_where": "__who__ likes your comment on __where__",
+"who_like_your_comment_on_where": "__who__ like your comment on __where__",
+"who_disapproves_a_news_what_from_where": "__who__ disapproves a news __what__ from __where__",
+"who_disapprove_a_news_what_from_where": "__who__ disapprove a news __what__ from __where__",
+"who_disapproves_your_news_what": "__who__ disapproves your news __what__",
+"who_disapprove_your_news_what": "__who__ disapprove your news __what__",
+"who_disapproves_your_comment_on_where": "__who__ disapproves your comment on __where__",
+"who_disapprove_your_comment_on_where": "__who__ disapprove your comment on __where__",
+"the_wall_of": "the wall of",
+"the_wall_of_who": "the wall of __who__",
+"your_news": "your news",
+"with_the_link": "with the link",
+"with_the_documents_shared": "with the documents shared",
+"with_the_album's_images": "with the album's images",
+"where_publishes_a_new_post": "__where__ publishes a new post",
+"where_publishes_new_posts": "__where__ publishes new posts",
+"who_writes_a_post_on_your_wall": "__who__ writes a post on your wall",
+"who_write_posts_on_your_wall": "__who__ write posts on your wall",
+"who_writes_a_post_on_the_wall_of_where": "__who__ writes a post on the wall of __where__",
+"who_write_posts_on_the_wall_of_where": "__who__ write posts on the wall of __where__",
+"who_writes_posts_on_the_wall_of_where": "__who__ writes posts on the wall of __where__",
+"who_writes_posts_on_your_wall": "__who__ writes posts on your wall",
+"who_added_a_new_voting_room_on_where": "__who__ added a new voting room on __where__",
+"who_added_a_new_room_in_the_co-space_on_where": "__who__ added a new room in the co-space on __where__",
+"who_added_a_new_discussion_room_on_where": "__who__ added a new discussion room on __where__",
+"who_added_a_new_actions_list_on_where": "__who__ added a new actions list on __where__",
+"who_added_a_new_proposal_what_in_where": "__who__ added a new proposal __what__ in __where__",
+"who_added_a_new_action_what_in_where": "__who__ added a new action __what__ in __where__",
+"who_added_a_new_project_on_where": "__who__ added a new project on __where__",
+"who_added_a_new_event_on_where": "__who__ added a new event on __where__",
+"who_added_new_events_on_where": "__who__ added a new event on __where__",
+"who_added_a_new_need_on_where": "__who__ added a new need on __where__",
+"who_added_a_new_post_in_where": "__who__ added a new post in __where__",
+"who_added_a_new_profil_image_on_where": "__who__ added a new profil image on __where__",
+"who_added_new_images_to_the_album_of_where": "__who__ added new images to the album of __where__",
+"A_new_resolution_what_is_added_in_where": "A new resolution __what__ is added in __where__",
+"who_voted_on_what_in_where": "__who__ voted on __what__ in __where__",
+"who_have_voted_on_what_in_where": "__who__ have voted on __what__ in __where__",
+"who_amended_the_proposal_what_in_where": "__who__ amended the proposal __what__ in __where__",
+"who_have_amended_the_proposal_what_in_where": "__who__ have amended the proposal __what__ in __where__",
+"asks_to_become_admin_of": "asks to become admin of",
+"asks_to_become_contributor_of": "asks to become contributor of",
+"asks_to_become_member_of": "asks to become member of",
+"Waiting_for_answer": "Waiting for answer",
+"New_contributor_well_registered": "New contributor well registered",
+"New_member_well_registered": "New member well registered",
+"New_admin_well_registered": "New admin well registered",
+"who_asks_the_suppression_of_where": "__who__ asks the suppression of __where__",
+"who_stopped_the_pending_suppression_of_where": "__who__ stopped the pending suppression of __where__",
+"who_deleted_where": "__who__ deleted __where__",
+"who_mentionned_you_mentions_where": "__who__ mentionned you __mentions__ __where__",
+"who_mentionned_mentions_where": "__who__ mentionned __mentions__ __where__",
+"with_who": "with __who__",
+"in_a_news": "in a news",
+"in_a_comment": "in a comment",
+"with":"with",
+"and": "and",
+"who_added_a_chat_on_where": "__who__ added a chat on __where__",
+"who_react_on_your_news_what": "__who__ react on your news __what__",
+"who_react_on_a_news_what_from_where": "__who__ react on your news __what__ from __where__",
+"who_reacts_on_a_news_what_from_where": "__who__ reacts on your news __what__ from __where__",
+"who_added_new_projects_on_where": "__who__ added new projects on __where__",
+"who_commented_on_resolution_what_in_where": "__who__ commented on resolution __what__ in __where__",
+"who_reacts_on_your_news_what": "__who__ reacts on your news __what__"
+    }
+  },
+  "on the program of":"on the program of :",
+  "Disconnect":"Disconnect",
+  "Want to remove the link between you and the entity":"Want to remove the link between you and the entity?",
+  "Unfollow":"Unfollow",
+  "no longer follow that person":"no longer follow that person",
+  "no longer follow this entity":"no longer follow this entity",
+  "guests":"Guests",
+  "invited you":"invited you",
+  "invited you to become an administrator":"invited you to become an administrator",
+  "Pending":"pending",
+  "searchInvitationPlaceholder":"Search by name, email...",
+  "invitations":{
+    "invitation":"invitation",
+    "invitation_plural": "invitations",
+    "search_invitation_placeholder":"Search by name, email...",
+    "search":"search",
+    "enter_a_search_term": "Enter a search term. minimum 4 characters",
+    "no_results_were_found_for_your_search": "No results were found for your search",
+    "send_invite":"Send invite",
+    "send":"Send",
+    "your_contacts":"Your contacts",
+    "your_organizations": "Your organizations",
+    "result_of_your_search":"result of your search"
+  },
+  "games":{
+    "game":"game",
+    "game_plural": "games",
+    "game_not_start":"the game did not start",
+    "start_date_of_the_game":"Start date of the game",
+    "end_date_of_the_game":"End date of the game",
+    "end_of_the_game":"End of the game",
+    "the_game_will_start":"The game will start",
+    "game_is_end":"the game is over",
+    "player":"__count__ player",
+    "player_plural":"__count__ players",
+    "finished":"finished",
+    "game_completed_in":"game completed in",
+    "point":"<strong>__count__</strong> point",
+    "point_plural":"<strong>__count__</strong> points",
+    "not_finished":"not finished",
+    "game_is_start":"the game started",
+    "you_started_playing":"you started playing <strong>__playTimeSpentStart__</strong> and you have __point__",
+    "quest":"Quest",
+    "quest_plural": "Quests",
+    "question": "Question",
+    "question_plural": "Questions",
+    "result_of_the_questions":"Result of the questions",
+    "check_position":"check position",
+    "scan_qr_code":"scan qr code",
+    "validate":"validate",
+    "error":"error",
+    "scoreboard":"scoreboard",
+    "me":"me",
+    "no_players":"no players",
+    "play_the_game":"Play the game",
+    "wrong_answer":"Wrong answer",
+    "good_answer":"Bravo, good answer"
+  },
+  "roles":"Roles",
+  "Parameter":"Parameter",
+  "Is admin":"Is admin",
+  "Edit a roles":"Edit the roles",
+  "Add as admin":"Add as admin",
+  "Remove this":"Remove this __scope__",
+  "contributor":"contributor",
+  "member":"member",
+  "attendee":"attendee",
+  "a cooperative space":"a cooperative space",
+  "cooperative space":"cooperative space",
+  "creating a new cooperative space":"creating a new cooperative space",
+  "Edit a cooperative space":"Edit a cooperative space",
+  "proposals":"Proposals",
+  "amendable":"Amendable",
+  "tovote":"To vote",
+  "resolved":"Resolved",
+  "disabled":"Disabled",
+  "closed":"Closed",
+  "resolutions":"Resolutions",
+  "actions":"Actions",
+  "todo":"Todo",
+  "done":"Finished",
+  "creating a new proposal":"Creating a new proposal",
+  "edit a proposal":"Edit a proposal",
+  "proposalFormInformation":"A proposal is used to discuss and seek community input on a given idea or question",
+  "creating a new action":"creating a new action",
+  "edit a action":"Edit a action",
+  "creating a new amendment":"creating a new amendment",
+  "edit a amendment":"edit a amendment",
+  "amendmentFormInformation":"If your amendment is adopted, it will be added to the principale proposal, and will incorporated the final proposal, submited to vote.",
+  "dda":{
+    "resolution":{
+      "resolution":"Resolution",
+      "adopted":"The <strong>resolution</strong> was taken: the proposal is <span class='balanced'>validated</span>",
+      "refused":"The <strong>resolution</strong> was denied: the proposal is <span class='assertive'>refused</span>",
+      "endofvote":"End of vote",
+      "showproposaldetail":"Show proposal detail",
+      "showresolution":"Show Resolution",
+      "resultstitle":"Results"
+    },
+    "actions":{
+      "action":"Action",
+      "actionstartenddate":"Action from __start__ to __end__",
+      "endofaction":"End of the action",
+      "theytakeaction":"They take part in this action",
+      "youparticipatingaction":"You are participating in this action",
+      "wantparticipateaction":"I want to participate in this action",
+      "noparticipants":"No participants",
+      "discussion":"Discussion",
+      "buttons":{
+        "disable":"Disable",
+        "close":"Close"
+      },
+      "status":{
+        "inprogress":"In progress",
+        "completed":"Completed",
+        "todo":"To do",
+        "disabled":"Disabled"
+      }
+    },
+    "proposal":{
+      "proposal":"Proposal",
+      "argumentstitle":"Supplemental information, arguments, examples, demonstrations, etc.",
+      "amendments":{
+        "title":"Amendments",
+        "text":"Proposal submitted to amendments until",
+        "endofamendments":"End of amendments",
+        "proposetext":"You can propose amendments and vote on amendments proposed by other users",
+        "listofamendmentstemporarily":"List of amendments temporarily validated · Majority: 50%",
+        "amendmentsdeactivated":"Amendments deactivated",
+        "noamendments":"No amendments",
+        "validated":"validated",
+        "validated_temporarily":"temporarily validated",
+        "refused":"refused",
+        "refused_temporarily":"temporarily refused"
+      },
+      "tovote":{
+        "title":"Vote",
+        "text":"Proposal to be put to the vote until",
+        "endofvotes":"End of votes",
+        "proposetext":"You can propose amendments and vote on amendments proposed by other users",
+        "listofamendmentsvalidated":"List of validated amendments · Majority",
+        "votesdisabled":"votes disabled",
+        "proposal_temporarily_validated":"Proposal temporarily <span class='balanced'>validated</span>",
+        "proposal_temporarily_refused":"Proposal temporarily <span class='assertive'>refused</span>",
+        "proposal_validated":"Proposal <span class='balanced'>validated</span>",
+        "proposal_refused":"Proposal <span class='assertive'>refused</span>",
+        "bethefirsttovote":"Be the first to vote",
+        "youvoted":"You voted",
+        "infavour":"in favour",
+        "against":"against",
+        "blank":"blank",
+        "incomplete":"incomplete",
+        "youhavenotvotedyet":"you have not voted yet",
+        "votecanchange":"You can change your choice at any time",
+        "changeofvote":"Change of vote",
+        "anonymousvote":"Anonymous vote",
+        "majorityrule":"Majority rule",
+        "voter": "voter",
+        "voter_plural": "voters"
+      },
+      "buttons":{
+        "disable":"Disable",
+        "close":"Close",
+        "backtoamendments":"Back to amendments",
+        "openthevotes":"Open the votes"
+      },
+      "status":{
+        "amendable":"Amendable",
+        "tovote":"To vote",
+        "closed":"Closed",
+        "resolved":"Resolved",
+        "disabled":"Disabled"
+      }
+    },
+    "debate":"Debate"
+  },
+  "simpleschema": {
+    "messages": {
+      "usernameNotUnique": "[label] already exists",
+      "required": "[label] is required",
+      "minString": "[label] must be at least [min] characters",
+      "maxString": "[label] cannot exceed [max] characters",
+      "minNumber": "[label] must be at least [min]",
+      "maxNumber": "[label] cannot exceed [max]",
+      "minNumberExclusive": "[label] must be greater than [min]",
+      "maxNumberExclusive": "[label] must be less than [max]",
+      "minDate": "[label] must be on or after [min]",
+      "maxDate": "[label] cannot be after [max]",
+      "maxDateAmendment": "The date must be before the end of the voting period",
+      "minDateVote": "The date must be after the end of the amendment period",
+      "maxDateStart": "The date must be before the end",
+      "minDateEnd": "The date must be after the start",
+      "badDate": "[label] is not a valid date",
+      "minCount": "You must specify at least [minCount] values",
+      "maxCount": "You cannot specify more than [maxCount] values",
+      "noDecimal": "[label] must be an integer",
+      "notAllowed": "[value] is not an allowed value",
+      "expectedString": "[label] must be a string",
+      "expectedNumber": "[label] must be a number",
+      "expectedBoolean": "[label] must be a boolean",
+      "expectedArray": "[label] must be an array",
+      "expectedObject": "[label] must be an object",
+      "expectedConstructor": "[label] must be a [type]",
+      "keyNotInSchema": "[key] is not allowed by the schema",
+      "notUnique": "[label] must be unique",
+      "regEx": {
+        "0": {
+          "msg": "[label] failed regular expression validation"
+        },
+        "1": {
+          "exp": "SimpleSchema.RegEx.Email",
+          "msg": "[label] must be a valid e-mail address"
+        },
+        "2": {
+          "exp": "SimpleSchema.RegEx.WeakEmail",
+          "msg": "[label] must be a valid e-mail address"
+        },
+        "3": {
+          "exp": "SimpleSchema.RegEx.Domain",
+          "msg": "[label] must be a valid domain"
+        },
+        "4": {
+          "exp": "SimpleSchema.RegEx.WeakDomain",
+          "msg": "[label] must be a valid domain"
+        },
+        "5": {
+          "exp": "SimpleSchema.RegEx.IP",
+          "msg": "[label] must be a valid IPv4 or IPv6 address"
+        },
+        "6": {
+          "exp": "SimpleSchema.RegEx.IPv4",
+          "msg": "[label] must be a valid IPv4 address"
+        },
+        "7": {
+          "exp": "SimpleSchema.RegEx.IPv6",
+          "msg": "[label] must be a valid IPv6 address"
+        },
+        "8": {
+          "exp": "SimpleSchema.RegEx.Url",
+          "msg": "[label] must be a valid URL"
+        },
+        "9": {
+          "exp": "SimpleSchema.RegEx.Id",
+          "msg": "[label] must be a valid alphanumeric ID"
+        }
+      }
+    }
+  },
+  "schemas":{
+    "invitations":{
+      "childName":{
+          "label": "name",
+          "placeholder": "his name"
+      },
+      "childEmail":{
+          "label": "email",
+          "placeholder": "his email"
+      },
+      "childType":{
+          "label": "Type",
+          "placeholder": "Select one...",
+          "options": {
+            "citoyens": "Citizens",
+            "organizations": "Organizations"
+          }
+      },
+      "organizationType":{
+          "label": "Organizations Type",
+          "placeholder": "Select one...",
+          "options": {
+
+          }
+      },
+      "connectType":{
+          "label": "Add as admin",
+          "placeholder": "Add as admin"
+      }
+    },
+    "followrest":{
+      "invitedUserName":{
+          "label": "name"
+      },
+      "invitedUserEmail":{
+          "label": "email"
+      }
+    },
+    "blockproposalsrest":{
+      "txtAmdt":{
+          "label": "Your amendment"
+      }
+    },
+    "roomsrest" : {
+      "name":{
+        "label": "name"
+      },
+      "description":{
+        "label": "description"
+      },
+      "roles":{
+        "label": "Limit access by role (default: open to all)",
+        "placeholder": "Select ...",
+        "options": {
+          "Organisateur":"Organizer",
+          "Partenaire":"Partner",
+          "Financeur":"Financier",
+          "Président":"President",
+          "Sponsor":"Sponsor",
+          "Directeur":"Director",
+          "Conférencier":"Lecturer",
+          "Intervenant":"Speaker"
+        }
+      }
+    },
+    "actionsrest" : {
+      "name":{
+        "label": "name"
+      },
+      "description":{
+        "label": "description"
+      },
+      "startDate":{
+        "label": "start date"
+      },
+      "endDate":{
+        "label": "end date"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "urls":{
+        "label": "Free information / urls"
+      }
+    },
+    "proposalsrest" : {
+      "title":{
+        "label": "Name of your proposal"
+      },
+      "description":{
+        "label": "Your proposition",
+        "information":"The final vote will be on the content of your proposal. For clarity, please provide additional information on your proposal in the next section."
+      },
+      "arguments":{
+        "label": "Arguments",
+        "placeholder":"Supplemental information, arguments, examples, demonstrations, etc"
+      },
+      "amendementActivated":{
+        "label": "Activate the amendments",
+        "information":"Votes are disabled during the activated amendment period"
+      },
+      "amendementDateEnd":{
+        "label": "End of the amendment period (opening of votes)"
+      },
+      "voteDateEnd":{
+        "label": "End of voting period"
+      },
+      "majority":{
+        "label": "Majority rule (%)",
+        "information":"Enter a value between 50% and 100%. Your proposal will need to collect more than <strong>__majority__%</strong> of votes to be validated"
+      },
+      "voteAnonymous":{
+        "label": "Votes anonymous",
+        "information":"Would you like to keep the identity of the voters secret?"
+      },
+      "voteCanChange":{
+        "label": "Allow the change of vote",
+        "information":"Would you like to allow voters to change their choice at will?"
+      },
+      "tags":{
+        "label": "Keywords"
+      },
+      "urls":{
+        "label": "Free information / urls"
+      }
+    },
+    "eventsrest" : {
+      "name":{
+        "label": "name"
+      },
+      "shortDescription":{
+        "label": "short description",
+        "placeholder": "short description"
+      },
+      "description":{
+        "label": "description",
+        "placeholder": "description"
+      },
+      "url":{
+        "label": "url"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "type":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "organizerType":{
+        "label": "Organizer of the event",
+        "placeholder": "Select one...",
+        "options": {
+          "citoyens": "Me",
+          "organizations": "Organizations",
+          "projects": "Projects"
+        }
+      },
+      "organizerId":{
+        "label": "Organizer of the event",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "parentId":{
+        "label": "parent of the event",
+        "placeholder": "Not parent",
+        "options": {
+
+        }
+      },
+      "allDay":{
+        "label": "all days"
+      },
+      "startDate":{
+        "label": "start date"
+      },
+      "endDate":{
+        "label": "end date"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      },
+      "preferences":{
+        "label": "preferences",
+        "isOpenData":{
+          "label": "is Open Data"
+        },
+        "isOpenEdition":{
+          "label": "is Open Edition"
+        }
+      }
+    },
+    "organizationsrest" : {
+      "name":{
+        "label": "name"
+      },
+      "shortDescription":{
+        "label": "short description"
+      },
+      "description":{
+        "label": "description"
+      },
+      "type":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "role":{
+        "label": "role",
+        "placeholder": "Select one...",
+        "options": {
+          "admin":"admin",
+          "member":"member",
+          "creator":"creator"
+        }
+      },
+      "email":{
+        "label": "email"
+      },
+      "url":{
+        "label": "url"
+      },
+      "fixe":{
+        "label": "phone",
+        "placeholder": "phone"
+      },
+      "mobile":{
+        "label": "mobile phone",
+        "placeholder": "mobile phone"
+      },
+      "fax":{
+        "label": "fax",
+        "placeholder": "fax"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      },
+      "preferences":{
+        "label": "preferences",
+        "isOpenData":{
+          "label": "is Open Data"
+        },
+        "isOpenEdition":{
+          "label": "is Open Edition"
+        }
+      }
+    },
+    "projectsrest" : {
+      "name":{
+        "label": "name"
+      },
+      "parentType":{
+        "label": "creator of the project",
+        "placeholder": "Select one...",
+        "options": {
+          "citoyens": "Me",
+          "organizations": "Organizations"
+        }
+      },
+      "parentId":{
+        "label": "creator of the project",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "shortDescription":{
+        "label": "short description"
+      },
+      "description":{
+        "label": "description"
+      },
+      "url":{
+        "label": "url"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "startDate":{
+        "label": "start date"
+      },
+      "endDate":{
+        "label": "end date"
+      },
+      "public":{
+        "label": "Make the project publicly visible"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      },
+      "preferences":{
+        "label": "preferences",
+        "isOpenData":{
+          "label": "is Open Data"
+        },
+        "isOpenEdition":{
+          "label": "is Open Edition"
+        }
+      }
+    },
+    "poirest" : {
+      "name":{
+        "label": "name"
+      },
+      "parentType":{
+        "label": "creator of the poi",
+        "placeholder": "Select one...",
+        "options": {
+          "citoyens": "Me",
+          "organizations": "Organizations",
+          "events": "Events",
+          "projects": "Projects"
+        }
+      },
+      "parentId":{
+        "label": "creator of the poi",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "shortDescription":{
+        "label": "short description"
+      },
+      "description":{
+        "label": "description"
+      },
+      "type":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+          "link": "link",
+          "tool": "tool",
+          "machine": "machine",
+          "software": "software",
+          "rh": "rh",
+          "RessourceMaterielle": "RessourceMaterielle",
+          "RessourceFinanciere": "RessourceFinanciere",
+          "ficheBlanche": "ficheBlanche",
+          "geoJson": "geoJson",
+          "compostPickup": "compostPickup",
+          "video": "video",
+          "sharedLibrary": "sharedLibrary",
+          "recoveryCenter": "recoveryCenter",
+          "trash": "trash",
+          "history": "history",
+          "something2See": "something2See",
+          "funPlace": "funPlace",
+          "place": "place",
+          "artPiece": "artPiece",
+          "streetArts": "streetArts",
+          "openScene": "openScene",
+          "stand": "stand",
+          "parking": "parking",
+          "other": "other"
+        }
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "urls":{
+        "label": "Free information / urls"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      },
+      "preferences":{
+        "label": "preferences",
+        "isOpenData":{
+          "label": "is Open Data"
+        },
+        "isOpenEdition":{
+          "label": "is Open Edition"
+        }
+      }
+    },
+    "classifiedrest" : {
+      "name":{
+        "label": "name"
+      },
+      "parentType":{
+        "label": "creator of the classified",
+        "placeholder": "Select one...",
+        "options": {
+          "citoyens": "Me",
+          "organizations": "Organizations",
+          "events": "Events",
+          "projects": "Projects"
+        }
+      },
+      "parentId":{
+        "label": "creator of the classified",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "shortDescription":{
+        "label": "short description"
+      },
+      "description":{
+        "label": "description"
+      },
+      "section":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+          "Partager": "sharing",
+          "Donner": "donation",
+          "Vendre": "for sale",
+          "Louer": "for rent",
+          "Besoin": "looking for",
+          "Emplois": "job"
+        }
+      },
+      "type":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "typeArray":{
+        "Emplois":[
+          {"label": "Achats-Comptabilité-Gestion", "value": "Achats-Comptabilité-Gestion"},
+          {"label": "Arts-Artisanat", "value": "Arts-Artisanat"},
+          {"label": "Banque-Assurance", "value": "Banque-Assurance"},
+          {"label": "Bâtiment-Travaux_Publics", "value": "Bâtiment-Travaux_Publics"},
+          {"label": "Commerce-Vente", "value": "Commerce-Vente"},
+          {"label": "Communication-Multimédia", "value": "Communication-Multimédia"},
+          {"label": "Conseil-Etudes", "value": "Conseil-Etudes"},
+          {"label": "Direction_Entreprise", "value": "Direction_Entreprise"},
+          {"label": "Espaces_Naturels", "value": "Espaces_Naturels"},
+          {"label": "Agriculture", "value": "Agriculture"},
+          {"label": "Pêche", "value": "Pêche"},
+          {"label": "Soins_aux_animaux", "value": "Soins_aux_animaux"},
+          {"label": "Hôtellerie", "value": "Hôtellerie"},
+          {"label": "Restauration", "value": "Restauration"},
+          {"label": "Tourisme", "value": "Tourisme"},
+          {"label": "Animation", "value": "Animation"},
+          {"label": "Immobilier", "value": "Immobilier"},
+          {"label": "Industrie", "value": "Industrie"},
+          {"label": "Informatique-Télécommunication", "value": "Informatique-Télécommunication"},
+          {"label": "Installation-Maintenance", "value": "Installation-Maintenance"},
+          {"label": "Marketing-Stratégie_Commerciale", "value": "Marketing-Stratégie_Commerciale"},
+          {"label": "Ressources_Humaines", "value": "Ressources_Humaines"},
+          {"label": "Santé", "value": "Santé"},
+          {"label": "Secrétariat-Assistanat", "value": "Secrétariat-Assistanat"},
+          {"label": "Services_à_la_personne", "value": "Services_à_la_personne"},
+          {"label": "Services_à_la_collectivité", "value": "Services_à_la_collectivité"},
+          {"label": "Spectacle", "value": "Spectacle"},
+          {"label": "Sport", "value": "Sport"},
+          {"label": "Transport-Logistique", "value": "Transport-Logistique"}
+      ],
+      "Autres":[
+        {"label": "Technologie", "value": "Technologie"},
+        {"label": "Immobilier", "value": "Immobilier"},
+        {"label": "Véhicules", "value": "Véhicules"},
+        {"label": "Maison", "value": "Maison"},
+        {"label": "Loisirs", "value": "Loisirs"},
+        {"label": "Mode", "value": "Mode"}
+    ]
+    },
+      "subtype":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "subtypeArray":{
+        "Technologie":[
+          {"label": "TV / Vidéo", "value": "TV / Vidéo"},
+          {"label": "Informatique", "value": "Informatique"},
+          {"label": "Tablettes", "value": "Tablettes"},
+          {"label": "Téléphonie", "value": "Téléphonie"},
+          {"label": "Appareils photos", "value": "Appareils photos"},
+          {"label": "Appareil audio", "value": "Appareil audio"}
+        ],
+        "Immobilier":[
+          {"label": "Maison", "value": "Maison"},
+          {"label": "Appartement", "value": "Appartement"},
+          {"label": "Terrain", "value": "Terrain"},
+          {"label": "Parking", "value": "Parking"},
+          {"label": "Bureaux", "value": "Bureaux"}
+        ],
+        "Véhicules":[
+          {"label": "SUV", "value": "SUV"},
+          {"label": "4x4", "value": "4x4"},
+          {"label": "Utilitaire", "value": "Utilitaire"},
+          {"label": "Moto", "value": "Moto"},
+          {"label": "Scooter", "value": "Scooter"},
+          {"label": "Bateau", "value": "Bateau"},
+          {"label": "Voiturette", "value": "Voiturette"},
+          {"label": "Vélos", "value": "Vélos"},
+          {"label": "Équipement véhicule", "value": "Équipement véhicule"},
+          {"label": "Équipement 2 roues", "value": "Équipement 2 roues"},
+          {"label": "Équipement bateau", "value": "Équipement bateau"},
+          {"label": "Équipement vélo", "value": "Équipement vélo"}
+        ],
+        "Maison":[
+          {"label": "Electroménager", "value": "Electroménager"},
+          {"label": "Mobilier", "value": "Mobilier"},
+          {"label": "Équipement bébé", "value": "Équipement bébé"},
+          {"label": "Animaux", "value": "Animaux"},
+          {"label": "Divers", "value": "Divers"}
+        ],
+        "Loisirs":[
+          {"label": "Sports", "value": "Sports"},
+          {"label": "Instrument musique", "value": "Instrument musique"},
+          {"label": "Sonorisation", "value": "Sonorisation"},
+          {"label": "CD / DVD", "value": "CD / DVD"},
+          {"label": "Jouet", "value": "Jouet"},
+          {"label": "Jeux de société", "value": "Jeux de société"},
+          {"label": "Livres / BD", "value": "Livres / BD"},
+          {"label": "Collections", "value": "Collections"},
+          {"label": "Bricolages", "value": "Bricolages"},
+          {"label": "Jardinage", "value": "Jardinage"},
+          {"label": "Art / Déco", "value": "Art / Déco"},
+          {"label": "Modélisme", "value": "Modélisme"},
+          {"label": "Puériculture", "value": "Puériculture"},
+          {"label": "Animaux", "value": "Animaux"},
+          {"label": "Divers", "value": "Divers"}
+        ],
+        "Mode":[
+          {"label": "Vêtements", "value": "Vêtements"},
+          {"label": "Chaussures", "value": "Chaussures"},
+          {"label": "Accessoires", "value": "Accessoires"},
+          {"label": "Montres", "value": "Montres"},
+          {"label": "Bijoux", "value": "Bijoux"}
+        ]
+      },
+      "contactInfo":{
+        "label": "Contact information"
+      },
+      "price":{
+        "label": "price"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      }
+    },
+    "news":{
+      "global":{
+        "name":{
+          "label": "title"
+        },
+        "text":{
+          "label": "message",
+          "placeholder": "message..."
+        },
+        "tags":{
+          "label": "tags"
+        }
+      },
+      "citoyens":{
+        "name":{
+          "label": "title"
+        },
+        "text":{
+          "label": "message",
+          "placeholder": "message..."
+        },
+        "tags":{
+          "label": "tags"
+        },
+        "scope":{
+          "label": "scope",
+          "placeholder": "Select one...",
+          "options": {
+            "restricted":"restricted",
+            "private":"private",
+            "public":"public"
+          }
+        }
+      },
+      "projects":{
+        "name":{
+          "label": "title"
+        },
+        "text":{
+          "label": "message",
+          "placeholder": "message..."
+        },
+        "tags":{
+          "label": "tags"
+        },
+        "scope":{
+          "label": "scope",
+          "placeholder": "Select one...",
+          "options": {
+            "private":"private",
+            "public":"public",
+            "restricted":"restricted"
+          }
+        },
+        "targetIsAuthor":{
+          "label": "Author",
+          "placeholder": "Select one...",
+          "options": {
+            "false":"Me",
+            "true":"Project"
+          }
+        }
+      },
+      "organizations":{
+        "name":{
+          "label": "title"
+        },
+        "text":{
+          "label": "message",
+          "placeholder": "message..."
+        },
+        "tags":{
+          "label": "tags"
+        },
+        "scope":{
+          "label": "scope",
+          "placeholder": "Select one...",
+          "options": {
+            "private":"private",
+            "public":"public",
+            "restricted":"restricted"
+          }
+        },
+        "targetIsAuthor":{
+          "label": "Author",
+          "placeholder": "Select one...",
+          "options": {
+            "false":"Me",
+            "true":"Organization"
+          }
+        }
+      },
+      "events":{
+        "name":{
+          "label": "title"
+        },
+        "text":{
+          "label": "message",
+          "placeholder": "message..."
+        },
+        "tags":{
+          "label": "tags"
+        },
+        "scope":{
+          "label": "scope",
+          "placeholder": "Select one...",
+          "options": {
+            "restricted":"restricted"
+          }
+        }
+      }
+    },
+    "comments":{
+      "content":{
+        "label": "message",
+        "placeholder":"message"
+      },
+      "text":{
+        "label": "message",
+        "placeholder":"message"
+      },
+      "argval":{
+        "label": "Type of review",
+        "placeholder": "Select ...",
+        "options": {
+          "up":"In favour",
+          "white":"Neutral",
+          "down":"Against"
+        }
+      }
+    },
+    "sharerest":{
+      "comment":{
+        "label": "message",
+        "placeholder":"message"
+      }
+    },
+    "rolesrest":{
+      "roles":{
+        "label": "Roles",
+        "placeholder": "Select ...",
+        "options": {
+          "Organisateur":"Organizer",
+          "Partenaire":"Partner",
+          "Financeur":"Financier",
+          "Président":"President",
+          "Sponsor":"Sponsor",
+          "Directeur":"Director",
+          "Conférencier":"Lecturer",
+          "Intervenant":"Speaker"
+        }
+      }
+    },
+    "global":{
+      "name":{
+        "label": "name",
+        "placeholder": "name"
+      },
+      "username":{
+        "label": "user name",
+        "placeholder": "user name"
+      },
+      "shortDescription":{
+        "label": "short description",
+        "placeholder": "short description"
+      },
+      "description":{
+        "label": "description",
+        "placeholder": "description"
+      },
+      "url":{
+        "label": "url",
+        "placeholder": "url"
+      },
+      "email":{
+        "label": "email",
+        "placeholder": "email"
+      },
+      "fixe":{
+        "label": "phone",
+        "placeholder": "phone"
+      },
+      "mobile":{
+        "label": "mobile phone",
+        "placeholder": "mobile phone"
+      },
+      "fax":{
+        "label": "fax",
+        "placeholder": "fax"
+      },
+      "tags":{
+        "label": "tags"
+      },
+      "birthDate" : {
+        "label": "birth date"
+      },
+      "github" : {
+        "label": "github",
+        "placeholder": "Link github"
+      },
+      "telegram" : {
+        "label": "telegram",
+        "placeholder": "Link telegram"
+      },
+      "skype" : {
+        "label": "skype",
+        "placeholder": "Link skype"
+      },
+      "gpplus" : {
+        "label": "google plus",
+        "placeholder": "Link google plus"
+      },
+      "twitter" : {
+        "label": "twitter",
+        "placeholder": "Link twitter"
+      },
+      "facebook" : {
+        "label": "facebook",
+        "placeholder": "Link facebook"
+      },
+      "instagram" : {
+        "label": "instagram",
+        "placeholder": "Link instagram"
+      },
+      "type":{
+        "label": "type",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "role":{
+        "label": "role",
+        "placeholder": "Select one...",
+        "options": {
+          "admin":"admin",
+          "member":"member",
+          "creator":"creator"
+        }
+      },
+      "avancement":{
+        "label": "project progress",
+        "placeholder": "Select one...",
+        "options": {
+          "idea":"idea",
+          "concept":"concept",
+          "started":"started",
+          "development":"development",
+          "testing":"testing",
+          "mature":"mature"
+        }
+      },
+      "allDay":{
+        "label": "all days"
+      },
+      "startDate":{
+        "label": "start date"
+      },
+      "endDate":{
+        "label": "end date"
+      },
+      "country":{
+        "label": "address country",
+        "placeholder": "Select one...",
+        "options": {
+          "FR": "France",
+          "GP": "Guadeloupe",
+          "GF": "French Guyana",
+          "MQ": "Martinique",
+          "YT": "Mayotte",
+          "NC": "New Caledonia",
+          "RE": "Reunion",
+          "PM": "St Pierre and Miquelon",
+          "BE": "Belgium"
+        }
+      },
+      "postalCode":{
+        "label": "postal code"
+      },
+      "city":{
+        "label": "code insee",
+        "placeholder": "Select one...",
+        "options": {
+
+        }
+      },
+      "streetAddress":{
+        "label": "street address"
+      },
+      "preferences":{
+        "label": "preferences",
+        "isOpenData":{
+          "label": "is Open Data"
+        },
+        "isOpenEdition":{
+          "label": "is Open Edition"
+        },
+        "email":{
+          "label": "email",
+          "options": {
+            "public":"public",
+            "private":"private",
+            "hide":"hide"
+          }
+        },
+        "locality":{
+          "label": "locality",
+          "options": {
+            "public":"public",
+            "private":"private",
+            "hide":"hide"
+          }
+        },
+        "phone":{
+          "label": "phone",
+          "options": {
+            "public":"public",
+            "private":"private",
+            "hide":"hide"
+          }
+        },
+        "directory":{
+          "label": "directory",
+          "options": {
+            "public":"public",
+            "private":"private",
+            "hide":"hide"
+          }
+        },
+        "birthDate":{
+          "label": "birthDate",
+          "options": {
+            "public":"public",
+            "private":"private",
+            "hide":"hide"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+<template name="Directory_item">
+  <div class="{{classes}}">
+    {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
+    <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+    {{#if typeValue}}{{typeValue}}{{/if}}{{#if isAdmin}}<span class="positive"><i class="icon fa fa-circle"></i></span>{{/if}}
+    {{#if equals scopeCible 'organizations'}}
+    {{#if item.rolesLinks scopeCible scopeId}}<p>{{item.rolesLinks scopeCible scopeId}}</p>{{/if}}
+    {{#if isScopeAdmin}}
+    <a href="{{pathFor 'rolesEdit' _id=scopeId scope=scopeCible childId=item._id._str childType=scope}}" class="button button-clear dark badge"><i class="icon fa fa-cog"></i></a>
+    {{/if}}
+    {{/if}}
+    {{#if equals scopeCible 'projects'}}
+    {{#if item.rolesLinks scopeCible scopeId}}<p>{{item.rolesLinks scopeCible scopeId}}</p>{{/if}}
+    {{#if isScopeAdmin}}
+    <a href="{{pathFor 'rolesEdit' _id=scopeId scope=scopeCible childId=item._id._str childType=scope}}" class="button button-clear dark badge"><i class="icon fa fa-cog"></i></a>
+    {{/if}}
+    {{/if}}
+    {{#if equals scopeCible 'events'}}
+    {{#if item.rolesLinks scopeCible scopeId}}<p>{{item.rolesLinks scopeCible scopeId}}</p>{{/if}}
+    {{#if isScopeAdmin}}
+    <a href="{{pathFor 'rolesEdit' _id=scopeId scope=scopeCible childId=item._id._str childType=scope}}" class="button button-clear dark badge"><i class="icon fa fa-cog"></i></a>
+    {{/if}}
+    {{/if}}
+    {{#unless notButton}}
+
+    {{#if equals isConnect 'isFavorites'}}
+    {{> Button_toggle id=item._id._str scope=scope isCall=isCall condition=(isConnectFunc isConnect) classOff="button-clear positive favorites-link" classOn="button-clear positive favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+
+    {{else if equals isConnect 'isInviting'}}
+    {{#if item.isScope scopeCible scopeId}}
+    <button class="button button-icon disabled positive">
+      <i class="icon fa fa-check"></i>
+    </button>
+    {{else}}
+    {{> Button_toggle connectType=connectType childType=scope childId=item._id._str id=scopeId scope=scopeCible isCall=isCall condition=(item.isInviting scopeCible scopeId) classOff="button-dark invitations-link" classOn="button-clear button-icon disabled" iconOff="fa fa-send" iconOn="fa fa-hourglass-half"}}
+    {{/if}}
+    {{else}}
+
+    {{#if toBeValidated}}
+    <button class="button button-icon disabled">
+      <i class="icon fa fa-hourglass-half"></i>
+    </button>
+    {{else if toBeisInviting}}
+    <button class="button button-icon disabled">
+      <i class="icon fa fa-hourglass-half"></i>
+    </button>
+    {{else}}
+
+    {{#if equals person true}}
+    {{> Button_toggle id=item._id._str scope=scope isCall=isCall condition=(isConnectFunc isConnect) classOff="button-dark followperson-link-js" classOn="button-positive unfollowperson-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink"}}
+    {{else}}
+    {{> Button_toggle id=item._id._str scope=scope isCall=isCall condition=(isConnectFunc isConnect) classOff="button-dark connectscope-link-js" classOn="button-positive disconnectscope-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink"}}
+    {{/if}}
+
+    {{/if}}
+    {{/if}}
+    {{/unless}}
+  </div>
+</template>

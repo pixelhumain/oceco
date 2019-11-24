@@ -1,0 +1,108 @@
+{
+    "name": "communecter",
+    "version": "0.0.34",
+    "projectName": "communecter",
+    "devTools": true,
+    "devtron": true,
+    "desktopHCP": true,
+    "desktopHCPIgnoreCompatibilityVersion": false,
+    "autoUpdateCheckOnStart": true,
+    "rebuildNativeNodeModules": false,
+    "webAppStartupTimeout": 60000,
+    "window": {
+        "icon": "@assets/icon.png",
+        "_windows": {
+            "icon": "@assets/icon.ico"
+        },
+        "focusable": true
+    },
+    "windowDev": {
+    },
+    "uglify": true,
+     "plugins": {
+         "meteor-desktop-splash-screen": {
+             "version": "0.4.3",
+             "imagePath": "splash.png",
+             "windowSettings": {
+                 "width": 800,
+                 "height": 600
+             },
+             "updateScreen": true,
+             "updateScreenSettings": {
+                 "imagePath": "splash.png",
+                 "windowSettings": {
+                     "width": 800,
+                     "height": 600
+                 },
+                 "clickThrough": false,
+                 "style": {
+                     "background-size": "auto"
+                 }
+             }
+         },
+         "meteor-desktop-system-notifications": {
+             "version": "0.0.2"
+         }
+     },
+    "dependencies": {},
+    "packageJsonFields": {
+        "description": "communecter",
+        "author": "Thomas Craipeau",
+        "private": true
+    },
+    "builderOptions": {
+        "win": {
+            "target": ["nsis"]
+        },
+        "nsis": {
+            "createDesktopShortcut": "always",
+            "oneClick": false
+        },
+        "squirrelWindows": {
+            "iconUrl": "https://github.com/wojtkowiak/meteor-desktop/blob/beta/scaffold/assets/meteor.ico?raw=true",
+            "loadingGif": ".desktop/assets/loading.gif",
+            "msi": true
+        },
+        "linux": {
+            "maintainer": "communecter",
+            "target": [
+                "AppImage", "snap"
+            ]
+        },
+        "icon": ".desktop/assets/icon.ico",
+        "appId": "communecter.app",
+        "productName": "communecter",
+        "compression": "maximum",
+        "mac": {
+            "icon": ".desktop/assets/icon.icns"
+        },
+        "dmg": {
+            "icon": ".desktop/assets/icon.icns",
+            "background": ".desktop/assets/background.png",
+            "iconSize": 54,
+            "contents": [
+                { "x": 377, "y": 190, "type": "link", "path": "/Applications" },
+                { "x": 63, "y": 190, "type": "file" }
+            ],
+            "window": {
+                "width": 480,
+                "height": 300
+            }
+        }    },
+    "packagerOptions": {
+        "icon": ".desktop/assets/icon.ico",
+        "_osx": {
+            "icon": ".desktop/assets/icon.icns"
+        },
+        "appVersion": "@version",
+        "buildVersion": "@version",
+        "appCopyright": "communecter",
+        "win32metadata": {
+            "CompanyName": "communecter",
+            "FileDescription": "communecter",
+            "OriginalFilename": "communecter.exe",
+            "ProductName": "communecter",
+            "InternalName": "communecter.exe"
+        }
+        }
+}

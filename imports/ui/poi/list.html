@@ -1,0 +1,303 @@
+<template name="listPoi">
+  {{> testgeo}}
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "poi"}} {{> cityTitle}}</h1>
+  {{/contentFor}}
+  {{#contentFor "headerButtonLeft"}}
+  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+  {{#if isAndroid}}
+    {{> ionIcon icon='android-more-vertical'}}
+  {{else}}
+    {{> ionIcon icon='navicon'}}
+  {{/if}}
+  </button>
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+    {{#transition in="bounceInDown" out="bounceOutUp"}}
+    {{#if notificationsCount}}
+    <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+    {{/if}}
+    {{/transition}}
+  </button>
+
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent class="scroll-bg"}}
+  <div class="list list-inset">
+    <label class="item item-input">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input id="search" type="text" placeholder="{{__ "searchPlaceholder"}}" value="{{searchPoi}}">
+    </label>
+  </div>
+
+    <div class="list list-inset">
+
+      <div class="item item-divider">
+        <i class="icon fa fa-map-marker"></i> {{__ "point of interest"}} <span class="badge badge-dark">{{countPoi}}</span>
+      </div>
+      {{#if dataReady}}
+      {{#transition in="zoomIn" out="bounceOut"}}
+      {{#each item in poi}}
+      {{> scopeItemList item=item}}
+       {{else}}
+
+      {{/each}}
+      {{/transition}}
+      {{/if}}
+    </div>
+
+    <ul id="floating-button">
+      <li class="poi-bg"><a href="{{pathFor 'poiAdd' _id=currentUser._id scope='citoyens'}}" style="color:white;">
+        <i class="icon menu-icon ion-plus"></i></a>
+      </li>
+    </ul>
+
+  {{/ionContent}}
+  {{/ionView}}
+
+  {{#if currentUser}}
+  {{#ionTabs class="tabs-dark tabs-icon-only"}}
+  {{> ionTab title=_events path="listPoi" iconOff="navicon-round" iconOn="navicon-round"}}
+  {{#unless dataReady}}
+  <a class="tab-item">
+   <i class="fa fa-refresh fa-spin" style="font-size: 18px;"></i>
+  </a>
+  {{else}}
+  {{> ionTab title=_cartes href="map/poi" iconOff="android-pin" iconOn="android-pin"}}
+  {{/unless}}
+  {{/ionTabs}}
+  {{/if}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
+</template>
+
+<template name="poiAdd">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "poi"}}</h1>
+  {{/contentFor}}
+
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      {{__ "Create a point of interest"}}
+    </div>
+    {{#if error}}
+    <div class="card">
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#autoForm id="addPoi" schema=SchemasPoiRest type="method" meteormethod="insertPoi" template="ionic" class="padding"}}
+    {{> poiFields}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "create"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+</template>
+
+
+<template name="poiEdit">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "poi"}}</h1>
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      {{__ "Edit a point of interest"}}
+    </div>
+    {{#if error}}
+    <div class="card">
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#autoForm id="editPoi" schema=SchemasPoiRest type="method-update" meteormethod="updatePoi" doc=poi template="ionic" class="padding"}}
+    {{> poiFields update="1"}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "edit"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
+</template>
+
+<template name="poiBlockEdit">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "poi"}}</h1>
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      {{__ "Edit a point of interest"}}
+    </div>
+    {{#if error}}
+    <div class="card">
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#if equals block 'preferences'}}
+    {{#autoForm id="editBlockPoi" schema=blockSchema type="method-update" meteormethod="updateBlock" doc=poi autosave=true template="ionic" class="padding"}}
+    {{> poiFields block=block}}
+    {{/autoForm}}
+    {{else}}
+    {{#autoForm id="editBlockPoi" schema=blockSchema type="method-update" meteormethod="updateBlock" doc=poi template="ionic" class="padding"}}
+    {{> poiFields block=block}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "edit"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+    {{/if}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
+</template>
+
+<template name="poiFields">
+  {{#if equals block 'info'}}
+  {{> afQuickField name='name'}}
+  {{/if}}
+
+
+  {{#if equals block 'descriptions'}}
+  {{> afQuickField name='shortDescription' type="textarea" label-type='placeholder' rows=8}}
+  {{> afQuickField name='description' type="textarea" label-type='placeholder' rows=8}}
+  {{/if}}
+
+  {{#if equals block 'preferences'}}
+  <div class="list card">
+  <div class="item item-body">
+    <strong>{{__ "Open Data"}}</strong>  : {{__ "Vous proposez vos données en accès libre, afin de contribuer au bien commun"}}<br>
+    <strong>{{__ "Open Edition"}}</strong>  : {{__ "Tous les utilisateurs ont la possibilité de participer / modifier les informations"}}
+  </div>
+  </div>
+  {{> afQuickField name='preferences.isOpenData'}}
+  {{> afQuickField name='preferences.isOpenEdition'}}
+  {{/if}}
+
+  {{#if equals block 'locality'}}
+  {{> afQuickField name='country' autocomplete="off" value=country }}
+  {{#if currentFieldValue "country"}}
+  {{> afQuickField name='postalCode' value=postalCode autocomplete="off"}}
+  {{#if currentFieldValue "postalCode"}}
+  {{#if optionsInsee}}
+  {{> afQuickField name='city' options=optionsInsee value=city}}
+  {{> afQuickField name='cityName' type="hidden" value=cityName}}
+  {{else}}
+  <div class="item item-text-wrap assertive"><i class="icon ion-android-alert"></i> {{__ "Error not postal code match"}}</div>
+  {{/if}}
+  {{/if}}
+  {{> afQuickField name='streetAddress' autocomplete="off"}}
+  {{#if latlng}}
+  {{> map}}
+  {{/if}}
+  {{> afQuickField name='geoPosLatitude' type="hidden" value=latitude}}
+  {{> afQuickField name='geoPosLongitude' type="hidden" value=longitude}}
+  {{> afQuickField name='regionName' type="hidden" value=regionName}}
+  {{> afQuickField name='depName' type="hidden" value=depName}}
+  {{> afQuickField name='localityId' type="hidden" value=localityId}}
+  {{/if}}
+  {{/if}}
+
+  {{#unless block}}
+  {{> afQuickField name='name'}}
+
+  {{> afQuickField name='type'}}
+
+  {{> afQuickField name='parentType' type='select' value=parentType}}
+  {{#if dataReadyParent}}
+  {{#if parentType}}
+  {{#if optionsParentId parentType}}
+  {{> afQuickField name='parentId' type='select' options=(optionsParentId parentType) value=parentId}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
+
+  {{#if update}}
+  {{> afQuickField name='description' rows=8}}
+  {{else}}
+  {{> afQuickField name='description' rows=8}}
+  {{/if}}
+
+  {{> afQuickField name='urls'}}
+
+  {{> afQuickField name='country' autocomplete="off" value=country }}
+  {{#if currentFieldValue "country"}}
+  {{> afQuickField name='postalCode' value=postalCode autocomplete="off"}}
+  {{#if currentFieldValue "postalCode"}}
+  {{#if optionsInsee}}
+  {{> afQuickField name='city' options=optionsInsee value=city}}
+  {{> afQuickField name='cityName' type="hidden" value=cityName}}
+  {{else}}
+  <div class="item item-text-wrap assertive"><i class="icon ion-android-alert"></i> {{__ "Error not postal code match"}}</div>
+  {{/if}}
+  {{/if}}
+  {{> afQuickField name='streetAddress' autocomplete="off"}}
+  {{#if latlng}}
+  {{> map}}
+  {{/if}}
+  {{> afQuickField name='geoPosLatitude' type="hidden" value=latitude}}
+  {{> afQuickField name='geoPosLongitude' type="hidden" value=longitude}}
+  {{> afQuickField name='regionName' type="hidden" value=regionName}}
+  {{> afQuickField name='depName' type="hidden" value=depName}}
+  {{> afQuickField name='localityId' type="hidden" value=localityId}}
+  {{/if}}
+
+  {{/unless}}
+</template>

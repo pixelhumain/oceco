@@ -1,0 +1,891 @@
+<template name="newsList">
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{#if scope.name}}{{scope.name}}{{/if}}</h1>
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonLeft"}}
+  {{#if scope.listScope}}
+  {{#if scopeMe}}
+  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+  {{#if isAndroid}}
+    {{> ionIcon icon='android-more-vertical'}}
+  {{else}}
+    {{> ionIcon icon='navicon'}}
+  {{/if}}
+  </button>
+  {{else}}
+  {{>ionNavBackButton}}
+  {{/if}}
+  {{/if}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+  <button class="button button-clear" data-ion-modal="_qrcode"><i class="icon fa fa-qrcode"></i></button>
+  {{/contentFor}}
+
+  {{#if dataReadyScopeDetail}}
+  {{#ionView}}
+  {{#ionContent class="scroll-bg"}}
+
+  {{#if equals scope.scopeVar 'citoyens'}}
+  <div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+    {{#if scope.isMe}}
+    <a class="tab-item {{#if equals selectview 'scopeFilActusTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actusList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeFilActusTemplate"><i class="icon fa fa-rss"></i></a>
+    {{/if}}
+    <a class="tab-item {{#if equals selectview 'scopeNewsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'newsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNewsTemplate"><i class="icon fa fa-user-circle"></i></a>
+    {{#if scope.isMe}}
+    <a class="tab-item {{#if equals selectview 'scopeOrganizationsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'organizationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeOrganizationsTemplate"><i class="icon fa fa-users"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopePoiTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'poiList' _id=scope._id._str scope=scope.scopeVar}}" id="scopePoiTemplate"><i class="icon fa fa-map-marker"></i></a>
+    {{else}}
+    {{#if scope.isVisibleFields 'directory'}}
+    <a class="tab-item {{#if equals selectview 'scopeOrganizationsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'organizationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeOrganizationsTemplate"><i class="icon fa fa-users"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopePoiTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'poiList' _id=scope._id._str scope=scope.scopeVar}}" id="scopePoiTemplate"><i class="icon fa fa-map-marker"></i></a>
+    {{/if}}
+    {{/if}}
+  </div>
+    {{> Template.dynamic template=selectview data=scope}}
+  {{else if equals scope.scopeVar 'organizations'}}
+  <div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+    {{#if scope.isAdmin}}
+    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i class="icon fa fa-bell"></i></a>
+    {{/if}}
+    <a class="tab-item {{#if equals selectview 'scopeNewsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'newsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNewsTemplate"><i class="icon fa fa-rss"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopePoiTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'poiList' _id=scope._id._str scope=scope.scopeVar}}" id="scopePoiTemplate"><i class="icon fa fa-map-marker"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeRoomsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'roomsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeRoomsTemplate"><i class="icon fa fa-university"></i></a>
+  </div>
+    {{> Template.dynamic template=selectview data=scope}}
+  {{else if equals scope.scopeVar 'projects'}}
+  <div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+    {{#if scope.isAdmin}}
+    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i class="icon fa fa-bell"></i></a>
+    {{/if}}
+    <a class="tab-item {{#if equals selectview 'scopeNewsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'newsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNewsTemplate"><i class="icon fa fa-rss"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>    
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopePoiTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'poiList' _id=scope._id._str scope=scope.scopeVar}}" id="scopePoiTemplate"><i class="icon fa fa-map-marker"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeRoomsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'roomsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeRoomsTemplate"><i class="icon fa fa-university"></i></a>
+  </div>
+    {{> Template.dynamic template=selectview data=scope}}
+  {{else if equals scope.scopeVar 'events'}}
+  <div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+    {{#if scope.isAdmin}}
+    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i class="icon fa fa-bell"></i></a>
+    {{/if}}
+    <a class="tab-item {{#if equals selectview 'scopeNewsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'newsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNewsTemplate"><i class="icon fa fa-rss"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopePoiTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'poiList' _id=scope._id._str scope=scope.scopeVar}}" id="scopePoiTemplate"><i class="icon fa fa-map-marker"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeGamesTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'gamesList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeGamesTemplate"><i class="icon fa fa-play"></i></a>
+  
+  </div>
+    {{> Template.dynamic template=selectview data=scope}}
+  {{else if equals scope.scopeVar 'poi'}}
+    {{> Template.dynamic template=selectview data=scope}}
+    {{else if equals scope.scopeVar 'classified'}}
+    {{> Template.dynamic template=selectview data=scope}}
+    {{/if}}
+
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+{{> loading}}
+{{/if}}
+</template>
+
+<template name="scopeDetailTemplate">
+
+  {{> Template.dynamic template=scopeCardTemplate data=this}}
+
+</template>
+
+
+<template name="scopeNotificationsTemplate">
+  <div class="list">
+
+    {{> Template.dynamic template=scopeBoutonNotificationsTemplate data=this}}
+
+    {{#if listMembersToBeValidated}}
+    <div class="item item-divider homestead">
+      {{__ "Waiting for a response"}}
+    </div>
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each listMembersToBeValidated}}
+    <div class="item item-avatar item-text-wrap animated out">
+      {{> imgDoc profilThumbImageUrl=profilThumbImageUrl }}
+      <p><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a>
+        {{#if equals ../scopeVar 'organizations'}}
+        {{__ "wants to become a member of the organization"}}
+        {{/if}}
+        {{#if equals ../scopeVar 'projects'}}
+        {{__ "wants to become a contributor to the project"}}
+        {{/if}}
+      </p>
+    </div>
+    <div class="button-bar bar-clear">
+      <button class="button button-small validateYes"><i class="icon fa fa-check balanced"></i></button>
+      <button class="button button-small validateNo"><i class="icon fa fa-remove positive"></i></button>
+    </div>
+    {{/each}}
+    {{/transition}}
+    {{/if}}
+
+    {{#if listNotifications}}
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-bell"></i>  {{__ "notifications"}} <span class="badge badge-dark">{{notificationsScopeCount _id._str}}</span>
+    </div>
+    {{> notificationsList notifications=listNotifications}}
+    {{/if}}
+
+  </div>
+</template>
+
+<template name="scopeOrganizationsTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-users"></i>  {{__ "organizations"}} {{name}} <span class="badge badge-dark">{{countOrganizationsCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonOrganizationsTemplate data=this}}
+
+    {{> Directory_list list=listOrganizationsCreator isConnect="isMembers" person=false scope="organizations"}}
+  </div>
+</template>
+
+<template name="scopeProjectsTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-lightbulb-o"></i>  {{__ "projects"}} {{name}} <span class="badge badge-dark">{{countProjectsCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonProjectsTemplate data=this}}
+
+    {{> Directory_list list=listProjectsCreator isConnect="isContributors" person=false scope="projects"}}
+  </div>
+</template>
+
+<template name="scopeEventsTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonEventsTemplate data=this}}
+
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each item in listEventsCreator}}
+    {{> scopeItemList item=item count=item.countAttendeesSimple}}
+    {{else}}
+
+    {{/each}}
+    {{/transition}}
+  </div>
+</template>
+
+<template name="scopeGamesTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-play"></i>  {{__ "games.game"}} {{name}} <span class="badge badge-dark">{{countGamesCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonGamesTemplate data=this}}
+
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each item in listGamesCreator}}
+        <a class="item animated in out" href="{{pathFor 'gamesDetail' _id=item._id._str}}">
+          <h2>
+            <i class="icon fa fa-play"></i> {{item.name}}</h2>
+        </a>
+    {{else}}
+
+    {{/each}}
+    {{/transition}}
+  </div>
+</template>
+
+
+<template name="scopeRoomsTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-university"></i>  {{__ "rooms"}} {{name}} <span class="badge badge-dark">{{countRooms}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonRoomsTemplate data=this}}
+
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each item in listRooms}}
+    <a class="item animated in out" href="{{pathFor 'roomsDetail' _id=item.parentId scope=item.parentType roomId=item._id._str}}">
+      {{#if item.roles}}
+      <h2><i class="icon fa fa-lock"></i> {{item.name}}</h2>
+      <p>{{item.rolesJoin}}</p>
+      {{else}}
+      <h2><i class="icon fa fa-hashtag"></i> {{item.name}}</h2>
+      {{/if}}
+    </a>
+    {{else}}
+
+    {{/each}}
+    {{/transition}}
+  </div>
+</template>
+
+<template name="scopeEventsTemplateCopy">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonEventsTemplate data=this}}
+
+    {{> Directory_list list=listEventsCreator isConnect="isAttendees" person=false scope="events"}}
+  </div>
+</template>
+
+<template name="scopePoiTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-map-marker"></i>  {{__ "poi"}} {{name}} <span class="badge badge-dark">{{countPoiCreator}}</span>
+    </div>
+    {{> Template.dynamic template=scopeBoutonPoiTemplate data=this}}
+
+    {{> Directory_list list=listPoiCreator isConnect="" person=false scope="poi" notButton=true}}
+  </div>
+</template>
+
+<template name="scopeFilActusTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-rss"></i>  {{__ "Fil d'actus"}} {{name}}
+    </div>
+
+    {{> Template.dynamic template=scopeBoutonNewsTemplate data=this}}
+
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each newsActus}}
+    {{> newsItem}}
+
+    {{/each}}
+    {{/transition}}
+
+  </div>
+  {{#if dataReady}}
+  {{#if isLimit countNews}}
+  <div class="padding">
+    <button id="showMoreResultslimitFilActus" class="button button-block button-dark give-me-more-actus">
+      {{__ "more"}}...
+    </button>
+  </div>
+  {{/if}}
+  {{/if}}
+</template>
+
+<template name="scopeNewsTemplate">
+  <div class="list">
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-rss"></i>  {{__ "news"}} {{name}} <span class="badge badge-dark">{{countNews}}</span>
+    </div>
+
+    {{> Template.dynamic template=scopeBoutonNewsTemplate data=this}}
+
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each newsJournal}}
+    {{> newsItem}}
+
+    {{/each}}
+    {{/transition}}
+
+  </div>
+  {{#if dataReady}}
+  {{#if isLimit countNews}}
+  <div class="padding">
+    <button id="showMoreResults" class="button button-block button-dark give-me-more">
+      {{__ "more"}}...
+    </button>
+  </div>
+  {{/if}}
+  {{/if}}
+</template>
+
+<template name="newsItem">
+  <a href="{{pathFor 'newsDetail' _id=target.id newsId=_id._str scope=target.type}}" class="item animated in {{#if photoNewsAlbums.[0].name}}item-thumbnail-left{{else if authorNews.profilThumbImageUrl}}item-avatar{{/if}}">
+    {{#if photoNewsAlbums.[0].name}}
+    {{> imgDoc imageDoc=photoNewsAlbums.[0] resized="80x80"}}
+    {{else if profilThumbImageUrl}}
+    {{> imgDoc profilThumbImageUrl=profilThumbImageUrl resized="80x80"}}
+    {{else if authorNews.profilThumbImageUrl}}
+    {{> imgDoc profilThumbImageUrl=authorNews.profilThumbImageUrl resized="80x80"}}
+    {{/if}}
+
+    {{#if equals type 'activityStream'}}
+    {{#if equals object.type 'proposals'}}
+    <h2>{{objectNews.title}}</h2>
+    {{else}}
+    <h2>{{objectNews.name}}</h2>
+    {{/if}}
+    {{else}}
+    <h2>{{#if name}}{{cutString name 50}}{{/if}}</h2>
+    {{#if text}}<p>{{cutString text 140}}</p>{{/if}}
+    {{/if}}
+
+    {{#each tags}}
+    <span class=""><i class="icon ion-pound"></i> {{this}}</span>
+    {{/each}}
+
+    {{#if equals type 'activityStream'}}
+    {{> newsActivityStream}}
+    {{else}}
+    <p>{{__ "author"}} : {{authorNews.name}}</p>
+    {{#if nequals authorNews.name targetNews.name}}<p><a href="{{pathFor 'detailList' _id=target.id scope=target.type}}" class="positive">{{targetNews.name}}</a></p>{{/if}}
+    {{/if}}
+    <p><i class="icon ion-clock"></i> {{livestamp created}}</p>
+  </a>
+      <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item" href="{{pathFor 'newsDetailComments' _id=target.id newsId=_id._str scope=target.type}}">
+          <i class="icon fa fa-comment"></i>
+          {{commentsCount}}
+        </a>
+        <a class="tab-item" href="{{pathFor 'newsDetail' _id=target.id newsId=_id._str scope=target.type}}">
+          <i class="icon ion-thumbsup"></i>
+          {{likesCount}}
+        </a>
+        <a class="tab-item" href="{{pathFor 'newsDetail' _id=target.id newsId=_id._str scope=target.type}}">
+          <i class="icon ion-thumbsdown"></i>
+          {{dislikesCount}}
+        </a>
+      </div>
+</template>
+
+<template name="newsActivityStream">
+  {{#if equals verb 'share'}}
+  {{#if equals object.type 'news'}}
+  <p><a href="{{pathFor 'detailList' _id=target.id scope=target.type}}" class="positive">{{targetNews.name}}</a> <a href="{{pathFor 'newsDetail' _id=object.authorId newsId=object.id scope=object.authorType}}">{{i18npref 'activitystream.verb' verb}} {{i18npref 'activitystream.type' object.type}}</a> :
+  <a href="{{pathFor 'detailList' _id=object.authorId scope=object.authorType}}" class="positive">{{objectNews.authorName}}</a></p>
+  {{else}}
+  <p><a href="{{pathFor 'detailList' _id=target.id scope=target.type}}" class="positive">{{targetNews.name}}</a> {{i18npref 'activitystream.verb' verb}}
+  {{i18npref 'activitystream.type' object.type}} : <a href="{{pathFor 'detailList' _id=object.id scope=object.type}}" class="positive">{{objectNews.name}}</a></p>
+  {{/if}}
+  {{else}}
+  <p><a href="{{pathFor 'detailList' _id=target.id scope=target.type}}" class="positive">{{targetNews.name}}</a> {{i18npref 'activitystream.verb' verb}}
+  {{i18npref 'activitystream.type' object.type}} :
+  {{#if equals object.type 'rooms'}}
+  <a href="{{pathFor 'roomsDetail' _id=target.id scope=target.type roomId=object.id}}" class="positive">{{objectNews.name}}</a>
+  {{else if equals object.type 'actions'}}
+  <a href="{{pathFor 'actionsDetail' _id=target.id scope=target.type roomId=objectNews.idParentRoom actionId=object.id}}" class="positive">{{objectNews.name}}</a>
+  {{else if equals object.type 'proposals'}}
+  <a href="{{pathFor 'proposalsDetail' _id=target.id scope=target.type roomId=objectNews.idParentRoom proposalId=object.id}}" class="positive">{{objectNews.title}}</a>
+  {{else}}
+  <a href="{{pathFor 'detailList' _id=object.id scope=object.type}}" class="positive">{{objectNews.name}}</a>
+  {{/if}}
+  </p>
+  {{/if}}
+</template>
+
+<template name="newsAdd">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "post a news"}}</h1>
+  {{/contentFor}}
+
+  {{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      {{__ "post a news"}}
+    </div>
+    {{#if error}}
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    {{/if}}
+    {{#autoForm id="addNew" schema=blockSchema type="method" meteormethod="insertNew" template="ionic" class="padding"}}
+    {{> afQuickField name='text' type="textarea" label-type='placeholder' rows=8 class="atwho-inputor" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off"}}
+    {{> afQuickField name='scope'}}
+    {{#if equals scope.scopeVar 'organizations'}}
+    {{#if scope.isAdmin}}
+    {{> afQuickField type="select-radio" defaultValue="false" name='targetIsAuthor'}}
+    {{/if}}
+    {{/if}}
+    {{#if equals scope.scopeVar 'projects'}}
+    {{#if scope.isAdmin}}
+    {{> afQuickField type="select-radio" defaultValue="false" name='targetIsAuthor'}}
+    {{/if}}
+    {{/if}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "publish"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+{{> loading}}
+{{/if}}
+</template>
+
+
+
+<template name="newsEdit">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">{{__ "news"}}</h1>
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      {{__ "edit a news"}}
+    </div>
+    {{#if error}}
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    {{/if}}
+    {{#autoForm id="editNew" schema=blockSchema type="method-update" meteormethod="updateNew" doc=new template="ionic" class="padding form-rb-plain"}}
+    {{> newsFields}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "edit"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+{{> loading}}
+{{/if}}
+</template>
+
+<template name="newsFields">
+  {{> afQuickField name='text' type="textarea" label-type='placeholder' rows=8 class="atwho-inputor" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off"}}
+</template>
+
+<template name="actionSheet">
+  {{#if equals scopeVar 'events'}}
+  {{#if isAdmin}}
+  <a href="#" class="button button-positive action-card-events"><i class="icon fa fa-cog"></i></a>
+  {{else}}
+  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  {{/if}}
+  {{else if equals scopeVar 'projects'}}
+  {{#if isAdmin}}
+  <a href="#" class="button button-positive action-card-projects"><i class="icon fa fa-cog"></i></a>
+  {{else}}
+  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  {{/if}}
+  {{else if equals scopeVar 'poi'}}
+  {{#if isAdmin}}
+  <a href="#" class="button button-positive action-card-poi"><i class="icon fa fa-cog"></i></a>
+  {{else}}
+  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  {{/if}}
+  {{else if equals scopeVar 'classified'}}
+  {{#if isAdmin}}
+  <a href="#" class="button button-positive action-card-classified"><i class="icon fa fa-cog"></i></a>
+  {{else}}
+  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  {{/if}}
+  {{else if equals scopeVar 'organizations'}}
+  {{#if isAdmin}}
+  <a href="#" class="button button-positive action-card-organizations"><i class="icon fa fa-cog"></i></a>
+  {{else}}
+  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  {{/if}}
+  {{else if equals scopeVar 'citoyens'}}
+  {{#if isMe}}
+  <a href="#" class="button button-positive action-card-citoyen"><i class="icon fa fa-cog"></i></a>
+  {{/if}}
+  {{/if}}
+</template>
+
+<template name="listCard">
+{{> scopeCard class="list card" scope=this}}
+</template>
+
+<template name="boutonCardevents">
+    <div class="button-bar bar-positive">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+
+      {{#if isAttendees}}
+      <a href="{{pathFor 'listAttendees' _id=_id._str}}" class="button button-small">{{> ionIcon icon="ios-people"}}</a>
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="person-add"}}</a>
+      {{#if isAdmin}}
+      <a href="" class="button button-small" data-ion-popover="addMenuScopePopover"><i class="icon fa fa-plus"></i></a>
+      {{else}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
+      {{/if}}
+      {{else}}
+      {{#if isInviting 'attendees' currentUser._id}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
+      {{/if}}
+      {{#if isCordova}}
+      <button class="button button-small scanner-event">{{> ionIcon icon="ios-barcode"}} {{__ "QR Scanner"}}</button>
+      {{/if}}
+      {{/if}}
+    </div>
+    {{#if isInviting 'attendees' currentUser._id}}
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+      {{#with InvitingUser 'attendees' currentUser._id}}
+    <div class="item item-text-wrap animated out">
+      <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+      {{#if isAdmin}}
+      {{__ "invited you to become an administrator"}}
+      {{else}}
+      {{__ "invited you"}}
+      {{/if}}
+      </p>
+    </div>
+    {{/with}}
+    <div class="button-bar bar-clear">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+    </div>
+    </div>
+    {{/transition}}
+    {{/if}}
+</template>
+
+<template name="boutonNewsevents">
+    <div class="button-bar bar-positive">
+      {{#if isAttendees}}
+      <button class="button button-small photo-link-new">{{> ionIcon icon="camera"}}</button>
+      <a href="{{pathFor 'newsAdd' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="compose"}}</a>
+      {{/if}}
+    </div>
+    {{> scopeFileUploadNews}}
+</template>
+
+<template name="boutonCardorganizations">
+    <div class="button-bar bar-positive">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="button-small followperson-link" classOn="button-small unfollowscope-link" iconOff="fa fa-rss" iconOn="fa fa-rss-square"}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+
+      {{#if toBeValidated}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{#if isInviting 'members' currentUser._id}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isMembers classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink"}}
+      {{/if}}
+      {{/if}}
+
+      {{#if isMembers}}
+      {{#if isAdmin}}
+      <a href="" class="button button-small" data-ion-popover="addMenuScopePopover"><i class="icon fa fa-plus"></i></a>
+      {{#if isCordova}}
+      <button class="button button-small scanner-event">{{> ionIcon icon="ios-barcode"}}</button>
+      {{/if}}
+      {{/if}}
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="person-add"}}</a>
+      {{/if}}
+      <a href="{{pathFor 'directory' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-connectdevelop"></i></a>
+    </div>
+    {{#if isInviting 'members' currentUser._id}}
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+      {{#with InvitingUser 'members' currentUser._id}}
+    <div class="item item-text-wrap animated out">
+      <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+        {{#if isAdmin}}
+        {{__ "invited you to become an administrator"}}
+        {{else}}
+        {{__ "invited you"}}
+        {{/if}}
+      </p>
+    </div>
+    {{/with}}
+    <div class="button-bar bar-clear">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+    </div>
+    </div>
+    {{/transition}}
+    {{/if}}
+</template>
+
+<template name="boutonNewsorganizations">
+    <div class="button-bar bar-positive">
+      {{#if isMembers}}
+      <button class="button button-small photo-link-new">{{> ionIcon icon="camera"}}</button>
+      <a href="{{pathFor 'newsAdd' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="compose"}}</a>
+      {{/if}}
+    </div>
+    {{> scopeFileUploadNews}}
+</template>
+
+<template name="boutonCardprojects">
+    <div class="button-bar bar-positive">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="button-small followperson-link" classOn="button-small unfollowscope-link" iconOff="fa fa-rss" iconOn="fa fa-rss-square"}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+
+      {{#if toBeValidated}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{#if isInviting 'contributors' currentUser._id}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=""}}
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="person-add"}}</a>
+      {{/if}}
+      {{/if}}
+
+      {{#if isContributors}}
+      {{#if isAdmin}}
+      <a href="" class="button button-small" data-ion-popover="addMenuScopePopover"><i class="icon fa fa-plus"></i></a>
+      {{#if isCordova}}
+      <button class="button button-small scanner-event">{{> ionIcon icon="ios-barcode"}} {{__ "QR Scanner"}}</button>
+      {{/if}}
+      {{/if}}
+      {{/if}}
+      <a href="{{pathFor 'directory' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-connectdevelop"></i></a>
+    </div>
+    {{#if isInviting 'contributors' currentUser._id}}
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+      {{#with InvitingUser 'contributors' currentUser._id}}
+    <div class="item item-text-wrap animated out">
+      <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+        {{#if isAdmin}}
+        {{__ "invited you to become an administrator"}}
+        {{else}}
+        {{__ "invited you"}}
+        {{/if}}
+      </p>
+    </div>
+    {{/with}}
+    <div class="button-bar bar-clear">
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+    </div>
+    </div>
+    {{/transition}}
+    {{/if}}
+</template>
+
+<template name="boutonNewsprojects">
+    <div class="button-bar bar-positive">
+      {{#if isContributors}}
+      <button class="button button-small photo-link-new">{{> ionIcon icon="camera"}}</button>
+      <a href="{{pathFor 'newsAdd' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="compose"}}</a>
+      {{/if}}
+    </div>
+    {{> scopeFileUploadNews}}
+</template>
+
+<template name="boutonCardpoi">
+  <div class="button-bar bar-positive">
+    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+  </div>
+</template>
+
+<template name="boutonNewspoi">
+
+</template>
+
+<template name="boutonCardclassified">
+  <div class="button-bar bar-positive">
+    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+  </div>
+</template>
+
+<template name="boutonNewsclassified">
+
+</template>
+
+<template name="boutonCardcitoyens">
+    <div class="button-bar bar-positive">
+      {{#if isMe}}
+      <a href="" class="button button-small" data-ion-popover="addMenuScopePopover"><i class="icon fa fa-plus"></i></a>
+      <a href="{{pathFor 'directory' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-connectdevelop"></i></a>
+      {{else}}
+
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="button-small followperson-link" classOn="button-small unfollowperson-link" iconOff="fa fa-rss" iconOn="fa fa-rss" titleOn=(__ "Unfollow this person") titleOff=(__ "Follow this person")}}
+
+      {{#if isVisibleFields 'directory'}}
+      <a href="{{pathFor 'directory' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-connectdevelop"></i></a>
+      {{/if}}
+      {{/if}}
+    </div>
+</template>
+
+<template name="boutonNewscitoyens">
+    <div class="button-bar bar-positive">
+      {{#if isMe}}
+      <button class="button button-small photo-link-new">{{> ionIcon icon="camera"}}</button>
+      <a href="{{pathFor 'newsAdd' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="compose"}}</a>
+      {{/if}}
+    </div>
+    {{> scopeFileUploadNews}}
+</template>
+
+<template name="listCardevents">
+{{> boutonCardevents}}
+{{> listCard}}
+{{#if isAttendees}}
+{{#if isAdmin}}
+<ul id="floating-button">
+  <li class="event-bg"><a href="" class="" data-ion-popover="addMenuScopePopover" style="color:white;">
+    <i class="icon menu-icon ion-plus"></i></a>
+  </li>
+</ul>
+{{/if}}
+{{/if}}
+</template>
+
+<template name="listCardorganizations">
+{{> boutonCardorganizations}}
+{{> listCard}}
+{{#if isMembers}}
+{{#if isAdmin}}
+<ul id="floating-button">
+  <li class="organization-bg"><a href="" class="" data-ion-popover="addMenuScopePopover" style="color:white;">
+    <i class="icon menu-icon ion-plus"></i></a>
+  </li>
+</ul>
+{{/if}}
+{{/if}}
+</template>
+
+<template name="listCardprojects">
+{{> boutonCardprojects}}
+{{> listCard}}
+{{#if isContributors}}
+{{#if isAdmin}}
+<ul id="floating-button">
+  <li class="project-bg"><a href="" class="" data-ion-popover="addMenuScopePopover" style="color:white;">
+    <i class="icon menu-icon ion-plus"></i></a>
+  </li>
+</ul>
+{{/if}}
+{{/if}}
+</template>
+
+<template name="listCardcitoyens">
+{{> boutonCardcitoyens}}
+{{> listCard}}
+{{#if isMe}}
+<ul id="floating-button">
+  <li class="person-bg"><a href="" class="" data-ion-popover="addMenuScopePopover" style="color:white;">
+    <i class="icon menu-icon ion-plus"></i></a>
+  </li>
+</ul>
+{{/if}}
+</template>
+
+<template name="listCardpoi">
+{{> boutonCardpoi}}
+{{> listCard}}
+</template>
+
+<template name="listCardclassified">
+{{> boutonCardclassified}}
+{{> listCard}}
+</template>
+
+
+<template name="addMenuScopePopover">
+  {{#ionPopover}}
+    <div class="content">
+      <div class="list">
+        <div class="item item-divider homestead">
+          <i class="icon fa fa-plus-circle"></i> {{__ "Add"}}
+        </div>
+        {{#if equals 'citoyens' scopeVar}}
+        <a href="{{pathFor 'organizationsAdd' _id=scopeId scope=scopeVar}}" class="item organization popover-backdrop"><i class="icon fa fa-users"></i> {{__ "a organization"}}</a>
+        <a href="{{pathFor 'projectsAdd' _id=scopeId scope=scopeVar}}" class="item project popover-backdrop"><i class="icon fa fa-lightbulb-o"></i> {{__ "a project"}}</a>
+        <a href="{{pathFor 'eventsAdd' _id=scopeId scope=scopeVar}}" class="item event popover-backdrop"><i class="icon fa fa-calendar"></i> {{__ "a event"}}</a>
+        <a href="{{pathFor 'poiAdd' _id=scopeId scope=scopeVar}}" class="item poi popover-backdrop"><i class="icon fa fa-map-marker"></i> {{__ "a point of interest"}}</a>
+        <a href="{{pathFor 'classifiedAdd' _id=scopeId scope=scopeVar}}" class="item classified popover-backdrop"><i class="icon fa fa-bullhorn"></i> {{__ "a classified"}}</a>
+        {{else if equals 'organizations' scopeVar}}
+        <a href="{{pathFor 'projectsAdd' _id=scopeId scope=scopeVar}}" class="item project popover-backdrop"><i class="icon fa fa-lightbulb-o"></i> {{__ "a project"}}</a>
+        <a href="{{pathFor 'eventsAdd' _id=scopeId scope=scopeVar}}" class="item event popover-backdrop"><i class="icon fa fa-calendar"></i> {{__ "a event"}}</a>
+        <a href="{{pathFor 'poiAdd' _id=scopeId scope=scopeVar}}" class="item poi popover-backdrop"><i class="icon fa fa-map-marker"></i> {{__ "a point of interest"}}</a>
+        <a href="{{pathFor 'classifiedAdd' _id=scopeId scope=scopeVar}}" class="item classified popover-backdrop"><i class="icon fa fa-bullhorn"></i> {{__ "a classified"}}</a>
+        <a href="{{pathFor 'roomsAdd' _id=scopeId scope=scopeVar}}" class="item room popover-backdrop"><i class="icon fa fa-university"></i> {{__ "a cooperative space"}}</a>
+        {{else if equals 'projects' scopeVar}}
+        <a href="{{pathFor 'eventsAdd' _id=scopeId scope=scopeVar}}" class="item event popover-backdrop"><i class="icon fa fa-calendar"></i> {{__ "a event"}}</a>
+        <a href="{{pathFor 'poiAdd' _id=scopeId scope=scopeVar}}" class="item poi popover-backdrop"><i class="icon fa fa-map-marker"></i> {{__ "a point of interest"}}</a>
+        <a href="{{pathFor 'roomsAdd' _id=scopeId scope=scopeVar}}" class="item room popover-backdrop"><i class="icon fa fa-university"></i> {{__ "a cooperative space"}}</a>
+        {{else if equals 'events' scopeVar}}
+        <a href="{{pathFor 'eventsAdd' _id=scopeId scope=scopeVar}}" class="item event popover-backdrop"><i class="icon fa fa-calendar"></i> {{__ "a event"}}</a>
+        <a href="{{pathFor 'poiAdd' _id=scopeId scope=scopeVar}}" class="item poi popover-backdrop"><i class="icon fa fa-map-marker"></i> {{__ "a point of interest"}}</a>
+        {{else if equals 'poi' scopeVar}}
+
+        {{else if equals 'classified' scopeVar}}
+
+        {{/if}}
+      </div>
+    </div>
+  {{/ionPopover}}
+</template>
+
+<template name="_inviteattendeesEvent">
+  {{#ionModal customTemplate=true}}
+  <div class="bar bar-header bar-dark">
+    <button data-dismiss="modal" type="button" class="button button-clear">{{__ "Reset"}}</button>
+    <h2 class="title">{{__ "Invite"}}</h2>
+  </div>
+<div class="content has-header overflow-scroll">
+  <div class="list">
+    <div class="item item-divider">
+      {{__ "Send invite"}}
+    </div>
+    {{#if error}}
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    {{/if}}
+    {{#autoForm id="inviteAttendeesEvent" schema=SchemasInviteAttendeesEventRest type="method" meteormethod="inviteattendeesEvent" template="ionic" class="padding"}}
+    {{> afQuickField name='invitedUserName'}}
+    {{> afQuickField name='invitedUserEmail'}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "send"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+</div>
+  {{/ionModal}}
+</template>
+
+<template name="scopeFileUploadNews">
+ <form>
+  <input type="file" id="file-upload-new" accept="image/*" style="display: block; opacity: 0;width:0px;height:0px;">
+ </form>
+</template>
