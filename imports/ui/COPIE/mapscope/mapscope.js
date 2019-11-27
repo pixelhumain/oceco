@@ -304,7 +304,7 @@ const selectIcon = (event) => {
   } else if (event.startDate <= inputDate && event.endDate > inputDate) {
     return '#33cd5f';
   }
-  return '#324553';
+  return '#01829c';
 }; */
 
 Template.mapCanvas.onCreated(function () {

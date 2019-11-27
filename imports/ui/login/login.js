@@ -59,7 +59,7 @@ Template.login.helpers({
   },
 });
 
-Template.login.onCreated(function () {
+Template.signin.onCreated(function () {
   pageSession.set('error', false);
   pageSession.set('loading-signup', false);
   pageSession.set('cities', null);

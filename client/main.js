@@ -10,13 +10,16 @@ import '../imports/ui/login/login.js';
 
 import '../imports/ui/images/images.js';
 
+import '../imports/ui/dashboard/dashboard.js';
+
+import '../imports/ui/about/about.js';
+
 //import '../imports/ui/video/video.js';
 
 //import '../imports/ui/sensors/sensors.js';
 
-import '../imports/ui/dashboard/dashboard.js';
 
-import '../imports/ui/mapscope/mapscope.js';
+/*import '../imports/ui/mapscope/mapscope.js';
 
 import '../imports/ui/news/detail/comments/comments.js';
 import '../imports/ui/news/detail/detail.js';
@@ -59,7 +62,11 @@ import '../imports/ui/roles/roles.js';
 import '../imports/ui/search/search.js';
 import '../imports/ui/changeposition/changeposition.js';
 import '../imports/ui/contacts/contacts.js';
+
+import '../imports/ui/invitations/invitations.js';*/
+
 import '../imports/ui/notifications/notifications.js';
 import '../imports/ui/qrcode/qrcode.js';
 import '../imports/ui/settings/settings.js';
-import '../imports/ui/invitations/invitations.js';
+
+
