@@ -412,6 +412,10 @@ Meteor.startup(function () {
     return Meteor.settings.public.module;
   });
 
+  Template.registerHelper('meteorSettingsPublic', function () {
+    return Meteor.settings.public;
+  });
+
   Template.registerHelper('urlImageDesktop', function () {
     // console.log(Meteor.settings.public.remoteUrl);
     return Meteor.isDesktop ? Meteor.settings.public.remoteUrl : '';

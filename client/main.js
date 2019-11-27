@@ -19,13 +19,13 @@ import '../imports/ui/about/about.js';
 //import '../imports/ui/sensors/sensors.js';
 
 
-/*import '../imports/ui/mapscope/mapscope.js';
+import '../imports/ui/mapscope/mapscope.js';
 
 import '../imports/ui/news/detail/comments/comments.js';
 import '../imports/ui/news/detail/detail.js';
 import '../imports/ui/news/news.js';
 
-import '../imports/ui/organizations/members/members.js';
+/*import '../imports/ui/organizations/members/members.js';
 import '../imports/ui/organizations/list.js';
 
 import '../imports/ui/citoyens/follows/follows.js';

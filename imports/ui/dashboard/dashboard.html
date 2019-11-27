@@ -28,11 +28,70 @@
 
   {{#ionView}}
   {{#ionContent class="scroll-bg"}}
-  <div class="row">
-    <div class="col">
+
+  {{#if dataReady}}
+  <div class="list">
+    <div class="item homestead">
+      {{scope.name}}
+    </div>
+    <div class="item item-text-wrap">
+      {{scope.shortDescription}}
+    </div>
+<div class="item item-image">
+  {{#if scope.profilThumbImageUrl}}
+  <img src="{{urlImageCommunecter}}{{scope.profilImageUrl}}">
+  {{/if}}
+
+</div>
+    <div class="item item-divider">
+      {{__ "projects"}}
+    </div>
+    {{#each item in scope.listProjectsCreator}}
+    <div class="item homestead">
+      {{item.name}}
+    </div>
+    {{else}}
+
+    {{/each}}
+
+    <div class="item item-divider">
+      {{__ "contributors"}}
+    </div>
+    {{#each item in scope.listContributors}}
+    <div class="item homestead">
+      {{item.name}}
+    </div>
+    {{else}}
+    
+    {{/each}}
+
+    <div class="item item-divider">
+      {{__ "followers"}}
+    </div>
+    {{#each item in scope.listFollowers}}
+    <div class="item homestead">
+      {{item.name}}
+    </div>
+    {{else}}
+    
+    {{/each}}
+
+      <div class="item item-divider">
+        {{__ "events"}}
+      </div>
+      {{#each item in scope.listEventsCreator}}
+      <div class="item homestead">
+        {{item.name}}
+      </div>
+      {{else}}
+      
+      {{/each}}
 
     </div>
-  </div>
+  {{else}}
+
+  {{/if}}
+ 
 
   {{/ionContent}}
   {{/ionView}}
