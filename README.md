@@ -47,7 +47,11 @@ MONGO_URL='xxx' MONGO_OPLOG_URL='xxx UNIVERSE_I18N_LOCALES=all meteor run --sett
 "endpoint":"",
 "urlimage":"",
 "remoteUrl": "",
-"assetPath": ""
+"assetPath": "",
+"scope":{
+      "_id":"",
+      "type":""
+}
 }
 }
 ```
