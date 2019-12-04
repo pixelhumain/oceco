@@ -23,9 +23,8 @@ Router.map(function() {
     layoutTemplate: 'layout',
     onBeforeAction() {
       if (Meteor.userId()) {
-        console.log('logout');
-      Meteor.logout();
-      this.redirect('detailListHome');
+        Meteor.logout();
+        this.redirect('detailListHome');
       }
       this.next();
       // Router.go('/');
@@ -41,7 +40,7 @@ Router.map(function() {
   this.route('detailListHome', {
     before () {
       if (Meteor.userId()) {
-        this.redirect('actusList', { scope: 'citoyens', _id: Meteor.userId() });
+        // this.redirect('actusList', { scope: 'citoyens', _id: Meteor.userId() });
       }
       this.next();
     },
@@ -59,6 +58,12 @@ Router.map(function() {
   this.route('dashboardRedirect', {
     path: '/dashboard',
     template: 'dashboard',
+    loadingTemplate: 'loading',
+  });
+
+  this.route('about', {
+    path: '/about',
+    template: 'about',
     loadingTemplate: 'loading',
   });
 
@@ -158,12 +163,6 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
-  /* this.route("projectsAdd", {
-    template: "projectsAdd",
-    path: 'projects/add',
-    loadingTemplate: 'loading'
-  }); */
-
   this.route('projectsAdd', {
     template: 'projectsAdd',
     path: '/:scope/projects/:_id/add',
@@ -211,12 +210,6 @@ Router.map(function() {
     loadingTemplate: 'loading',
     path: '/map/:scope/:_id',
   });
-
-  /* this.route("eventsAdd", {
-    template: "eventsAdd",
-    path: 'events/add',
-    loadingTemplate: 'loading'
-  }); */
 
   this.route('eventsAdd', {
     template: 'eventsAdd',

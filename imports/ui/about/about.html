@@ -1,0 +1,65 @@
+<template name="about">
+    {{#contentFor "headerTitle"}}
+    <h1 class="title">{{__ "about"}}</h1>
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonLeft"}}
+    {{>ionNavBackButton}}
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonRight"}}
+
+    {{/contentFor}}
+
+    {{#ionView}}
+    {{#ionContent}}
+
+    <div class="list">
+
+        <div class="item item-borderless item-text-wrap homestead">
+            Depuis 4 ans, l'association Les Rencontres Alternatives porte le projet de la création d'un tiers-lieu associatif, sur
+            le site de l'ancienne usine sucrière de Savanna à Saint-Paul, qui accueillera différents porteurs de projets partageant
+            les valeurs promues par La Raffinerie.
+        </div>
+        
+        <div class="item item-borderless item-text-wrap homestead">
+            La friche éco-culturelle "La Raffinerie" offrira donc les informations, les formations, les activités et les outils pour
+            permettre aux utilisateurs d'être acteurs de l'amélioration de leur quotidien tout en répondant, au mieux, aux urgences
+            environnementales et soco-économiques actuelles.
+        </div>
+        <div class="item item-image">
+            <img src="/a-propos.jpg">
+        </div>
+
+
+        <div class="item item-text-wrap homestead">
+            Economie circulaire, économie sociale et solidaire, développement durable, transition écologique, biodiversité et
+            culture seront au coeur des activités organisées autour de différents espaces qui constitueront La Raffinerie :
+            
+            </div>
+
+            <ul class="card list">
+                <li class="item homestead">Espace recyclerie (vélo, D3E, plastique, bois, papier);</li>
+                <li class="item homestead">Fablab en éco conception;</li>
+                <li class="item homestead">Espace jardin (potager, serre aquaponique, rucher pédagogique, jardins paratagés, poulailler...);</li>
+                <li class="item homestead">Espace café / restaurant / micro-brasserie;</li>
+                <li class="item homestead">Epicerie en vrac et Amap;</li>
+                <li class="item homestead">Espace de coworking dédié aux porteurs de projets innovants et en lien avec l'Economie Sociale et Solidaire et
+                    l'Economie Circulaire;</li>
+                <li class="item homestead">Activités culturelles (cinéma en plein air, plateau dédié aux arts vivants, salle d'exposition, mur d'expression
+                    artistique...)</li>
+                <li class="item homestead">Activités sportives (mur d'escalade, terrain de boules, rampe de skate)</li>
+                <li class="item homestead">Espace boutique et librairie spécialisée.</li>
+            </ul>
+
+
+            <div class="item item-text-wrap homestead">
+           Sur 1700m2 de bâtiment et 6600m2 de terrain, la Raffinerie hébergera des activités qui fonctionneront en interaction les
+            unes avec les autres.
+
+        </div>
+    </div>
+
+    {{/ionContent}}
+    {{/ionView}}
+</template>

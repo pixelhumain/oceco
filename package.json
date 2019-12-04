@@ -1,7 +1,7 @@
 {
-  "name": "communecter",
-  "version": "0.0.34",
-  "description": "communecter",
+  "name": "laraffinerie",
+  "version": "0.0.1",
+  "description": "la raffinerie",
   "private": true,
   "scripts": {
     "start": "meteor run",

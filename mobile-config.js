@@ -1,11 +1,11 @@
 App.info({
-  id: 'org.communecter.mobile',
-  name: 'communecter',
-  description: 'communecter mobile',
+  id: 're.laraffinerie.mobile',
+  name: 'laraffinerie',
+  description: 'laraffinerie mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.34',
-  buildNumber: '134',
+  version: '0.0.1',
+  buildNumber: '100',
 });
 
 App.setPreference('android-targetSdkVersion', '26');
@@ -16,12 +16,12 @@ App.configurePlugin('phonegap-plugin-push', {
 });
 
 App.configurePlugin('cordova-plugin-customurlscheme', {
-  URL_SCHEME: 'communecter',
+  URL_SCHEME: 'laraffinerie',
 });
 
 App.configurePlugin('net.yoik.cordova.plugins.intentfilter', {
   URL_SCHEME: 'https',
-  HOST_NAME: 'www.communecter.org',
+  HOST_NAME: 'mobile.laraffinerie.re',
 });
 
 App.icons({
@@ -79,7 +79,7 @@ App.addResourceFile('google-services.json', 'app/google-services.json', 'android
 App.addResourceFile('GoogleService-Info.plist', 'GoogleService-Info.plist', 'ios');
 
 App.setPreference('StatusBarOverlaysWebView', 'false');
-App.setPreference('StatusBarBackgroundColor', '#324553');
+App.setPreference('StatusBarBackgroundColor', '#01829c');
 App.setPreference('Orientation', 'portrait');
 
 App.appendToConfig(`<platform name="ios">
@@ -109,7 +109,7 @@ App.accessRule('http://qa.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://qa.communecter.org/*', { type: 'navigation' });
 App.accessRule('http://www.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://www.communecter.org/*', { type: 'navigation' });
-App.accessRule('https://co-mobile.communecter.org/*');
+App.accessRule('https://mobile.laraffinerie.re/*');
 // App.accessRule('http://localhost*');
 App.accessRule('*.openstreetmap.org/*', { type: 'navigation' });
 App.accessRule('*.tile.thunderforest.com/*', { type: 'navigation' });
