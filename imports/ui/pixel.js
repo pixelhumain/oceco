@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import i18n from 'meteor/universe:i18n';
 import { IonPopup } from 'meteor/meteoric:ionic';
+import { Mongo } from 'meteor/mongo';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 import { ActivityStream } from '../api/activitystream.js';
 
@@ -10,9 +12,21 @@ import './settings/settings.js';
 import './notifications/notifications.js';
 
 import './pixel.html';
+import { Projects } from '../api/projects';
+import { Organizations } from '../api/organizations';
+
+window.Events = Events;
+window.Organizations = Organizations;
+window.Projects = Projects;
+window.Citoyens = Citoyens;
 
 Template.layout.onCreated(function() {
   Meteor.subscribe('notificationsUser');
+  this.subscribe('projects.inscription', '5de9df6d064fca0d008b4568')
+  this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
+  this.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
+  this.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
+  this.subscribe('directoryListProjects', 'organizations', '5de9df6d064fca0d008b4568');
 });
 
 Template.layout.events({
@@ -167,9 +181,45 @@ Template.layout.helpers({
     }
     return undefined;
   },
-  notifications () {
+  notifications() {
     return ActivityStream.api.isUnread();
   },
+  RaffineriePoles(){
+    let id = new Mongo.ObjectID("5de9df6d064fca0d008b4568")
+    let raffinerieCursor = Organizations.findOne({_id: id })
+    let raffinerieArray = raffinerieCursor.listProjectsCreator().fetch()
+    let raffinerieTags = raffinerieArray.map(tag => tag.tags[0] )
+    return raffinerieTags
+   },
+   //A revoir pour les actions par projets
+   nbAction(poles){
+    let polesProjectsArray = Projects.find({tags: poles}).fetch()
+    // Penser à vérifier que le projet appartient bien à la Raffinerie
+    let polesProjectsObjectId = polesProjectsArray.map(project => project._id)
+    let polesProjectsId = []
+    polesProjectsObjectId.forEach(ObjectId => { polesProjectsId.push(ObjectId.valueOf())});
+    console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
+
+   },
+  nbActionPoles(poles){
+    let id = new Mongo.ObjectID("5de9df6d064fca0d008b4568")
+    let raffinerieCursor = Organizations.findOne({_id: id })
+    let raffProjectsArray  = raffinerieCursor.listProjectsCreator().fetch()
+    let raffProjectsObjectId = raffProjectsArray.map(project => project._id)
+    let raffProjectsId = []
+    raffProjectsObjectId.forEach(ObjectId => { raffProjectsId.push(ObjectId.valueOf())});
+    let nbActions = Actions.find({parentId: {$in: raffProjectsId}, tags: poles}).count()
+    return nbActions
+
+    // console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
+
+  }
+
+  //  Comptage(poleId){
+  //   // let id = poleId.valueOf()
+  //   let poleCursor = Projects.findOne({_id: poleId})
+  //   return poleCursor
+  //  }
 });
 
 Template.forceUpdateAvailable.events({

@@ -2634,3 +2634,15 @@ Meteor.publish('thing', function(limit, boardId) {
   }
   return Thing.find(query, { sort: { modified: -1 }, limit });
 });
+
+// Meteor.publish('projects.inscription', function(projectId){  
+//   let id = new Mongo.ObjectID(projectId)
+//   let listPoles = Projects.find({_id: id}).fetch()
+//   return   Projects.find({_id: {$in: listPoles }})
+// })
+
+
+Meteor.publish('projects.actions', function(){  
+  //Penser à ne renvoyer que les actions lié à la raffinerie
+  return   Actions.find()
+})
