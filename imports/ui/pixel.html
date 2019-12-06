@@ -23,9 +23,9 @@
   </div>
   <div class="content has-header">
     <div class="list">
-      <div class="item item-light">
+      <!-- <div class="item item-light">
         <img src="/logoL.jpg" alt="" class="full-image">
-      </div>
+      </div> -->
       {{#if currentUser}}
       <div class="item item-stable {{#if currentUser.profile.pixelhumain.profilThumbImageUrl}}item-avatar{{/if}}">
         {{#if currentUser.profile.pixelhumain.profilThumbImageUrl}}
@@ -35,9 +35,20 @@
         <p>{{currentUser.profile.pixelhumain.email}}</p>
       </div>
 
-      <a class="item item-stable item-icon-right" href="{{pathFor 'dashboard'}}" data-ion-menu-close>{{__ "Dashboard"}} {{> ionIcon icon="ios-speedometer"}}</a>
+      <!-- <a class="item item-stable item-icon-right" href="{{pathFor 'dashboard'}}" data-ion-menu-close>{{__ "Dashboard"}} {{> ionIcon icon="ios-speedometer"}}</a> -->
+      {{#each poles in RaffineriePoles}}
+      <!-- <a class="item item-stable item-icon-right" href="{{pathFor 'about'}}" data-ion-menu-close>{{poles.name}}</a> -->
+      {{#ionItem buttonRight=true  class="my-class" id="my-id"}}
+      <!-- {{> imgDoc profilThumbImageUrl=poles.profilThumbImageUrl}} -->
+        <h2> {{poles}} </h2>    
 
-      <a class="item item-stable item-icon-right" href="{{pathFor 'about'}}" data-ion-menu-close>{{__ "About"}}</a>
+        <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="button button-positive">
+            <p style="color: white;"> <b>{{nbActionPoles poles}}</b>                           {{> ionIcon icon="clock"}}</p>
+          
+          </a> 
+      {{/ionItem}}
+      {{/each}}
+      
 
       <a class="item item-stable item-icon-right" href="{{pathFor 'notifications'}}" data-ion-menu-close>{{__ "Notifications"}} <span class="badge badge-positive">{{#if notificationsCount}}{{notificationsCount}}{{else}}0{{/if}}</span></a>
 

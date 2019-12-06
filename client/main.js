@@ -14,6 +14,9 @@ import '../imports/ui/dashboard/dashboard.js';
 
 import '../imports/ui/about/about.js';
 
+import '../imports/ui/polesView/polesView.js'
+
+
 //import '../imports/ui/video/video.js';
 
 //import '../imports/ui/sensors/sensors.js';

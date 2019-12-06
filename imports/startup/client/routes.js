@@ -511,6 +511,12 @@ Router.map(function() {
     path: '/search',
     loadingTemplate: 'loading',
   });
+  this.route('polesView',{
+    template:'polesView',
+    path: '/polesView/:pole',
+    loadingTemplate: 'loading',
+
+  })
 });
 
 
