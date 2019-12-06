@@ -2646,3 +2646,14 @@ Meteor.publish('projects.actions', function(){
   //Penser à ne renvoyer que les actions lié à la raffinerie
   return   Actions.find()
 })
+
+Meteor.publish('poles.actions', function(raffId,poleName){  
+  let id = new Mongo.ObjectID(raffId)
+  let raffinerieCursor = Organizations.findOne({_id: id })
+  let raffProjectsArray  = raffinerieCursor.listProjectsCreator().fetch()
+  let raffProjectsObjectId = raffProjectsArray.map(project => project._id)
+  let raffProjectsId = []
+  raffProjectsObjectId.forEach(ObjectId => { raffProjectsId.push(ObjectId.valueOf())});
+  let poleActions = Actions.find({parentId: {$in: raffProjectsId}, tags: poleName})
+  return poleActions
+})
