@@ -189,18 +189,19 @@ Template.layout.helpers({
     let raffinerieCursor = Organizations.findOne({_id: id })
     let raffinerieArray = raffinerieCursor.listProjectsCreator().fetch()
     let raffinerieTags = raffinerieArray.map(tag => tag.tags[0] )
-    return raffinerieTags
+    let uniqueRaffinerieTags = Array.from(new Set(raffinerieTags))
+    return uniqueRaffinerieTags
    },
    //A revoir pour les actions par projets
-   nbAction(poles){
-    let polesProjectsArray = Projects.find({tags: poles}).fetch()
-    // Penser à vérifier que le projet appartient bien à la Raffinerie
-    let polesProjectsObjectId = polesProjectsArray.map(project => project._id)
-    let polesProjectsId = []
-    polesProjectsObjectId.forEach(ObjectId => { polesProjectsId.push(ObjectId.valueOf())});
-    console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
+  //  nbAction(poles){
+  //   let polesProjectsArray = Projects.find({tags: poles}).fetch()
+  //   // Penser à vérifier que le projet appartient bien à la Raffinerie
+  //   let polesProjectsObjectId = polesProjectsArray.map(project => project._id)
+  //   let polesProjectsId = []
+  //   polesProjectsObjectId.forEach(ObjectId => { polesProjectsId.push(ObjectId.valueOf())});
+  //   console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
 
-   },
+  //  },
   nbActionPoles(poles){
     let id = new Mongo.ObjectID("5de9df6d064fca0d008b4568")
     let raffinerieCursor = Organizations.findOne({_id: id })
