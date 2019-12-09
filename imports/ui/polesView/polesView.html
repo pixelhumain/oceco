@@ -25,9 +25,31 @@
 
   {{#ionView}}
     {{#ionContent class="scroll-bg"}}
+      {{#each project in poleProjects}}
+       
+          <div class="list list-inset">
 
-      <a class="item item-stable item-icon-right" href="{{pathFor 'dashboard'}}" data-ion-menu-close>{{__ "Dashboard"}} {{> ionIcon icon="ios-speedometer"}}</a>
+            <div class="item item-body ">
+              {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+              {{project.name}} <p class="badge badge-dark" >{{projectNbActions project._id}} {{> ionIcon icon="clock"}} </p>
+              
+            {{#each action in projectAction project._id}}
+            <div class="item item-input item">
+              <p class="text-center"> <b>{{> ionIcon icon="arrow-right-b"}} {{action.name}}</b> <br>
+              <i class="ion-android-calendar"></i>{{projectDay action.startDate}} <i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}} Heures
+              </p>
+            </div>
+            <button class="col button button-small button-bar center"><i class="ion-play"></i> S'inscrire</button>
 
+            {{/each}}
+          </div>
+
+          </div>
+        
+      {{/each}}
+  
+
+      
     {{/ionContent}}
   {{/ionView}}
 </template>

@@ -18,6 +18,7 @@ import { nameToCollection } from '../../api/helpers.js';
 
 import './polesView.html'
 import { Helpers } from 'meteor/raix:handlebar-helpers';
+import { moment } from 'meteor/momentjs:moment';
 
 window.Events = Events;
 window.Organizations = Organizations;
@@ -36,8 +37,33 @@ Template.polesView.onCreated(function() {
 Template.polesView.helpers({
     poleName() {
         let poleName = Router.current().params.pole
-        console.log(poleName)
         return  poleName
+    },
+    poleProjects(){
+        let poleName = Router.current().params.pole
+        let poleProjectsCursor = Projects.find({tags: poleName,'parent.5de9df6d064fca0d008b4568.type': 'organizations' })
+        return poleProjectsCursor
+    },
+    projectNbActions(projectObjectId){
+        let projectId = projectObjectId.valueOf()
+        console.log(projectId)
+        return Actions.find({parentId: projectId }).count()
+    },
+    projectAction(projectObjectId){
+        let projectId = projectObjectId.valueOf()
+        return Actions.find({parentId: projectId })
+    },
+    projectDay(date){
+        return moment(date).format(' dddd Do MMM ')
+    },
+    projectDuration(start,end){
+        let startDate = moment(start) 
+        let endDate = moment(end)
+        return Math.round(endDate.diff(startDate, 'minutes')/60)
+
+
     }
 })
+
+
   
