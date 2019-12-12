@@ -24,7 +24,13 @@
   
     {{#ionView}}
       {{#ionContent class="scroll-bg"}}
-  
+            <button id="sortByDate">Trie par date</button>
+
+
+        {{#each action in projectAction}}  
+            {{action.name}} <br>
+        
+        {{/each}}
       {{/ionContent}}
     {{/ionView}}
 </template>
