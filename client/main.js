@@ -16,6 +16,8 @@ import '../imports/ui/about/about.js';
 
 import '../imports/ui/polesView/polesView.js'
 
+import '../imports/ui/home/home.js'
+
 
 //import '../imports/ui/video/video.js';
 

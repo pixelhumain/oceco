@@ -4,6 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
+import { moment } from 'meteor/momentjs:moment';
 
 // collection
 import { Events } from '../../api/events.js';
@@ -17,8 +18,6 @@ import { Citoyens } from '../../api/citoyens.js';
 import { nameToCollection } from '../../api/helpers.js';
 
 import './polesView.html'
-import { Helpers } from 'meteor/raix:handlebar-helpers';
-import { moment } from 'meteor/momentjs:moment';
 
 window.Events = Events;
 window.Organizations = Organizations;

@@ -14,6 +14,7 @@ import './notifications/notifications.js';
 import './pixel.html';
 import { Projects } from '../api/projects';
 import { Organizations } from '../api/organizations';
+import '../ui/components/scope/item'
 
 window.Events = Events;
 window.Organizations = Organizations;

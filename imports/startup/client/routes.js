@@ -517,6 +517,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
 
   })
+  this.route('home',{
+    template:'home',
+    path: '/home',
+    loadingTemplate: 'loading',
+
+  })
 });
 
 
