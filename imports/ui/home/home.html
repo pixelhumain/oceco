@@ -1,4 +1,30 @@
 <template name='home'>
-
-    
+    {{#contentFor "headerTitle"}}
+    <h1 class="title">Accueil</h1>
+    {{/contentFor}}
+    {{#contentFor "headerButtonLeft"}}
+        <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+        {{#if isAndroid}}
+            {{> ionIcon icon='android-more-vertical'}}
+         {{else}}
+             {{> ionIcon icon='navicon'}}
+        {{/if}}
+      </button>
+    {{/contentFor}}
+    {{#contentFor "headerButtonRight"}}
+  
+        <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+        {{#transition in="bounceInDown" out="bounceOutUp"}}
+        {{#if notificationsCount}}
+            <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+        {{/if}}
+        {{/transition}}
+        </button>
+    {{/contentFor}}
+  
+    {{#ionView}}
+      {{#ionContent class="scroll-bg"}}
+  
+      {{/ionContent}}
+    {{/ionView}}
 </template>

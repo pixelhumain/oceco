@@ -23,7 +23,6 @@ window.Citoyens = Citoyens;
 
 Template.layout.onCreated(function() {
   Meteor.subscribe('notificationsUser');
-  this.subscribe('projects.inscription', '5de9df6d064fca0d008b4568')
   this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
   this.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
   this.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');

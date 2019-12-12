@@ -2642,9 +2642,17 @@ Meteor.publish('thing', function(limit, boardId) {
 // })
 
 
-Meteor.publish('projects.actions', function(){  
+Meteor.publish('projects.actions', function(raffId){
+  let id = new Mongo.ObjectID(raffId)
+  let raffinerieCursor = Organizations.findOne({_id: id })
+  let raffProjectsArray  = raffinerieCursor.listProjectsCreator().fetch()
+  let raffProjectsObjectId = raffProjectsArray.map(project => project._id)
+  let raffProjectsId = []
+  raffProjectsObjectId.forEach(ObjectId => { raffProjectsId.push(ObjectId.valueOf())});
+  let poleActions = Actions.find({parentId: {$in: raffProjectsId}})
+  return poleActions  
   //Penser à ne renvoyer que les actions lié à la raffinerie
-  return   Actions.find()
+  // return   Actions.find()
 })
 
 Meteor.publish('poles.actions', function(raffId,poleName){  

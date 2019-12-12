@@ -27,7 +27,6 @@ window.Citoyens = Citoyens;
 Template.polesView.onCreated(function() {
     let poleName = Router.current().params.pole
     Meteor.subscribe('notificationsUser');
-    this.subscribe('projects.inscription', '5de9df6d064fca0d008b4568')
     this.subscribe('poles.actions','5de9df6d064fca0d008b4568', poleName )
 // this.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
 // this.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
