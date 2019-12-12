@@ -4,6 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
+import { moment } from 'meteor/momentjs:moment';
 
 // collection
 import { Events } from '../../api/events.js';
@@ -17,8 +18,6 @@ import { Citoyens } from '../../api/citoyens.js';
 import { nameToCollection } from '../../api/helpers.js';
 
 import './polesView.html'
-import { Helpers } from 'meteor/raix:handlebar-helpers';
-import { moment } from 'meteor/momentjs:moment';
 
 window.Events = Events;
 window.Organizations = Organizations;
@@ -28,7 +27,6 @@ window.Citoyens = Citoyens;
 Template.polesView.onCreated(function() {
     let poleName = Router.current().params.pole
     Meteor.subscribe('notificationsUser');
-    this.subscribe('projects.inscription', '5de9df6d064fca0d008b4568')
     this.subscribe('poles.actions','5de9df6d064fca0d008b4568', poleName )
 // this.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
 // this.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
