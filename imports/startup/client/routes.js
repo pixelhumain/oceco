@@ -523,6 +523,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
 
   })
+  this.route('actionView',{
+    template:'actionView',
+    path: '/actionView/:id',
+    loadingTemplate: 'loading',
+
+  })
 });
 
 

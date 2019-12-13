@@ -37,7 +37,8 @@
         </select>
 
         {{#each action in projectAction}}  
-          {{action.name}} 
+         <a href="{{pathFor 'actionView' id=action._id._str }} " class="button button-dark">   {{action.name}}</a> <br> 
+        
         {{/each}}
       {{/ionContent}}
     {{/ionView}}

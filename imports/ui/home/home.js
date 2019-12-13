@@ -55,12 +55,26 @@ Template.home.helpers({
                       arrayActionToDisplay.push(action._id)
                    }
                 })
-                console.log(arrayActionToDisplay)
-
                 return Actions.find({_id: {$in: arrayActionToDisplay}}, {sort: {startDate: -1}})
             }
             return Actions.find({}, {sort: {startDate: -1}})
         }
+        if (Template.instance().sortByDay.get()) {
+            let dayWanted = Template.instance().sortByDay.get()
+            let actionCursor =  Actions.find()
+            let arrayActionToDisplay = []
+            actionCursor.forEach((action) => {
+               let day = moment(action.startDate).format('dddd')
+               if (day === dayWanted) {
+                  arrayActionToDisplay.push(action._id)
+               }
+            })
+            return Actions.find({_id: {$in: arrayActionToDisplay}})
+        }
         return Actions.find()
     },
+    returnId(id){
+        console.log(id.valueOf())
+         return id.valueOf()
+    }
 })
