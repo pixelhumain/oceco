@@ -2665,3 +2665,5 @@ Meteor.publish('poles.actions', function(raffId,poleName){
   let poleActions = Actions.find({parentId: {$in: raffProjectsId}, tags: poleName})
   return poleActions
 })
+
+// Meteor.publish('poles.list', function())
