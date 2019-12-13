@@ -8,7 +8,7 @@ App.info({
   buildNumber: '100',
 });
 
-App.setPreference('android-targetSdkVersion', '26');
+App.setPreference('android-targetSdkVersion', '28');
 App.setPreference('android-minSdkVersion', '21');
 
 App.configurePlugin('phonegap-plugin-push', {

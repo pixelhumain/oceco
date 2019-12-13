@@ -24,7 +24,22 @@
   
     {{#ionView}}
       {{#ionContent class="scroll-bg"}}
-  
+        <button id="sortByDate">Trie par date</button>
+        <select name="sortByDay" id="sortByDay">
+            <option value="">Choose</option>
+            <option value="lundi">lundi</option>
+            <option value="mardi">mardi</option>
+            <option value="mercredi">mercredi</option>
+            <option value="jeudi">jeudi</option>
+            <option value="vendredi">vendredi</option>
+            <option value="samedi">samedi</option>
+            <option value="dimanche">dimanche</option>
+        </select>
+
+        {{#each action in projectAction}}  
+         <a href="{{pathFor 'actionView' id=action._id._str }} " class="button button-dark">   {{action.name}}</a> <br> 
+        
+        {{/each}}
       {{/ionContent}}
     {{/ionView}}
 </template>

@@ -18,7 +18,7 @@ import '../imports/ui/polesView/polesView.js'
 
 import '../imports/ui/home/home.js'
 
-
+import '../imports/ui/actionView/actionView.js'
 //import '../imports/ui/video/video.js';
 
 //import '../imports/ui/sensors/sensors.js';
