@@ -54,6 +54,7 @@ Template.polesView.helpers({
     projectDay(date){
         return moment(date).format(' dddd Do MMM ')
     },
+   
     projectDuration(start,end){
         let startDate = moment(start) 
         let endDate = moment(end)
