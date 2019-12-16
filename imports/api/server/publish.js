@@ -30,7 +30,7 @@ import { Proposals } from '../proposals.js';
 import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
 import { Highlight } from '../highlight.js';
 
-import { nameToCollection, arrayParent, arrayLinkParent, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
+import { arrayLinkProper, nameToCollection, arrayParent, arrayLinkParent, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -2665,5 +2665,11 @@ Meteor.publish('poles.actions', function(raffId,poleName){
   let poleActions = Actions.find({parentId: {$in: raffProjectsId}, tags: poleName})
   return poleActions
 })
+
+// Meteor.publish('raffinerie.members',function(raffId){
+//   let id = new Mongo.ObjectID(raffId)
+//   let orgaCursor = Organizations.findOne({_id: id }).links.members
+//   console.log(arrayLinkProper(orgaCursor))
+// })
 
 // Meteor.publish('poles.list', function())

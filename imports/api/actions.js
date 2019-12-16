@@ -32,6 +32,14 @@ export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'desc
   tracker: Tracker,
 });
 SchemasActionsRest.extend({
+  max: {
+    type: Number,
+    optional: true
+  },
+  min: {
+    type: Number,
+    optional: true
+  },
   idParentRoom: {
     type: String,
   },

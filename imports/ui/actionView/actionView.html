@@ -1,5 +1,45 @@
 <template name="actionView">
         {{#contentFor "headerTitle"}}
-        <h1 class="title">{{thisAction.name}}</h1>
+                <h1 class="title">{{thisAction.name}}</h1>
         {{/contentFor}}
+        {{#contentFor "headerButtonLeft"}}
+        <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+        {{#if isAndroid}}
+          {{> ionIcon icon='android-more-vertical'}}
+        {{else}}
+          {{> ionIcon icon='navicon'}}
+        {{/if}}
+        </button>
+        {{/contentFor}}
+        {{#contentFor "headerButtonRight"}}
+                <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+                        {{#transition in="bounceInDown" out="bounceOutUp"}}
+                                {{#if notificationsCount}}
+                                        <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+                                {{/if}}
+                        {{/transition}}
+                </button>
+         {{/contentFor}}
+         {{#ionView}}
+         {{#ionContent class="scroll-bg"}}
+         <div class="list list-inset">
+                <ul>
+                        <li> <b>Description </b>{{thisAction.description}}</li>
+                        <li><b>Date: </b>{{projectDay thisAction.startDate}} à {{projectHour thisAction.startDate}} </li>
+                        <li><b>Durée:</b> {{projectDuration thisAction.startDate thisAction.endDate}} H</li>
+                        <li> <b>Participant min:</b> {{thisAction.min}}</li>
+                        <li> <b>Participant max:</b> {{thisAction.max}} </li>
+                        <li> <b> Total inscrit:</b> {{actionParticipantsNbr}} </li>
+                        <li> <b>Participants:</b>
+                                {{#each user in actionParticipantsId}}
+                                [{{user.name}}]<!--  Fairre lien vers profil -->
+                                {{/each}}  
+                        </li>
+                </ul> 
+                <button class="button">Partiper</button>
+         </div> 
+         {{/ionContent}}
+         {{/ionView}}
+
+                
 </template>

@@ -19,12 +19,13 @@ window.Citoyens = Citoyens;
 window.Actions = Actions;
 
 import './actionView.html'
+import { arrayLinkProper } from '../../api/helpers';
 
 
 Template.actionView.onCreated(function(){
     Meteor.subscribe('notificationsUser');
     this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
-
+    this.subscribe('raffinerie.members','5de9df6d064fca0d008b4568' )
 })
 
 Template.actionView.helpers({
@@ -32,5 +33,30 @@ Template.actionView.helpers({
         const actionId = Router.current().params.id
         const actionObjectId = new Mongo.ObjectID(actionId)
         return Actions.findOne({_id: actionObjectId})
+    },
+    actionParticipantsNbr(){
+        const actionId = Router.current().params.id
+        const actionObjectId = new Mongo.ObjectID(actionId)
+        let actionCursor = Actions.findOne({_id: actionObjectId})    
+        return arrayLinkProper(actionCursor.links.contributors).length
+    },
+    actionParticipantsId(){
+        const actionId = Router.current().params.id
+        const actionObjectId = new Mongo.ObjectID(actionId)
+        let actionContributorCursor = Actions.findOne({_id: actionObjectId}).links.contributors    
+        let arrayActionParticipantsId = arrayLinkProper(actionContributorCursor)
+        console.log(arrayActionParticipantsId)
+        return Citoyens.find({_id:{$in: arrayActionParticipantsId}})
+    },
+    projectDay(date){
+        return moment(date).format(' dddd Do MMM ')
+    },
+     projectHour(date){
+        return moment(date).format(' hh')+' H'+moment(date).format(' mm')
+    },
+    projectDuration(start,end){
+        let startDate = moment(start) 
+        let endDate = moment(end)
+        return Math.round(endDate.diff(startDate, 'minutes')/60)
     }
 })
