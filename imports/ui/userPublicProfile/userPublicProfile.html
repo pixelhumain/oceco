@@ -1,0 +1,28 @@
+<template name="userPublicProfile">
+    {{#contentFor "headerTitle"}}
+    <h1 class="title">Profile Raffineur</h1>
+    {{/contentFor}}
+
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+  
+    {{#ionView}}
+        {{#ionContent}}
+            {{#ionList class="my-class"}}
+               
+                 {{> imgDoc profilThumbImageUrl=userLooked.profilThumbImageUrl resized="340x340"}}
+                 {{#ionItem class="text-center"}}
+                    <h2>{{userLooked.name}}</h2>
+                    <p>Nombre d'heure gagné: </p>
+
+                 {{/ionItem}}
+            {{/ionList}}
+        {{/ionContent}}
+    {{/ionView}}
+
+</template>

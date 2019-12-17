@@ -1,0 +1,55 @@
+<template name="newAction">
+   
+
+    {{#contentFor "headerButtonLeft"}}
+        <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+        {{#if isAndroid}}
+          {{> ionIcon icon='android-more-vertical'}}
+        {{else}}
+            {{> ionIcon icon='navicon'}}
+        {{/if}}
+        </button>
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonRight"}}
+        <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+            {{#transition in="bounceInDown" out="bounceOutUp"}}
+                {{#if notificationsCount}}
+                    <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+                {{/if}}
+            {{/transition}}
+        </button>
+    {{/contentFor}}
+
+    {{#ionView}}
+        {{#ionContent}}
+                <div class="item item-divider">
+                {{__ "creating a new action"}}
+                </div>
+                {{#if error}}
+                    <div class="card">
+                    <div class="item item-text-wrap animated shake homestead text-center">
+                        {{__ error}}
+                    </div>
+                    </div>
+                {{/if}}
+                {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" singleMethodArgument=true template="ionic" class="padding"}}
+                    {{> actionsFields}}
+                    <div class="item">
+                        <div class="button-bar">
+                            <button type="submit" class="button button-dark">{{__ "create"}}</button>
+                        </div>
+                    </div>
+                {{/autoForm}}
+        {{/ionContent}}
+    {{/ionView}}
+</template>
+
+<template name="actionsFields">
+    {{> afQuickField name='name'}}
+    {{> afQuickField name='description' rows=8}}
+    {{> afQuickField name='startDate' type="datetime-local"}}
+    {{> afQuickField name='endDate' type="datetime-local"}}
+    {{> afQuickField name='tags'}}
+    {{> afQuickField name='urls'}}
+ </template>

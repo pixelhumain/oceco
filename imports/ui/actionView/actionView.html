@@ -30,16 +30,22 @@
                         <li> <b>Participant min:</b> {{thisAction.min}}</li>
                         <li> <b>Participant max:</b> {{thisAction.max}} </li>
                         <li> <b> Total inscrit:</b> {{actionParticipantsNbr}} </li>
-                        <li> <b>Participants:</b>
-                                {{#each user in actionParticipantsId}}
-                                [{{user.name}}]<!--  Fairre lien vers profil -->
-                                {{/each}}  
-                        </li>
+                        {{> participantList users=actionParticipantsId}}
                 </ul> 
-                <button class="button">Partiper</button>
-         </div> 
+                {{>buttonSubscribeAction id=thisAction._id._str }}
+        </div> 
          {{/ionContent}}
-         {{/ionView}}
+         {{/ionView}}               
+</template>
 
-                
+<template name="participantList">
+        <li> <b>Participants:</b>
+                {{#each user in users}}
+                {{> userPublicProfileLink user=user}}
+                {{/each}}  
+        </li>
+</template>
+
+<template name="userPublicProfileLink">
+        <p> <b><a href="{{pathFor 'userPublicProfile' id=user._id._str }} " >{{user.name}}</a> </b> <br></p>
 </template>

@@ -529,6 +529,20 @@ Router.map(function() {
     loadingTemplate: 'loading',
 
   })
+  this.route('userPublicProfile',{
+    template:'userPublicProfile',
+    path: '/userPublicProfile/:id',
+    loadingTemplate: 'loading',
+
+  })
+
+  this.route('newAction',{
+    template:'newAction',
+    path: '/newAction',
+    loadingTemplate: 'loading',
+
+  })
+  
 });
 
 

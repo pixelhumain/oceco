@@ -37,9 +37,53 @@
         </select>
 
         {{#each action in projectAction}}  
-         <a href="{{pathFor 'actionView' id=action._id._str }} " class="button button-dark">   {{action.name}}</a> <br> 
+       
+          {{> itemAction action=action}}
         
         {{/each}}
       {{/ionContent}}
     {{/ionView}}
+</template>
+
+<template name="itemAction">
+  <div class="list list-inset">
+    <div class="item item-body ">
+      {{> ItemInputAction action=action}}
+    </div>
+  </div>
+  </template>
+<template name="ItemInputAction" >
+  <div class="item  item-input">
+    <div class="col-50">
+      {{> linkForAction action=action}}
+    </div>  
+    <div>
+      {{> actionParticipantNeeded action=action}} <br>
+      {{> actionDuration action=action }}<br>
+      {{> actionDate action=action}}
+    </div>
+  </div>
+  {{>buttonSubscribeAction id=action._id._str }}
+</template >
+<template name="actionDuration">
+  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}} Heures</span>
+</template>
+
+<template name="actionParticipantNeeded">
+  <span> {{> ionIcon icon="man"}}:{{actionParticipantsNbr action._id}} <b> / </b>
+  <i class="icon ion-ios-arrow-down"></i>{{action.min}}<i class="icon ion-ios-arrow-up"></i>{{action.max}} </span>
+</template>
+
+<template name="actionDate">
+  <span><i class="ion-android-calendar"></i>{{projectDay action.startDate}}</span> 
+</template>
+
+<template name="linkForAction">
+  <b><a href="{{pathFor 'actionView' id=action._id._str }} " >{{action.name}}</a> </b> <br>
+</template>
+
+<template name="buttonSubscribeAction">
+  <div class="button-bar bar-positive">
+    <button class="button button-dark button-small assign-action-js"><i class="fa fa-handshake-o"></i> Participer</button>
+  </div>
 </template>

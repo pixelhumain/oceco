@@ -34,13 +34,7 @@
               {{project.name}} <p class="badge badge-dark" >{{projectNbActions project._id}} {{> ionIcon icon="clock"}} </p>
               
             {{#each action in projectAction project._id}}
-            <div class="item item-input item">
-              <p class="text-center"> <b>{{> ionIcon icon="arrow-right-b"}} {{action.name}}</b> <br>
-              <i class="ion-android-calendar"></i>{{projectDay action.startDate}} <i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}} Heures
-              </p>
-            </div>
-            <button class="col button button-small button-bar center"><i class="ion-play"></i> Participer</button>
-
+              {{> ItemInputAction action=action}}
             {{/each}}
           </div>
 

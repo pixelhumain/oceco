@@ -2273,7 +2273,7 @@ export const updateAction = new ValidatedMethod({
     if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
-
+    
     const docRetour = modifier.$set;
 
     if (modifier.$set.startDate) {
@@ -2282,7 +2282,13 @@ export const updateAction = new ValidatedMethod({
     if (modifier.$set.endDate) {
       docRetour.endDate = moment(modifier.$set.endDate).format();
     }
-    // docRetour.status = 'todo';
+    if (modifier.$set.min) {
+      docRetour.min =   modifier.$set.min
+    }
+    if (modifier.$set.max) {
+      docRetour.max =   modifier.$set.max
+    }
+    docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
     docRetour.collection = 'actions';
@@ -2459,7 +2465,7 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     const docRetour = {};
     docRetour.id = id;
-    const retour = apiCommunecter.postPixel('co2/actionRoom', 'assignme', docRetour);
+    const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
     return retour;
   },
 });
