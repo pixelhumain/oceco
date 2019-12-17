@@ -11,6 +11,7 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 import { moment } from 'meteor/momentjs:moment';
+import { arrayLinkProper } from '../../api/helpers';
 
 window.Events = Events;
 window.Organizations = Organizations;
@@ -19,7 +20,6 @@ window.Citoyens = Citoyens;
 window.Actions = Actions;
 
 import './actionView.html'
-import { arrayLinkProper } from '../../api/helpers';
 
 
 Template.actionView.onCreated(function(){

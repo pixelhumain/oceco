@@ -16,7 +16,7 @@ import { Citoyens } from '../../api/citoyens.js';
 // import { singleSubs } from '../../api/client/subsmanager.js';
 
 import { nameToCollection } from '../../api/helpers.js';
-
+import '../home/home.js'
 import './polesView.html'
 
 window.Events = Events;
@@ -44,7 +44,6 @@ Template.polesView.helpers({
     },
     projectNbActions(projectObjectId){
         let projectId = projectObjectId.valueOf()
-        console.log(projectId)
         return Actions.find({parentId: projectId }).count()
     },
     projectAction(projectObjectId){

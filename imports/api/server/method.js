@@ -2459,7 +2459,7 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     const docRetour = {};
     docRetour.id = id;
-    const retour = apiCommunecter.postPixel('co2/actionRoom', 'assignme', docRetour);
+    const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
     return retour;
   },
 });

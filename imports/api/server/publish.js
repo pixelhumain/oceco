@@ -2666,6 +2666,11 @@ Meteor.publish('poles.actions', function(raffId,poleName){
   return poleActions
 })
 
+Meteor.publish('member.profile', function(memberId){
+  let id = new Mongo.ObjectID(memberId)
+  return Citoyens.findOne({_id: id })
+})
+
 // Meteor.publish('raffinerie.members',function(raffId){
 //   let id = new Mongo.ObjectID(raffId)
 //   let orgaCursor = Organizations.findOne({_id: id }).links.members
