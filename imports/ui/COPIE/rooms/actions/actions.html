@@ -175,6 +175,7 @@
   {{>ionNavBackButton}}
   {{/contentFor}}
 
+
   {{#contentFor "headerButtonRight"}}
 
   {{/contentFor}}
@@ -196,7 +197,7 @@
       </div>
     </div>
     {{/if}}
-    {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" singleMethodArgument=true template="ionic" class="padding"}}
+    {{#autoForm id="addAction" schema= type="method" meteormethod="insertAction" singleMethodArgument=true template="ionic" class="padding"}}
     {{> actionsFields}}
     <div class="item">
       <div class="button-bar">
@@ -260,4 +261,7 @@
 {{> afQuickField name='endDate' type="datetime-local"}}
 {{> afQuickField name='tags'}}
 {{> afQuickField name='urls'}}
+{{> afQuickField name='max'}}
+{{> afQuickField name='min'}}
+
 </template>
