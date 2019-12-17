@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Push } from 'meteor/raix:push';
 import { Random } from 'meteor/random';
 
 import { geoId } from '../../api/client/reactive.js';
@@ -31,14 +30,6 @@ Template.settings.events({
       position.setGeolocate(false);
     }
   },
-  'click #pushenabled'() {
-    const state = Push.enabled();
-    if (state === false) {
-      Push.enabled(true);
-    } else {
-      Push.enabled(false);
-    }
-  },
 });
 
 Template.settings.helpers({
@@ -50,9 +41,5 @@ Template.settings.helpers({
   },
   geolocate() {
     return position.getGeolocate();
-  },
-  pushEnabled() {
-    const state = Push.enabled();
-    return state !== false;
   },
 });

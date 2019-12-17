@@ -12,21 +12,32 @@ import './settings/settings.js';
 import './notifications/notifications.js';
 
 import './pixel.html';
-import { Projects } from '../api/projects';
-import { Organizations } from '../api/organizations';
-import '../ui/components/scope/item'
+import { Projects } from '../api/projects.js';
+import { Organizations } from '../api/organizations.js';
+import { Actions } from '../api/actions.js';
+import { Citoyens } from '../api/citoyens.js';
+import '../ui/components/scope/item.js';
 
-window.Events = Events;
+
+// window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
 window.Citoyens = Citoyens;
+window.Actions = Actions;
 
 Template.layout.onCreated(function() {
   Meteor.subscribe('notificationsUser');
-  this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
-  this.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
-  this.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
-  this.subscribe('directoryListProjects', 'organizations', '5de9df6d064fca0d008b4568');
+
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    const handle = Meteor.subscribe('projects.actions', '5de9df6d064fca0d008b4568');
+    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
+    const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
+    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', '5de9df6d064fca0d008b4568');
+    if (handle.ready() && handleScopeDetail.ready() && handleDirectoryList.ready() && handleDirectoryListProjects.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
 });
 
 Template.layout.events({
@@ -184,15 +195,19 @@ Template.layout.helpers({
   notifications() {
     return ActivityStream.api.isUnread();
   },
-  RaffineriePoles(){
-    let id = new Mongo.ObjectID("5de9df6d064fca0d008b4568")
-    let raffinerieCursor = Organizations.findOne({_id: id })
-    let raffinerieArray = raffinerieCursor.listProjectsCreator().fetch()
-    let raffinerieTags = raffinerieArray.map(tag => tag.tags[0] )
-    let uniqueRaffinerieTags = Array.from(new Set(raffinerieTags))
-    return uniqueRaffinerieTags
-   },
-   //A revoir pour les actions par projets
+  RaffineriePoles() {
+    if (Template.instance().ready.get()) {
+      const id = new Mongo.ObjectID('5de9df6d064fca0d008b4568');
+      const raffinerieCursor = Organizations.findOne({ _id: id });
+      if (raffinerieCursor) {
+        const raffinerieArray = raffinerieCursor.listProjectsCreator();
+        const raffinerieTags = raffinerieArray.map(tag => tag.tags[0]);
+        const uniqueRaffinerieTags = Array.from(new Set(raffinerieTags));
+        return uniqueRaffinerieTags;
+      }
+    }
+  },
+  // A revoir pour les actions par projets
   //  nbAction(poles){
   //   let polesProjectsArray = Projects.find({tags: poles}).fetch()
   //   // Penser à vérifier que le projet appartient bien à la Raffinerie
@@ -202,19 +217,22 @@ Template.layout.helpers({
   //   console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
 
   //  },
-  nbActionPoles(poles){
-    let id = new Mongo.ObjectID("5de9df6d064fca0d008b4568")
-    let raffinerieCursor = Organizations.findOne({_id: id })
-    let raffProjectsArray  = raffinerieCursor.listProjectsCreator().fetch()
-    let raffProjectsObjectId = raffProjectsArray.map(project => project._id)
-    let raffProjectsId = []
-    raffProjectsObjectId.forEach(ObjectId => { raffProjectsId.push(ObjectId.valueOf())});
-    let nbActions = Actions.find({parentId: {$in: raffProjectsId}, tags: poles}).count()
-    return nbActions
-
+  nbActionPoles(poles) {
+    if (Template.instance().ready.get()) {
+      const id = new Mongo.ObjectID('5de9df6d064fca0d008b4568');
+      const raffinerieCursor = Organizations.findOne({ _id: id });
+      if (raffinerieCursor) {
+        const raffProjectsArray = raffinerieCursor.listProjectsCreator();
+        if (raffProjectsArray.count() > 0) {
+          const raffProjectsObjectId = raffProjectsArray.map(project => project._id._str);
+          const nbActions = Actions.find({ parentId: { $in: raffProjectsObjectId }, tags: poles }).count();
+          return nbActions;
+        }
+      }
+      return 0;
     // console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
-
-  }
+    }
+  },
 
   //  Comptage(poleId){
   //   // let id = poleId.valueOf()

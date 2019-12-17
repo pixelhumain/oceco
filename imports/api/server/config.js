@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Push } from 'meteor/raix:push';
+// import { Push } from 'meteor/raix:push';
 import { Mongo } from 'meteor/mongo';
 import { Accounts } from 'meteor/accounts-base';
 
@@ -28,7 +28,7 @@ Accounts.onLogin(function(user) {
   }
 });
 
-let serviceAccountJson = JSON.parse(Assets.getText('communecter-5647e-firebase-adminsdk-0baqw-4ea1186253.json'));
+/* let serviceAccountJson = JSON.parse(Assets.getText('communecter-5647e-firebase-adminsdk-0baqw-4ea1186253.json'));
 
 
 if (Meteor.isDevelopment) {
@@ -67,30 +67,10 @@ if (Meteor.isDevelopment) {
   });
 }
 
-/* Push.Configure({
-  apn: {
-    certData: Assets.getText('apn-production/PushCommunEventCert.pem'),
-    keyData: Assets.getText('apn-production/PushCommunEventKey.pem'),
-    production: true,
-    //gateway: 'gateway.push.apple.com',
-  },
-  gcm: {
-    apiKey: '',
-    projectNumber:
-  }
-   //'production': true,
-   //'sound': true,
-   //'badge': true,
-   //'alert': true,
-   //'vibrate': true,
-  // 'sendInterval': 15000, Configurable interval between sending
-  // 'sendBatchSize': 1, Configurable number of notifications to send per batch
-  // 'keepNotifications': false,
-//
-}); */
 
 Push.allow({
   send(userId, notification) {
     return true;
   },
 });
+*/

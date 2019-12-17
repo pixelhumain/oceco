@@ -24,8 +24,13 @@
   
     {{#ionView}}
       {{#ionContent class="scroll-bg"}}
-        <button id="sortByDate">Trie par date</button>
-        <select name="sortByDay" id="sortByDay">
+        
+
+        <div class="item item-light item-input item-select">
+
+            <button id="sortByDate" class="button">Trie par date</button>
+
+          <select name="sortByDay" id="sortByDay">
             <option value="">Choose</option>
             <option value="lundi">lundi</option>
             <option value="mardi">mardi</option>
@@ -34,7 +39,9 @@
             <option value="vendredi">vendredi</option>
             <option value="samedi">samedi</option>
             <option value="dimanche">dimanche</option>
-        </select>
+          </select>
+
+        </div>
 
         {{#each action in projectAction}}  
        
@@ -47,13 +54,13 @@
 
 <template name="itemAction">
   <div class="list list-inset">
-    <div class="item item-body ">
+    <div class="item item-avatar">
       {{> ItemInputAction action=action}}
     </div>
   </div>
   </template>
 <template name="ItemInputAction" >
-  <div class="item  item-input">
+  <div class="item item-input">
     <div class="col-50">
       {{> linkForAction action=action}}
     </div>  

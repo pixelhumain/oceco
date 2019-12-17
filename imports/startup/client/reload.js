@@ -18,14 +18,15 @@ Meteor.startup(() => {
     });
   }
 
-  Template.registerHelper('urlApp', () => {
+  /* Template.registerHelper('urlApp', () => {
     if (Meteor.isCordova && !Meteor.isDesktop) {
       if (device.platform === 'Android') {
         return 'https://play.google.com/store/apps/details?id=org.communecter.mobile';
       }
       // return 'https://itunes.apple.com/FR/app/xxxxxxxx?mt=8';
     }
-  });
+  }); */
+
 });
 
 if (Meteor.isDevelopment) {

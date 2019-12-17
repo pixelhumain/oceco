@@ -81,19 +81,20 @@
 
   {{#ionNavView}}
   {{> yield}}
+  {{#ionTabs class="tabs-dark tabs-icon-top"}}
+  {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
+  {{> ionTab title="Echanger" path="news" iconOff="ios-cart" iconOn="ios-cart"}}
+  {{> ionTab title="Ajout" path="newAction" iconOff="ios-color-wand" iconOn="ios-color-wand"}}
+  {{> ionTab title="Agenda" path="todos" iconOff="ios-calendar" iconOn="ios-calendar"}}
+  {{> ionTab title="Profile" path="news" iconOff="ios-contact" iconOn="ios-contact"}}
+  
+  {{/ionTabs}}
   {{/ionNavView}}
 
   {{/ionSideMenuContent}}
 
   {{/ionSideMenuContainer}}
-  {{#ionTabs class="tabs-dark tabs-icon-top"}}
-    {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
-    {{> ionTab title="Echanger" path="news" iconOff="ios-cart" iconOn="ios-cart"}}
-    {{> ionTab title="Ajout" path="newAction" iconOff="ios-color-wand" iconOn="ios-color-wand"}}
-    {{> ionTab title="Agenda" path="todos" iconOff="ios-calendar" iconOn="ios-calendar"}}
-    {{> ionTab title="Profile" path="news" iconOff="ios-contact" iconOn="ios-contact"}}
-
-  {{/ionTabs}}
+  
 
 
   {{> meteorStatus lang=langChoix overlay=true}}
