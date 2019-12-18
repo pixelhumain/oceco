@@ -16,7 +16,7 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 
-
+ 
 window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;

@@ -10,6 +10,7 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
+import { Rooms } from '../../api/rooms';
 import { moment } from 'meteor/momentjs:moment';
 
 window.Events = Events;
@@ -17,15 +18,16 @@ window.Organizations = Organizations;
 window.Projects = Projects;
 window.Citoyens = Citoyens;
 window.Actions = Actions;
+window.Rooms = Rooms;
 
 import './newAction.html'
 import { pageSession } from '../../api/client/reactive';
 
 Template.newAction.onCreated(function(){
     Meteor.subscribe('notificationsUser');
-    this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
+    this.subscribe('poles.actions','5de9df6d064fca0d008b4568' )
     this.autorun(function() {
-        pageSession.set('scopeId', "5deb282c064fca0c008b4569");
+        // pageSession.set('scopeId', "5deb282c064fca0c008b4569");
         pageSession.set('scope', "projects");
         pageSession.set('roomId',"5dedd02f064fca0d008b4568");
       });
@@ -47,14 +49,14 @@ AutoForm.addHooks(['addAction', 'editAction'], {
     before: {
       method(doc) {
         doc.parentType = pageSession.get('scope');
-        doc.parentId = pageSession.get('scopeId');
+        // doc.parentId = pageSession.get('scopeId');
         doc.idParentRoom = pageSession.get('roomId');
   
         return doc;
       },
       'method-update'(modifier) {
         modifier.$set.parentType = pageSession.get('scope');
-        modifier.$set.parentId = pageSession.get('scopeId');
+        // modifier.$set.parentId = pageSession.get('scopeId');
         modifier.$set.idParentRoom = pageSession.get('roomId');
   
         return modifier;
@@ -68,3 +70,24 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       }
     },
   });
+  // Template.newAction.events({
+  //   'change #projectChoice'(event, instance){
+  //     const selectedProjectId = event.currentTarget.value;
+  //     pageSession.set('scopeId', selectedProjectId)
+  //     const objectId =  new Mongo.ObjectID(selectedProjectId)
+  //     Console.log(Projects.findOne({_id: objectId}).)
+  //   }
+  // })
+
+  Template.newAction.helpers({
+  Projects() {
+    return Projects.find()
+      }
+  })
+  Template.actionsFields.helpers({
+    options() {
+      let projectList = []
+      Projects.find().forEach(function(project){projectList.push({label: project.name, value: project._id._str})})
+      return projectList    
+    }
+});

@@ -2235,9 +2235,7 @@ export const insertAction = new ValidatedMethod({
       docRetour.endDate = moment(doc.endDate).format('YYYY-MM-DDTHH:mm:ssZ');
     }
 
-    /*
-    email:thomas.craipeau@gmail.com
-    */
+
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';

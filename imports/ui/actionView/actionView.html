@@ -3,13 +3,8 @@
                 <h1 class="title">{{thisAction.name}}</h1>
         {{/contentFor}}
         {{#contentFor "headerButtonLeft"}}
-        <button class="button button-clear pull-left" data-ion-menu-toggle="left">
-        {{#if isAndroid}}
-          {{> ionIcon icon='android-more-vertical'}}
-        {{else}}
-          {{> ionIcon icon='navicon'}}
-        {{/if}}
-        </button>
+                 {{>ionNavBackButton}}
+
         {{/contentFor}}
         {{#contentFor "headerButtonRight"}}
                 <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
