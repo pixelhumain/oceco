@@ -224,8 +224,9 @@ Template.layout.helpers({
       if (raffinerieCursor) {
         const raffProjectsArray = raffinerieCursor.listProjectsCreator();
         if (raffProjectsArray.count() > 0) {
-          const raffProjectsObjectId = raffProjectsArray.map(project => project._id._str);
-          const nbActions = Actions.find({ parentId: { $in: raffProjectsObjectId }, tags: poles }).count();
+          const raffProjectsObjectId = raffProjectsArray.map(project => project._id);
+          const projectInPole = Projects.find({_id: {$in: raffProjectsObjectId},tags: poles}).map(project => project._id._str)
+          const nbActions = Actions.find({ parentId: { $in: projectInPole }}).count();
           return nbActions;
         }
       }
