@@ -32,6 +32,10 @@ export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'desc
   tracker: Tracker,
 });
 SchemasActionsRest.extend({
+  credits: {
+    type: Number,
+    optional:true
+  },
   max: {
     type: Number,
     optional: true
