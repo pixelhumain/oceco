@@ -542,6 +542,13 @@ Router.map(function() {
     loadingTemplate: 'loading',
 
   })
+
+
+  this.route('wallet',{
+    template:'wallet',
+    path: '/wallet',
+    loadingTemplate: 'loading'
+  })
   
 });
 

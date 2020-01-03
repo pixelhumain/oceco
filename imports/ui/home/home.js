@@ -46,7 +46,6 @@ Template.home.events({
 Template.buttonSubscribeAction.events({
   'click .assign-action-js' (event, instance) {
     event.preventDefault();
-    actionID = event.currentTarget.id;
     Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });

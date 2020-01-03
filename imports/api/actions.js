@@ -32,6 +32,31 @@ export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'desc
   tracker: Tracker,
 });
 SchemasActionsRest.extend({
+  participants: {
+    type: Array,
+    optional:true
+  },
+  'participants.$': {
+    type: String,
+  },
+  finishedBy: {
+    type: Array,
+    optional:true
+  },
+  'finishedBy.$': {
+    type: String,
+  },
+  validated: {
+    type: Array,
+    optional:true
+  },
+  'validated.$': {
+    type: String,
+  },
+  credits: {
+    type: Number,
+    optional:true
+  },
   max: {
     type: Number,
     optional: true
