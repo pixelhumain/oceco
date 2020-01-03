@@ -26,6 +26,8 @@ import '../imports/ui/newAction/newAction.js'
 
 import '../imports/ui/wallet/wallet.js'
 
+import '../imports/ui/admin/admin.js'
+
 //import '../imports/ui/video/video.js';
 
 //import '../imports/ui/sensors/sensors.js';
