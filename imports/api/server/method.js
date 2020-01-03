@@ -409,6 +409,31 @@ URL._encodeParams = function(params, prefix) {
 };
 
 Meteor.methods({
+ 'finishAction'({id}){
+   new SimpleSchema({
+    id: {type: String},
+  }).validate({id })
+ 
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (!Actions.findOne({ _id: new Mongo.ObjectID(id) })) {
+      throw new Meteor.Error('not-authorized');
+    }
+    // admin ou creator
+    // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
+    //   throw new Meteor.Error('not-authorized');
+    // }
+    
+    // const docRetour = {}
+    // docRetour.id = _id;
+    // docRetour.participants = this.userId
+    // docRetour.participants.states = "finish"
+    const actionId = new Mongo.ObjectID(id)
+    const parent = Meteor.userId()
+    Actions.update({_id: actionId }, {$set: {finishedBy: {[parent]: 'toModerate' } }})
+    return true;
+  },
   userup (geo) {
     check(geo, { longitude: Number, latitude: Number });
     if (!this.userId) {
@@ -1946,6 +1971,7 @@ indexMax:20 */
     // consider giving the user the benefit of the doubt and return true
     return true;
   },
+
 });
 
 export const userLocale = new ValidatedMethod({
@@ -2272,7 +2298,12 @@ export const updateAction = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
     
+    
     const docRetour = modifier.$set;
+
+    if(modifier.$set.participants){
+      console.log("yolo")
+    }
 
     if (modifier.$set.startDate) {
       docRetour.startDate = moment(modifier.$set.startDate).format();
@@ -2286,6 +2317,9 @@ export const updateAction = new ValidatedMethod({
     if (modifier.$set.max) {
       docRetour.max =   modifier.$set.max
     }
+    if (modifier.$set.participants) {
+      docRetour.participants =   modifier.$set.participants
+    }
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
@@ -2295,6 +2329,13 @@ export const updateAction = new ValidatedMethod({
     return retour;
   },
 });
+
+  // finishUserAction(id){
+  //   check(id, String);
+    
+  // 
+
+
 
 export const insertAmendement = new ValidatedMethod({
   name: 'insertAmendement',
@@ -2539,6 +2580,7 @@ export const actionsType = new ValidatedMethod({
   },
 });
 
+
 export const questValidateGeo = new ValidatedMethod({
   name: 'questValidateGeo',
   validate: new SimpleSchema({
@@ -2616,3 +2658,4 @@ export const questValidateGeo = new ValidatedMethod({
     return retour;
   },
 });
+

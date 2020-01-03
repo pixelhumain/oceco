@@ -2680,11 +2680,32 @@ Meteor.publish('poles.actions', function(raffId, poleName) {
 });
 
 Meteor.publish('member.profile', function(memberId){
+  check(memberId, String);
+   if (!this.userId) {
+    return null;
+  }
   let id = new Mongo.ObjectID(memberId)
   return Citoyens.findOne({_id: id })
 })
 
-// Meteor.publish('raffinerie.members',function(raffId){
+Meteor.publish('user.actions', function(raffId) {
+  check(raffId, String);
+   if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  const UserId = "links.contributors."+this.userId
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    return  Actions.find({ parentId: { $in: raffProjectsArray },  [UserId] : { '$exists' : 1 } } )
+  }
+  return Actions.find({ [id] : { '$exists' : 1 } } )
+});
+
+
+
+// Meteor.publish('raffinerie.members',function(raffhId){
 //   let id = new Mongo.ObjectID(raffId)
 //   let orgaCursor = Organizations.findOne({_id: id }).links.members
 //   console.log(arrayLinkProper(orgaCursor))
