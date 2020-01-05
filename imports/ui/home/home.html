@@ -71,7 +71,7 @@
   {{>buttonSubscribeAction id=action._id._str }}
 </template >
 <template name="actionDuration">
-  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}} Heures</span>
+  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b> / </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
 </template>
 
 <template name="actionParticipantNeeded">
