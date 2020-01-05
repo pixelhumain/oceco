@@ -583,7 +583,7 @@ const ensurePixelIsAdmin = function() {
 }
 
 Router.onBeforeAction(ensurePixelSignin, { except: ['login', 'signin'] });
-Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard'] });
+Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction'] });
 
 
 Router.routes.login.options.progress = false;
