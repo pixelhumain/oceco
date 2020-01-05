@@ -83,6 +83,9 @@ Template.actionDate.helpers({
 });
 Template.home.helpers({
   projectAction() {
+
+    const userAddedAction = 'links.contributors.'+Meteor.userId()
+    console.log(userAddedAction)
     if (Template.instance().sortByDate.get()) {
       if (Template.instance().sortByDay.get()) {
         const dayWanted = Template.instance().sortByDay.get();
@@ -94,9 +97,10 @@ Template.home.helpers({
             arrayActionToDisplay.push(action._id);
           }
         });
-        return Actions.find({ _id: { $in: arrayActionToDisplay } }, { sort: { startDate: 1 } });
+        return Actions.find({$and: [{ _id: { $in: arrayActionToDisplay } }, { sort: { startDate: 1 } },
+        {[userAddedAction]: {exists: false}}]});
       }
-      return Actions.find({}, { sort: { startDate: -1 } });
+      return Actions.find({$and: [{}, { sort: { startDate: -1 } },{[userAddedAction]: {$exists: false}}]});
     }
     if (Template.instance().sortByDay.get()) {
       const dayWanted = Template.instance().sortByDay.get();
@@ -108,9 +112,10 @@ Template.home.helpers({
           arrayActionToDisplay.push(action._id);
         }
       });
-      return Actions.find({ _id: { $in: arrayActionToDisplay } });
+      return Actions.find({$and: [{ _id: { $in: arrayActionToDisplay } },
+        {[userAddedAction]: {$exists: false}}]});
     }
-    return Actions.find();
+    return Actions.find({$and: [{},{[userAddedAction]: {$exists: false}}]});
   },
   returnId(id) {
     return id.valueOf();
