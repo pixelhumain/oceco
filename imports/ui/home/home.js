@@ -5,7 +5,7 @@ import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
-
+ 
 import './home.html';
 import { arrayLinkProper } from '../../api/helpers';
 
@@ -45,7 +45,7 @@ Template.home.events({
 
 Template.buttonSubscribeAction.events({
   'click .assign-action-js' (event, instance) {
-    event.preventDefault();
+    event.preventDefault();       
     Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });

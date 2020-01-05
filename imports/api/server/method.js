@@ -418,7 +418,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
     if (!Actions.findOne({ _id: new Mongo.ObjectID(id) })) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('not-action');
     }
     // admin ou creator
     // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
@@ -430,10 +430,32 @@ Meteor.methods({
     // docRetour.participants = this.userId
     // docRetour.participants.states = "finish"
     const actionId = new Mongo.ObjectID(id)
-    const parent = Meteor.userId()
-    Actions.update({_id: actionId }, {$set: {finishedBy: {[parent]: 'toModerate' } }})
+    const parent = "finishedBy."+Meteor.userId()
+    Actions.update({_id: actionId }, {$set: {[parent]: 'toModerate' } })
     return true;
   },
+
+   'ValidateAction'({actId, usrId}){
+    new SimpleSchema({
+      actId: {type: String}, usrId: {type: String}
+   }).validate({actId, usrId })
+  
+     if (!this.userId) {
+       throw new Meteor.Error('not-authorized');
+     }
+     if (!Actions.findOne({ _id: new Mongo.ObjectID(actId) })) {
+       throw new Meteor.Error('not-action');
+     }
+     const actionId = new Mongo.ObjectID(actId)
+     const userNeed = new Mongo.ObjectID(usrId)
+     const parent = "finishedBy."+ usrId
+     const credit = Actions.findOne({_id: actionId}).credits
+     const userWhallet =  "userWhallet."+actId
+     Actions.update({_id: actionId }, {$set: {[parent]: 'Validate' } })
+     Citoyens.update({_id: userNeed}, {$set:{[userWhallet]: credit}})
+     return true;
+   },
+
   userup (geo) {
     check(geo, { longitude: Number, latitude: Number });
     if (!this.userId) {

@@ -24,8 +24,10 @@
 
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
+       <h1>{{userCredits}} R</h1>
+
         <div class="item item-card">
-            <h2 class="item-title">Mes actions en attente</h2>
+            <h2 class="item-title">En cours</h2>
             <div class="item item-list">
                 {{#each action in actionsInWaiting}}
                 {{> WhalletInputAction action=action}}
@@ -33,9 +35,17 @@
             </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title">Mes action à valider</h2>
+            <h2 class="item-title">En attente de validations</h2>
             <div class="item item-list">
                 {{#each action in actionsToValidate}}
+                {{> WhalletInputInWaitingAction action=action}}
+                {{/each}}
+            </div>
+        </div>
+        <div class="item item-card">
+            <h2 class="item-title">Validés</h2>
+            <div class="item item-list">
+                {{#each action in actionsValidate}}
                 {{> WhalletInputInWaitingAction action=action}}
                 {{/each}}
             </div>
@@ -65,7 +75,7 @@
         </div>
         <div class="item item-text-wrap col-50 ">
             <div class="col text-center">  
-               <p><b> {{action.credits}} R</b> <br> <em> En attente</em> </p>
+               <b> {{action.credits}} R</b>
             </div>
         </div>
     </div>
@@ -75,3 +85,7 @@
         <button class="button button-small finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
     </div>  
 </template >
+
+<template name="myAccount">
+
+</template>

@@ -27,7 +27,6 @@ import './wallet.html'
 Template.wallet.onCreated(function(){
     Meteor.subscribe('notificationsUser');
     Meteor.subscribe('user.actions','5de9df6d064fca0d008b4568')
-    
 })
 Template.buttonActionFinish.onCreated(function(){
   this.autorun(function() {
@@ -64,7 +63,18 @@ Template.wallet.helpers({
     actionsToValidate(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:{ '$exists' : true }}] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'toModerate'}] } )
+    },
+    actionsValidate(){
+      const id = "links.contributors."+Meteor.userId()
+      const finished = "finishedBy."+Meteor.userId()
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}] } )
+    },
+    userCredits(){
+      const finish = 'finishedBy.'+ Meteor.userId()
+      let credits = 0
+      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      return credits
     }
 });
 

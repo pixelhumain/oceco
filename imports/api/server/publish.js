@@ -2703,6 +2703,20 @@ Meteor.publish('user.actions', function(raffId) {
   return Actions.find({ [id] : { '$exists' : 1 } } )
 });
 
+Meteor.publish('action.to.admin', function(raffId) {
+  check(raffId, String);
+   if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    return  Actions.find({ parentId: { $in: raffProjectsArray }} )
+  }
+  return Actions.find({ [id] : { '$exists' : 1 } } )
+});
+
 
 
 // Meteor.publish('raffinerie.members',function(raffhId){
