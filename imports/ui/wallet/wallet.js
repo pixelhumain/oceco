@@ -68,7 +68,7 @@ Template.wallet.helpers({
     actionsValidate(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$gt: "-1"} }] } )
     },
     userCredits(){
       const finish = 'finishedBy.'+ Meteor.userId()
