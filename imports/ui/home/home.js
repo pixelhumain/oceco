@@ -46,14 +46,12 @@ Template.scrollPrez.events({
       Template.instance().scrollPrez.set(true);
     }
     else  {
-      console.log('yo2') 
       Template.instance().scrollPrez.set(false)
     }     
   },
 })
 Template.scrollPrez.helpers({
   scrollP(){
-    console.log('yo1')
     return Template.instance().scrollPrez.get()
   }
 })
