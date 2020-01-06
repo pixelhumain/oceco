@@ -2511,11 +2511,9 @@ export const assignmeActionRooms = new ValidatedMethod({
        return true
      }
      else if (userCredits() > (cost* -1) ) {
-       console.log('jais + de credid que le cout')
       return true
      }
      else {
-      console.log('jais pas assé de crédits') 
       return false }
     }
     if (!this.userId) {
