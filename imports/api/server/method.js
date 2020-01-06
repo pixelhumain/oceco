@@ -2497,8 +2497,32 @@ export const assignmeActionRooms = new ValidatedMethod({
     id: { type: String },
   }).validator(),
   run({ id }) {
+    function userCredits(){
+      const finish = 'finishedBy.'+ Meteor.userId()
+      let credits = 0
+      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      console.log('jai'+credits+'credits')
+      return credits
+    }
+    function walletIsOk(id) {
+      console.log(id)
+     const cost = Actions.findOne({_id: new Mongo.ObjectID(id) }).credits
+     if (cost >= 0) {
+       return true
+     }
+     else if (userCredits() > (cost* -1) ) {
+       console.log('jais + de credid que le cout')
+      return true
+     }
+     else {
+      console.log('jais pas assé de crédits') 
+      return false }
+    }
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
+    }
+    if (!walletIsOk(id)) {
+      throw new Meteor.Error('Pas assé de');
     }
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
