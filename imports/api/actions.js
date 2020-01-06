@@ -55,7 +55,7 @@ SchemasActionsRest.extend({
   },
   credits: {
     type: Number,
-    optional:true
+    optional:false
   },
   max: {
     type: Number,
