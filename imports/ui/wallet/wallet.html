@@ -27,7 +27,10 @@
        <h1>{{userCredits}} R</h1>
 
         <div class="item item-card">
-            <h2 class="item-title">En cours</h2>
+            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b>[ ? ]</b></a> </h2>
+            {{#if scroll1 }}
+            <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
+            {{/if}}
             <div class="item item-list">
                 {{#each action in actionsInWaiting}}
                 {{> WhalletInputAction action=action}}
@@ -35,7 +38,10 @@
             </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title">En attente de validations</h2>
+            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b>[ ? ]</b></a></h2>
+            {{#if scroll2 }}
+            <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
+            {{/if}}
             <div class="item item-list">
                 {{#each action in actionsToValidate}}
                 {{> WhalletInputInWaitingAction action=action}}
@@ -43,7 +49,10 @@
             </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title">Validés</h2>
+            <h2 class="item-title"> <b> Validés </b> <a href="#" id="scroll-3-js"><b>[ ? ]</b></a></h2>
+            {{#if scroll3 }}
+            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
+            {{/if}}
             <div class="item item-list">
                 {{#each action in actionsValidate}}
                 {{> WhalletInputInWaitingAction action=action}}
