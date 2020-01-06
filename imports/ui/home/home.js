@@ -33,6 +33,31 @@ Template.home.onCreated(function() {
   this.sortByDay = new ReactiveVar(false);
 });
 
+Template.scrollPrez.onCreated(function() {
+  this.autorun(function () {
+  }.bind(this));
+  this.scrollPrez = new ReactiveVar(false);
+});
+
+Template.scrollPrez.events({
+  'click .scroll-prez-js'(event, instance) {
+    event.preventDefault();
+    if (!Template.instance().scrollPrez.get()) {
+      Template.instance().scrollPrez.set(true);
+    }
+    else  {
+      console.log('yo2') 
+      Template.instance().scrollPrez.set(false)
+    }     
+  },
+})
+Template.scrollPrez.helpers({
+  scrollP(){
+    console.log('yo1')
+    return Template.instance().scrollPrez.get()
+  }
+})
+
 Template.home.events({
   'click #sortByDate '(event, instance) {
     Template.instance().sortByDate.set(true);

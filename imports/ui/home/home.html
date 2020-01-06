@@ -100,6 +100,12 @@
     </div>
     {{/if}}
   {{/if}}
+</template>
 
-
+<template name="scrollPrez">
+  <p class="title"> / <b> {{title}} </b>/  <a href="#" class="scroll-prez-js">[ ? ]</a>
+  {{#if scrollP}}
+    {{prez}}
+  {{/if}}
+  </p> 
 </template>
