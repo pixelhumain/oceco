@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="item item-card">
-             <button class="button action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b>[ ? ]</b></a>  |  <button  class="button action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b>[ ? ]</b></a>
+             <button class="button action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b>[ ? ]</b></a>   <button  class="button action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b>[ ? ]</b></a>
             {{#if scroll3 }}
             <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
             {{/if}}
@@ -87,7 +87,15 @@
           {{> actionDuration action=action }}<br>
           {{> actionDate action=action}}
         </div>
-    </div>
+        {{#if displayDesc}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
+        {{else}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+        {{/if}}
+        </div>
+    {{#if displayDesc}}
+        <div class="item item-text"> {{action.description}}</div>
+    {{/if}}
     {{> buttonActionFinish action=action}}
 </template>
 

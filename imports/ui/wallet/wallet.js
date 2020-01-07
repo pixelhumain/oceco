@@ -152,7 +152,6 @@ Template.wallet.helpers({
       return Template.instance().scroll4.get()
     },
     selectSpend(){
-      console.log('yo5')
       return Template.instance().displaySpendActions.get()
     }
 });
@@ -164,6 +163,30 @@ Template.buttonActionFinish.helpers({
       'unsubscribe': "Annuler",
     }]
     return actionStates    
+  }
+})
+
+Template.WhalletInputAction.onCreated(function() {
+  this.autorun(function () {
+  }.bind(this));
+  this.displayDesc = new ReactiveVar(false);
+});
+
+Template.WhalletInputAction.events({
+  'click .display-desc-js'(event, instance) {
+
+    event.preventDefault();
+    if (!Template.instance().displayDesc.get()) {
+      Template.instance().displayDesc.set(true);
+    }
+    else  {
+      Template.instance().displayDesc.set(false)
+    }     
+  },
+})
+Template.WhalletInputAction.helpers({
+  displayDesc(){
+    return Template.instance().displayDesc.get()
   }
 })
 

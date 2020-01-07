@@ -67,8 +67,16 @@
       {{> actionDuration action=action }}<br>
       {{> actionDate action=action}}
     </div>
+    {{#if displayDesc}}
+    <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
+    {{else}}
+    <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+    {{/if}}
+
   </div>
-  
+  {{#if displayDesc}}
+  <div class="item item-text"> {{action.description}}</div>
+  {{/if}}
   {{>buttonSubscribeAction id=action._id._str action=action }}
 </template >
 <template name="actionDuration">
@@ -88,6 +96,13 @@
   <b><a href="{{pathFor 'actionView' id=action._id._str }} " >{{action.name}}</a> </b> <br>
 </template>
 
+<template name="actionDescription">
+  <div class="button button-small" id="display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+  {{#if displayDesc}}
+  <div class="item item-text"> {{action.description}}</div>
+  {{/if}}
+</template>
+
 <template name="buttonSubscribeAction">
   {{#if creditPositive action.credits }}
   <div class="button-bar bar-positive">
@@ -103,9 +118,5 @@
 </template>
 
 <template name="scrollPrez">
-  <p class="title"> / <b> {{title}} </b>/  <a href="#" class="scroll-prez-js">[ ? ]</a>
-  {{#if scrollP}}
-    {{prez}}
-  {{/if}}
-  </p> 
+ 
 </template>

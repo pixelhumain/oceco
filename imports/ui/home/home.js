@@ -33,6 +33,31 @@ Template.home.onCreated(function() {
   this.sortByDay = new ReactiveVar(false);
 });
 
+
+Template.ItemInputAction.onCreated(function() {
+  this.autorun(function () {
+  }.bind(this));
+  this.displayDesc = new ReactiveVar(false);
+});
+
+Template.ItemInputAction.events({
+  'click .display-desc-js'(event, instance) {
+
+    event.preventDefault();
+    if (!Template.instance().displayDesc.get()) {
+      Template.instance().displayDesc.set(true);
+    }
+    else  {
+      Template.instance().displayDesc.set(false)
+    }     
+  },
+})
+Template.ItemInputAction.helpers({
+  displayDesc(){
+    return Template.instance().displayDesc.get()
+  }
+})
+
 Template.scrollPrez.onCreated(function() {
   this.autorun(function () {
   }.bind(this));
