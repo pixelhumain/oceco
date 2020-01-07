@@ -33,7 +33,9 @@ Template.wallet.onCreated(function(){
   this.scroll1 = new ReactiveVar(false);
   this.scroll2 = new ReactiveVar(false);
   this.scroll3 = new ReactiveVar(false);
-
+  this.scroll4 = new ReactiveVar(false);
+  this.displayValidateActions = new ReactiveVar(true);
+  this.displaySpendActions = new ReactiveVar(false)
 })
 
 
@@ -72,8 +74,39 @@ Template.buttonActionFinish.events({
       event.preventDefault();
       if (!Template.instance().scroll3.get()) {
         Template.instance().scroll3.set(true);
+        if (Template.instance().scroll4.get()) { 
+          Template.instance().scroll4.set(false);
+        }
       }
       else Template.instance().scroll3.set(false)
+    },
+    'click #scroll-4-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().scroll4.get()) {
+        Template.instance().scroll4.set(true);
+      }
+      if (Template.instance().scroll3.get()) { 
+        Template.instance().scroll3.set(false);
+      }
+      else Template.instance().scroll4.set(false)
+    },
+    'click .action-validate-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().displayValidateActions.get()) {
+        if (Template.instance().displaySpendActions.get()) { 
+          Template.instance().displaySpendActions.set(false);
+        }
+        Template.instance().displayValidateActions.set(true);
+      }
+    },
+    'click .action-spend-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().displaySpendActions.get()) {
+        if (Template.instance().displayValidateActions.get()) {  
+          Template.instance().displayValidateActions.set(false);
+        }
+        Template.instance().displaySpendActions.set(true);
+      }
     }
   })
 
@@ -100,6 +133,12 @@ Template.wallet.helpers({
       Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
       return credits
     },
+    actionsSpend(){
+      const id = "links.contributors."+Meteor.userId()
+      const finished = "finishedBy."+Meteor.userId()
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$lt: "0"} }] } )
+    },
+
     scroll1(){
       return Template.instance().scroll1.get()
     },
@@ -108,6 +147,13 @@ Template.wallet.helpers({
     },
     scroll3(){
       return Template.instance().scroll3.get()
+    },
+    scroll4(){
+      return Template.instance().scroll4.get()
+    },
+    selectSpend(){
+      console.log('yo5')
+      return Template.instance().displaySpendActions.get()
     }
 });
 
