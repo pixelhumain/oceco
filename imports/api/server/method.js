@@ -451,7 +451,7 @@ Meteor.methods({
      const parent = "finishedBy."+ usrId
      const credit = Actions.findOne({_id: actionId}).credits
      const userWhallet =  "userWhallet."+actId
-     Actions.update({_id: actionId }, {$set: {[parent]: 'Validate' } })
+     Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
      Citoyens.update({_id: userNeed}, {$set:{[userWhallet]: credit}})
      return true;
    },

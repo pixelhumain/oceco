@@ -125,18 +125,18 @@ Template.wallet.helpers({
     actionsValidate(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$gt: "-1"} }] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'validated'}, {credits: {$gt: "-1"} }] } )
     },
     userCredits(){
       const finish = 'finishedBy.'+ Meteor.userId()
       let credits = 0
-      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      Actions.find({[finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10)})
       return credits
     },
     actionsSpend(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$lt: "0"} }] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'validated'}, {credits: {$lt: "0"} }] } )
     },
 
     scroll1(){
