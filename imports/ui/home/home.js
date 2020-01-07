@@ -33,6 +33,29 @@ Template.home.onCreated(function() {
   this.sortByDay = new ReactiveVar(false);
 });
 
+Template.scrollPrez.onCreated(function() {
+  this.autorun(function () {
+  }.bind(this));
+  this.scrollPrez = new ReactiveVar(false);
+});
+
+Template.scrollPrez.events({
+  'click .scroll-prez-js'(event, instance) {
+    event.preventDefault();
+    if (!Template.instance().scrollPrez.get()) {
+      Template.instance().scrollPrez.set(true);
+    }
+    else  {
+      Template.instance().scrollPrez.set(false)
+    }     
+  },
+})
+Template.scrollPrez.helpers({
+  scrollP(){
+    return Template.instance().scrollPrez.get()
+  }
+})
+
 Template.home.events({
   'click #sortByDate '(event, instance) {
     Template.instance().sortByDate.set(true);
@@ -48,7 +71,7 @@ Template.buttonSubscribeAction.events({
     event.preventDefault();       
     Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
       if (error) {
-        IonPopup.alert({ template: i18n.__(error.reason) });
+        IonPopup.alert({ template: i18n.__('Pas assé de crédits désolé') });
       }
     });
   },
@@ -85,7 +108,6 @@ Template.home.helpers({
   projectAction() {
 
     const userAddedAction = 'links.contributors.'+Meteor.userId()
-    console.log(userAddedAction)
     if (Template.instance().sortByDate.get()) {
       if (Template.instance().sortByDay.get()) {
         const dayWanted = Template.instance().sortByDay.get();
@@ -120,7 +142,13 @@ Template.home.helpers({
   returnId(id) {
     return id.valueOf();
   },
-
-
+  
 })
-;
+Template.buttonSubscribeAction.helpers({
+  creditPositive(credit){
+    if (credit >= 0) {
+      return true
+    }
+    else{ return false}
+  }
+})

@@ -24,10 +24,15 @@
 
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
-       <h1>{{userCredits}} R</h1>
+
+    {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' }}
+    <h1>{{userCredits}} R</h1>
 
         <div class="item item-card">
-            <h2 class="item-title">En cours</h2>
+            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b>[ ? ]</b></a> </h2>
+            {{#if scroll1 }}
+            <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
+            {{/if}}
             <div class="item item-list">
                 {{#each action in actionsInWaiting}}
                 {{> WhalletInputAction action=action}}
@@ -35,7 +40,10 @@
             </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title">En attente de validations</h2>
+            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b>[ ? ]</b></a></h2>
+            {{#if scroll2 }}
+            <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
+            {{/if}}
             <div class="item item-list">
                 {{#each action in actionsToValidate}}
                 {{> WhalletInputInWaitingAction action=action}}
@@ -43,12 +51,27 @@
             </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title">Validés</h2>
+             <button class="button action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b>[ ? ]</b></a>  |  <button  class="button action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b>[ ? ]</b></a>
+            {{#if scroll3 }}
+            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
+            {{/if}}
+            {{#if scroll4 }}
+            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont couté des crédits</p>
+            {{/if}}
+          
+            {{#if selectSpend }}
+            <div class="item item-list">
+                {{#each action in actionsSpend}}
+                {{> WhalletInputInWaitingAction action=action}}
+                {{/each}}
+            </div>
+            {{else}}
             <div class="item item-list">
                 {{#each action in actionsValidate}}
                 {{> WhalletInputInWaitingAction action=action}}
                 {{/each}}
             </div>
+            {{/if}}
         </div>
     {{/ionContent}}
     {{/ionView}}

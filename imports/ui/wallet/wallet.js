@@ -25,17 +25,19 @@ window.Rooms = Rooms;
 import './wallet.html'
 
 Template.wallet.onCreated(function(){
-    Meteor.subscribe('notificationsUser');
-    Meteor.subscribe('user.actions','5de9df6d064fca0d008b4568')
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    this.subscribe('notificationsUser');
+    this.subscribe('user.actions','5de9df6d064fca0d008b4568')
+  }.bind(this));
+  this.scroll1 = new ReactiveVar(false);
+  this.scroll2 = new ReactiveVar(false);
+  this.scroll3 = new ReactiveVar(false);
+  this.scroll4 = new ReactiveVar(false);
+  this.displayValidateActions = new ReactiveVar(true);
+  this.displaySpendActions = new ReactiveVar(false)
 })
-Template.buttonActionFinish.onCreated(function(){
-  this.autorun(function() {
 
-    // pageSession.set('scopeId', "5deb282c064fca0c008b4569");
-    pageSession.set('scope', "projects");
-    pageSession.set('roomId',"5dedd02f064fca0d008b4568");
-  });
-})
 
 Template.buttonActionFinish.events({
     'click .finish-action-js' (event, instance) {
@@ -53,6 +55,61 @@ Template.buttonActionFinish.events({
     },
   });
 
+  Template.wallet.events({
+    'click #scroll-1-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().scroll1.get()) {
+        Template.instance().scroll1.set(true);
+      }
+      else Template.instance().scroll1.set(false)
+    },
+    'click #scroll-2-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().scroll2.get()) {
+        Template.instance().scroll2.set(true);
+      }
+      else Template.instance().scroll2.set(false)
+    },
+    'click #scroll-3-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().scroll3.get()) {
+        Template.instance().scroll3.set(true);
+        if (Template.instance().scroll4.get()) { 
+          Template.instance().scroll4.set(false);
+        }
+      }
+      else Template.instance().scroll3.set(false)
+    },
+    'click #scroll-4-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().scroll4.get()) {
+        Template.instance().scroll4.set(true);
+      }
+      if (Template.instance().scroll3.get()) { 
+        Template.instance().scroll3.set(false);
+      }
+      else Template.instance().scroll4.set(false)
+    },
+    'click .action-validate-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().displayValidateActions.get()) {
+        if (Template.instance().displaySpendActions.get()) { 
+          Template.instance().displaySpendActions.set(false);
+        }
+        Template.instance().displayValidateActions.set(true);
+      }
+    },
+    'click .action-spend-js'(event, instance) {
+      event.preventDefault();
+      if (!Template.instance().displaySpendActions.get()) {
+        if (Template.instance().displayValidateActions.get()) {  
+          Template.instance().displayValidateActions.set(false);
+        }
+        Template.instance().displaySpendActions.set(true);
+      }
+    }
+  })
+
 
 Template.wallet.helpers({
     actionsInWaiting() {
@@ -68,13 +125,35 @@ Template.wallet.helpers({
     actionsValidate(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$gt: "-1"} }] } )
     },
     userCredits(){
       const finish = 'finishedBy.'+ Meteor.userId()
       let credits = 0
       Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
       return credits
+    },
+    actionsSpend(){
+      const id = "links.contributors."+Meteor.userId()
+      const finished = "finishedBy."+Meteor.userId()
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$lt: "0"} }] } )
+    },
+
+    scroll1(){
+      return Template.instance().scroll1.get()
+    },
+    scroll2(){
+      return Template.instance().scroll2.get()
+    },
+    scroll3(){
+      return Template.instance().scroll3.get()
+    },
+    scroll4(){
+      return Template.instance().scroll4.get()
+    },
+    selectSpend(){
+      console.log('yo5')
+      return Template.instance().displaySpendActions.get()
     }
 });
 

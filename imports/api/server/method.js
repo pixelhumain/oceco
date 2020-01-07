@@ -2497,9 +2497,30 @@ export const assignmeActionRooms = new ValidatedMethod({
     id: { type: String },
   }).validator(),
   run({ id }) {
+    function userCredits(){
+      const finish = 'finishedBy.'+ Meteor.userId()
+      let credits = 0
+      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      return credits
+    }
+    function walletIsOk(id) {
+     const cost = Actions.findOne({_id: new Mongo.ObjectID(id) }).credits
+     if (cost >= 0) {
+       return true
+     }
+     else if (userCredits() > (cost* -1) ) {
+      const parent = "finishedBy."+ Meteor.userId()
+      const actionId = new Mongo.ObjectID(id)
+      Actions.update({_id: actionId }, {$set: {[parent]: 'Validate' } })
+      return true
+     }
+     else {
+      return false }
+    }
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
+   
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
     const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
@@ -2523,7 +2544,9 @@ export const assignmeActionRooms = new ValidatedMethod({
         throw new Meteor.Error('not-authorized');
       }
     }
-
+    if (!walletIsOk(id)) {
+      throw new Meteor.Error('Pas assé de');
+    }
     const docRetour = {};
     docRetour.id = id;
     const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);

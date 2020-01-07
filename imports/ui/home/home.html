@@ -68,7 +68,8 @@
       {{> actionDate action=action}}
     </div>
   </div>
-  {{>buttonSubscribeAction id=action._id._str }}
+  
+  {{>buttonSubscribeAction id=action._id._str action=action }}
 </template >
 <template name="actionDuration">
   <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b> / </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
@@ -88,7 +89,23 @@
 </template>
 
 <template name="buttonSubscribeAction">
+  {{#if creditPositive action.credits }}
   <div class="button-bar bar-positive">
     <button class="button button-dark button-small assign-action-js"><i class="fa fa-handshake-o"></i> Participer</button>
   </div>
+  {{else}}
+    {{#if action}}
+    <div class="button-bar bar-positive">
+      <button class="button button-positive button-small assign-action-js"><i class="fa fa-handshake-o"></i> Dépenser</button>
+    </div>
+    {{/if}}
+  {{/if}}
+</template>
+
+<template name="scrollPrez">
+  <p class="title"> / <b> {{title}} </b>/  <a href="#" class="scroll-prez-js">[ ? ]</a>
+  {{#if scrollP}}
+    {{prez}}
+  {{/if}}
+  </p> 
 </template>
