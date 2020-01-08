@@ -125,18 +125,18 @@ Template.wallet.helpers({
     actionsValidate(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$gt: "-1"} }] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'validated'}, {credits: {$gt: "0"} }] } )
     },
     userCredits(){
       const finish = 'finishedBy.'+ Meteor.userId()
       let credits = 0
-      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      Actions.find({[finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10)})
       return credits
     },
     actionsSpend(){
       const id = "links.contributors."+Meteor.userId()
       const finished = "finishedBy."+Meteor.userId()
-      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'Validate'}, {credits: {$lt: "0"} }] } )
+      return Actions.find({$and:[{[id]:{ '$exists' : 1 }}, {[finished]:'validated'}, {credits: {$lt: "0"} }] } )
     },
 
     scroll1(){
@@ -152,7 +152,6 @@ Template.wallet.helpers({
       return Template.instance().scroll4.get()
     },
     selectSpend(){
-      console.log('yo5')
       return Template.instance().displaySpendActions.get()
     }
 });
@@ -164,6 +163,30 @@ Template.buttonActionFinish.helpers({
       'unsubscribe': "Annuler",
     }]
     return actionStates    
+  }
+})
+
+Template.WhalletInputAction.onCreated(function() {
+  this.autorun(function () {
+  }.bind(this));
+  this.displayDesc = new ReactiveVar(false);
+});
+
+Template.WhalletInputAction.events({
+  'click .display-desc-js'(event, instance) {
+
+    event.preventDefault();
+    if (!Template.instance().displayDesc.get()) {
+      Template.instance().displayDesc.set(true);
+    }
+    else  {
+      Template.instance().displayDesc.set(false)
+    }     
+  },
+})
+Template.WhalletInputAction.helpers({
+  displayDesc(){
+    return Template.instance().displayDesc.get()
   }
 })
 

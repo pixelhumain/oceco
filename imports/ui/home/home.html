@@ -25,13 +25,13 @@
     {{#ionView}}
       {{#ionContent class="scroll-bg"}}
         
-
         <div class="item item-light item-input item-select">
 
-            <button id="sortByDate" class="button">Trie par date</button>
+            <!-- <button id="sortByDate" class="button">Trie par date</button> -->
+            {{>scrollPrez title='Accueil' prez= ""  }}
 
-          <select name="sortByDay" id="sortByDay">
-            <option value="">Choose</option>
+          <select  name="sortByDay" id="sortByDay">
+            <option value="">Trier par jour</option>
             <option value="lundi">lundi</option>
             <option value="mardi">mardi</option>
             <option value="mercredi">mercredi</option>
@@ -59,24 +59,37 @@
   </template>
 <template name="ItemInputAction" >
   <div class="item item-input">
-    <div class="col-50">
-      {{> linkForAction action=action}}
+    <div class="col-90">
+      <p>{{> actionDate action=action}} </p>
+      <h2 class="title">{{> linkForAction action=action}}</h2>
+      <div>
+        <p>
+        {{> actionParticipantNeeded action=action}}                                  
+        {{> actionDuration action=action }}
+        </p>        
+      </div>
+      {{>buttonSubscribeAction id=action._id._str action=action }}
     </div>  
-    <div>
-      {{> actionParticipantNeeded action=action}} <br>
-      {{> actionDuration action=action }}<br>
-      {{> actionDate action=action}}
-    </div>
+    
+    {{#if displayDesc}}
+    <div class="button button-small right-top display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
+    {{else}}
+
+    <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+    {{/if}}
+
   </div>
-  
-  {{>buttonSubscribeAction id=action._id._str action=action }}
+  {{#if displayDesc}}
+  <div class=" ">{{action.description}}</div>
+ 
+  {{/if}}
 </template >
 <template name="actionDuration">
-  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b> / </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
+  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b>                </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
 </template>
 
 <template name="actionParticipantNeeded">
-  <span> {{> ionIcon icon="man"}}:{{actionParticipantsNbr action._id}} <b> / </b>
+  <span> {{> ionIcon icon="man"}}:{{actionParticipantsNbr action._id}} <b>                 </b>
   <i class="icon ion-ios-arrow-down"></i>{{action.min}}<i class="icon ion-ios-arrow-up"></i>{{action.max}} </span>
 </template>
 
@@ -86,6 +99,13 @@
 
 <template name="linkForAction">
   <b><a href="{{pathFor 'actionView' id=action._id._str }} " >{{action.name}}</a> </b> <br>
+</template>
+
+<template name="actionDescription">
+  <div class="button button-small" id="display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+  {{#if displayDesc}}
+  <div class="item item-text"> {{action.description}}</div>
+  {{/if}}
 </template>
 
 <template name="buttonSubscribeAction">
@@ -103,9 +123,11 @@
 </template>
 
 <template name="scrollPrez">
-  <p class="title"> / <b> {{title}} </b>/  <a href="#" class="scroll-prez-js">[ ? ]</a>
-  {{#if scrollP}}
-    {{prez}}
-  {{/if}}
-  </p> 
+ <div class="item">/{{title}} <a href="" class="scroll-prez-js"><i class="icon ion-help"></i></a></div>
+ {{#if scrollP}}
+  <div class="item">
+ {{prez}}
+  </div>
+ {{/if}}
 </template>
+

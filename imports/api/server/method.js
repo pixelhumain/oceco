@@ -451,7 +451,7 @@ Meteor.methods({
      const parent = "finishedBy."+ usrId
      const credit = Actions.findOne({_id: actionId}).credits
      const userWhallet =  "userWhallet."+actId
-     Actions.update({_id: actionId }, {$set: {[parent]: 'Validate' } })
+     Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
      Citoyens.update({_id: userNeed}, {$set:{[userWhallet]: credit}})
      return true;
    },
@@ -2500,7 +2500,7 @@ export const assignmeActionRooms = new ValidatedMethod({
     function userCredits(){
       const finish = 'finishedBy.'+ Meteor.userId()
       let credits = 0
-      Actions.find({[finish]: 'Validate' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      Actions.find({[finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10)})
       return credits
     }
     function walletIsOk(id) {
@@ -2511,7 +2511,7 @@ export const assignmeActionRooms = new ValidatedMethod({
      else if (userCredits() > (cost* -1) ) {
       const parent = "finishedBy."+ Meteor.userId()
       const actionId = new Mongo.ObjectID(id)
-      Actions.update({_id: actionId }, {$set: {[parent]: 'Validate' } })
+      Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
       return true
      }
      else {

@@ -26,33 +26,32 @@
     {{#ionContent class="scroll-bg"}}
 
     {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' }}
-    <h1>{{userCredits}} R</h1>
 
         <div class="item item-card">
-            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b>[ ? ]</b></a> </h2>
+            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b><i class="icon ion-help"></i></b></a> </h2>
             {{#if scroll1 }}
             <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
             {{/if}}
-            <div class="item item-list">
                 {{#each action in actionsInWaiting}}
                 {{> WhalletInputAction action=action}}
                 {{/each}}
-            </div>
         </div>
         <div class="item item-card">
-            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b>[ ? ]</b></a></h2>
+            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b><i class="icon ion-help"></i></b></a></h2>
             {{#if scroll2 }}
             <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
             {{/if}}
-            <div class="item item-list">
-                {{#each action in actionsToValidate}}
-                {{> WhalletInputInWaitingAction action=action}}
-                {{/each}}
-            </div>
+            {{#each action in actionsToValidate}}
+            {{> WhalletInputInWaitingAction action=action}}
+            {{/each}}
         </div>
         <div class="item item-card">
-             <button class="button action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b>[ ? ]</b></a>  |  <button  class="button action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b>[ ? ]</b></a>
-            {{#if scroll3 }}
+            {{#if selectSpend}}
+             <button class="button button-small action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small button-dark action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
+            {{else}}
+             <button class="button button-small button-dark action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
+            {{/if}}
+             {{#if scroll3 }}
             <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
             {{/if}}
             {{#if scroll4 }}
@@ -79,34 +78,41 @@
 
 <template name='WhalletInputAction'>
     <div class="item item-input">
-        <div class="col-50">
-          {{> linkForAction action=action}}
+        <div class=" col-90">
+            <p>{{> actionDate action=action}} </p>
+          <h2> {{> linkForAction action=action}}</h2>
+          <div>
+            <p>{{> actionDuration action=action }}<br></p>
+          </div>
+          {{> buttonActionFinish action=action}}
         </div>  
-        <div>
-          {{> actionParticipantNeeded action=action}} <br>
-          {{> actionDuration action=action }}<br>
-          {{> actionDate action=action}}
+        
+        {{#if displayDesc}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
+        {{else}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+        {{/if}}
         </div>
-    </div>
-    {{> buttonActionFinish action=action}}
+
+    {{#if displayDesc}}
+        <div class="item item-text"> {{action.description}}</div>
+    {{/if}}
 </template>
 
 <template name='WhalletInputInWaitingAction'>
     <div class="item item-input">
-        <div class="col-50">
+        <div class="col-66">
             {{> linkForAction action=action}}
         </div>
-        <div class="item item-text-wrap col-50 ">
-            <div class="col text-center">  
-               <b> {{action.credits}} R</b>
-            </div>
+        <div class="col text-center">  
+            <b> {{action.credits}} R</b>
         </div>
     </div>
 </template>
 <template name='buttonActionFinish'>
     <div class="button-bar bar-positive">
-        <button class="button button-small finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
-    </div>  
+        <button class="button button-small button-positive bu finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
+    </div>
 </template >
 
 <template name="myAccount">
