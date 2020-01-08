@@ -409,6 +409,53 @@ URL._encodeParams = function(params, prefix) {
 };
 
 Meteor.methods({
+ 'finishAction'({id}){
+   new SimpleSchema({
+    id: {type: String},
+  }).validate({id })
+ 
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (!Actions.findOne({ _id: new Mongo.ObjectID(id) })) {
+      throw new Meteor.Error('not-action');
+    }
+    // admin ou creator
+    // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
+    //   throw new Meteor.Error('not-authorized');
+    // }
+    
+    // const docRetour = {}
+    // docRetour.id = _id;
+    // docRetour.participants = this.userId
+    // docRetour.participants.states = "finish"
+    const actionId = new Mongo.ObjectID(id)
+    const parent = "finishedBy."+Meteor.userId()
+    Actions.update({_id: actionId }, {$set: {[parent]: 'toModerate' } })
+    return true;
+  },
+
+   'ValidateAction'({actId, usrId}){
+    new SimpleSchema({
+      actId: {type: String}, usrId: {type: String}
+   }).validate({actId, usrId })
+  
+     if (!this.userId) {
+       throw new Meteor.Error('not-authorized');
+     }
+     if (!Actions.findOne({ _id: new Mongo.ObjectID(actId) })) {
+       throw new Meteor.Error('not-action');
+     }
+     const actionId = new Mongo.ObjectID(actId)
+     const userNeed = new Mongo.ObjectID(usrId)
+     const parent = "finishedBy."+ usrId
+     const credit = Actions.findOne({_id: actionId}).credits
+     const userWhallet =  "userWhallet."+actId
+     Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
+     Citoyens.update({_id: userNeed}, {$set:{[userWhallet]: credit}})
+     return true;
+   },
+
   userup (geo) {
     check(geo, { longitude: Number, latitude: Number });
     if (!this.userId) {
@@ -1946,6 +1993,7 @@ indexMax:20 */
     // consider giving the user the benefit of the doubt and return true
     return true;
   },
+
 });
 
 export const userLocale = new ValidatedMethod({
@@ -2235,9 +2283,7 @@ export const insertAction = new ValidatedMethod({
       docRetour.endDate = moment(doc.endDate).format('YYYY-MM-DDTHH:mm:ssZ');
     }
 
-    /*
-    email:thomas.craipeau@gmail.com
-    */
+
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
@@ -2273,8 +2319,13 @@ export const updateAction = new ValidatedMethod({
     if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
-
+    
+    
     const docRetour = modifier.$set;
+
+    if(modifier.$set.participants){
+      console.log("yolo")
+    }
 
     if (modifier.$set.startDate) {
       docRetour.startDate = moment(modifier.$set.startDate).format();
@@ -2282,7 +2333,16 @@ export const updateAction = new ValidatedMethod({
     if (modifier.$set.endDate) {
       docRetour.endDate = moment(modifier.$set.endDate).format();
     }
-    // docRetour.status = 'todo';
+    if (modifier.$set.min) {
+      docRetour.min =   modifier.$set.min
+    }
+    if (modifier.$set.max) {
+      docRetour.max =   modifier.$set.max
+    }
+    if (modifier.$set.participants) {
+      docRetour.participants =   modifier.$set.participants
+    }
+    docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
     docRetour.collection = 'actions';
@@ -2291,6 +2351,13 @@ export const updateAction = new ValidatedMethod({
     return retour;
   },
 });
+
+  // finishUserAction(id){
+  //   check(id, String);
+    
+  // 
+
+
 
 export const insertAmendement = new ValidatedMethod({
   name: 'insertAmendement',
@@ -2430,9 +2497,30 @@ export const assignmeActionRooms = new ValidatedMethod({
     id: { type: String },
   }).validator(),
   run({ id }) {
+    function userCredits(){
+      const finish = 'finishedBy.'+ Meteor.userId()
+      let credits = 0
+      Actions.find({[finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10)})
+      return credits
+    }
+    function walletIsOk(id) {
+     const cost = Actions.findOne({_id: new Mongo.ObjectID(id) }).credits
+     if (cost >= 0) {
+       return true
+     }
+     else if (userCredits() > (cost* -1) ) {
+      const parent = "finishedBy."+ Meteor.userId()
+      const actionId = new Mongo.ObjectID(id)
+      Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
+      return true
+     }
+     else {
+      return false }
+    }
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
+   
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
     const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
@@ -2456,10 +2544,12 @@ export const assignmeActionRooms = new ValidatedMethod({
         throw new Meteor.Error('not-authorized');
       }
     }
-
+    if (!walletIsOk(id)) {
+      throw new Meteor.Error('Pas assé de');
+    }
     const docRetour = {};
     docRetour.id = id;
-    const retour = apiCommunecter.postPixel('co2/actionRoom', 'assignme', docRetour);
+    const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
     return retour;
   },
 });
@@ -2534,6 +2624,7 @@ export const actionsType = new ValidatedMethod({
     return retour;
   },
 });
+
 
 export const questValidateGeo = new ValidatedMethod({
   name: 'questValidateGeo',
@@ -2612,3 +2703,4 @@ export const questValidateGeo = new ValidatedMethod({
     return retour;
   },
 });
+

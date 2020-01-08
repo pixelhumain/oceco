@@ -62,7 +62,7 @@ sha@1.0.9
 dschulz:jquery-qrcode
 communecter:mapbox@2.2.3_3
 #gwendall:autoform-i18n
-raix:push@=3.1.0-pre.1
+#raix:push@=3.1.0-pre.1
 djabatav:geolocation-plus
 tmeasday:publish-counts
 reactive-var@1.0.11
@@ -86,8 +86,8 @@ aldeed:template-extension
 natestrauser:publish-performant-counts
 mizzao:user-status
 underscore@1.0.10
-omega:meteor-desktop-watcher@=2.0.0
-omega:meteor-desktop-bundler@=2.0.0
+#omega:meteor-desktop-watcher@=2.0.0
+#omega:meteor-desktop-bundler@=2.0.0
 universe:i18n-blaze
 universe:i18n
 

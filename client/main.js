@@ -14,6 +14,20 @@ import '../imports/ui/dashboard/dashboard.js';
 
 import '../imports/ui/about/about.js';
 
+import '../imports/ui/polesView/polesView.js'
+
+import '../imports/ui/home/home.js'
+
+import '../imports/ui/actionView/actionView.js'
+
+import '../imports/ui/userPublicProfile/userPublicProfile.js'
+
+import '../imports/ui/newAction/newAction.js'
+
+import '../imports/ui/wallet/wallet.js'
+
+import '../imports/ui/admin/admin.js'
+
 //import '../imports/ui/video/video.js';
 
 //import '../imports/ui/sensors/sensors.js';

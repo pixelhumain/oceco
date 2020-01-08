@@ -30,7 +30,7 @@ import { Proposals } from '../proposals.js';
 import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
 import { Highlight } from '../highlight.js';
 
-import { nameToCollection, arrayParent, arrayLinkParent, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
+import { arrayLinkProper, nameToCollection, arrayParent, arrayLinkParent, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -838,7 +838,7 @@ Meteor.publishComposite('directoryList', function(scope, scopeId) {
         query.$or.push({
           _id: new Mongo.ObjectID(scopeId),
           'preferences.private': {
-            $exists: false
+            $exists: false,
           },
         });
 
@@ -980,7 +980,7 @@ Meteor.publishComposite('directoryListEvents', function(scope, scopeId) {
         query.$or.push({
           _id: new Mongo.ObjectID(scopeId),
           'preferences.private': {
-            $exists: false
+            $exists: false,
           },
         });
 
@@ -1147,7 +1147,7 @@ Meteor.publishComposite('directoryListProjects', function(scope, scopeId) {
         query.$or.push({
           _id: new Mongo.ObjectID(scopeId),
           'preferences.private': {
-            $exists: false
+            $exists: false,
           },
         });
 
@@ -2634,3 +2634,95 @@ Meteor.publish('thing', function(limit, boardId) {
   }
   return Thing.find(query, { sort: { modified: -1 }, limit });
 });
+
+// Meteor.publish('projects.inscription', function(projectId){
+//   let id = new Mongo.ObjectID(projectId)
+//   let listPoles = Projects.find({_id: id}).fetch()
+//   return   Projects.find({_id: {$in: listPoles }})
+// })
+
+
+Meteor.publish('projects.actions', function(raffId) {
+  check(raffId, String);
+  if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
+    return poleActions;
+  }
+  return null;
+  // Penser à ne renvoyer que les actions lié à la raffinerie
+  // return   Actions.find()
+});
+
+Meteor.publish('poles.actions', function(raffId, poleName) {
+  check(raffId, String);
+  check(poleName, Match.Maybe(String));
+  if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str)
+    if (poleName) {
+    const poleActions = Actions.find({ parentId: { $in: raffProjectsArray }, tags: poleName });
+    return poleActions;
+    }
+    const  poleActions = Actions.find({ parentId: { $in: raffProjectsArray }})
+    return poleActions;
+  }
+  return null;
+});
+
+Meteor.publish('member.profile', function(memberId){
+  check(memberId, String);
+   if (!this.userId) {
+    return null;
+  }
+  let id = new Mongo.ObjectID(memberId)
+  return Citoyens.findOne({_id: id })
+})
+
+Meteor.publish('user.actions', function(raffId) {
+  check(raffId, String);
+   if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  const UserId = "links.contributors."+this.userId
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    return  Actions.find({ parentId: { $in: raffProjectsArray },  [UserId] : { '$exists' : 1 } } )
+  }
+  return Actions.find({ [id] : { '$exists' : 1 } } )
+});
+
+Meteor.publish('action.to.admin', function(raffId) {
+  check(raffId, String);
+   if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    return  Actions.find({ parentId: { $in: raffProjectsArray }} )
+  }
+  return Actions.find({ [id] : { '$exists' : 1 } } )
+});
+
+
+
+// Meteor.publish('raffinerie.members',function(raffhId){
+//   let id = new Mongo.ObjectID(raffId)
+//   let orgaCursor = Organizations.findOne({_id: id }).links.members
+//   console.log(arrayLinkProper(orgaCursor))
+// })
+
+// Meteor.publish('poles.list', function())

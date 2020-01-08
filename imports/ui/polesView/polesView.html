@@ -1,0 +1,48 @@
+<template name='polesView'>
+    
+{{#contentFor "headerTitle"}}
+      <h1 class="title">{{poleName}}</h1>
+{{/contentFor}}
+{{#contentFor "headerButtonLeft"}}
+  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+  {{#if isAndroid}}
+    {{> ionIcon icon='android-more-vertical'}}
+  {{else}}
+    {{> ionIcon icon='navicon'}}
+  {{/if}}
+  </button>
+  {{/contentFor}}
+  {{#contentFor "headerButtonRight"}}
+
+  <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+   {{#transition in="bounceInDown" out="bounceOutUp"}}
+   {{#if notificationsCount}}
+   <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+   {{/if}}
+   {{/transition}}
+  </button>
+  {{/contentFor}}
+
+  {{#ionView}}
+    {{#ionContent class="scroll-bg"}}
+    {{#if dataReady}}
+      {{#each project in poleProjects}}
+       
+          <div class="list list-inset">
+
+            <div class="item item-body ">
+              {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+              {{project.name}} <p class="badge badge-dark" >{{projectNbActions project._id}} {{> ionIcon icon="clock"}} </p>
+              
+            {{#each action in projectAction project._id}}
+              {{> itemInputAction action=action}}
+            {{/each}}
+          </div>
+
+          </div>
+        
+      {{/each}}     
+      {{/if}}
+    {{/ionContent}}
+  {{/ionView}}
+</template>

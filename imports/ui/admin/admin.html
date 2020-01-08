@@ -1,0 +1,36 @@
+<template name="adminDashboard">
+    {{#contentFor "headerTitle"}}
+        <h1 class="title"> Admin </h1>
+    {{/contentFor}}
+    {{#contentFor "headerButtonLeft"}}
+    <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+
+    </button>
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonRight"}}
+        <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+            {{#transition in="bounceInDown" out="bounceOutUp"}}
+                {{#if notificationsCount}}
+                    <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+                {{/if}}
+            {{/transition}}
+        </button>
+    {{/contentFor}}
+    {{#ionView}}
+    {{#ionContent class="scroll-bg"}}
+    {{#if dataReady}}
+    {{#each action in actionToaccept}}
+       <p>{{action.name}} =>
+        {{numberTovalidate action.finishedBy}} à valider</p> 
+        {{#each  user  in userTovalidate action.finishedBy}}
+        {{user.name}}
+        <button class="admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button>
+        {{/each}}
+    {{/each}}
+    {{/if}}
+    {{/ionContent}}
+    {{/ionView}}
+
+
+</template>

@@ -426,6 +426,17 @@ Meteor.startup(function () {
       return Counter.get(name);
     }
   });
+
+  Template.registerHelper('isConnected', () => Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain);
+
+  Template.registerHelper('isAdmin', () => {
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
+      const RaffId = Meteor.settings.public.orgaCibleId;
+      return Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
+    }
+    return false;
+  });
+
   Template.registerHelper('hasPublishedCounter', (name) => {
     if (name) {
       const count = Counter.get(name);

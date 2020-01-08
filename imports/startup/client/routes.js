@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Router } from 'meteor/iron:router';
+import { Mongo } from 'meteor/mongo';
 
 Router.configure({
   layoutTemplate: 'layout',
@@ -511,6 +512,50 @@ Router.map(function() {
     path: '/search',
     loadingTemplate: 'loading',
   });
+  this.route('polesView', {
+    template: 'polesView',
+    path: '/polesView/:pole',
+    loadingTemplate: 'loading',
+
+  });
+  this.route('home', {
+    template: 'home',
+    path: '/home',
+    loadingTemplate: 'loading',
+
+  });
+  this.route('actionView', {
+    template: 'actionView',
+    path: '/actionView/:id',
+    loadingTemplate: 'loading',
+
+  });
+  this.route('userPublicProfile', {
+    template: 'userPublicProfile',
+    path: '/userPublicProfile/:id',
+    loadingTemplate: 'loading',
+
+  });
+
+  this.route('newAction', {
+    template: 'newAction',
+    path: '/newAction',
+    loadingTemplate: 'loading',
+
+  });
+
+
+  this.route('wallet', {
+    template: 'wallet',
+    path: '/wallet',
+    loadingTemplate: 'loading',
+  });
+
+  this.route('adminDashboard', {
+    template: 'adminDashboard',
+    path: '/adminDashboard',
+    loadingTemplate: 'loading',
+  });
 });
 
 
@@ -522,7 +567,21 @@ const ensurePixelSignin = function () {
   }
 };
 
+const ensurePixelIsAdmin = function() {
+  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
+    const RaffId = Meteor.settings.public.orgaCibleId;
+    const IsAdmin = Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
+    if (IsAdmin === true) {
+      this.next();
+    }
+  } else {
+    this.render('login');
+  }
+};
+
 Router.onBeforeAction(ensurePixelSignin, { except: ['login', 'signin'] });
+Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction'] });
+
 
 Router.routes.login.options.progress = false;
 Router.routes.signin.options.progress = false;

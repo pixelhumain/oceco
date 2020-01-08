@@ -7,7 +7,7 @@ import './reload.js';
 // import './videortc.js';
 import './position.js';
 import './routes.js';
-import './push.js';
+// import './push.js';
 import './autolinker.js';
 // import './sensors.js';
 import '../../api/method_both.js';

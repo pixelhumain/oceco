@@ -1,0 +1,123 @@
+<template name='wallet'>
+    {{#contentFor "headerTitle"}}
+        <h1 class="title">     {{currentUser.profile.pixelhumain.username}}: {{userCredits}} R</h1>
+    {{/contentFor}}
+  {{#contentFor "headerButtonLeft"}}
+        <button class="button button-clear pull-left" data-ion-menu-toggle="left">
+        {{#if isAndroid}}
+            {{> ionIcon icon='android-more-vertical'}}
+        {{else}}
+            {{> ionIcon icon='navicon'}}
+        {{/if}}
+        </button>
+    {{/contentFor}}
+
+      {{#contentFor "headerButtonRight"}}
+        <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+            {{#transition in="bounceInDown" out="bounceOutUp"}}
+                {{#if notificationsCount}}
+                    <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+                {{/if}}
+            {{/transition}}
+        </button>
+    {{/contentFor}}
+
+    {{#ionView}}
+    {{#ionContent class="scroll-bg"}}
+
+    {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' }}
+
+    {{#if dataReady}}
+        <div class="item item-card">
+            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b><i class="icon ion-help"></i></b></a> </h2>
+            {{#if scroll1 }}
+            <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
+            {{/if}}
+
+                {{#each action in actionsInWaiting}}
+                {{> whalletInputAction action=action}}
+                {{/each}}
+        </div>
+        <div class="item item-card">
+            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b><i class="icon ion-help"></i></b></a></h2>
+            {{#if scroll2 }}
+            <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
+            {{/if}}
+            {{#each action in actionsToValidate}}
+            {{> whalletInputInWaitingAction action=action}}
+            {{/each}}
+        </div>
+        <div class="item item-card">
+            {{#if selectSpend}}
+             <button class="button button-small action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small button-dark action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
+            {{else}}
+             <button class="button button-small button-dark action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
+            {{/if}}
+             {{#if scroll3 }}
+            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
+            {{/if}}
+            {{#if scroll4 }}
+            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont couté des crédits</p>
+            {{/if}}
+          
+            {{#if selectSpend }}
+            <div class="item item-list">
+                {{#each action in actionsSpend}}
+                {{> whalletInputInWaitingAction action=action}}
+                {{/each}}
+            </div>
+            {{else}}
+            <div class="item item-list">
+                {{#each action in actionsValidate}}
+                {{> whalletInputInWaitingAction action=action}}
+                {{/each}}
+            </div>
+            {{/if}}
+        </div>
+        {{/if}}
+    {{/ionContent}}
+    {{/ionView}}
+</template>
+
+<template name='whalletInputAction'>
+    <div class="item item-input">
+        <div class=" col-90">
+            <p>{{> actionDate action=action}} </p>
+          <h2> {{> linkForAction action=action}}</h2>
+          <div>
+            <p>{{> actionDuration action=action }}<br></p>
+          </div>
+          {{> buttonActionFinish action=action}}
+        </div>  
+        
+        {{#if displayDesc}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
+        {{else}}
+            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+        {{/if}}
+        </div>
+
+    {{#if displayDesc}}
+        <div class="item item-text"> {{action.description}}</div>
+    {{/if}}
+</template>
+
+<template name='whalletInputInWaitingAction'>
+    <div class="item item-input">
+        <div class="col-66">
+            {{> linkForAction action=action}}
+        </div>
+        <div class="col text-center">  
+            <b> {{action.credits}} R</b>
+        </div>
+    </div>
+</template>
+<template name='buttonActionFinish'>
+    <div class="button-bar bar-positive">
+        <button class="button button-small button-positive bu finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
+    </div>
+</template >
+
+<template name="myAccount">
+
+</template>

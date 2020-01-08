@@ -1,0 +1,48 @@
+<template name="actionView">
+        {{#contentFor "headerTitle"}}
+                <h1 class="title">{{thisAction.name}}</h1>
+        {{/contentFor}}
+        {{#contentFor "headerButtonLeft"}}
+                 {{>ionNavBackButton}}
+
+        {{/contentFor}}
+        {{#contentFor "headerButtonRight"}}
+                <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
+                        {{#transition in="bounceInDown" out="bounceOutUp"}}
+                                {{#if notificationsCount}}
+                                        <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
+                                {{/if}}
+                        {{/transition}}
+                </button>
+         {{/contentFor}}
+         {{#ionView}}
+         {{#ionContent class="scroll-bg"}}
+         {{#if dataReady}}
+         <div class="list list-inset">
+                <ul>
+                        <li> <b>Description </b>{{thisAction.description}}</li>
+                        <li><b>Date: </b>{{projectDay thisAction.startDate}} à {{projectHour thisAction.startDate}} </li>
+                        <li><b>Durée:</b> {{projectDuration thisAction.startDate thisAction.endDate}} H</li>
+                        <li> <b>Participant min:</b> {{thisAction.min}}</li>
+                        <li> <b>Participant max:</b> {{thisAction.max}} </li>
+                        <li> <b> Total inscrit:</b> {{actionParticipantsNbr}} </li>
+                        {{> participantList users=actionParticipantsId}}
+                </ul> 
+                {{>buttonSubscribeAction id=thisAction._id._str }}
+        </div> 
+        {{/if}}
+         {{/ionContent}}
+         {{/ionView}}               
+</template>
+
+<template name="participantList">
+        <li> <b>Participants:</b>
+                {{#each user in users}}
+                {{> userPublicProfileLink user=user}}
+                {{/each}}  
+        </li>
+</template>
+
+<template name="userPublicProfileLink">
+        <p> <b><a href="{{pathFor 'userPublicProfile' id=user._id._str }} " >{{user.name}}</a> </b> <br></p>
+</template>
