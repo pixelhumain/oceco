@@ -24,24 +24,39 @@
   
     {{#ionView}}
       {{#ionContent class="scroll-bg"}}
-        
-        <div class="item item-light item-input item-select">
+        <div class="list">
 
-            <!-- <button id="sortByDate" class="button">Trie par date</button> -->
-            {{>scrollPrez title='Accueil' prez= ""  }}
+      <div class="item item-light item-divider">
+      <div class="row row-center row-no-padding">
+        <div class="col col-center">
+          <i class="icon ion-ios-home"></i> Accueil
+        </div>
+        <div class="col-30 col-center text-left">
 
-          <select  name="sortByDay" id="sortByDay">
-            <option value="">Trier par jour</option>
-            <option value="lundi">lundi</option>
-            <option value="mardi">mardi</option>
-            <option value="mercredi">mercredi</option>
-            <option value="jeudi">jeudi</option>
-            <option value="vendredi">vendredi</option>
-            <option value="samedi">samedi</option>
-            <option value="dimanche">dimanche</option>
-          </select>
+            <select name="sortByDay" id="sortByDay" class="item item-light item-input item-select">
+              <option value="">Trier par jour</option>
+              <option value="lundi">lundi</option>
+              <option value="mardi">mardi</option>
+              <option value="mercredi">mercredi</option>
+              <option value="jeudi">jeudi</option>
+              <option value="vendredi">vendredi</option>
+              <option value="samedi">samedi</option>
+              <option value="dimanche">dimanche</option>
+            </select>
+  
 
         </div>
+      </div>
+      </div>
+      <div class="item item-dark item-text-wrap">
+        Liste des actions auquel vous pouvez participer
+      </div>
+
+
+
+
+          
+ 
         {{#if dataReady}}
         {{#each action in projectAction}}  
        
@@ -49,14 +64,15 @@
         
         {{/each}}
         {{/if}}
+         </div>
       {{/ionContent}}
     {{/ionView}}
 </template>
 
 <template name="itemAction">
-  <div class="list">
+
       {{> itemInputAction action=action}}
-  </div>
+ 
   </template>
 
 <template name="itemInputAction">
