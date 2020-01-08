@@ -17,6 +17,7 @@
          {{/contentFor}}
          {{#ionView}}
          {{#ionContent class="scroll-bg"}}
+         {{#if dataReady}}
          <div class="list list-inset">
                 <ul>
                         <li> <b>Description </b>{{thisAction.description}}</li>
@@ -29,6 +30,7 @@
                 </ul> 
                 {{>buttonSubscribeAction id=thisAction._id._str }}
         </div> 
+        {{/if}}
          {{/ionContent}}
          {{/ionView}}               
 </template>

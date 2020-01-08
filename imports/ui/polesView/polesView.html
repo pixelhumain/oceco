@@ -25,6 +25,7 @@
 
   {{#ionView}}
     {{#ionContent class="scroll-bg"}}
+    {{#if dataReady}}
       {{#each project in poleProjects}}
        
           <div class="list list-inset">
@@ -34,13 +35,14 @@
               {{project.name}} <p class="badge badge-dark" >{{projectNbActions project._id}} {{> ionIcon icon="clock"}} </p>
               
             {{#each action in projectAction project._id}}
-              {{> ItemInputAction action=action}}
+              {{> itemInputAction action=action}}
             {{/each}}
           </div>
 
           </div>
         
       {{/each}}     
+      {{/if}}
     {{/ionContent}}
   {{/ionView}}
 </template>

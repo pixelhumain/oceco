@@ -27,11 +27,13 @@
 
     {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' }}
 
+    {{#if dataReady}}
         <div class="item item-card">
             <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b><i class="icon ion-help"></i></b></a> </h2>
             {{#if scroll1 }}
             <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
             {{/if}}
+
                 {{#each action in actionsInWaiting}}
                 {{> whalletInputAction action=action}}
                 {{/each}}
@@ -42,7 +44,7 @@
             <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
             {{/if}}
             {{#each action in actionsToValidate}}
-            {{> WhalletInputInWaitingAction action=action}}
+            {{> whalletInputInWaitingAction action=action}}
             {{/each}}
         </div>
         <div class="item item-card">
@@ -61,17 +63,18 @@
             {{#if selectSpend }}
             <div class="item item-list">
                 {{#each action in actionsSpend}}
-                {{> WhalletInputInWaitingAction action=action}}
+                {{> whalletInputInWaitingAction action=action}}
                 {{/each}}
             </div>
             {{else}}
             <div class="item item-list">
                 {{#each action in actionsValidate}}
-                {{> WhalletInputInWaitingAction action=action}}
+                {{> whalletInputInWaitingAction action=action}}
                 {{/each}}
             </div>
             {{/if}}
         </div>
+        {{/if}}
     {{/ionContent}}
     {{/ionView}}
 </template>
@@ -99,7 +102,7 @@
     {{/if}}
 </template>
 
-<template name='WhalletInputInWaitingAction'>
+<template name='whalletInputInWaitingAction'>
     <div class="item item-input">
         <div class="col-66">
             {{> linkForAction action=action}}

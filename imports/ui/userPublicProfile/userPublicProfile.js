@@ -21,9 +21,15 @@ window.Citoyens = Citoyens;
 window.Actions = Actions;
 
 Template.userPublicProfile.onCreated(function() {
-  const memberId = Router.current().params.id;
-  this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
-  this.subscribe('member.profile', memberId);
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    const memberId = Router.current().params.id;
+    const handle = this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
+    const handleProfile = this.subscribe('member.profile', memberId);
+    if (handle.ready() && handleProfile.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
 });
 
 Template.userPublicProfile.helpers({
@@ -32,6 +38,9 @@ Template.userPublicProfile.helpers({
     const id = new Mongo.ObjectID(memberId);
     console.log(Citoyens.find({ _id: id }).fetch());
     return Citoyens.findOne({ _id: id });
+  },
+  dataReady() {
+    return Template.instance().ready.get();
   },
 })
 ;

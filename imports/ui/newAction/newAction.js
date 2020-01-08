@@ -24,13 +24,15 @@ window.Actions = Actions;
 window.Rooms = Rooms;
 
 Template.newAction.onCreated(function() {
-  Meteor.subscribe('notificationsUser');
-  this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId);
-  this.autorun(function() {
-    // pageSession.set('scopeId', "5deb282c064fca0c008b4569");
-    pageSession.set('scope', 'projects');
-    pageSession.set('roomId', Meteor.settings.public.orgaCibleId);
-  });
+  this.ready = new ReactiveVar(false);
+  pageSession.set('scope', 'projects');
+  pageSession.set('roomId', Meteor.settings.public.orgaCibleId);
+  this.autorun(function () {
+    const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId);
+    if (handle.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
 });
 
 AutoForm.addHooks(['addAction', 'editAction'], {
@@ -82,6 +84,9 @@ AutoForm.addHooks(['addAction', 'editAction'], {
 Template.newAction.helpers({
   Projects() {
     return Projects.find();
+  },
+  dataReady() {
+    return Template.instance().ready.get();
   },
 });
 Template.actionsFields.helpers({

@@ -25,7 +25,7 @@
         {{#ionContent}}
 
         {{> scrollPrez title='Ajout Action' prez='Remplissez ce formulaire pour créer une action. Crédit (crédits temps gagné par le volontaire) [!] Un crédit négatif entraine un cout pour l\'utilisateur [!] ' }}
-
+        {{#if dataReady}}
                <div class="item item-divider">
                 
                 {{__ "creating a new action"}}
@@ -54,6 +54,7 @@
                         </div>
                     </div>
                 {{/autoForm}}
+                {{/if}}
         {{/ionContent}}
     {{/ionView}}
 </template>

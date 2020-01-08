@@ -14,13 +14,14 @@
     {{#ionView}}
         {{#ionContent}}
             {{#ionList class="my-class"}}
-               
+               {{#if dataReady}}
                  {{> imgDoc profilThumbImageUrl=userLooked.profilThumbImageUrl resized="340x340"}}
                  {{#ionItem class="text-center"}}
                     <h2>{{userLooked.name}}</h2>
                     <p>Nombre d'heure gagné: </p>
 
                  {{/ionItem}}
+                 {{/if}}
             {{/ionList}}
         {{/ionContent}}
     {{/ionView}}

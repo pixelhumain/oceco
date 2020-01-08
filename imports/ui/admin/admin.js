@@ -22,9 +22,16 @@ window.Actions = Actions;
 
 
 Template.adminDashboard.onCreated(function() {
-  this.subscribe('action.to.admin', Meteor.settings.public.orgaCibleId);
-  this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    const handle = this.subscribe('action.to.admin', Meteor.settings.public.orgaCibleId);
+    const handleScope = this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
+    if (handle.ready() && handleScope.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
 });
+
 Template.adminDashboard.events({
   'click .admin-validation-js'(event, instance) {
     event.preventDefault();
@@ -55,8 +62,11 @@ Template.adminDashboard.helpers({
   },
   userTovalidate(actions) {
     const idArray = Reflect.ownKeys(actions);
-    const objIdArray = idArray.map(id => id = new Mongo.ObjectID(id));
+    const objIdArray = idArray.map(id => new Mongo.ObjectID(id));
     return Citoyens.find({ _id: { $in: objIdArray } });
+  },
+  dataReady() {
+    return Template.instance().ready.get();
   },
 });
 

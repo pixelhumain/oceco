@@ -27,7 +27,10 @@ window.Rooms = Rooms;
 Template.wallet.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    this.subscribe('user.actions', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('user.actions', Meteor.settings.public.orgaCibleId);
+    if (handle.ready()) {
+      this.ready.set(handle.ready());
+    }
   }.bind(this));
   this.scroll1 = new ReactiveVar(false);
   this.scroll2 = new ReactiveVar(false);
@@ -149,6 +152,9 @@ Template.wallet.helpers({
   selectSpend() {
     return Template.instance().displaySpendActions.get();
   },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
 });
 
 Template.buttonActionFinish.helpers({
@@ -162,8 +168,6 @@ Template.buttonActionFinish.helpers({
 });
 
 Template.whalletInputAction.onCreated(function() {
-  this.autorun(function () {
-  });
   this.displayDesc = new ReactiveVar(false);
 });
 

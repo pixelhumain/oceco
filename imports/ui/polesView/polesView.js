@@ -26,9 +26,14 @@ window.Projects = Projects;
 window.Citoyens = Citoyens;
 
 Template.polesView.onCreated(function() {
-  const poleName = Router.current().params.pole;
-  Meteor.subscribe('notificationsUser');
-  this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId, poleName);
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    const poleName = Router.current().params.pole;
+    const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId, poleName);
+    if (handle.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
 // this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
 // this.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
 // this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
@@ -62,6 +67,9 @@ Template.polesView.helpers({
     const startDate = moment(start);
     const endDate = moment(end);
     return Math.round(endDate.diff(startDate, 'minutes') / 60);
+  },
+  dataReady() {
+    return Template.instance().ready.get();
   },
 });
 

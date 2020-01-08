@@ -5,7 +5,7 @@ import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
- 
+
 import './home.html';
 import { arrayLinkProper } from '../../api/helpers';
 
@@ -16,7 +16,7 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 
- 
+
 window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
@@ -34,33 +34,27 @@ Template.home.onCreated(function() {
 });
 
 
-Template.ItemInputAction.onCreated(function() {
-  this.autorun(function () {
-  }.bind(this));
+Template.itemInputAction.onCreated(function() {
   this.displayDesc = new ReactiveVar(false);
 });
 
-Template.ItemInputAction.events({
+Template.itemInputAction.events({
   'click .display-desc-js'(event, instance) {
-
     event.preventDefault();
     if (!Template.instance().displayDesc.get()) {
       Template.instance().displayDesc.set(true);
+    } else {
+      Template.instance().displayDesc.set(false);
     }
-    else  {
-      Template.instance().displayDesc.set(false)
-    }     
   },
-})
-Template.ItemInputAction.helpers({
-  displayDesc(){
-    return Template.instance().displayDesc.get()
-  }
-})
+});
+Template.itemInputAction.helpers({
+  displayDesc() {
+    return Template.instance().displayDesc.get();
+  },
+});
 
 Template.scrollPrez.onCreated(function() {
-  this.autorun(function () {
-  }.bind(this));
   this.scrollPrez = new ReactiveVar(false);
 });
 
@@ -69,17 +63,16 @@ Template.scrollPrez.events({
     event.preventDefault();
     if (!Template.instance().scrollPrez.get()) {
       Template.instance().scrollPrez.set(true);
+    } else {
+      Template.instance().scrollPrez.set(false);
     }
-    else  {
-      Template.instance().scrollPrez.set(false)
-    }     
   },
-})
+});
 Template.scrollPrez.helpers({
-  scrollP(){
-    return Template.instance().scrollPrez.get()
-  }
-})
+  scrollP() {
+    return Template.instance().scrollPrez.get();
+  },
+});
 
 Template.home.events({
   'click #sortByDate '(event, instance) {
@@ -93,7 +86,7 @@ Template.home.events({
 
 Template.buttonSubscribeAction.events({
   'click .assign-action-js' (event, instance) {
-    event.preventDefault();       
+    event.preventDefault();
     Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__('Pas assé de crédits désolé') });
@@ -116,7 +109,7 @@ Template.actionParticipantNeeded.helpers({
     // const actionId = Router.current().params.id
     // const actionObjectId = new Mongo.ObjectID(actionId)
     const actionCursor = Actions.findOne({ _id: actionId });
-    if (actionCursor.links != undefined) {
+    if (actionCursor && actionCursor.links) {
       const numberParticipant = arrayLinkProper(actionCursor.links.contributors).length;
       return numberParticipant;
     }
@@ -131,8 +124,7 @@ Template.actionDate.helpers({
 });
 Template.home.helpers({
   projectAction() {
-
-    const userAddedAction = 'links.contributors.'+Meteor.userId()
+    const userAddedAction = `links.contributors.${Meteor.userId()}`;
     if (Template.instance().sortByDate.get()) {
       if (Template.instance().sortByDay.get()) {
         const dayWanted = Template.instance().sortByDay.get();
@@ -144,10 +136,10 @@ Template.home.helpers({
             arrayActionToDisplay.push(action._id);
           }
         });
-        return Actions.find({$and: [{ _id: { $in: arrayActionToDisplay } }, { sort: { startDate: 1 } },
-        {[userAddedAction]: {exists: false}}]});
+        return Actions.find({ $and: [{ _id: { $in: arrayActionToDisplay } }, { sort: { startDate: 1 } },
+          { [userAddedAction]: { exists: false } }] });
       }
-      return Actions.find({$and: [{}, { sort: { startDate: -1 } },{[userAddedAction]: {$exists: false}}]});
+      return Actions.find({ $and: [{}, { sort: { startDate: -1 } }, { [userAddedAction]: { $exists: false } }] });
     }
     if (Template.instance().sortByDay.get()) {
       const dayWanted = Template.instance().sortByDay.get();
@@ -159,21 +151,24 @@ Template.home.helpers({
           arrayActionToDisplay.push(action._id);
         }
       });
-      return Actions.find({$and: [{ _id: { $in: arrayActionToDisplay } },
-        {[userAddedAction]: {$exists: false}}]});
+      return Actions.find({ $and: [{ _id: { $in: arrayActionToDisplay } },
+        { [userAddedAction]: { $exists: false } }] });
     }
-    return Actions.find({$and: [{},{[userAddedAction]: {$exists: false}}]});
+    return Actions.find({ $and: [{}, { [userAddedAction]: { $exists: false } }] });
   },
   returnId(id) {
     return id.valueOf();
   },
-  
-})
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
 Template.buttonSubscribeAction.helpers({
-  creditPositive(credit){
+  creditPositive(credit) {
     if (credit >= 0) {
-      return true
+      return true;
     }
-    else{ return false}
-  }
-})
+    return false;
+  },
+});
