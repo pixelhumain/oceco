@@ -26,22 +26,20 @@
   {{#ionView}}
     {{#ionContent class="scroll-bg"}}
     {{#if dataReady}}
+    <div class="list">
       {{#each project in poleProjects}}
        
-          <div class="list list-inset">
-
-            <div class="item item-body ">
+            <div class="item item-stable item-avatar">
               {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
-              {{project.name}} <p class="badge badge-dark" >{{projectNbActions project._id}} {{> ionIcon icon="clock"}} </p>
-              
+              {{project.name}} 
+              <p class="badge badge-dark">{{projectNbActions project._id}} <span>{{> ionIcon icon="clock"}}</span></p>
+              </div>
+
             {{#each action in projectAction project._id}}
               {{> itemInputAction action=action}}
             {{/each}}
-          </div>
-
-          </div>
-        
-      {{/each}}     
+      {{/each}} 
+      </div>
       {{/if}}
     {{/ionContent}}
   {{/ionView}}
