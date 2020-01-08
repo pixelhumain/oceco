@@ -495,3 +495,9 @@ $button-follower-active-border:   darken($assertive, 10%) !default;
     top: 90px;
     left: 10px;
 }
+
+.borderMenuItem{
+
+  border-left-width: 1px;
+  border-left-style: solid;
+}

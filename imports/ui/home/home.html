@@ -54,44 +54,49 @@
 </template>
 
 <template name="itemAction">
-  <div class="list list-inset">
+  <div class="list">
       {{> itemInputAction action=action}}
   </div>
   </template>
-<template name="itemInputAction" >
-  <div class="item item-input">
-    <div class="col-90">
-      <p>{{> actionDate action=action}} </p>
-      <h2 class="title">{{> linkForAction action=action}}</h2>
-      <div>
-        <p>
-        {{> actionParticipantNeeded action=action}}                                  
-        {{> actionDuration action=action }}
-        </p>        
+
+<template name="itemInputAction">
+  <div class="item">
+    <div class="row row-center padding-bottom">
+      <div class="col">{{> actionDate action=action}}</div>
+      {{> actionParticipantNeeded action=action}}
+      {{> actionDuration action=action }}
+    </div>
+    <div class="row row-center">
+      <div class="col-90 col-center">
+        <a href="{{pathFor 'actionView' id=action._id._str }} " class="subdued dark item-content">{{action.name}}</a>
       </div>
+      <div class="col-10">
+        {{#if displayDesc}}
+        <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
+        {{else}}
+        <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+        {{/if}}
+      </div>
+    </div>
+    <div class="row">
       {{>buttonSubscribeAction id=action._id._str action=action }}
-    </div>  
-    
+    </div>
     {{#if displayDesc}}
-    <div class="button button-small right-top display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
-    {{else}}
-
-    <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
+    <div class="item item-text-wrap">{{action.description}}</div>
     {{/if}}
-
   </div>
-  {{#if displayDesc}}
-  <div class=" ">{{action.description}}</div>
- 
-  {{/if}}
-</template >
+</template>
+
 <template name="actionDuration">
-  <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b>                </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H </div>
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-cash"></i> {{action.credits}}
+    R</div>
 </template>
 
 <template name="actionParticipantNeeded">
-  <span> {{> ionIcon icon="man"}}:{{actionParticipantsNbr action._id}} <b>                 </b>
-  <i class="icon ion-ios-arrow-down"></i>{{action.min}}<i class="icon ion-ios-arrow-up"></i>{{action.max}} </span>
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-man"></i> {{actionParticipantsNbr action._id}}</div>
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-down"></i> {{action.min}}</div>
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-up"></i> {{action.max}}</div>
 </template>
 
 <template name="actionDate">
@@ -111,24 +116,26 @@
 
 <template name="buttonSubscribeAction">
   {{#if creditPositive action.credits }}
-  <div class="button-bar bar-positive">
-    <button class="button button-dark button-small assign-action-js"><i class="fa fa-handshake-o"></i> Participer</button>
-  </div>
+    <button class="button button-dark button-block button-small assign-action-js {{#if isCall}}disabled{{/if}}">
+{{#if isCall}}
+<i class="icon fa fa-refresh fa-spin"></i>
+{{else}}
+<i class="fa fa-handshake-o"></i> Participer
+{{/if}}
+    </button>
   {{else}}
     {{#if action}}
-    <div class="button-bar bar-positive">
-      <button class="button button-positive button-small assign-action-js"><i class="fa fa-handshake-o"></i> Dépenser</button>
-    </div>
+      <button class="button button-positive button-block button-small assign-action-js"><i class="fa fa-handshake-o"></i> Dépenser</button>
     {{/if}}
   {{/if}}
 </template>
 
 <template name="scrollPrez">
- <div class="item">/{{title}} <a href="" class="scroll-prez-js"><i class="icon ion-help"></i></a></div>
- {{#if scrollP}}
-  <div class="item">
+ <div class="item item-light item-divider">{{#if icon}}<i class="icon {{icon}}"></i> {{/if}}{{title}}</div>
+
+  <div class="item item-dark item-text-wrap">
  {{prez}}
   </div>
- {{/if}}
+
 </template>
 

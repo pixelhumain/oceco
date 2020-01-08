@@ -26,7 +26,7 @@ const callPixelRest = (token, method, controller, action, post) => {
     return responsePost;
   }
   if (responsePost && responsePost.data && responsePost.data.msg) {
-    // console.log(responsePost);
+     console.log(responsePost);
     throw new Meteor.Error('error_call', responsePost.data.msg);
   } else {
     throw new Meteor.Error('error_server', 'error server');

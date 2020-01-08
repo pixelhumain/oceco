@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
@@ -84,12 +85,29 @@ Template.home.events({
   },
 });
 
+Template.buttonSubscribeAction.onCreated(function () {
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    call: false,
+  });
+});
+
+Template.buttonSubscribeAction.helpers({
+  isCall() {
+    return Template.instance().state.get('call');
+  },
+});
+
 Template.buttonSubscribeAction.events({
   'click .assign-action-js' (event, instance) {
     event.preventDefault();
+    instance.state.set('call', true);
     Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
       if (error) {
+        console.log(error);
         IonPopup.alert({ template: i18n.__('Pas assé de crédits désolé') });
+        instance.state.set('call', false);
+      } else {
       }
     });
   },

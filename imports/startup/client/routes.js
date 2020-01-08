@@ -25,7 +25,7 @@ Router.map(function() {
     onBeforeAction() {
       if (Meteor.userId()) {
         Meteor.logout();
-        this.redirect('detailListHome');
+        this.redirect('home');
       }
       this.next();
       // Router.go('/');
@@ -38,7 +38,7 @@ Router.map(function() {
     loadingTemplate: 'loading',
   }); */
 
-  this.route('detailListHome', {
+  /*this.route('detailListHome', {
     before () {
       if (Meteor.userId()) {
         // this.redirect('actusList', { scope: 'citoyens', _id: Meteor.userId() });
@@ -60,7 +60,7 @@ Router.map(function() {
     path: '/dashboard',
     template: 'dashboard',
     loadingTemplate: 'loading',
-  });
+  });*/
 
   this.route('about', {
     path: '/about',
@@ -520,7 +520,7 @@ Router.map(function() {
   });
   this.route('home', {
     template: 'home',
-    path: '/home',
+    path: '/',
     loadingTemplate: 'loading',
 
   });

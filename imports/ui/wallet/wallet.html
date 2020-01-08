@@ -24,99 +24,104 @@
 
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
-
-    {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' }}
+    <div class="list">
+    {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' icon="ion-clock"}}
 
     {{#if dataReady}}
-        <div class="item item-card">
-            <h2 class="item-title"><b> A faire</b>  <a href="#" id="scroll-1-js"><b><i class="icon ion-help"></i></b></a> </h2>
-            {{#if scroll1 }}
-            <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
-            {{/if}}
+    <div class="item tabs">
+    <div class="tabs tabs-striped">
+        <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">A faire</a>
+        <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
+        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
+        <a class="tab-item {{#if equals selectview 'depenses'}}tab-item-active{{/if}} change-selectview-js" id="depenses">Dépensés</a>
+    </div>
+    </div>
+    
+    {{#if equals selectview 'aFaire'}}
+    <div class="item item-divider">A faire</div>
+    <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
 
-                {{#each action in actionsInWaiting}}
-                {{> whalletInputAction action=action}}
-                {{/each}}
-        </div>
-        <div class="item item-card">
-            <h2 class="item-title"><b> En attente de validations</b> <a href="#" id="scroll-2-js"><b><i class="icon ion-help"></i></b></a></h2>
-            {{#if scroll2 }}
-            <p class="item-content"> C'est la liste de toute vos actions finis<br> qui doivent êtres validé par un administrateur</p>
-            {{/if}}
-            {{#each action in actionsToValidate}}
-            {{> whalletInputInWaitingAction action=action}}
-            {{/each}}
-        </div>
-        <div class="item item-card">
-            {{#if selectSpend}}
-             <button class="button button-small action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small button-dark action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
-            {{else}}
-             <button class="button button-small button-dark action-validate-js"> Validés </button> <a href="#" id="scroll-3-js"><b><i class="icon ion-help"></i></b></a>   <button  class="button button-small action-spend-js"> Dépensés </button> <a href="#" id="scroll-4-js"><b><i class="icon ion-help"></i></b></a>
-            {{/if}}
-             {{#if scroll3 }}
-            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont rapporté des crédits</p>
-            {{/if}}
-            {{#if scroll4 }}
-            <p class="item-content"> C'est la liste de toute vos ancienne actions<br> qui vous ont couté des crédits</p>
-            {{/if}}
-          
-            {{#if selectSpend }}
-            <div class="item item-list">
-                {{#each action in actionsSpend}}
-                {{> whalletInputInWaitingAction action=action}}
-                {{/each}}
-            </div>
-            {{else}}
-            <div class="item item-list">
-                {{#each action in actionsValidate}}
-                {{> whalletInputInWaitingAction action=action}}
-                {{/each}}
-            </div>
-            {{/if}}
-        </div>
+        {{#each action in actionsInWaiting}}
+        {{> whalletInputAction action=action}}
+        {{/each}}
+        
+    
+    {{else if equals selectview 'enAttente'}}
+    <div class="item item-divider">En attente de validations</div>
+    <div class="item item-text-wrap">C'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur</div>
+
+        {{#each action in actionsToValidate}}
+        {{> whalletInputInWaitingAction action=action badgeColor="energized"}}
+        {{/each}}
+
+    {{else if equals selectview 'valides'}}
+        <div class="item item-divider">Validés</div>
+        <div class="item item-text-wrap">C'est la liste de toute vos ancienne actions qui vous ont rapporté des
+            crédits</div>
+
+        {{#each action in actionsValidate}}
+        {{> whalletInputInWaitingAction action=action badgeColor="balanced"}}
+        {{/each}}
+
+
+    {{else if equals selectview 'depenses'}}
+    <div class="item item-divider">Dépensés</div>
+    <div class="item item-text-wrap">C'est la liste de toute vos ancienne actions qui vous ont couté des crédits
+    </div>
+
+    {{#each action in actionsSpend}}
+    {{> whalletInputInWaitingAction action=action badgeColor="dark"}}
+    {{/each}}
+
+    {{/if}}
+    
+    
         {{/if}}
+        </div>
     {{/ionContent}}
     {{/ionView}}
 </template>
 
 <template name='whalletInputAction'>
-    <div class="item item-input">
-        <div class=" col-90">
-            <p>{{> actionDate action=action}} </p>
-          <h2> {{> linkForAction action=action}}</h2>
-          <div>
-            <p>{{> actionDuration action=action }}<br></p>
-          </div>
-          {{> buttonActionFinish action=action}}
-        </div>  
-        
-        {{#if displayDesc}}
-            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-up"></i> </div>
-        {{else}}
-            <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
-        {{/if}}
+    <div class="item">
+    <div class="row padding-bottom">
+        <div class="col-50">{{> actionDate action=action}}</div>
+        <div class="col-50 text-right">
+            <div class="row row-no-padding">{{> actionDuration action=action }}</div>
         </div>
-
+    </div>
+    <div class="row row-center">
+        <div class="col-90 col-center">
+            <a href="{{pathFor 'actionView' id=action._id._str }} " class="subdued dark item-content">{{action.name}}</a>
+        </div>
+        <div class="col-10">
+            {{#if displayDesc}}
+            <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
+            {{else}}
+            <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+            {{/if}}
+        </div>
+    </div>
+    <div class="row">
+        {{> buttonActionFinish action=action}}
+    </div>
     {{#if displayDesc}}
-        <div class="item item-text"> {{action.description}}</div>
+    <div class="item item-text-wrap">{{action.description}}</div>
     {{/if}}
+    </div>
 </template>
 
 <template name='whalletInputInWaitingAction'>
-    <div class="item item-input">
-        <div class="col-66">
-            {{> linkForAction action=action}}
-        </div>
-        <div class="col text-center">  
-            <b> {{action.credits}} R</b>
-        </div>
-    </div>
+<a href="{{pathFor 'actionView' id=action._id._str }} " class="item">{{action.name}}
+    <div class="badge badge-{{badgeColor}}">{{action.credits}} R</div>
+</a>
 </template>
+
 <template name='buttonActionFinish'>
-    <div class="button-bar bar-positive">
-        <button class="button button-small button-positive bu finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
-    </div>
-</template >
+
+        <button class="button button-small button-positive button-block finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
+
+</template>
 
 <template name="myAccount">
 

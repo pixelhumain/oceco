@@ -5,7 +5,17 @@ import { Accounts } from 'meteor/accounts-base';
 
 // collection
 import { Citoyens } from '../citoyens.js';
+import { apiCommunecter } from './api.js';
 
+/* const validateEntityByPass = (childId) => {
+  const doc = {};
+  doc.parentId = Meteor.settings.public.orgaCibleId;
+  doc.parentType = 'organizations';
+  doc.childId = childId;
+  doc.childType = 'citoyens';
+  doc.linkOption = 'toBeValidated';
+  const retour = apiCommunecter.postPixel('co2/link', 'validate', doc);
+}; */
 Accounts.onLogin(function(user) {
 // console.log(user.user._id)
   const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(user.user._id) }, { fields: { pwd: 0 } });
@@ -13,12 +23,11 @@ Accounts.onLogin(function(user) {
   if (!userC) {
   // throw new Meteor.Error(Accounts.LoginCancelledError.numericError, 'Communecter Login Failed');
   } else {
-
     if (!userC.isScope('organizations', Meteor.settings.public.orgaCibleId)) {
       Meteor.call('connectEntity', Meteor.settings.public.orgaCibleId, 'organizations', userC._id._str, 'member');
     }
-    
-  // ok valide
+
+    // ok valide
     const userM = Meteor.users.findOne({ _id: userC._id._str });
     // console.log(userM);
     if (userM && userM.profile && userM.profile.pixelhumain) {
@@ -30,7 +39,6 @@ Accounts.onLogin(function(user) {
       const userId = userM._id;
       Meteor.users.update(userId, { $set: { 'profile.pixelhumain': userC } });
     }
-    
   }
 });
 

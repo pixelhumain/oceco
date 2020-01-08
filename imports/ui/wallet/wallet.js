@@ -38,6 +38,7 @@ Template.wallet.onCreated(function() {
   this.scroll4 = new ReactiveVar(false);
   this.displayValidateActions = new ReactiveVar(true);
   this.displaySpendActions = new ReactiveVar(false);
+  this.selectview = new ReactiveVar('aFaire');
 });
 
 
@@ -70,7 +71,7 @@ Template.wallet.events({
       Template.instance().scroll2.set(true);
     } else Template.instance().scroll2.set(false);
   },
-  'click #scroll-3-js'(event, instance) {
+  'click .scroll-3-js'(event, instance) {
     event.preventDefault();
     if (!Template.instance().scroll3.get()) {
       Template.instance().scroll3.set(true);
@@ -79,13 +80,13 @@ Template.wallet.events({
       }
     } else Template.instance().scroll3.set(false);
   },
-  'click #scroll-4-js'(event, instance) {
+  'click .scroll-4-js'(event, instance) {
     event.preventDefault();
     if (!Template.instance().scroll4.get()) {
       Template.instance().scroll4.set(true);
-    }
-    if (Template.instance().scroll3.get()) {
-      Template.instance().scroll3.set(false);
+      if (Template.instance().scroll3.get()) {
+        Template.instance().scroll3.set(false);
+      }
     } else Template.instance().scroll4.set(false);
   },
   'click .action-validate-js'(event, instance) {
@@ -106,6 +107,11 @@ Template.wallet.events({
       Template.instance().displaySpendActions.set(true);
     }
   },
+  'click .change-selectview-js'(event, instance) {
+    event.preventDefault();
+    Template.instance().selectview.set(event.currentTarget.id);
+  },
+
 });
 
 
@@ -154,6 +160,9 @@ Template.wallet.helpers({
   },
   dataReady() {
     return Template.instance().ready.get();
+  },
+  selectview() {
+    return Template.instance().selectview.get();
   },
 });
 

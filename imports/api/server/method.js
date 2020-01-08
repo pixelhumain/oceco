@@ -2520,29 +2520,30 @@ export const assignmeActionRooms = new ValidatedMethod({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-   
+
+    
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
     const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
     if (!action) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('not-authorized action');
     } else {
       const room = Rooms.findOne({ _id: new Mongo.ObjectID(action.idParentRoom) });
       if (!room) {
-        throw new Meteor.Error('not-authorized');
-      } else if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(room.parentType, room.parentId)) {
+        throw new Meteor.Error('not-authorized room');
+      }/* else if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(room.parentType, room.parentId)) {
         if (room.roles && room.roles.length > 0) {
           const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId).split(',') : null;
           if (roles && room.roles.some(role => roles.includes(role))) {
             // true
           } else {
             // false
-            throw new Meteor.Error('not-authorized');
+            throw new Meteor.Error('not-authorized roles');
           }
         }
       } else {
-        throw new Meteor.Error('not-authorized');
-      }
+        throw new Meteor.Error('not-authorized citoyen');
+      }*/
     }
     if (!walletIsOk(id)) {
       throw new Meteor.Error('Pas assé de');
