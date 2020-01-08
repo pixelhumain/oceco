@@ -84,6 +84,7 @@
           <div>
             <p>{{> actionDuration action=action }}<br></p>
           </div>
+          {{> buttonActionFinish action=action}}
         </div>  
         
         {{#if displayDesc}}
@@ -92,10 +93,10 @@
             <div class="button button-small display-desc-js" > <i class="icon ion-ios-arrow-down"></i> </div>
         {{/if}}
         </div>
+
     {{#if displayDesc}}
         <div class="item item-text"> {{action.description}}</div>
     {{/if}}
-    {{> buttonActionFinish action=action}}
 </template>
 
 <template name='WhalletInputInWaitingAction'>
@@ -110,8 +111,8 @@
 </template>
 <template name='buttonActionFinish'>
     <div class="button-bar bar-positive">
-        <button class="button button-small finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
-    </div>  
+        <button class="button button-small button-positive bu finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
+    </div>
 </template >
 
 <template name="myAccount">

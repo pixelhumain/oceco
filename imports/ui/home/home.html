@@ -67,8 +67,8 @@
         {{> actionParticipantNeeded action=action}}                                  
         {{> actionDuration action=action }}
         </p>        
-
       </div>
+      {{>buttonSubscribeAction id=action._id._str action=action }}
     </div>  
     
     {{#if displayDesc}}
@@ -83,7 +83,6 @@
   <div class=" ">{{action.description}}</div>
  
   {{/if}}
-  {{>buttonSubscribeAction id=action._id._str action=action }}
 </template >
 <template name="actionDuration">
   <span><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H <b>                </b> <i class="icon ion-cash">  {{action.credits}}  R</i></span>
