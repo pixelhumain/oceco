@@ -42,7 +42,7 @@
       <!-- {{> imgDoc profilThumbImageUrl=poles.profilThumbImageUrl}} -->
         <h2> {{poles}} </h2>    
 
-        <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="button button-dark">
+        <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="button button-dark" data-ion-menu-close>
             <p style="color: white;"> <b>{{nbActionPoles poles}}</b>                           {{> ionIcon icon="clock"}}</p>
           
           </a> 
@@ -81,14 +81,20 @@
 
   {{#ionNavView}}
   {{> yield}}
+
+  {{#if isConnected}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
   {{> ionTab title="Compte R" path="wallet" iconOff="clock" iconOn="clock"}}
+  {{#if isAdmin}}
   {{> ionTab title="Ajout" path="newAction" iconOff="ios-color-wand" iconOn="ios-color-wand"}}
+  {{/if}}
   {{> ionTab title="Agenda" path="todos" iconOff="ios-calendar" iconOn="ios-calendar"}}
   {{> ionTab title="Profile" path="news" iconOff="ios-contact" iconOn="ios-contact"}}
-  
   {{/ionTabs}}
+  {{/if}}
+
+  
   {{/ionNavView}}
 
   {{/ionSideMenuContent}}

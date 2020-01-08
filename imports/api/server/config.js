@@ -13,6 +13,11 @@ Accounts.onLogin(function(user) {
   if (!userC) {
   // throw new Meteor.Error(Accounts.LoginCancelledError.numericError, 'Communecter Login Failed');
   } else {
+
+    if (!userC.isScope('organizations', Meteor.settings.public.orgaCibleId)) {
+      Meteor.call('connectEntity', Meteor.settings.public.orgaCibleId, 'organizations', userC._id._str, 'member');
+    }
+    
   // ok valide
     const userM = Meteor.users.findOne({ _id: userC._id._str });
     // console.log(userM);
@@ -25,6 +30,7 @@ Accounts.onLogin(function(user) {
       const userId = userM._id;
       Meteor.users.update(userId, { $set: { 'profile.pixelhumain': userC } });
     }
+    
   }
 });
 

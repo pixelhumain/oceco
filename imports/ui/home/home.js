@@ -26,7 +26,7 @@ window.Actions = Actions;
 Template.home.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = Meteor.subscribe('poles.actions', '5de9df6d064fca0d008b4568', Router.current().params.pole);
+    const handle = Meteor.subscribe('poles.actions', Meteor.settings.public.orgaCibleId, Router.current().params.pole);
     this.ready.set(handle.ready());
   }.bind(this));
   this.sortByDate = new ReactiveVar(false);

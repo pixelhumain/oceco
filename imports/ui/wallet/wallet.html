@@ -33,7 +33,7 @@
             <p class="item-content"> C'est la liste de toute vos actions <br> à faire au quels vous êtes inscrit</p>
             {{/if}}
                 {{#each action in actionsInWaiting}}
-                {{> WhalletInputAction action=action}}
+                {{> whalletInputAction action=action}}
                 {{/each}}
         </div>
         <div class="item item-card">
@@ -76,7 +76,7 @@
     {{/ionView}}
 </template>
 
-<template name='WhalletInputAction'>
+<template name='whalletInputAction'>
     <div class="item item-input">
         <div class=" col-90">
             <p>{{> actionDate action=action}} </p>

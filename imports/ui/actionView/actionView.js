@@ -24,8 +24,8 @@ import './actionView.html'
 
 Template.actionView.onCreated(function(){
     Meteor.subscribe('notificationsUser');
-    this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
-    this.subscribe('raffinerie.members','5de9df6d064fca0d008b4568' )
+    this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId)
+    this.subscribe('raffinerie.members', Meteor.settings.public.orgaCibleId)
 })
 
 Template.actionView.helpers({

@@ -30,10 +30,10 @@ Template.layout.onCreated(function() {
 
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = Meteor.subscribe('projects.actions', '5de9df6d064fca0d008b4568');
-    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', '5de9df6d064fca0d008b4568');
-    const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', '5de9df6d064fca0d008b4568');
-    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', '5de9df6d064fca0d008b4568');
+    const handle = Meteor.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
+    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
     if (handle.ready() && handleScopeDetail.ready() && handleDirectoryList.ready() && handleDirectoryListProjects.ready()) {
       this.ready.set(handle.ready());
     }
@@ -197,7 +197,7 @@ Template.layout.helpers({
   },
   RaffineriePoles() {
     if (Template.instance().ready.get()) {
-      const id = new Mongo.ObjectID('5de9df6d064fca0d008b4568');
+      const id = new Mongo.ObjectID(Meteor.settings.public.orgaCibleId);
       const raffinerieCursor = Organizations.findOne({ _id: id });
       if (raffinerieCursor) {
         const raffinerieArray = raffinerieCursor.listProjectsCreator();
@@ -219,7 +219,7 @@ Template.layout.helpers({
   //  },
   nbActionPoles(poles) {
     if (Template.instance().ready.get()) {
-      const id = new Mongo.ObjectID('5de9df6d064fca0d008b4568');
+      const id = new Mongo.ObjectID(Meteor.settings.public.orgaCibleId);
       const raffinerieCursor = Organizations.findOne({ _id: id });
       if (raffinerieCursor) {
         const raffProjectsArray = raffinerieCursor.listProjectsCreator();

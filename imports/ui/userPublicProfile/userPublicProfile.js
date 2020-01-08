@@ -12,26 +12,26 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 import { moment } from 'meteor/momentjs:moment';
 
+import './userPublicProfile.html';
+
 window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
 window.Citoyens = Citoyens;
 window.Actions = Actions;
 
-import './userPublicProfile.html'
-
-Template.userPublicProfile.onCreated(function(){
-    let memberId = Router.current().params.id
-    Meteor.subscribe('notificationsUser');
-    this.subscribe('projects.actions','5de9df6d064fca0d008b4568' )
-    this.subscribe('member.profile',memberId )
-})
+Template.userPublicProfile.onCreated(function() {
+  const memberId = Router.current().params.id;
+  this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
+  this.subscribe('member.profile', memberId);
+});
 
 Template.userPublicProfile.helpers({
-    userLooked(){
-        let memberId = Router.current().params.id
-        let id = new Mongo.ObjectID(memberId)
-        console.log(Citoyens.find({_id: id }).fetch())
-        return Citoyens.findOne({_id: id })
-    }
+  userLooked() {
+    const memberId = Router.current().params.id;
+    const id = new Mongo.ObjectID(memberId);
+    console.log(Citoyens.find({ _id: id }).fetch());
+    return Citoyens.findOne({ _id: id });
+  },
 })
+;
