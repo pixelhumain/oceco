@@ -49,9 +49,38 @@ Template.itemInputAction.events({
     }
   },
 });
+
 Template.itemInputAction.helpers({
   displayDesc() {
     return Template.instance().displayDesc.get();
+  },
+  projectDay(date) {
+    return moment(date).format(' ddd Do MMM à h:mm ');
+  },
+  projectDuration(start, end) {
+    const startDate = moment(start);
+    const endDate = moment(end);
+    return Math.round(endDate.diff(startDate, 'minutes') / 60);
+  },
+  creditPositive(credit) {
+    if (credit >= 0) {
+      return true;
+    }
+    return false;
+  },
+  creditNegative(credit){
+    return -credit
+  },
+  actionParticipantsNbr(actionId) {
+    // const actionId = Router.current().params.id
+    // const actionObjectId = new Mongo.ObjectID(actionId)
+    const actionCursor = Actions.findOne({ _id: actionId });
+    if (actionCursor && actionCursor.links) {
+      const numberParticipant = arrayLinkProper(actionCursor.links.contributors).length;
+      return numberParticipant;
+    }
+
+    return 'aucun';
   },
 });
 
