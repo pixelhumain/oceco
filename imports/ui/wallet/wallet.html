@@ -106,7 +106,12 @@
         {{> buttonActionFinish action=action}}
     </div>
     {{#if displayDesc}}
-    <div class="item item-text-wrap">{{action.description}}</div>
+    <div class="item item-text-wrap"><p>{{action.description}}</p></div>
+    <p> <i class="ion-android-calendar"></i>: Début  le {{projectDay action.startDate}} </p>
+    <p><i class="ion-clock"></i>: Durée {{projectDuration action.startDate action.endDate}} H </p>
+    <p><i class="ion-man"></i>: Il y a {{actionParticipantsNbr action._id}} participant</p>
+    <p> <i class="icon ion-ios-arrow-down"></i>: Pour un besoin minimum de {{action.min}} participant</p>
+    <p><i class="icon ion-ios-arrow-up"></i>: Et un maximum de {{action.max}} participant</p>
     {{/if}}
     </div>
 </template>
