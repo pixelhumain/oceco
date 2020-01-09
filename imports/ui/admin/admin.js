@@ -32,6 +32,21 @@ Template.adminDashboard.onCreated(function() {
   }.bind(this));
 });
 
+Template.actionToValidate.onCreated(function(){
+  this.scrollValidateAction = new ReactiveVar(false);;
+
+})
+
+Template.actionToValidate.events({
+  'click .button-validate-js'(event,instance) {
+    event.preventDefault();
+    if (!Template.instance().scrollValidateAction.get()) {
+      Template.instance().scrollValidateAction.set(true);
+    } else {
+      Template.instance().scrollValidateAction.set(false);
+    }
+  },
+})
 Template.adminDashboard.events({
   'click .admin-validation-js'(event, instance) {
     event.preventDefault();
@@ -50,23 +65,28 @@ Template.adminDashboard.events({
 });
 
 Template.adminDashboard.helpers({
+
   actionToaccept() {
-    //     let res = []
-    //    Actions.find({finishedBy : {$exists:true}}).forEach(function (document) {
-    //        res.push(document.finishedBy.getOwnPropertyNames())
-    //    })
     return Actions.find({ finishedBy: { $exists: true } });
   },
+  
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+  
+});
+
+Template.actionToValidate.helpers({
   numberTovalidate(actions) {
     return Reflect.ownKeys(actions).length;
+  },
+  buttonActivate(){
+    return Template.instance().scrollValidateAction.get();
   },
   userTovalidate(actions) {
     const idArray = Reflect.ownKeys(actions);
     const objIdArray = idArray.map(id => new Mongo.ObjectID(id));
     return Citoyens.find({ _id: { $in: objIdArray } });
   },
-  dataReady() {
-    return Template.instance().ready.get();
-  },
-});
+})
 

@@ -36,17 +36,22 @@
 
 <template name="actionToValidate" >
 
-    <div class="item item-input">
-        <div class="col-80">
-        <h2 class="item-title"><b>{{action.name}} </b></h2>
+    <div class="item item-input ">
+        <div class="row">
+        <div class="col-80">  <h3 class="item-title">{{action.name}}</h3>  
+            {{#if buttonActivate}}
+            {{#each  user  in userTovalidate action.finishedBy}}
+    
+            <div class="row">
+                <div class="col-50 col-center"><p>{{user.name}}</p></div>
+                <div class="col-50 col-center"><button class="button button-small admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button></div>
+            </div>
+            {{/each}}
+            {{/if}}
         </div>
-        <button class="button button-validate-js"><p><i class="icon ion-android-checkbox-outline"></i>   {{numberTovalidate action.finishedBy}}</p></button>
+        <div class="col-20">
+        <button class="button button-small button-validate-js"><p><i class="icon ion-android-checkbox-outline"></i>   {{numberTovalidate action.finishedBy}}</p></button>
+        </div>
+        </div>
     </div>
-        {{#each  user  in userTovalidate action.finishedBy}}
-        {{#if buttonActivate}}
-
-        {{user.name}}
-        <button class="admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button>
-        {{/if}}
-        {{/each}}
 </template>
