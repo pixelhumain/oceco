@@ -40,7 +40,7 @@
         <div class="row">
         <div class="col-80">  <h3 class="item-title">{{action.name}}</h3>  
             {{#if buttonActivate}}
-            {{#each  user  in userTovalidate action.finishedBy}}
+            {{#each  user  in userTovalidate action}}
     
             <div class="row">
                 <div class="col-50 col-center"><p>{{user.name}}</p></div>
@@ -50,7 +50,7 @@
             {{/if}}
         </div>
         <div class="col-20">
-        <button class="button button-small button-validate-js"><p><i class="icon ion-android-checkbox-outline"></i>   {{numberTovalidate action.finishedBy}}</p></button>
+        <button class="button button-small button-validate-js"><p><i class="icon ion-android-checkbox-outline"></i>   {{numberTovalidate action}}</p></button>
         </div>
         </div>
     </div>

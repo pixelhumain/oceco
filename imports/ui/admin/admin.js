@@ -67,7 +67,17 @@ Template.adminDashboard.events({
 Template.adminDashboard.helpers({
 
   actionToaccept() {
-    return Actions.find({ finishedBy: { $exists: true } });
+    let actionArray =[];
+    Actions.find({ finishedBy: { $exists: true } }).forEach(action => {
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            actionArray.push(action._id)
+          }
+        });
+      }
+    });
+    return Actions.find({_id: {$in: actionArray}})
   },
   
   dataReady() {
@@ -77,16 +87,32 @@ Template.adminDashboard.helpers({
 });
 
 Template.actionToValidate.helpers({
-  numberTovalidate(actions) {
-    return Reflect.ownKeys(actions).length;
+  numberTovalidate(action){
+    let actionArray =[];
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            let usrId = new Mongo.ObjectID(index)
+            actionArray.push(usrId)
+          }
+        });
+      }
+    return Citoyens.find({ _id: { $in: actionArray } }).count()
   },
   buttonActivate(){
     return Template.instance().scrollValidateAction.get();
   },
-  userTovalidate(actions) {
-    const idArray = Reflect.ownKeys(actions);
-    const objIdArray = idArray.map(id => new Mongo.ObjectID(id));
-    return Citoyens.find({ _id: { $in: objIdArray } });
-  },
+  userTovalidate(action){
+    let actionArray =[];
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            let usrId = new Mongo.ObjectID(index)
+            actionArray.push(usrId)
+          }
+        });
+      }
+    return Citoyens.find({ _id: { $in: actionArray } })
+  }
 })
 
