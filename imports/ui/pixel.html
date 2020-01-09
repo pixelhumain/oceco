@@ -88,9 +88,11 @@
   {{> ionTab title="Espace Temps" path="wallet" iconOff="clock" iconOn="clock"}}
   {{#if isAdmin}}
   {{> ionTab title="Ajout" path="newAction" iconOff="android-add-circle" iconOn="android-add-circle"}}
-  {{/if}}
+  {{> ionTab title="Admin" path="adminDashboard" iconOff="ios-settings" iconOn="ios-settings"}}
+  {{else}}
   {{> ionTab title="Agenda" path="todos" iconOff="ios-calendar" iconOn="ios-calendar"}}
   {{> ionTab title="Profile" path="news" iconOff="ios-contact" iconOn="ios-contact"}}
+  {{/if}}
   {{/ionTabs}}
   {{/if}}
 
