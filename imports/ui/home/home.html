@@ -100,11 +100,11 @@
       <div class="item item-text-wrap">{{action.description}}
         {{#if creditPositive action.credits }}
         <div class="row">
-          <div class="col-10"><i class="icon ion-cash"> </i></div>Vous gagnerez {{action.credits}} crédits
+          <div class="col-10"><i class="icon ion-card"> </i></div>Vous gagnerez {{action.credits}} crédits
         </div>
         {{else}}
         <div class="row">
-          <div class="col-10"><i class="icon ion-cash"> </i></div> Vous serez prélevé de {{creditNegative action.credits }} crédits
+          <div class="col-10"><i class="icon ion-card"> </i></div> Vous serez prélevé de {{creditNegative action.credits }} crédits
         </div>
         {{/if}}
         <div class="row">
@@ -133,7 +133,7 @@
 
 <template name="actionDuration">
   <div class="col text-center col-center borderMenuItem stable-border"><i class="ion-clock"></i> {{projectDuration action.startDate action.endDate}}H </div>
-  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-cash"></i> {{action.credits}}
+  <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-card"></i> {{action.credits}}
     R</div>
 </template>
 
@@ -154,7 +154,7 @@
 
 
 <template name="buttonSubscribeAction">
-  {{#if creditPositive action.credits }}
+{{#if creditPositive action.credits }}
     <button class="button button-dark button-block button-small assign-action-js {{#if isCall}}disabled{{/if}}">
 {{#if isCall}}
 <i class="icon fa fa-refresh fa-spin"></i>
