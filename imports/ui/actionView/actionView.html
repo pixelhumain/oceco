@@ -23,11 +23,11 @@
                         
                         {{#if creditPositive thisAction.credits }}
                         <div class="row row-center">
-                                <div class="col-20 col-center padding"> <i class="ion-card positive" style="font-size: 2.5em;"></i></div> <div class="col-90 col-center padding "> <h2 class="item title">Donne {{thisAction.min}} crédit temps</h2> </div> 
+                                <div class="col-20 col-center padding"> <i class="ion-card positive" style="font-size: 2.5em;"></i></div> <div class="col-90 col-center padding "> <h2 class="item title">{{thisAction.credits}} crédit temps à gagner</h2> </div> 
                         </div>
                         {{else}}
                         <div class="row row-center">
-                                <div class="col-20 col-center padding"> <i class="ion-cart positive" style="font-size: 2.5em;"></i></div> <div class="col-90 col-center padding "> <h2 class="item title">Donne gagner {{thisAction.min}} crédit temps</h2> </div> 
+                                <div class="col-20 col-center padding"> <i class="ion-pricetag positive" style="font-size: 2.5em;"></i></div> <div class="col-90 col-center padding "> <h2 class="item title">Coute {{thisAction.credits}} crédit temps</h2> </div> 
                         </div>
                         {{/if}}
                         <div class="row row-center">
