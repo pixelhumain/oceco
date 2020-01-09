@@ -94,9 +94,7 @@
         {{/if}}
       </div>
     </div>
-    <div class="row">
-      {{>buttonSubscribeAction id=action._id._str action=action }}
-    </div>
+    
     {{#if displayDesc}}
     <div div class="list">
     <div class="item item-text-wrap">{{action.description}}
@@ -113,6 +111,9 @@
     </div>
     </div>
     {{/if}}
+    <div class="row">
+      {{>buttonSubscribeAction id=action._id._str action=action }}
+    </div>
   </div>
 </template>
 
