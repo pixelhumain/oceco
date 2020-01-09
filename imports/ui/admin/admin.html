@@ -20,17 +20,33 @@
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
     {{#if dataReady}}
+    <div class="item item-card">
+        <h2 class="item-title"><b> Actions à valider</b></h2>
+        <p class="item-content"> C'est la liste de toute les actions terminés <br> que vous devez valider</p>
+        
+       
     {{#each action in actionToaccept}}
-       <p>{{action.name}} =>
-        {{numberTovalidate action.finishedBy}} à valider</p> 
-        {{#each  user  in userTovalidate action.finishedBy}}
-        {{user.name}}
-        <button class="admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button>
-        {{/each}}
+    {{> actionToValidate action=action}}
     {{/each}}
+    </div>
     {{/if}}
     {{/ionContent}}
     {{/ionView}}
+</template>
 
+<template name="actionToValidate" >
 
+    <div class="item item-input">
+        <div class="col-80">
+        <h2 class="item-title"><b>{{action.name}} </b></h2>
+        </div>
+        <button class="button button-validate-js"><p><i class="icon ion-android-checkbox-outline"></i>   {{numberTovalidate action.finishedBy}}</p></button>
+    </div>
+        {{#each  user  in userTovalidate action.finishedBy}}
+        {{#if buttonActivate}}
+
+        {{user.name}}
+        <button class="admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button>
+        {{/if}}
+        {{/each}}
 </template>
