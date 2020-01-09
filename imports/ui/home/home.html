@@ -96,18 +96,32 @@
     </div>
     
     {{#if displayDesc}}
-    <div div class="list">
+    <div div class="row row">
     <div class="item item-text-wrap">{{action.description}}
       {{#if creditPositive action.credits }}
-      <p><i class="icon ion-cash"> </i>: Vous gagnerez {{action.credits}} crédits </p>
+      <div class="row">
+        <div class="col-10"><i class="icon ion-cash"> </i></div>Vous gagnerez {{action.credits}} crédits
+      </div>
       {{else}}
-      <p><i class="icon ion-cash"> </i>: Vous serez prélevé de {{creditNegative action.credits }} crédits</p>
+      <div class="row">
+        <div class="col-10"><i class="icon ion-cash"> </i></div> Vous serez prélevé de {{creditNegative action.credits }} crédits
+      </div>
       {{/if}}
-      <p> <i class="ion-android-calendar"></i>: Début  le {{projectDay action.startDate}} </p>
-      <p><i class="ion-clock"></i>: Durée {{projectDuration action.startDate action.endDate}} H </p>
-      <p><i class="ion-man"></i>: Il y a {{actionParticipantsNbr action._id}} participant</p>
-      <p> <i class="icon ion-ios-arrow-down"></i>: Pour un besoin minimum de {{action.min}} participant</p>
-      <p><i class="icon ion-ios-arrow-up"></i>: Et un maximum de {{action.max}} participant</p>
+      <div class="row">
+        <div class="col-10"> <i class="ion-android-calendar"></i></div> Début  le {{projectDay action.startDate}} 
+      </div>  
+      <div class="row">
+        <div class="col-10"><i class="ion-clock"></i></div> Durée {{projectDuration action.startDate action.endDate}} H 
+      </div>
+      <div class="row">
+        <div class="col-10"><i class="ion-man"></i></div> Il y a {{actionParticipantsNbr action._id}} participant
+      </div>
+      <div class="row">
+        <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div> Pour un besoin minimum de {{action.min}} participant
+      </div>
+      <div class="row">
+        <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div> Et un maximum de {{action.max}} participant
+      </div>
     </div>
     </div>
     {{/if}}
