@@ -34,8 +34,9 @@
         <h2><a href="{{pathFor 'detailList' _id=currentUser._id scope='citoyens'}}" class="positive" data-ion-menu-close>{{currentUser.profile.pixelhumain.name}}</a></h2>
         <p>{{currentUser.profile.pixelhumain.email}}</p>
       </div>
+      {{>account}}
 
-      <!-- {{#each poles in RaffineriePoles}}
+      {{#each poles in RaffineriePoles}}
       {{#ionItem buttonRight=true  class="my-class" id="my-id"}}
         <h2> {{poles}} </h2>    
 
@@ -45,8 +46,7 @@
           </a> 
       {{/ionItem}}
       {{/each}}
-       -->
-       {{>account}}
+      
 
       <a class="item item-stable item-icon-right" href="{{pathFor 'notifications'}}" data-ion-menu-close>{{__ "Notifications"}} <span class="badge badge-positive">{{#if notificationsCount}}{{notificationsCount}}{{else}}0{{/if}}</span></a>
 
