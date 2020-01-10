@@ -40,8 +40,7 @@
         <div class="row">
         <div class="col-80">  <h3 class="item-title">{{action.name}}</h3>  
             {{#if buttonActivate}}
-            {{#each  user  in userTovalidate action}}
-    
+            {{#each  user  in userTovalidate action}}   
             <div class="row">
                 <div class="col-50 col-center"><p>{{user.name}}</p></div>
                 <div class="col-50 col-center"><button class="button button-small admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button></div>
