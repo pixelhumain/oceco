@@ -534,7 +534,6 @@ Organizations.helpers({
       queryOptions.fields.startDate = 1;
       queryOptions.fields.startDate = 1;
       queryOptions.fields.geo = 1;
-      console.log(query);
       return Events.find(query, queryOptions);
     }
   },

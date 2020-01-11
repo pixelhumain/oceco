@@ -59,7 +59,6 @@ Template.listEvents.onRendered(function () {
     timeZone: 'local',
     defaultView: 'listMonth',
     eventRender (info) {
-      console.log(info.event.extendedProps);
       /* if (info.event.extendedProps.status === 'done') {
 
         // Change background color of row
@@ -82,9 +81,8 @@ Template.listEvents.onRendered(function () {
       // const inputDate = new Date();
       // const sortEvents = pageSession.get('sortEvents');
       const searchEvents = pageSession.get('searchEvents');
-      
       let query = {};
-      /* query = queryGeoFilter(query);
+      /* 
       if (sortEvents === 'Current') {
         query.startDate = { $lte: inputDate };
         query.endDate = { $gte: inputDate };
@@ -96,10 +94,7 @@ Template.listEvents.onRendered(function () {
       if (searchEvents) {
         query = searchQuery(query, searchEvents);
       }
-      // const events = Events.find(query).fetch();
-      console.log(query);
       const events = Organizations.findOne({ _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId) }).listProjectsEventsCreator(query);
-      console.log(events);
       if (events) {
         events.forEach((event) => {
           const eventParse = {
@@ -117,7 +112,6 @@ Template.listEvents.onRendered(function () {
             pushCalendarArray.push(event._id._str);
             calendar.addEvent(eventParse);
           } else {
-            console.log(event._id._str);
           }
         });
       }
