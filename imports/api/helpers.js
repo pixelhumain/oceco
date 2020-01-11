@@ -114,7 +114,7 @@ export const queryLink = (array, search, selectorga) => {
 
 export const arrayLinkToBeValidated = (array) => {
   const arrayIds = Object.keys(array)
-    .filter(k => array[k].toBeValidated === true)
+    .filter(k => array[k].toBeValidated === true || array[k].isAdmin === true)
     .map(k => new Mongo.ObjectID(k));
   /* const arrayIds = _.filter(_.map(array, (arrayLink, key) => {
     if (arrayLink.toBeValidated === true) {
@@ -130,6 +130,20 @@ export const queryLinkToBeValidated = (array) => {
   const query = {};
   query._id = { $in: arrayIds };
   return query;
+};
+
+export const arrayLinkToModerate = (array) => {
+  const arrayIds = Object.keys(array)
+    .filter(k => array[k] === 'toModerate')
+    .map(k => new Mongo.ObjectID(k));
+  return arrayIds;
+};
+
+export const arrayLinkValidated = (array) => {
+  const arrayIds = Object.keys(array)
+    .filter(k => array[k] === 'validated')
+    .map(k => new Mongo.ObjectID(k));
+  return arrayIds;
 };
 
 export const arrayLinkIsInviting = (array) => {
@@ -177,6 +191,13 @@ export const arrayLinkParent = (array, type) => {
   const arrayIds = Object.keys(array)
     .filter(k => array[k].type === type)
     .map(k => new Mongo.ObjectID(k));
+  return arrayIds;
+};
+
+export const arrayLinkParentNoObject = (array, type) => {
+  const arrayIds = Object.keys(array)
+    .filter(k => array[k].type === type)
+    .map(k => k);
   return arrayIds;
 };
 

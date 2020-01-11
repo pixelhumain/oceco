@@ -17,20 +17,152 @@
             {{/transition}}
         </button>
     {{/contentFor}}
+
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
     {{#if dataReady}}
-    {{#each action in actionToaccept}}
-       <p>{{action.name}} =>
-        {{numberTovalidate action.finishedBy}} à valider</p> 
-        {{#each  user  in userTovalidate action.finishedBy}}
-        {{user.name}}
-        <button class="admin-validation-js" usrId = "{{user._id._str}}" actionId="{{action._id._str}}">Valider</button>
-        {{/each}}
-    {{/each}}
+    <div class="list">
+        {{> scrollPrez title='Admin' prez="Gestion de l'application" icon="ion-compose"}}
+
+        {{#if dataReady}}
+        <div class="item tabs">
+            <div class="tabs tabs-striped">
+                <a class="tab-item {{#if equals selectview 'aValider'}}tab-item-active{{/if}} change-selectview-js"
+                    id="aValider">A Valider</a>
+                <a class="tab-item {{#if equals selectview 'projets'}}tab-item-active{{/if}} change-selectview-js"
+                    id="projets">Projets</a>
+                <a class="tab-item {{#if equals selectview 'events'}}tab-item-active{{/if}} change-selectview-js"
+                    id="events">Evenements</a>
+                <a class="tab-item {{#if equals selectview 'actions'}}tab-item-active{{/if}} change-selectview-js"
+                    id="actions">Actions</a>
+            </div>
+        </div>
+
+        {{#if equals selectview 'aValider'}}
+        <div class="item item-divider">A valider</div>
+        <div class="item item-text-wrap">Liste des actions à valider par bénévole</div>
+
+        {{> Template.dynamic template="listProjectsAValiderRaf" data=scope}}
+ 
+
+        {{else if equals selectview 'projets'}}
+
+        {{> Template.dynamic template="listProjectsRaf" data=scope}}
+
+        {{else if equals selectview 'events'}}
+
+        {{> Template.dynamic template="listProjectsEventsRaf" data=scope}}
+
+        {{else if equals selectview 'actions'}}
+
+        {{> Template.dynamic template="listProjectsEventsActionsRaf" data=scope}}
+        
+        {{/if}}
+
+
+        {{/if}}
+    </div>
+
+    
+
     {{/if}}
     {{/ionContent}}
     {{/ionView}}
 
 
 </template>
+
+<template name="listProjectsAValiderRaf">
+
+               {{#each action in listProjectsEventsActionsCreator}}
+               {{#if action.finishedBy}}
+               <div class="item item-divider">
+                   {{action.name}}
+                   <p> {{numberTovalidate action.finishedBy}} à valider</p>
+               </div>
+
+               {{#each user in userTovalidate action.finishedBy}}
+               <div class="item item-button-right">
+                   <h2>{{user.name}}</h2>
+                   <button class="button button-positive admin-validation-js" usrId="{{user._id._str}}"
+                       actionId="{{action._id._str}}">Valider</button>
+               </div>
+
+               {{/each}}
+               {{/if}}
+               {{/each}}
+
+</template>
+
+<template name="listProjectsRaf">
+
+        <div class="item item-divider">
+            <i class="icon fa fa-lightbulb-o"></i> {{__ "projects"}}<span
+                class="badge badge-dark">{{countProjectsCreator}}</span>
+        </div>
+        <div class="item item-text-wrap">Gestions des projets</div>
+
+        {{> Directory_list_projects list=listProjectsCreator scope="projects"}}
+
+</template>
+
+<template name="Directory_list_projects">
+    {{#each item in list}}
+    {{> Directory_item_projects item=item scope=scope }}
+    {{/each}}
+</template>
+
+<template name="Directory_item_projects">
+    <div class="item item-avatar">
+        {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
+        <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+    </div>
+</template>
+
+<template name="listProjectsEventsRaf">
+        <div class="item item-divider">
+            <i class="icon fa fa-calendar"></i> {{__ "events"}} <span
+                class="badge badge-dark">{{countProjectsEventsCreator}}</span>
+        </div>
+        <div class="item item-text-wrap">Gestion des évenements</div>
+
+        {{> Directory_list_projects_events list=listProjectsEventsCreator scope="events"}}
+
+</template>
+
+<template name="Directory_list_projects_events">
+    {{#each item in list}}
+    {{> Directory_item_projects_events item=item scope=scope }}
+    {{/each}}
+</template>
+
+<template name="Directory_item_projects_events">
+    <div class="item item-avatar">
+        {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
+        <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+    </div>
+</template>
+
+<template name="listProjectsEventsActionsRaf">
+    <div class="item item-divider">
+        <i class="icon fa fa-calendar"></i> {{__ "actions"}} <span
+            class="badge badge-dark">{{countProjectsEventsActionsCreator}}</span>
+    </div>
+    <div class="item item-text-wrap">Gestion des actions</div>
+
+    {{> Directory_list_projects_events_action list=listProjectsEventsActionsCreator scope="actions"}}
+
+</template>
+
+<template name="Directory_list_projects_events_action">
+    {{#each item in list}}
+    {{> Directory_item_projects_events_action item=item scope=scope }}
+    {{/each}}
+</template>
+
+<template name="Directory_item_projects_events_action">
+    <div class="item">
+        <h2><a href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}" class="dark">{{item.name}}</a></h2>
+    </div>
+</template>
+

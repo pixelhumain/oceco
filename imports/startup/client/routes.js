@@ -357,9 +357,10 @@ Router.map(function() {
 
   this.route('actionsAdd', {
     template: 'actionsAdd',
-    path: '/:scope/rooms/:_id/room/:roomId/actionadd',
+    path: '/:scope/rooms/:_id/room/add/actionadd',
     loadingTemplate: 'loading',
   });
+//events/rooms/5e18cc382cbfc70e008b4576/room/5e18cc382cbfc70d008b4573/actionadd
 
   this.route('actionsEdit', {
     template: 'actionsEdit',
@@ -485,6 +486,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('profile', {
+    template: 'profile',
+    path: '/profile',
+    loadingTemplate: 'loading',
+  });
+  
   this.route('settings', {
     template: 'settings',
     path: '/settings',

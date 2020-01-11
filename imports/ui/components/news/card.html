@@ -234,11 +234,14 @@
       {{/if}}
       {{/transition}}
 
+    {{#if equals scopeVar 'events'}}
     <div class="item tabs tabs-secondary tabs-icon-left">
       {{#if isVisibleFields 'locality'}}
       {{#if geo}}<a class="tab-item" href="{{pathFor 'mapWith' _id=_id._str scope=scopeVar}}"><i class="icon ion-ios-location"></i> {{__ "distance"}} : {{distance geo}} </a>{{/if}}
       {{/if}}
     </div>
+    {{/if}}
+
     {{/with}}
   </div>
 </template>

@@ -415,7 +415,7 @@ Citoyens.helpers({
     }
     return this.links && this.links[scopeCible] && this.links[scopeCible][scopeId];
   },
-  isMe () {
+  isMe() {
     return this._id._str === Meteor.userId();
   },
   isAdmin () {

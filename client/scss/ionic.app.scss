@@ -58,6 +58,15 @@ $big-bg:      '/images/fabric_plaid.png';
 
 @import 'ionic';
 @import 'ionicons';
+@import 'fullcalendar/common/common';
+@import 'fullcalendar/common/standard';
+@import 'fullcalendar/toolbar';
+@import 'fullcalendar/view';
+
+@media print {
+  @import 'fullcalendar/common/print';
+}
+
 
 body *, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: $font-family-base , Fallback, sans-serif;

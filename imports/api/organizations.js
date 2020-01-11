@@ -17,8 +17,9 @@ import { Events } from './events.js';
 import { Projects } from './projects.js';
 import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
+import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { queryLink, queryLinkType, arrayLinkParent, queryLinkToBeValidated, searchQuery, queryOptions } from './helpers.js';
+import { queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, searchQuery, queryOptions } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
@@ -517,6 +518,44 @@ Organizations.helpers({
   countEventsCreator () {
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listEventsCreator() && this.listEventsCreator().count();
+  },
+  listProjectsEventsCreator(querySearch) {
+    
+    if (this.links && this.links.projects) {
+      const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
+      const query = querySearch || {};
+      query.$or = [];
+      projectIds.forEach((id) => {
+        const queryCo = {};
+        queryCo[`organizer.${id}`] = { $exists: true };
+        query.$or.push(queryCo);
+      });
+      // queryOptions.fields.parentId = 1;
+      queryOptions.fields.startDate = 1;
+      queryOptions.fields.startDate = 1;
+      queryOptions.fields.geo = 1;
+      console.log(query);
+      return Events.find(query, queryOptions);
+    }
+  },
+  countProjectsEventsCreator() {
+    // return this.links && this.links.events && _.size(this.links.events);
+    return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
+  },
+  listProjectsEventsActionsCreator() {
+    const listEvents = this.listProjectsEventsCreator();
+    if (listEvents) {
+      const eventIds = listEvents.map(event => event._id._str);
+      const query = {};
+      query.parentId = {
+        $in: eventIds,
+      };
+      return Actions.find(query);
+    }
+  },
+  countProjectsEventsActionsCreator() {
+    // return this.links && this.links.events && _.size(this.links.events);
+    return this.listProjectsEventsActionsCreator() && this.listProjectsEventsActionsCreator().count();
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

@@ -65,7 +65,11 @@ Template.newsList.onCreated(function() {
     } else if (Router.current().route.getName() === 'poiList') {
       pageSession.set('selectview', 'scopePoiTemplate');
     } else if (Router.current().route.getName() === 'eventsList') {
-      pageSession.set('selectview', 'scopeEventsTemplate');
+      if (Router.current().params.scope === 'organizations') {
+        pageSession.set('selectview', 'scopeProjectsEventsTemplate');
+      } else {
+        pageSession.set('selectview', 'scopeEventsTemplate');
+      }
     } else if (Router.current().route.getName() === 'roomsList') {
       pageSession.set('selectview', 'scopeRoomsTemplate');
     } else if (Router.current().route.getName() === 'gamesList') {
@@ -399,6 +403,29 @@ Template.scopeEventsTemplate.onCreated(function() {
 
 Template.scopeEventsTemplate.helpers({
   scopeBoutonEventsTemplate () {
+    return `boutonEvents${Router.current().params.scope}`;
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+Template.scopeProjectsEventsTemplate.onCreated(function () {
+  this.ready = new ReactiveVar();
+
+  this.autorun(function () {
+    pageSession.set('scopeId', Router.current().params._id);
+    pageSession.set('scope', Router.current().params.scope);
+  });
+
+  this.autorun(function () {
+    const handle = newsListSubs.subscribe('directoryProjectsListEvents', Router.current().params.scope, Router.current().params._id);
+    this.ready.set(handle.ready());
+  }.bind(this));
+});
+
+Template.scopeProjectsEventsTemplate.helpers({
+  scopeBoutonEventsTemplate() {
     return `boutonEvents${Router.current().params.scope}`;
   },
   dataReady() {

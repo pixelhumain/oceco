@@ -67,6 +67,7 @@ SchemasActionsRest.extend({
   },
   idParentRoom: {
     type: String,
+    optional: true
   },
   startDate: {
     type: Date,

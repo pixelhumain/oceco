@@ -30,12 +30,12 @@ Template.layout.onCreated(function() {
 
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = Meteor.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
+    //const handle = Meteor.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
     const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
-    const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
+    //const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
     const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
-    if (handle.ready() && handleScopeDetail.ready() && handleDirectoryList.ready() && handleDirectoryListProjects.ready()) {
-      this.ready.set(handle.ready());
+    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready()) {
+      this.ready.set(handleScopeDetail.ready());
     }
   }.bind(this));
 });

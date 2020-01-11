@@ -1,0 +1,32 @@
+
+/* Toolbar
+--------------------------------------------------------------------------------------------------*/
+
+.fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-toolbar.fc-header-toolbar {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin: -1px;
+  padding: 16px;
+  // margin-bottom: 1.5em;
+}
+
+.fc-toolbar.fc-footer-toolbar {
+  margin-top: 1.5em;
+}
+
+/* inner content */
+
+.fc-toolbar > * > :not(:first-child) {
+  margin-left: .75em; // space between
+}
+
+.fc-toolbar h2 {
+  font-size: 16px;
+  margin: 0;
+}

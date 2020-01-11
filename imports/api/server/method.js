@@ -173,14 +173,13 @@ const baseDocRetour = (docRetour, doc, scope) => {
       docRetour.shortDescription = doc.shortDescription;
     }
     docRetour.type = doc.type;
-    docRetour.allDay = doc.allDay;
+    // docRetour.allDay = doc.allDay;
     docRetour.startDate = moment(doc.startDate).format();
     docRetour.endDate = moment(doc.endDate).format();
     docRetour.organizerId = doc.organizerId;
     docRetour.organizerType = doc.organizerType;
     docRetour.organizer = {};
     docRetour.organizer[doc.organizerId] = { type: doc.organizerType };
-    docRetour.public = doc.public;
     docRetour.tags = doc.tags ? doc.tags : '';
     if (doc.parentId) {
       docRetour.parentId = doc.parentId;
@@ -409,10 +408,10 @@ URL._encodeParams = function(params, prefix) {
 };
 
 Meteor.methods({
- 'finishAction'({id}){
-   new SimpleSchema({
-    id: {type: String},
-  }).validate({id })
+  'finishAction'({ id }) {
+    new SimpleSchema({
+      id: { type: String },
+    }).validate({ id });
  
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
@@ -429,32 +428,41 @@ Meteor.methods({
     // docRetour.id = _id;
     // docRetour.participants = this.userId
     // docRetour.participants.states = "finish"
-    const actionId = new Mongo.ObjectID(id)
-    const parent = "finishedBy."+Meteor.userId()
-    Actions.update({_id: actionId }, {$set: {[parent]: 'toModerate' } })
+    const actionId = new Mongo.ObjectID(id);
+    const parent = `finishedBy.${Meteor.userId()}`;
+    Actions.update({ _id: actionId }, { $set: { [parent]: 'toModerate' } });
     return true;
   },
 
-   'ValidateAction'({actId, usrId}){
+  'ValidateAction'({ actId, usrId }) {
     new SimpleSchema({
-      actId: {type: String}, usrId: {type: String}
-   }).validate({actId, usrId })
-  
-     if (!this.userId) {
-       throw new Meteor.Error('not-authorized');
-     }
-     if (!Actions.findOne({ _id: new Mongo.ObjectID(actId) })) {
-       throw new Meteor.Error('not-action');
-     }
-     const actionId = new Mongo.ObjectID(actId)
-     const userNeed = new Mongo.ObjectID(usrId)
-     const parent = "finishedBy."+ usrId
-     const credit = Actions.findOne({_id: actionId}).credits
-     const userWhallet =  "userWhallet."+actId
-     Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
-     Citoyens.update({_id: userNeed}, {$set:{[userWhallet]: credit}})
-     return true;
-   },
+      actId: { type: String }, usrId: { type: String },
+    }).validate({ actId, usrId });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(actId) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+    const collection = nameToCollection(action.parentType);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const actionId = new Mongo.ObjectID(actId);
+    const userNeed = new Mongo.ObjectID(usrId);
+    const parent = `finishedBy.${usrId}`;
+    const credit = Actions.findOne({ _id: actionId }).credits;
+    const userWhallet = `userWhallet.${actId}`;
+    Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
+    Citoyens.update({ _id: userNeed }, { $set: { [userWhallet]: credit } });
+    return true;
+  },
 
   userup (geo) {
     check(geo, { longitude: Number, latitude: Number });
@@ -1497,7 +1505,7 @@ indexMax:20 */
         throw new Meteor.Error('not-authorized');
       }
     }
-
+    
     const docRetour = baseDocRetour({}, doc, 'events');
     docRetour.key = 'event';
     docRetour.collection = 'events';
@@ -1505,6 +1513,19 @@ indexMax:20 */
     // console.log(docRetour);
 
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
+
+    // create room
+    const docRoom = {};
+    docRoom.name = docRetour.name;
+    docRoom.description = 'action bénévolat';
+    docRoom.parentType = 'events';
+    docRoom.parentId = retour.data.id;
+    docRoom.status = 'open';
+    docRoom.key = 'room';
+    docRoom.collection = 'rooms';
+    const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
+    //
+
     return retour;
   },
   updateEvent ({ modifier, _id }) {
@@ -2093,8 +2114,10 @@ export const insertRoom = new ValidatedMethod({
     }
     // admin ou membre
     const collection = nameToCollection(doc.parentType);
-    if (!(collection.findOne({ _id: new Mongo.ObjectID(doc.parentId) }).isAdmin() || Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId))) {
-      throw new Meteor.Error('not-authorized');
+    const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(doc.parentId) });
+
+    if (!(scopeOne.isAdmin() || Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId))) {
+      throw new Meteor.Error('not-authorized isAdmin');
     }
 
     const docRetour = doc;
@@ -2257,9 +2280,9 @@ export const insertAction = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
     // membre ou membre avec roles si room à des roles
-    const room = Rooms.findOne({ _id: new Mongo.ObjectID(doc.idParentRoom) });
+    const room = Rooms.findOne({ parentId: doc.parentId });
     if (!room) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('not-authorized room');
     } else if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(room.parentType, room.parentId)) {
       if (room.roles && room.roles.length > 0) {
         const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId).split(',') : null;
@@ -2267,11 +2290,24 @@ export const insertAction = new ValidatedMethod({
           // true
         } else {
           // false
-          throw new Meteor.Error('not-authorized');
+          throw new Meteor.Error('not-authorized role');
         }
       }
     } else {
-      throw new Meteor.Error('not-authorized');
+      // si event difficile de voir le lien admin docn je remonte
+      if (room.parentType === 'events') {
+        const collectionOrga = nameToCollection(room.parentType);
+        const scopeOneOrga = collectionOrga.findOne({
+          _id: new Mongo.ObjectID(room.parentId),
+        });
+
+        if (!(scopeOneOrga && scopeOneOrga.isAdmin())) {
+          throw new Meteor.Error('not-authorized event');
+        }
+      } else {
+        throw new Meteor.Error('not-authorized citoyen');
+      }
+      
     }
 
     const docRetour = doc;
@@ -2288,6 +2324,7 @@ export const insertAction = new ValidatedMethod({
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
     docRetour.collection = 'actions';
+    docRetour.idParentRoom = room._id._str;
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },
@@ -2323,8 +2360,8 @@ export const updateAction = new ValidatedMethod({
     
     const docRetour = modifier.$set;
 
-    if(modifier.$set.participants){
-      console.log("yolo")
+    if(modifier.$set.participants) {
+      console.log("yolo");
     }
 
     if (modifier.$set.startDate) {
@@ -2334,13 +2371,13 @@ export const updateAction = new ValidatedMethod({
       docRetour.endDate = moment(modifier.$set.endDate).format();
     }
     if (modifier.$set.min) {
-      docRetour.min =   modifier.$set.min
+      docRetour.min = modifier.$set.min;
     }
     if (modifier.$set.max) {
-      docRetour.max =   modifier.$set.max
+      docRetour.max = modifier.$set.max;
     }
     if (modifier.$set.participants) {
-      docRetour.participants =   modifier.$set.participants
+      docRetour.participants = modifier.$set.participants;
     }
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
@@ -2497,25 +2534,25 @@ export const assignmeActionRooms = new ValidatedMethod({
     id: { type: String },
   }).validator(),
   run({ id }) {
-    function userCredits(){
-      const finish = 'finishedBy.'+ Meteor.userId()
-      let credits = 0
-      Actions.find({[finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10)})
-      return credits
+    function userCredits() {
+      const finish = `finishedBy.${ Meteor.userId()}`;
+      let credits = 0;
+      Actions.find({ [finish]: 'validated' }).forEach(function (u) {credits += parseInt(u.credits,10);});
+      return credits;
     }
     function walletIsOk(id) {
-     const cost = Actions.findOne({_id: new Mongo.ObjectID(id) }).credits
-     if (cost >= 0) {
-       return true
-     }
-     else if (userCredits() > (cost* -1) ) {
-      const parent = "finishedBy."+ Meteor.userId()
-      const actionId = new Mongo.ObjectID(id)
-      Actions.update({_id: actionId }, {$set: {[parent]: 'validated' } })
-      return true
-     }
-     else {
-      return false }
+      const cost = Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits;
+      if (cost >= 0) {
+        return true;
+      }
+      else if (userCredits() > (cost * -1) ) {
+        const parent = `finishedBy.${ Meteor.userId()}`;
+        const actionId = new Mongo.ObjectID(id);
+        Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
+        return true;
+      }
+      else {
+        return false; }
     }
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');

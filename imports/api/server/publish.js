@@ -30,7 +30,7 @@ import { Proposals } from '../proposals.js';
 import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
 import { Highlight } from '../highlight.js';
 
-import { arrayLinkProper, nameToCollection, arrayParent, arrayLinkParent, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
+import { arrayLinkProper, nameToCollection, arrayParent, arrayLinkParent, arrayLinkParentNoObject, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -1031,6 +1031,181 @@ Meteor.publishComposite('directoryListEvents', function(scope, scopeId) {
     ] };
 });
 
+Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['projects', 'organizations', 'citoyens', 'events'], name);
+  }));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      if (scope === 'citoyens') {
+        options.fields = {
+          pwd: 0
+        };
+      }
+      if (scope === 'events') {
+        // Counts.publish(this, `countSous.${scopeId}`, Events.find({parentId:scopeId}), { noReady: true });
+      }
+      let query = {};
+      if (_.contains(['events', 'projects', 'organizations'], scope)) {
+        query.$or = [];
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': false,
+        });
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': {
+            $exists: false,
+          },
+        });
+
+        if (scope === 'projects') {
+          query = queryOrPrivateScope(query, 'contributors', scopeId, this.userId);
+        } else if (scope === 'organizations') {
+          query = queryOrPrivateScope(query, 'members', scopeId, this.userId);
+        } else if (scope === 'events') {
+          query = queryOrPrivateScope(query, 'attendees', scopeId, this.userId);
+        }
+      } else {
+        query._id = new Mongo.ObjectID(scopeId);
+      }
+      return collection.find(query, options);
+    },
+    children: [{
+      find(scopeD) {
+        return Lists.find({
+          name: {
+            $in: ['eventTypes']
+          }
+        });
+      },
+    },
+    {
+      find(scopeD) {
+        if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          return scopeD.listProjectsEventsCreator();
+        }
+      },
+      children: arrayChildrenParent(scope, ['citoyens', 'organizations', 'projects', 'events']),
+      /* [
+          {
+            find(scopeD) {
+              if (scopeD.organizerType && scopeD.organizerId && _.contains(['citoyens', 'organizations', 'projects', 'events'], scopeD.organizerType)) {
+                const collectionType = nameToCollection(scopeD.organizerType);
+                return collectionType.find({
+                  _id: new Mongo.ObjectID(scopeD.organizerId),
+                }, {
+                  fields: {
+                    name: 1,
+                    links: 1,
+                    profilThumbImageUrl: 1,
+                  },
+                });
+              }
+            },
+          },
+        ], */
+    },
+    ]
+  };
+});
+
+Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, scopeId, etat) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['projects', 'organizations', 'citoyens', 'events'], name);
+  }));
+  check(etat, Match.Maybe(String));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      if (scope === 'citoyens') {
+        options.fields = {
+          pwd: 0
+        };
+      }
+      if (scope === 'events') {
+        // Counts.publish(this, `countSous.${scopeId}`, Events.find({parentId:scopeId}), { noReady: true });
+      }
+      let query = {};
+      if (_.contains(['events', 'projects', 'organizations'], scope)) {
+        query.$or = [];
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': false,
+        });
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': {
+            $exists: false,
+          },
+        });
+
+        if (scope === 'projects') {
+          query = queryOrPrivateScope(query, 'contributors', scopeId, this.userId);
+        } else if (scope === 'organizations') {
+          query = queryOrPrivateScope(query, 'members', scopeId, this.userId);
+        } else if (scope === 'events') {
+          query = queryOrPrivateScope(query, 'attendees', scopeId, this.userId);
+        }
+      } else {
+        query._id = new Mongo.ObjectID(scopeId);
+      }
+      return collection.find(query, options);
+    },
+    children: [{
+      find(scopeD) {
+        return Lists.find({
+          name: {
+            $in: ['eventTypes']
+          }
+        });
+      },
+    },
+    {
+      find(scopeD) {
+        if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          return scopeD.listProjectsEventsCreator();
+        }
+      },
+      children:
+        [
+          {
+            find(scopeD) {
+              const query = {};
+              query.parentId = scopeD._id._str;
+              if (etat === 'finishedBy') {
+                query.finishedBy = { $exists: true };
+              }
+              return Actions.find({
+                parentId: scopeD._id._str,
+              });
+            },
+            children: [{
+              find(scopeD) {
+                return scopeD.listContributors();
+              }
+            }],
+          },
+        ],
+    },
+    ]
+  };
+});
 
 Meteor.publishComposite('highlight', function (localityId) {
   check(localityId, String);
@@ -2668,12 +2843,12 @@ Meteor.publish('poles.actions', function(raffId, poleName) {
   const id = new Mongo.ObjectID(raffId);
   const raffinerieCursor = Organizations.findOne({ _id: id });
   if (raffinerieCursor) {
-    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str)
+    const raffProjectsArray = raffinerieCursor.listProjectsEventsCreator().map(event => event._id._str);
     if (poleName) {
-    const poleActions = Actions.find({ parentId: { $in: raffProjectsArray }, tags: poleName });
-    return poleActions;
+      const poleActions = Actions.find({ parentId: { $in: raffProjectsArray }, tags: poleName });
+      return poleActions;
     }
-    const  poleActions = Actions.find({ parentId: { $in: raffProjectsArray }})
+    const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
     return poleActions;
   }
   return null;
@@ -2681,7 +2856,7 @@ Meteor.publish('poles.actions', function(raffId, poleName) {
 
 Meteor.publish('member.profile', function(memberId){
   check(memberId, String);
-   if (!this.userId) {
+  if (!this.userId) {
     return null;
   }
   let id = new Mongo.ObjectID(memberId)
@@ -2690,22 +2865,21 @@ Meteor.publish('member.profile', function(memberId){
 
 Meteor.publish('user.actions', function(raffId) {
   check(raffId, String);
-   if (!this.userId) {
+  if (!this.userId) {
     return null;
   }
   const id = new Mongo.ObjectID(raffId);
   const raffinerieCursor = Organizations.findOne({ _id: id });
-  const UserId = "links.contributors."+this.userId
+  const UserId = `links.contributors.${this.userId}`;
   if (raffinerieCursor) {
-    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
-    return  Actions.find({ parentId: { $in: raffProjectsArray },  [UserId] : { '$exists' : 1 } } )
+    const raffProjectsArray = raffinerieCursor.listProjectsEventsCreator().map(event => event._id._str);
+    return Actions.find({ parentId: { $in: raffProjectsArray }, [UserId]: { $exists: 1 } });
   }
-  return Actions.find({ [id] : { '$exists' : 1 } } )
 });
 
 Meteor.publish('action.to.admin', function(raffId) {
   check(raffId, String);
-   if (!this.userId) {
+  if (!this.userId) {
     return null;
   }
   const id = new Mongo.ObjectID(raffId);
@@ -2714,7 +2888,6 @@ Meteor.publish('action.to.admin', function(raffId) {
     const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
     return  Actions.find({ parentId: { $in: raffProjectsArray }} )
   }
-  return Actions.find({ [id] : { '$exists' : 1 } } )
 });
 
 

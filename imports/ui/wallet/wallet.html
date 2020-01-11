@@ -92,7 +92,7 @@
     </div>
     <div class="row row-center">
         <div class="col-90 col-center">
-            <a href="{{pathFor 'actionView' id=action._id._str }} " class="subdued dark item-content">{{action.name}}</a>
+            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content">{{action.name}}</a>
         </div>
         <div class="col-10">
             {{#if displayDesc}}
@@ -112,7 +112,7 @@
 </template>
 
 <template name='whalletInputInWaitingAction'>
-<a href="{{pathFor 'actionView' id=action._id._str }} " class="item">{{action.name}}
+<a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item">{{action.name}}
     <div class="badge badge-{{badgeColor}}">{{action.credits}} R</div>
 </a>
 </template>
