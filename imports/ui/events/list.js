@@ -81,7 +81,6 @@ Template.listEvents.onRendered(function () {
     if (Template.instance().ready.get()) {
       // const inputDate = new Date();
       // const sortEvents = pageSession.get('sortEvents');
-      pageSession.set('searchEvents', 'test');
       const searchEvents = pageSession.get('searchEvents');
       
       let query = {};
