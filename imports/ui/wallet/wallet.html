@@ -96,18 +96,37 @@
         </div>
         <div class="col-10">
             {{#if displayDesc}}
-            <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
+            <div class="button button-small button-dark display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
             {{else}}
             <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
             {{/if}}
         </div>
     </div>
+   
+    {{#if displayDesc}}
+    <div div class="col ">        
+        <div class="item item-text-wrap">{{action.description}}
+            <div class="row">
+                <div class="col-10"><i class="ion-android-calendar"></i></div>Début  le {{projectDay action.startDate}} 
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="ion-clock"></i></div>Durée {{projectDuration action.startDate action.endDate}} H 
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="ion-man"></i></div>Il y a {{actionParticipantsNbr action._id}} participant
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="icon ion-ios-arrow-down"></i></div>Pour un besoin minimum de {{action.min}} participant
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>Et un maximum de {{action.max}} participant
+            </div>
+        </div>
+    </div>
+    {{/if}}
     <div class="row">
         {{> buttonActionFinish action=action}}
     </div>
-    {{#if displayDesc}}
-    <div class="item item-text-wrap">{{action.description}}</div>
-    {{/if}}
     </div>
 </template>
 

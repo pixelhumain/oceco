@@ -41,6 +41,21 @@ Template.adminDashboard.onCreated(function() {
   this.selectview = new ReactiveVar('aValider');
 });
 
+Template.actionToValidate.onCreated(function(){
+  this.scrollValidateAction = new ReactiveVar(false);;
+
+})
+
+Template.actionToValidate.events({
+  'click .button-validate-js'(event,instance) {
+    event.preventDefault();
+    if (!Template.instance().scrollValidateAction.get()) {
+      Template.instance().scrollValidateAction.set(true);
+    } else {
+      Template.instance().scrollValidateAction.set(false);
+    }
+  },
+})
 Template.adminDashboard.events({
   'click .admin-validation-js'(event, instance) {
     event.preventDefault();
@@ -69,20 +84,19 @@ Template.adminDashboard.helpers({
     });
   },
   actionToaccept() {
-    //     let res = []
-    //    Actions.find({finishedBy : {$exists:true}}).forEach(function (document) {
-    //        res.push(document.finishedBy.getOwnPropertyNames())
-    //    })
-    return Actions.find({ finishedBy: { $exists: true } });
+    let actionArray =[];
+    Actions.find({ finishedBy: { $exists: true } }).forEach(action => {
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            actionArray.push(action._id)
+          }
+        });
+      }
+    });
+    return Actions.find({_id: {$in: actionArray}})
   },
-  numberTovalidate(actions) {
-    return Reflect.ownKeys(actions).length;
-  },
-  userTovalidate(actions) {
-    const idArray = Reflect.ownKeys(actions);
-    const objIdArray = idArray.map(id => new Mongo.ObjectID(id));
-    return Citoyens.find({ _id: { $in: objIdArray } });
-  },
+  
   dataReady() {
     return Template.instance().ready.get();
   },
@@ -202,4 +216,34 @@ Template.listProjectsEventsActionsRaf.helpers({
     return Template.instance().ready.get();
   },
 });
+
+Template.actionToValidate.helpers({
+  numberTovalidate(action){
+    let actionArray =[];
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            let usrId = new Mongo.ObjectID(index)
+            actionArray.push(usrId)
+          }
+        });
+      }
+    return Citoyens.find({ _id: { $in: actionArray } }).count()
+  },
+  buttonActivate(){
+    return Template.instance().scrollValidateAction.get();
+  },
+  userTovalidate(action){
+    let actionArray =[];
+      if (action.finishedBy ) {
+        $.each(action.finishedBy, function( index, value ) {
+          if (value === 'toModerate') {
+            let usrId = new Mongo.ObjectID(index)
+            actionArray.push(usrId)
+          }
+        });
+      }
+    return Citoyens.find({ _id: { $in: actionArray } })
+  }
+})
 

@@ -26,9 +26,9 @@ window.Rooms = Rooms;
 Template.newAction.onCreated(function() {
   this.ready = new ReactiveVar(false);
   pageSession.set('scope', 'projects');
-  pageSession.set('roomId', Meteor.settings.public.orgaCibleId);
+  pageSession.set('roomId',"5dedd02f064fca0d008b4568");
   this.autorun(function () {
-    const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('poles.actions',  Meteor.settings.public.orgaCibleId);
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }

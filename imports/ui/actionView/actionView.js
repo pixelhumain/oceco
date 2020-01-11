@@ -26,8 +26,7 @@ Template.actionView.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     const handle = this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
-    const handleMenbers = this.subscribe('raffinerie.members', Meteor.settings.public.orgaCibleId);
-    if (handle.ready() && handleMenbers.ready()) {
+    if (handle.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
@@ -67,5 +66,20 @@ Template.actionView.helpers({
   dataReady() {
     return Template.instance().ready.get();
   },
+  creditPositive(credit) {
+    if (credit >= 0) {
+      return true;
+    }
+    return false;
+  },
+  isSubscribe(action){
+    const property = `links.contributors.${Meteor.userId()}`
+    console.log(action)
+    if (Actions.findOne({_id: action ,[property]:{$exists: 1 }})){
+      return true;
+    }
+    else return false;
+  }
+
 })
 ;

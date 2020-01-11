@@ -249,3 +249,12 @@ Template.forceUpdateAvailable.events({
     window.open(url, '_system');
   },
 });
+
+Template.account.helpers({
+  userCredits() {
+    const finish = `finishedBy.${Meteor.userId()}`;
+    let credits = 0;
+    Actions.find({ [finish]: 'validated' }).forEach(function (u) { credits += parseInt(u.credits, 10); });
+    return credits;
+  },
+})

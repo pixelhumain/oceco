@@ -34,12 +34,10 @@
         <h2><a href="{{pathFor 'detailList' _id=currentUser._id scope='citoyens'}}" class="positive" data-ion-menu-close>{{currentUser.profile.pixelhumain.name}}</a></h2>
         <p>{{currentUser.profile.pixelhumain.email}}</p>
       </div>
+      {{>account}}
 
-      <!-- <a class="item item-stable item-icon-right" href="{{pathFor 'dashboard'}}" data-ion-menu-close>{{__ "Dashboard"}} {{> ionIcon icon="ios-speedometer"}}</a> -->
       {{#each poles in RaffineriePoles}}
-      <!-- <a class="item item-stable item-icon-right" href="{{pathFor 'about'}}" data-ion-menu-close>{{poles.name}}</a> -->
       {{#ionItem buttonRight=true  class="my-class" id="my-id"}}
-      <!-- {{> imgDoc profilThumbImageUrl=poles.profilThumbImageUrl}} -->
         <h2> {{poles}} </h2>    
 
         <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="button button-dark" data-ion-menu-close>
@@ -85,7 +83,7 @@
   {{#if isConnected}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
-  {{> ionTab title="Compte R" path="wallet" iconOff="clock" iconOn="clock"}}
+  {{> ionTab title="Espace Temps" path="wallet" iconOff="clock" iconOn="clock"}}
   {{#if isAdminRaf}}
   {{> ionTab title="Admin" path="adminDashboard" iconOff="compose" iconOn="compose"}}
   {{/if}}
@@ -120,8 +118,24 @@
   {{#if isAndroid}}
   {{#if updateAvailable}}
   <div class="item item-divider">
-    <a class="button button-assertive button-block" reloader-update>Appuyez ici pour mettre à jour</a>
+      <a class="button button-assertive button-block" reloader-update>Appuyez ici pour mettre à jour</a>
   </div>
   {{/if}}
   {{/if}}
+</template>
+
+<template name="account">
+  <div class=" card">
+    <div class="row row-center">
+      <div class="col-20 col-center padding"> <i class="ion-card positive" style="font-size: 2.5em;"></i></div> 
+      <div class="col-90  col-center padding "> 
+        <div class="item title" >
+          <p>Votre crédit temps</p> 
+        </div>
+        <div class="item description">
+          <p> {{userCredits}} R</p>
+        </div>
+      </div> 
+    </div>    
+  </div>
 </template>
