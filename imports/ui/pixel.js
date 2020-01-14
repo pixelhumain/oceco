@@ -34,7 +34,8 @@ Template.layout.onCreated(function() {
     const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
     //const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
     const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
-    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready()) {
+    const handleCitoyen = Meteor.subscribe('citoyen')
+    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen) {
       this.ready.set(handleScopeDetail.ready());
     }
   }.bind(this));
@@ -251,10 +252,8 @@ Template.forceUpdateAvailable.events({
 });
 
 Template.account.helpers({
-  userCredits() {
-    const finish = `finishedBy.${Meteor.userId()}`;
-    let credits = 0;
-    Actions.find({ [finish]: 'validated' }).forEach(function (u) { credits += parseInt(u.credits, 10); });
-    return credits;
-  },
+  userCredit() {
+    const userObjId = new Mongo.ObjectID(Meteor.userId())
+    const orgId = Meteor.settings.public.orgaCibleId
+    return(Citoyens.findOne({_id: userObjId}).userWallet[`${orgId}`].userCredits)},
 })

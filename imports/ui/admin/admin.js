@@ -57,20 +57,20 @@ Template.actionToValidate.events({
   },
 })
 Template.adminDashboard.events({
-  'click .admin-validation-js'(event, instance) {
-    event.preventDefault();
-    const usrId = $(event.currentTarget).attr('usrId');
-    const actionId = $(event.currentTarget).attr('actionId');
-    Meteor.call('ValidateAction', {
-      actId: actionId, usrId,
-    }, (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        console.log('succesw');
-      }
-    });
-  },
+  // 'click .admin-validation-js'(event, instance) {
+  //   event.preventDefault();
+  //   const usrId = $(event.currentTarget).attr('usrId');
+  //   const actionId = $(event.currentTarget).attr('actionId');
+  //   Meteor.call('ValidateAction', {
+  //     actId: actionId, usrId,orgId: Meteor.settings.public.orgaCibleId,
+
+  //   }, (err, res) => {
+  //     if (err) {
+  //       alert(err);
+  //     } else {
+  //     }
+  //   });
+  // },
   'click .change-selectview-js'(event, instance) {
     event.preventDefault();
     Template.instance().selectview.set(event.currentTarget.id);
@@ -128,7 +128,6 @@ Template.listProjectsAValiderRaf.helpers({
   },
   userTovalidate(actions) {
     const objIdArray = arrayLinkToModerate(actions);
-    console.log(objIdArray);
     return Citoyens.find({ _id: { $in: objIdArray } });
   },
   dataReady() {
@@ -145,11 +144,11 @@ Template.listProjectsAValiderRaf.events({
       Meteor.call('ValidateAction', {
         actId: actionId,
         usrId,
+        orgId: Meteor.settings.public.orgaCibleId
       }, (err, res) => {
         if (err) {
           alert(err);
         } else {
-          console.log('succesw');
         }
       });
     }
