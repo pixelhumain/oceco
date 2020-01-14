@@ -2889,6 +2889,19 @@ Meteor.publish('action.to.admin', function(raffId) {
     return  Actions.find({ parentId: { $in: raffProjectsArray }} )
   }
 });
+Meteor.publish('action.to.admin', function(raffId) {
+  check(raffId, String);
+  if (!this.userId) {
+    return null;
+  }
+  const id = new Mongo.ObjectID(raffId);
+  const raffinerieCursor = Organizations.findOne({ _id: id });
+  if (raffinerieCursor) {
+    const raffProjectsArray = raffinerieCursor.listProjectsCreator().map(project => project._id._str);
+    return  Actions.find({ parentId: { $in: raffProjectsArray }} )
+  }
+});
+
 
 
 

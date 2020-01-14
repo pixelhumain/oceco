@@ -88,6 +88,10 @@ const updateSchemaCitoyens = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Url,
     optional: true,
   },
+  userWallet:{
+    type: Object,
+    optional: true,
+  }
 });
 
 
