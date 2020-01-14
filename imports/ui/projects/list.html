@@ -272,15 +272,6 @@
   {{#unless block}}
   {{> afQuickField name='name'}}
 
-  {{> afQuickField name='parentType' type='select' value=parentType}}
-  {{#if dataReadyParent}}
-  {{#if parentType}}
-  {{#if optionsParentId parentType}}
-  {{> afQuickField name='parentId' type='select' options=(optionsParentId parentType) value=parentId}}
-  {{/if}}
-  {{/if}}
-  {{/if}}
-
   {{#if update}}
   {{> afQuickField name='shortDescription' rows=8}}
   {{> afQuickField name='description' rows=8}}

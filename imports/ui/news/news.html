@@ -43,7 +43,10 @@
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'events'}}
-
+<div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i></a>
+  </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'poi'}}
     {{> Template.dynamic template=selectview data=scope}}
@@ -272,7 +275,7 @@
 
 <template name="scopeOrganizationsTemplate">
   <div class="list">
-    <div class="item item-divider homestead">
+    <div class="item item-divider">
       <i class="icon fa fa-users"></i>  {{__ "organizations"}} {{name}} <span class="badge badge-dark">{{countOrganizationsCreator}}</span>
     </div>
     {{> Template.dynamic template=scopeBoutonOrganizationsTemplate data=this}}
@@ -283,18 +286,25 @@
 
 <template name="scopeProjectsTemplate">
   <div class="list">
-    <div class="item item-divider homestead">
-      <i class="icon fa fa-lightbulb-o"></i>  {{__ "projects"}} {{name}} <span class="badge badge-dark">{{countProjectsCreator}}</span>
+    <div class="item item-divider">
+      <i class="icon fa fa-lightbulb-o"></i>  {{__ "projects"}} <span class="badge badge-dark">{{countProjectsCreator}}</span>
     </div>
     {{> Template.dynamic template=scopeBoutonProjectsTemplate data=this}}
 
-    {{> Directory_list list=listProjectsCreator isConnect="isContributors" person=false scope="projects"}}
+{{#transition in="zoomIn" out="bounceOut"}}
+{{#each item in listProjectsCreator}}
+{{> scopeItemList item=item scope="projects"}}
+{{else}}
+
+{{/each}}
+{{/transition}}
+
   </div>
 </template>
 
 <template name="scopeEventsTemplate">
   <div class="list">
-    <div class="item item-divider homestead">
+    <div class="item item-divider">
       <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
     </div>
     {{> Template.dynamic template=scopeBoutonEventsTemplate data=this}}
@@ -311,7 +321,7 @@
 
 <template name="scopeProjectsEventsTemplate">
   <div class="list">
-    <div class="item item-divider homestead">
+    <div class="item item-divider">
       <i class="icon fa fa-calendar"></i> {{__ "events"}} {{name}} <span
         class="badge badge-dark">{{countEventsCreator}}</span>
     </div>
@@ -326,6 +336,25 @@
     {{/transition}}
   </div>
 </template>
+
+<template name="scopeActionsTemplate">
+  <div class="list">
+    <div class="item item-divider">
+      <i class="icon fa fa-calendar"></i> {{__ "actions"}}<span
+        class="badge badge-dark">{{countActionsCreator}}</span>
+    </div>
+
+    {{#each item in listActionsCreator}}
+    <div class="item">
+      <h2><a
+          href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
+          class="dark">{{item.name}}</a></h2>
+    </div>
+    {{/each}}
+
+  </div>
+</template>
+
 
 
 
@@ -747,6 +776,10 @@
 </template>
 
 <template name="boutonCardcitoyens">
+
+</template>
+
+<template name="boutonCardactions">
 
 </template>
 

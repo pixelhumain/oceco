@@ -549,6 +549,7 @@ Organizations.helpers({
       query.parentId = {
         $in: eventIds,
       };
+      query.status = 'todo';
       return Actions.find(query);
     }
   },

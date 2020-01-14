@@ -17,6 +17,7 @@ import { Projects } from './projects.js';
 import { Poi } from './poi.js';
 import { Gamesmobile } from './gamemobile.js';
 import { Rooms } from './rooms.js';
+import { Actions } from './actions.js';
 // SimpleSchema.debug = true;
 
 import { News } from './news.js';
@@ -560,6 +561,16 @@ Events.helpers({
   },
   room (roomId) {
     return Rooms.findOne({ parentId: this._id._str });
+  },
+  listActionsCreator() {
+    const query = {};
+    query.parentId = this._id._str;
+    query.status = 'todo';
+    console.log(query);
+    return Actions.find(query);
+  },
+  countActionsCreator() {
+    return this.listActionsCreator() && this.listActionsCreator().count();
   },
   listGamesCreator() {
     const query = {};

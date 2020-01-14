@@ -1207,6 +1207,75 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
   };
 });
 
+Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['projects', 'organizations', 'citoyens', 'events'], name);
+  }));
+  check(etat, Match.Maybe(String));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      if (scope === 'citoyens') {
+        options.fields = {
+          pwd: 0
+        };
+      }
+      if (scope === 'events') {
+        // Counts.publish(this, `countSous.${scopeId}`, Events.find({parentId:scopeId}), { noReady: true });
+      }
+      let query = {};
+      if (_.contains(['events', 'projects', 'organizations'], scope)) {
+        query.$or = [];
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': false,
+        });
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': {
+            $exists: false,
+          },
+        });
+
+        if (scope === 'projects') {
+          query = queryOrPrivateScope(query, 'contributors', scopeId, this.userId);
+        } else if (scope === 'organizations') {
+          query = queryOrPrivateScope(query, 'members', scopeId, this.userId);
+        } else if (scope === 'events') {
+          query = queryOrPrivateScope(query, 'attendees', scopeId, this.userId);
+        }
+      } else {
+        query._id = new Mongo.ObjectID(scopeId);
+      }
+      return collection.find(query, options);
+    },
+    children: [{
+      find(scopeD) {
+        return Lists.find({
+          name: {
+            $in: ['eventTypes']
+          }
+        });
+      },
+    },
+    {
+      find(scopeD) {
+        if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          return scopeD.listActionsCreator();
+        }
+      },
+    },
+    ]
+  };
+});
+
 Meteor.publishComposite('highlight', function (localityId) {
   check(localityId, String);
 

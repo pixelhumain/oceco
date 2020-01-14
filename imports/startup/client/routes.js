@@ -284,6 +284,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('actionsList', {
+    template: 'newsList',
+    path: '/:scope/actions/:_id',
+    loadingTemplate: 'loading',
+  });
+
   this.route('roomsList', {
     template: 'newsList',
     path: '/:scope/rooms/:_id',
