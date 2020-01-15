@@ -239,6 +239,20 @@ Actions.helpers({
     }
     return false;
   },
+  userCredit() {
+    const userObjId = new Mongo.ObjectID(Meteor.userId());
+    const orgId = Meteor.settings.public.orgaCibleId;
+    const citoyen = Citoyens.findOne({
+      _id: userObjId,
+    });
+    return citoyen && citoyen.userWallet && citoyen.userWallet[`${orgId}`] && citoyen.userWallet[`${orgId}`].userCredits;
+  },
+  isDepense() {
+    return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
+  },
+  isAFaire() {
+    return this.credits > 0;
+  },
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
     return this.listContributors(search) && this.listContributors(search).count();
