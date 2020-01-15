@@ -120,6 +120,7 @@ Template.eventsList.events({
 });
 Template.eventsList.helpers({
   eventAction(eventId) {
-    return Actions.find({parentId: eventId})
+    const userAddedAction = `links.contributors.${Meteor.userId()}`;
+    return Actions.find({ $and: [{ parentId: eventId},{ [userAddedAction]: { $exists: false } }] })
   }
 });
