@@ -27,20 +27,54 @@
     {{#ionContent class="scroll-bg"}}
     {{#if dataReady}}
     <div class="list">
-      {{#each project in poleProjects}}
+      {{#each project in poleProjects2}}
        
-            <div class="item item-stable item-avatar">
+          
+            <!-- <div class="item item-stable item-avatar">
               {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
               {{project.name}} 
-              <p class="badge badge-dark">{{projectNbActions project._id}} <span>{{> ionIcon icon="clock"}}</span></p>
-              </div>
+              <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+            <div>
+            <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
+            </div>
 
-            {{#each action in projectAction project._id}}
-              {{> itemInputAction action=action}}
-            {{/each}}
+              {{#each event in projectEvents project._id}}
+                {{>eventsList event=event}}
+              {{/each}}
+            </div> -->
+            {{>projectList project=project}}
       {{/each}} 
       </div>
       {{/if}}
     {{/ionContent}}
   {{/ionView}}
+</template>
+<template name="projectList">
+  <div class="item item-stable item-avatar">
+    {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+    {{project.name}} 
+    <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+  
+    {{#if scroll }}
+      <div>
+        <button class="button button-small button-dark button-see-event-js">Cacher évènements <i class="icon ion-ios-arrow-up"></i></button>
+      </div>
+      {{#each event in projectEvents project._id}}
+        {{>eventsList event=event}}
+      {{/each}}
+      {{else}}
+      <div>
+        <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
+      </div>
+    {{/if}}
+  </div>
+</template  >
+
+<template name="eventsList">
+  <div class="item  item-avatar">
+    {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
+    {{event.name}} 
+    <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+  </div>
+
 </template>

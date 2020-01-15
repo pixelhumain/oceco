@@ -30,7 +30,8 @@ Template.polesView.onCreated(function() {
   this.autorun(function () {
     const poleName = Router.current().params.pole;
     const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId, poleName);
-    if (handle.ready()) {
+    const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId, poleName)
+    if (handle.ready()&&handleEvents.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
@@ -38,23 +39,37 @@ Template.polesView.onCreated(function() {
 // this.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
 // this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
 });
+Template.projectList.onCreated(function(){
+  this.scroll= new ReactiveVar(false);
+})
+
+Template.projectList.helpers({
+  projectEvents(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Events.find({ organizerId: projectId }).fetch()
+  },
+  scroll(){
+    return Template.instance().scroll.get()
+  }
+});
 Template.polesView.helpers({
   poleName() {
     const poleName = Router.current().params.pole;
     return poleName;
   },
-  poleProjects() {
+ 
+  poleProjects2() {
     const poleName = Router.current().params.pole;
-    const query = {};
-    query.tags = poleName;
-    query[`parent.${Meteor.settings.public.orgaCibleId}.type`] = 'organizations';
-    const poleProjectsCursor = Projects.find(query);
+    const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+    const projectId = Projects.find({[queryProjectId]:{$exists: 1}}).fetch();
+    let projectsId = [];
+    projectId.forEach(element => {
+      projectsId.push(element._id);
+    });
+    const poleProjectsCursor = Projects.find({$and:[{tags : poleName}, {_id :{$in: projectsId}}]})
     return poleProjectsCursor;
   },
-  projectNbActions(projectObjectId) {
-    const projectId = projectObjectId.valueOf();
-    return Actions.find({ parentId: projectId }).count();
-  },
+  
   projectAction(projectObjectId) {
     const projectId = projectObjectId.valueOf();
     return Actions.find({ parentId: projectId });
@@ -71,5 +86,16 @@ Template.polesView.helpers({
   dataReady() {
     return Template.instance().ready.get();
   },
+});
+Template.projectList.events({ 
+  'click .button-see-event-js': function(event, instance) { 
+     event.preventDefault()
+     if (Template.instance().scroll.get() ){
+      Template.instance().scroll.set(false)
+
+     }
+     else  Template.instance().scroll.set(true);
+
+  } 
 });
 

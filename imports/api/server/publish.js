@@ -2902,6 +2902,26 @@ Meteor.publish('action.to.admin', function(raffId) {
   }
 });
 
+Meteor.publish('poles.events', function (raffId, poleName) {
+  check(raffId, String)
+  check(poleName, String)
+  if (!this.userId) {
+    return null;
+  }
+    const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+    const projectId = Projects.find({[queryProjectId]:{$exists: 1}}).fetch();
+    let projectsId = [];
+    projectId.forEach(element => {
+      projectsId.push(element._id);
+    });
+    const poleProjects = Projects.find({$and:[{tags : poleName}, {_id :{$in: projectsId}}]}).fetch()
+    let poleProjectsId = [];
+    poleProjects.forEach(element => {
+      poleProjectsId.push(element._id._str);
+    });
+    return Events.find({organizerId:{$in: poleProjectsId} })
+})
+
 
 
 
