@@ -8,7 +8,7 @@ const callPixelRest = (token, method, controller, action, post) => {
   // post['X-Auth-Token'] = token;
   // post['X-User-Id'] = Meteor.userId();
   // post['json'] = 1;
-  console.log(post);
+  // console.log(post);
   const responsePost = HTTP.call(method, `${Meteor.settings.endpoint}/${controller}/${action}`, {
     headers: {
       'X-Auth-Token': token,

@@ -16,7 +16,7 @@ import '../imports/ui/about/about.js';
 
 import '../imports/ui/polesView/polesView.js';
 
-import '../imports/ui/home/home.js';
+
 
 import '../imports/ui/actionView/actionView.js';
 
@@ -42,6 +42,8 @@ import '../imports/ui/news/detail/detail.js';
 import '../imports/ui/news/news.js';
 
 import '../imports/ui/admin/admin.js';
+
+import '../imports/ui/home/home.js';
 
 import '../imports/ui/organizations/members/members.js';
 import '../imports/ui/organizations/list.js';

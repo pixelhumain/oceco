@@ -217,6 +217,8 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
 }) => {
   const childrenParent = [];
 
+  //console.log(scope);
+
   if (scope === 'events') {
     // sous events
     const parentEventPush = {
@@ -250,10 +252,11 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
     if (scope === 'events') {
       const parentPush = {
         find(scopeD) {
-          // console.log(scopeD);
+          //console.log(scopeD);
           if (scopeD.organizer) {
+            //console.log(parent);
             const arrayIdsParent = arrayLinkParent(scopeD.organizer, parent);
-            // console.log(arrayIdsParent);
+            //console.log(arrayIdsParent);
             const collectionType = nameToCollection(parent);
             let query = {};
             if (_.contains(['events', 'projects', 'organizations'], parent)) {
@@ -279,7 +282,7 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
                 },
               };
             }
-
+            //console.log(query);
             return collectionType.find(query, {
               fields,
             });
@@ -291,12 +294,12 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
     } else {
       const parentPush = {
         find(scopeD) {
-          // console.log(scopeD);
+          //console.log(scopeD);
           if (scopeParent) {
             if (_.contains(scopeParent, scope)) {
               if (scopeD.parent) {
                 const arrayIdsParent = arrayLinkParent(scopeD.parent, parent);
-                // console.log(arrayIdsParent);
+                //console.log(arrayIdsParent);
                 const collectionType = nameToCollection(parent);
                 let query = {};
                 if (_.contains(['events', 'projects', 'organizations'], parent)) {
@@ -382,7 +385,6 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
       childrenParent.push(parentPush);
     }
   });
-
   return childrenParent;
 };
 

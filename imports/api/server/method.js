@@ -35,7 +35,7 @@ import { Gamesmobile, Playersmobile, Questsmobile, SchemasPlayersmobileRest } fr
 import { apiCommunecter } from './api.js';
 
 // helpers
-import { encodeString, nameToCollection } from '../helpers.js';
+import { encodeString, nameToCollection, arrayLinkToModerate } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -407,6 +407,30 @@ URL._encodeParams = function(params, prefix) {
   return str.join('&').replace(/%20/g, '+');
 };
 
+const countActionEvents = (parentId, status) => {
+  // ajouter 
+  /* actionsCount {
+      todo : 1,
+      done : 0,
+      disabled: 0,
+    } */
+  const actionsCount = `actionsCount.${status}`;
+  if (!Events.findOne({ _id: new Mongo.ObjectID(parentId), [actionsCount]: { $exists: 1 } })) {
+    console.log('existe pas');
+    Events.update({ _id: new Mongo.ObjectID(parentId) }, { $set: { [actionsCount]: 1 } });
+    if (status === 'done' || status === 'disabled') {
+      Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
+    }
+  } else {
+    Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { [actionsCount]: 1 } });
+    console.log('existe');
+    if (status === 'done' || status === 'disabled') {
+      Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
+    }
+  }
+  //
+};
+
 Meteor.methods({
   'finishAction'({ id }) {
     new SimpleSchema({
@@ -457,15 +481,23 @@ Meteor.methods({
     const actionId = new Mongo.ObjectID(actId);
     const userNeed = new Mongo.ObjectID(usrId);
     const parent = `finishedBy.${usrId}`;
-    const credit = parseInt(Actions.findOne({ _id: actionId }).credits, 10)
+    const credit = parseInt(Actions.findOne({ _id: actionId }).credits, 10);
     const userActions = `userWallet.${orgId}.userActions.${actId}`;
-    const userCredits = `userWallet.${orgId}.userCredits`
-    if (!Citoyens.findOne({ _id: userNeed , [userCredits]: {$exists:1 }})) {
-      Citoyens.update({ _id: userNeed },  {$set: {[userCredits]: 0}});
+    const userCredits = `userWallet.${orgId}.userCredits`;
+    if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists:1 } })) {
+      Citoyens.update({ _id: userNeed }, { $set: { [userCredits]: 0 } });
     }
     Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
     Citoyens.update({ _id: userNeed }, { $set: { [userActions]: credit } });
-    Citoyens.update({ _id: userNeed }, {$inc: {[userCredits]: credit}});
+    Citoyens.update({ _id: userNeed }, { $inc: { [userCredits]: credit } });
+
+    // verifier si tout les users sont valider
+    const actionOne = Actions.findOne({ _id: actionId });
+    if (actionOne.finishedBy && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
+      Actions.update({ _id: actionId }, { $set: { 'status': 'done' } });
+      countActionEvents(actionOne.parentId, 'done');
+    }
+    //
 
     return true;
   },
@@ -2278,6 +2310,8 @@ export const updateProposal = new ValidatedMethod({
   },
 });
 
+
+
 export const insertAction = new ValidatedMethod({
   name: 'insertAction',
   validate: SchemasActionsRest.validator(),
@@ -2331,10 +2365,18 @@ export const insertAction = new ValidatedMethod({
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.idParentRoom = room._id._str;
+    
+
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
+
+    // count 
+    countActionEvents(doc.parentId, 'todo');
+    //
+
     return retour;
   },
 });
+
 
 export const updateAction = new ValidatedMethod({
   name: 'updateAction',
@@ -2541,33 +2583,33 @@ export const assignmeActionRooms = new ValidatedMethod({
   }).validator(),
   run({ id }) {
     const actionObjectId = new Mongo.ObjectID(id);
-    const parentObjectId =new Mongo.ObjectID(Actions.findOne({_id: actionObjectId}).parentId);
-    const eventId = Events.findOne({_id: parentObjectId})._id._str;
-    const event = `links.events.${eventId}`
-    const projectId = Projects.findOne({[event]:{$exists:1}})._id._str
-    const project = `links.projects.${projectId}`
-    const orgId = Organizations.findOne({[project]:{$exists:1}})._id._str
+    const parentObjectId =new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
+    const eventId = Events.findOne({ _id: parentObjectId })._id._str;
+    const event = `links.events.${eventId}`;
+    const projectId = Projects.findOne({ [event]:{ $exists:1 } })._id._str;
+    const project = `links.projects.${projectId}`;
+    const orgId = Organizations.findOne({ [project]:{ $exists:1 } })._id._str;
     const parent = `finishedBy.${ Meteor.userId()}`;
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
-      const  credits =Citoyens.findOne({_id: userObjId}).userWallet[`${orgId}`].userCredits
-      return credits
+      const credits =Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
+      return credits;
     }
     function walletIsOk(id) {
-      const cost = parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits,10);
+      const cost = parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits, 10);
       if (cost >= 0) {
         return true;
       }
       else if (userCredits() > (cost * -1) ) {
         const userActions = `userWallet.${orgId}.userActions.${id}`;
-        const userCredits = `userWallet.${orgId}.userCredits`
-        const userObjectId = new Mongo.ObjectID( Meteor.userId())
-        if (!Citoyens.findOne({ _id: userObjectId , [userCredits]: {$exists:1 }})) {
-          Citoyens.update({ _id: userObjectId },  {$set: {[userCredits]: 0}});
+        const userCredits = `userWallet.${orgId}.userCredits`;
+        const userObjectId = new Mongo.ObjectID( Meteor.userId());
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredits]: { $exists:1 } })) {
+          Citoyens.update({ _id: userObjectId }, { $set: { [userCredits]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
         Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
-        Citoyens.update({ _id: userObjectId }, {$inc: {[userCredits]: cost}});
+        Citoyens.update({ _id: userObjectId }, { $inc: { [userCredits]: cost } });
         return true;
       }
       else {
@@ -2678,6 +2720,10 @@ export const actionsType = new ValidatedMethod({
     docRetour.name = name;
     docRetour.value = value;
     const retour = apiCommunecter.postPixel('co2/element', 'updatefield', docRetour);
+
+    if (type === 'actions' && value === 'done') {
+      countActionEvents(parentId, 'done');
+    }
     return retour;
   },
 });

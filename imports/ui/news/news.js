@@ -72,6 +72,11 @@ Template.newsList.onCreated(function() {
       }
     } else if (Router.current().route.getName() === 'actionsList') {
       pageSession.set('selectview', 'scopeActionsTemplate');
+      pageSession.set('selectsubview', 'aFaire');
+    } else if (Router.current().route.getName() === 'actionsListDepense') {
+      pageSession.set('selectview', 'scopeActionsTemplate');
+      pageSession.set('selectsubview', 'depenses');
+
     } else if (Router.current().route.getName() === 'roomsList') {
       pageSession.set('selectview', 'scopeRoomsTemplate');
     } else if (Router.current().route.getName() === 'gamesList') {
@@ -361,12 +366,20 @@ Template.scopeActionsTemplate.helpers({
   scopeBoutonEventsTemplate() {
     return `boutonActions${Router.current().params.scope}`;
   },
+  selectsubview () {
+    return pageSession.get('selectsubview');
+  },
   dataReady() {
     return Template.instance().ready.get();
   },
 });
 
-
+Template.scopeActionsTemplate.events({
+  'click .change-selectsubview-js'(event, instance) {
+    event.preventDefault();
+    pageSession.set('selectsubview', event.currentTarget.id);
+  },
+});
 
 
 Template.scopePoiTemplate.onCreated(function() {

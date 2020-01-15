@@ -432,6 +432,15 @@ Projects.helpers({
       queryOptions.fields.startDate = 1;
       queryOptions.fields.startDate = 1;
       queryOptions.fields.geo = 1;
+      const inputDate = new Date();
+      // query.startDate = { $lte: inputDate };
+      query.endDate = {
+        $gte: inputDate,
+      };
+      const options = {};
+      options.sort = {
+        startDate: 1,
+      };
       return Events.find(query, queryOptions);
     }
   },

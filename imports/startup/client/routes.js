@@ -290,6 +290,13 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('actionsListDepense', {
+    template: 'newsList',
+    path: '/:scope/actionsDepense/:_id',
+    loadingTemplate: 'loading',
+  });
+  
+
   this.route('roomsList', {
     template: 'newsList',
     path: '/:scope/rooms/:_id',

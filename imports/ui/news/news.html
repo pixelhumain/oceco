@@ -341,16 +341,30 @@
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-calendar"></i> {{__ "actions"}}<span
-        class="badge badge-dark">{{countActionsCreator}}</span>
+        class="badge badge-dark">{{countActionsCreator selectsubview 'todo'}}</span>
     </div>
+    <div class="item tabs">
+        <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">A faire</a>
+        <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés</a>
+    </div>
+    {{#if equals selectsubview 'aFaire'}}
+        {{#each item in listActionsCreator selectsubview 'todo'}}
+        <div class="item">
+          <h2><a
+              href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
+              class="dark">{{item.name}}</a></h2>
+        </div>
+        {{/each}}
+    {{else if equals selectsubview 'depenses'}}
+        {{#each item in listActionsCreator selectsubview 'todo'}}
+        <div class="item">
+          <h2><a
+              href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
+              class="dark">{{item.name}}</a></h2>
+        </div>
+        {{/each}}
+    {{/if}}
 
-    {{#each item in listActionsCreator}}
-    <div class="item">
-      <h2><a
-          href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
-          class="dark">{{item.name}}</a></h2>
-    </div>
-    {{/each}}
 
   </div>
 </template>
