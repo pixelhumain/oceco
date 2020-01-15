@@ -164,6 +164,11 @@ Template.wallet.helpers({
   selectview() {
     return Template.instance().selectview.get();
   },
+  userCredit() {
+    const userObjId = new Mongo.ObjectID(Meteor.userId())
+    const orgId = Meteor.settings.public.orgaCibleId
+    return(Citoyens.findOne({_id: userObjId}).userWallet[`${orgId}`].userCredits)
+  },
 });
 
 Template.buttonActionFinish.helpers({
