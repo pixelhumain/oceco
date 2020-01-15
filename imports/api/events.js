@@ -17,6 +17,7 @@ import { Projects } from './projects.js';
 import { Poi } from './poi.js';
 import { Gamesmobile } from './gamemobile.js';
 import { Rooms } from './rooms.js';
+import { Actions } from './actions.js';
 // SimpleSchema.debug = true;
 
 import { News } from './news.js';
@@ -39,13 +40,13 @@ SchemasEventsRest.extend({
       options() {
         if (Meteor.isClient) {
           const listSelect = Lists.findOne({
-            name: 'eventTypes'
+            name: 'eventTypes',
           });
           if (listSelect && listSelect.list) {
             return _.map(listSelect.list, function (value, key) {
               return {
                 label: value,
-                value: key
+                value: key,
               };
             });
           }
@@ -502,7 +503,7 @@ Events.helpers({
     return this.listPoiCreator() && this.listPoiCreator().count();
   },
   listRooms (search) {
-    //if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+    // if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
     const query = {};
 
     if (this.isAdmin()) {
@@ -536,10 +537,10 @@ Events.helpers({
     queryOptions.fields.status = 1;
     queryOptions.fields.roles = 1;
     return Rooms.find(query, queryOptions);
-    //}
+    // }
   },
   detailRooms (roomId) {
-    //if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+    // if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
     const query = {};
     if (this.isAdmin()) {
       query._id = new Mongo.ObjectID(roomId);
@@ -553,13 +554,32 @@ Events.helpers({
       query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
     }
     return Rooms.find(query);
-    //}
+    // }
   },
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
   },
   room (roomId) {
     return Rooms.findOne({ parentId: this._id._str });
+  },
+  listActionsCreator(type = 'all', status = 'todo') {
+    const query = {};
+    query.parentId = this._id._str;
+    query.status = status;
+    if (type === 'aFaire') {
+      query.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      query.credits = { $lt: 0 };
+    }
+    const options = {};
+    options.sort = {
+      startDate: 1
+    };
+    console.log(query);
+    return Actions.find(query, options);
+  },
+  countActionsCreator(type = 'all', status = 'todo') {
+    return this.listActionsCreator(type, status) && this.listActionsCreator(type, status).count();
   },
   listGamesCreator() {
     const query = {};

@@ -129,6 +129,9 @@ Template.actionsEdit.helpers({
     actionEdit.description = action.description;
     actionEdit.tags = action.tags;
     actionEdit.urls = action.urls;
+    actionEdit.min = action.min;
+    actionEdit.max = action.max;
+    actionEdit.credits = action.credits;
     return actionEdit;
   },
   error () {

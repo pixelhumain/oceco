@@ -102,6 +102,10 @@
             <i class="icon fa fa-lightbulb-o"></i> {{__ "projects"}}<span
                 class="badge badge-dark">{{countProjectsCreator}}</span>
         </div>
+        <div class="button-bar bar-positive">
+        <a href="{{pathFor 'projectsAdd' _id=_id._str scope='projects'}}" class="button button-small"><i
+                class="icon fa fa-plus"></i></a>
+        </div>
         <div class="item item-text-wrap">Gestions des projets</div>
 
         {{> Directory_list_projects list=listProjectsCreator scope="projects"}}
@@ -115,9 +119,11 @@
 </template>
 
 <template name="Directory_item_projects">
-    <div class="item item-avatar">
+    <div class="item item-avatar item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+        <a href="{{pathFor 'eventsAdd' _id=item._id._str scope='events'}}" class="button button-positive"><i
+                class="icon fa fa-plus"></i></a>
     </div>
 </template>
 
@@ -139,9 +145,12 @@
 </template>
 
 <template name="Directory_item_projects_events">
-    <div class="item item-avatar">
+    <div class="item item-avatar item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+        <a href="{{pathFor 'actionsAdd' _id=item._id._str scope='events'}}"
+            class="button button-positive"><i
+                class="icon fa fa-plus"></i></a>
     </div>
 </template>
 

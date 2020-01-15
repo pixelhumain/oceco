@@ -30,12 +30,10 @@ Template.layout.onCreated(function() {
 
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    //const handle = Meteor.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
     const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
-    //const handleDirectoryList = Meteor.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
     const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
-    const handleCitoyen = Meteor.subscribe('citoyen')
-    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen) {
+    const handleCitoyen = Meteor.subscribe('citoyen');
+    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen.ready()) {
       this.ready.set(handleScopeDetail.ready());
     }
   }.bind(this));
@@ -202,9 +200,9 @@ Template.layout.helpers({
       const raffinerieCursor = Organizations.findOne({ _id: id });
       if (raffinerieCursor) {
         const raffinerieArray = raffinerieCursor.listProjectsCreator();
-        const raffinerieTags = raffinerieArray.map(tag => tag.tags[0]);
-        const uniqueRaffinerieTags = Array.from(new Set(raffinerieTags));
-        return uniqueRaffinerieTags;
+        const raffinerieTags = raffinerieArray ? raffinerieArray.map(tag => tag.tags && tag.tags[0]) : null;
+        const uniqueRaffinerieTags = raffinerieTags ? Array.from(new Set(raffinerieTags)) : null;
+        return uniqueRaffinerieTags || {};
       }
     }
   },
@@ -226,8 +224,8 @@ Template.layout.helpers({
         const raffProjectsArray = raffinerieCursor.listProjectsCreator();
         if (raffProjectsArray.count() > 0) {
           const raffProjectsObjectId = raffProjectsArray.map(project => project._id);
-          const projectInPole = Projects.find({_id: {$in: raffProjectsObjectId},tags: poles}).map(project => project._id._str)
-          const nbActions = Actions.find({ parentId: { $in: projectInPole }}).count();
+          const projectInPole = Projects.find({ _id: { $in: raffProjectsObjectId }, tags: poles }).map(project => project._id._str);
+          const nbActions = Actions.find({ parentId: { $in: projectInPole } }).count();
           return nbActions;
         }
       }
@@ -253,7 +251,9 @@ Template.forceUpdateAvailable.events({
 
 Template.account.helpers({
   userCredit() {
-    const userObjId = new Mongo.ObjectID(Meteor.userId())
-    const orgId = Meteor.settings.public.orgaCibleId
-    return(Citoyens.findOne({_id: userObjId}).userWallet[`${orgId}`].userCredits)},
-})
+    const userObjId = new Mongo.ObjectID(Meteor.userId());
+    const orgId = Meteor.settings.public.orgaCibleId;
+    const citoyen = Citoyens.findOne({ _id: userObjId });
+    return citoyen && citoyen.userWallet && citoyen.userWallet[`${orgId}`] && citoyen.userWallet[`${orgId}`].userCredits;
+  },
+});

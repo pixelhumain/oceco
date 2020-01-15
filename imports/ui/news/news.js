@@ -70,6 +70,13 @@ Template.newsList.onCreated(function() {
       } else {
         pageSession.set('selectview', 'scopeEventsTemplate');
       }
+    } else if (Router.current().route.getName() === 'actionsList') {
+      pageSession.set('selectview', 'scopeActionsTemplate');
+      pageSession.set('selectsubview', 'aFaire');
+    } else if (Router.current().route.getName() === 'actionsListDepense') {
+      pageSession.set('selectview', 'scopeActionsTemplate');
+      pageSession.set('selectsubview', 'depenses');
+
     } else if (Router.current().route.getName() === 'roomsList') {
       pageSession.set('selectview', 'scopeRoomsTemplate');
     } else if (Router.current().route.getName() === 'gamesList') {
@@ -327,7 +334,7 @@ Template.scopeProjectsTemplate.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = newsListSubs.subscribe('directoryListProjects', Router.current().params.scope, Router.current().params._id);
+    const handle = newsListSubs.subscribe('directorylistProjectsRaf', 'organizations', Meteor.settings.public.orgaCibleId);
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -340,6 +347,40 @@ Template.scopeProjectsTemplate.helpers({
     return Template.instance().ready.get();
   },
 });
+
+Template.scopeActionsTemplate.onCreated(function () {
+  this.ready = new ReactiveVar();
+
+  this.autorun(function () {
+    pageSession.set('scopeId', Router.current().params._id);
+    pageSession.set('scope', Router.current().params.scope);
+  });
+
+  this.autorun(function () {
+    const handle = this.subscribe('directoryListActions', Router.current().params.scope, Router.current().params._id);
+    this.ready.set(handle.ready());
+  }.bind(this));
+});
+
+Template.scopeActionsTemplate.helpers({
+  scopeBoutonEventsTemplate() {
+    return `boutonActions${Router.current().params.scope}`;
+  },
+  selectsubview () {
+    return pageSession.get('selectsubview');
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+Template.scopeActionsTemplate.events({
+  'click .change-selectsubview-js'(event, instance) {
+    event.preventDefault();
+    pageSession.set('selectsubview', event.currentTarget.id);
+  },
+});
+
 
 Template.scopePoiTemplate.onCreated(function() {
   this.ready = new ReactiveVar();

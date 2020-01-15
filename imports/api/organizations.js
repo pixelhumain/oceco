@@ -531,10 +531,14 @@ Organizations.helpers({
         query.$or.push(queryCo);
       });
       // queryOptions.fields.parentId = 1;
-      queryOptions.fields.startDate = 1;
-      queryOptions.fields.startDate = 1;
-      queryOptions.fields.geo = 1;
-      return Events.find(query, queryOptions);
+      const inputDate = new Date();
+      //query.startDate = { $lte: inputDate };
+      query.endDate = { $gte: inputDate };
+      const options = {};
+      options.sort = {
+        startDate: 1
+      };
+      return Events.find(query, options);
     }
   },
   countProjectsEventsCreator() {
@@ -549,6 +553,7 @@ Organizations.helpers({
       query.parentId = {
         $in: eventIds,
       };
+      query.status = 'todo';
       return Actions.find(query);
     }
   },
