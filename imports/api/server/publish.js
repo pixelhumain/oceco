@@ -2903,25 +2903,25 @@ Meteor.publish('projects.actions', function(raffId) {
   // return   Actions.find()
 });
 
-Meteor.publish('poles.actions', function(raffId, poleName) {
-  check(raffId, String);
-  check(poleName, Match.Maybe(String));
-  if (!this.userId) {
-    return null;
-  }
-  const id = new Mongo.ObjectID(raffId);
-  const raffinerieCursor = Organizations.findOne({ _id: id });
-  if (raffinerieCursor) {
-    const raffProjectsArray = raffinerieCursor.listProjectsEventsCreator().map(event => event._id._str);
-    if (poleName) {
-      const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
-      return poleActions;
-    }
-    const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
-    return poleActions;
-  }
-  return null;
-});
+// Meteor.publish('poles.actions', function(raffId, poleName) {
+//   check(raffId, String);
+//   check(poleName, Match.Maybe(String));
+//   if (!this.userId) {
+//     return null;
+//   }
+//   const id = new Mongo.ObjectID(raffId);
+//   const raffinerieCursor = Organizations.findOne({ _id: id });
+//   if (raffinerieCursor) {
+//     const raffProjectsArray = raffinerieCursor.listProjectsEventsCreator().map(event => event._id._str);
+//     if (poleName) {
+//       const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
+//       return poleActions;
+//     }
+//     const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
+//     return poleActions;
+//   }
+//   return null;
+// });
 
 Meteor.publish('poles.actions2', function(raffId, poleName) {
   check(raffId, String);
