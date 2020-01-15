@@ -28,20 +28,6 @@
     {{#if dataReady}}
     <div class="list">
       {{#each project in poleProjects2}}
-       
-          
-            <!-- <div class="item item-stable item-avatar">
-              {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
-              {{project.name}} 
-              <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
-            <div>
-            <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
-            </div>
-
-              {{#each event in projectEvents project._id}}
-                {{>eventsList event=event}}
-              {{/each}}
-            </div> -->
             {{>projectList project=project}}
       {{/each}} 
       </div>
@@ -54,20 +40,25 @@
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
     {{project.name}} 
     <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
-  
     {{#if scroll }}
       <div>
         <button class="button button-small button-dark button-see-event-js">Cacher évènements <i class="icon ion-ios-arrow-up"></i></button>
       </div>
+    {{else}}
+    <div>
+      <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
+    </div>
+      {{/if}}
+    </div>
+
+      {{#if scroll }}
       {{#each event in projectEvents project._id}}
         {{>eventsList event=event}}
       {{/each}}
-      {{else}}
-      <div>
-        <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
-      </div>
-    {{/if}}
-  </div>
+      
+      {{/if}}
+
+ 
 </template  >
 
 <template name="eventsList">
@@ -75,6 +66,22 @@
     {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
     {{event.name}} 
     <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+    {{#if scrollAction }}
+      <div>
+        <button class="button button-small button-see-actions-js">Cacher actions <i class="icon ion-ios-arrow-up"></i></button>
+      </div>
+    {{else}}
+      <div>
+        <button class="button button-small button-see-actions-js">Voir actions <i class="icon ion-ios-arrow-down"></i></button>
+      </div>
+    {{/if}}
   </div>
+  {{#if scrollAction }}
+  {{#each action in eventAction event._id._str}}  
+       
+  {{> itemAction action=action}}
+
+  {{/each}}
+  {{/if}}
 
 </template>

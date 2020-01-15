@@ -2845,7 +2845,7 @@ Meteor.publish('poles.actions', function(raffId, poleName) {
   if (raffinerieCursor) {
     const raffProjectsArray = raffinerieCursor.listProjectsEventsCreator().map(event => event._id._str);
     if (poleName) {
-      const poleActions = Actions.find({ parentId: { $in: raffProjectsArray }, tags: poleName });
+      const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
       return poleActions;
     }
     const poleActions = Actions.find({ parentId: { $in: raffProjectsArray } });
@@ -2853,6 +2853,33 @@ Meteor.publish('poles.actions', function(raffId, poleName) {
   }
   return null;
 });
+
+Meteor.publish('poles.actions2', function(raffId, poleName) {
+  check(raffId, String);
+  check(poleName, Match.Maybe(String));
+  if (!this.userId) {
+    return null;
+  }
+  const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+  const projectId = Projects.find({[queryProjectId]:{$exists: 1}}).fetch();
+  let projectsId = [];
+  projectId.forEach(element => {
+    projectsId.push(element._id);
+  });
+  const poleProjects = Projects.find({$and:[{tags : poleName}, {_id :{$in: projectsId}}]}).fetch()
+  let poleProjectsId = [];
+  poleProjects.forEach(element => {
+    poleProjectsId.push(element._id._str);
+  });
+  const eventsArrayId= [] 
+  Events.find({organizerId:{$in: poleProjectsId}}).forEach( function(event) { eventsArrayId.push( event._id._str )}) 
+    if (poleName) {
+      const eventActions = Actions.find({ parentId: { $in: eventsArrayId } });
+      return eventActions;
+    }
+    const eventActions = Actions.find({ parentId: { $in: eventsArrayId } });
+    return eventActions;
+  });
 
 Meteor.publish('member.profile', function(memberId){
   check(memberId, String);

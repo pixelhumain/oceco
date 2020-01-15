@@ -39,9 +39,13 @@ Template.polesView.onCreated(function() {
 // this.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
 // this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
 });
+
 Template.projectList.onCreated(function(){
   this.scroll= new ReactiveVar(false);
-})
+});
+Template.eventsList.onCreated(function(){
+  this.scrollAction= new ReactiveVar(false);
+});
 
 Template.projectList.helpers({
   projectEvents(projectObjectId) {
@@ -50,6 +54,11 @@ Template.projectList.helpers({
   },
   scroll(){
     return Template.instance().scroll.get()
+  }
+});
+Template.eventsList.helpers({
+  scrollAction(){
+    return Template.instance().scrollAction.get()
   }
 });
 Template.polesView.helpers({
@@ -98,4 +107,19 @@ Template.projectList.events({
 
   } 
 });
+Template.eventsList.events({ 
+  'click .button-see-actions-js': function(event, instance) { 
+     event.preventDefault()
+     if (Template.instance().scrollAction.get() ){
+      Template.instance().scrollAction.set(false)
 
+     }
+     else  Template.instance().scrollAction.set(true);
+
+  } 
+});
+Template.eventsList.helpers({
+  eventAction(eventId) {
+    return Actions.find({parentId: eventId})
+  }
+});
