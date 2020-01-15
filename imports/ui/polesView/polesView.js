@@ -29,7 +29,7 @@ Template.polesView.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     const poleName = Router.current().params.pole;
-    const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId, poleName);
+    const handle = this.subscribe('poles.actions2', Meteor.settings.public.orgaCibleId, poleName);
     const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId, poleName)
     if (handle.ready()&&handleEvents.ready()) {
       this.ready.set(handle.ready());
