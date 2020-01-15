@@ -334,7 +334,7 @@ Template.scopeProjectsTemplate.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = newsListSubs.subscribe('directorylistProjectsRaf', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Meteor.settings.public.orgaCibleId);
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -363,7 +363,7 @@ Template.scopeActionsTemplate.onCreated(function () {
 });
 
 Template.scopeActionsTemplate.helpers({
-  scopeBoutonEventsTemplate() {
+  scopeBoutonActionsTemplate() {
     return `boutonActions${Router.current().params.scope}`;
   },
   selectsubview () {

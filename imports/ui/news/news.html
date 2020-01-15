@@ -308,10 +308,9 @@
       <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
     </div>
     {{> Template.dynamic template=scopeBoutonEventsTemplate data=this}}
-
     {{#transition in="zoomIn" out="bounceOut"}}
     {{#each item in listEventsCreator}}
-    {{> scopeItemList item=item count=item.countAttendeesSimple}}
+    {{> scopeItemListEvent item=item}}
     {{else}}
 
     {{/each}}

@@ -567,6 +567,9 @@ Citoyens.helpers({
   listScope () {
     return 'listCitoyens';
   },
+  userCredit() {
+    return this.userWallet && this.userWallet[`${Meteor.settings.public.orgaCibleId}`] && this.userWallet[`${Meteor.settings.public.orgaCibleId}`].userCredits;
+  },
   newsJournal (target, userId, limit) {
     const query = {};
     const options = {};

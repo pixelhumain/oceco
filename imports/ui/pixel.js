@@ -249,11 +249,3 @@ Template.forceUpdateAvailable.events({
   },
 });
 
-Template.account.helpers({
-  userCredit() {
-    const userObjId = new Mongo.ObjectID(Meteor.userId());
-    const orgId = Meteor.settings.public.orgaCibleId;
-    const citoyen = Citoyens.findOne({ _id: userObjId });
-    return citoyen && citoyen.userWallet && citoyen.userWallet[`${orgId}`] && citoyen.userWallet[`${orgId}`].userCredits;
-  },
-});

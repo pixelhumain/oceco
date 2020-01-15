@@ -561,6 +561,30 @@ Organizations.helpers({
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsActionsCreator() && this.listProjectsEventsActionsCreator().count();
   },
+  actionsInWaiting() {
+    const finished = `finishedBy.${Meteor.userId()}`;
+    const UserId = `links.contributors.${Meteor.userId()}`;
+    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: raffProjectsArray } });
+  },
+  actionsToValidate() {
+    const finished = `finishedBy.${Meteor.userId()}`;
+    const UserId = `links.contributors.${Meteor.userId()}`;
+    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: raffProjectsArray } });
+  },
+  actionsValidate() {
+    const finished = `finishedBy.${Meteor.userId()}`;
+    const UserId = `links.contributors.${Meteor.userId()}`;
+    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: raffProjectsArray } });  
+  },
+  actionsSpend() {
+    const finished = `finishedBy.${Meteor.userId()}`;
+    const UserId = `links.contributors.${Meteor.userId()}`;
+    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: raffProjectsArray } });
+  },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return ActivityStream.api.isUnseen(bothUserId, this._id._str);

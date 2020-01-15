@@ -9,7 +9,7 @@ import { Tracker } from 'meteor/tracker';
 import { baseSchema } from './schema.js';
 import { Citoyens } from './citoyens.js';
 import { Comments } from './comments.js';
-import { queryLink, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper } from './helpers.js';
 
 export const Actions = new Mongo.Collection('actions', { idGeneration: 'MONGO' });
 
@@ -240,12 +240,10 @@ Actions.helpers({
     return false;
   },
   userCredit() {
-    const userObjId = new Mongo.ObjectID(Meteor.userId());
-    const orgId = Meteor.settings.public.orgaCibleId;
-    const citoyen = Citoyens.findOne({
-      _id: userObjId,
+    const citoyenOne = Citoyens.findOne({
+      _id: Meteor.userId()
     });
-    return citoyen && citoyen.userWallet && citoyen.userWallet[`${orgId}`] && citoyen.userWallet[`${orgId}`].userCredits;
+    return citoyenOne && citoyenOne.userCredit();
   },
   isDepense() {
     return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
@@ -255,6 +253,21 @@ Actions.helpers({
   },
   isNotMax() {
     return this.max > this.countContributors();
+  },
+  projectDay() {
+    return moment(this.startDate).format(' ddd Do MMM à HH:mm ');
+  },
+  projectDuration() {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+    return Math.round(endDate.diff(startDate, 'minutes') / 60);
+  },
+  actionParticipantsNbr() {
+    if (this.links) {
+      const numberParticipant = arrayLinkProper(this.links.contributors).length;
+      return numberParticipant;
+    }
+    return 'aucun';
   },
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);

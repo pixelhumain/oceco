@@ -41,7 +41,7 @@
     <div class="item item-divider">A faire</div>
     <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
 
-        {{#each action in actionsInWaiting}}
+        {{#each action in scope.actionsInWaiting}}
         {{> whalletInputAction action=action}}
         {{/each}}
         
@@ -50,7 +50,7 @@
     <div class="item item-divider">En attente de validations</div>
     <div class="item item-text-wrap">C'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur</div>
 
-        {{#each action in actionsToValidate}}
+        {{#each action in scope.actionsToValidate}}
         {{> whalletInputInWaitingAction action=action badgeColor="energized"}}
         {{/each}}
 
@@ -59,7 +59,7 @@
         <div class="item item-text-wrap">C'est la liste de toute vos ancienne actions qui vous ont rapporté des
             crédits</div>
 
-        {{#each action in actionsValidate}}
+        {{#each action in scope.actionsValidate}}
         {{> whalletInputInWaitingAction action=action badgeColor="balanced"}}
         {{/each}}
 
@@ -69,7 +69,7 @@
     <div class="item item-text-wrap">C'est la liste de toute vos ancienne actions qui vous ont couté des crédits
     </div>
 
-    {{#each action in actionsSpend}}
+    {{#each action in scope.actionsSpend}}
     {{> whalletInputInWaitingAction action=action badgeColor="dark"}}
     {{/each}}
 
@@ -107,13 +107,13 @@
     <div div class="col ">        
         <div class="item item-text-wrap">{{action.description}}
             <div class="row">
-                <div class="col-10"><i class="ion-android-calendar"></i></div>Début  le {{projectDay action.startDate}} 
+                <div class="col-10"><i class="ion-android-calendar"></i></div>Début  le {{action.projectDay}} 
             </div>
             <div class="row">
-                <div class="col-10"><i class="ion-clock"></i></div>Durée {{projectDuration action.startDate action.endDate}} H 
+                <div class="col-10"><i class="ion-clock"></i></div>Durée {{action.projectDuration}} H 
             </div>
             <div class="row">
-                <div class="col-10"><i class="ion-man"></i></div>Il y a {{actionParticipantsNbr action._id}} participant
+                <div class="col-10"><i class="ion-man"></i></div>Il y a {{action.actionParticipantsNbr}} participant
             </div>
             <div class="row">
                 <div class="col-10"><i class="icon ion-ios-arrow-down"></i></div>Pour un besoin minimum de {{action.min}} participant
@@ -137,11 +137,5 @@
 </template>
 
 <template name='buttonActionFinish'>
-
         <button class="button button-small button-positive button-block finish-action-js"><i class="fa fa-handshake-o"></i> Action Fini</button>
-
-</template>
-
-<template name="myAccount">
-
 </template>

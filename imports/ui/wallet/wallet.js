@@ -29,17 +29,11 @@ window.Rooms = Rooms;
 Template.wallet.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = this.subscribe('user.actions', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('user.actions', 'organizations', Meteor.settings.public.orgaCibleId);
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
-  this.scroll1 = new ReactiveVar(false);
-  this.scroll2 = new ReactiveVar(false);
-  this.scroll3 = new ReactiveVar(false);
-  this.scroll4 = new ReactiveVar(false);
-  this.displayValidateActions = new ReactiveVar(true);
-  this.displaySpendActions = new ReactiveVar(false);
   this.selectview = new ReactiveVar('aFaire');
 });
 
@@ -70,36 +64,16 @@ Template.wallet.events({
 
 
 Template.wallet.helpers({
-  actionsInWaiting() {
-    const id = `links.contributors.${Meteor.userId()}`;
-    const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: { $exists: false } }] });
-  },
-  actionsToValidate() {
-    const id = `links.contributors.${Meteor.userId()}`;
-    const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'toModerate' }] });
-  },
-  actionsValidate() {
-    const id = `links.contributors.${Meteor.userId()}`;
-    const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $gt: 0 } }] });
-  },
-  actionsSpend() {
-    const id = `links.contributors.${Meteor.userId()}`;
-    const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $lt: 0 } }] });
+  scope() {
+    return Organizations.findOne({
+      _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId),
+    });
   },
   dataReady() {
     return Template.instance().ready.get();
   },
   selectview() {
     return Template.instance().selectview.get();
-  },
-  userCredit() {
-    const userObjId = new Mongo.ObjectID(Meteor.userId());
-    const orgId = Meteor.settings.public.orgaCibleId;
-    return (Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits);
   },
 });
 
@@ -130,35 +104,6 @@ Template.whalletInputAction.events({
 Template.whalletInputAction.helpers({
   displayDesc() {
     return Template.instance().displayDesc.get();
-  },
-
-  projectDay(date) {
-    return moment(date).format(' ddd Do MMM à HH:mm ');
-  },
-  projectDuration(start, end) {
-    const startDate = moment(start);
-    const endDate = moment(end);
-    return Math.round(endDate.diff(startDate, 'minutes') / 60);
-  },
-  creditPositive(credit) {
-    if (credit >= 0) {
-      return true;
-    }
-    return false;
-  },
-  creditNegative(credit) {
-    return -credit;
-  },
-  actionParticipantsNbr(actionId) {
-    // const actionId = Router.current().params.id
-    // const actionObjectId = new Mongo.ObjectID(actionId)
-    const actionCursor = Actions.findOne({ _id: actionId });
-    if (actionCursor && actionCursor.links) {
-      const numberParticipant = arrayLinkProper(actionCursor.links.contributors).length;
-      return numberParticipant;
-    }
-
-    return 'aucun';
   },
 });
 

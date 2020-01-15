@@ -429,9 +429,6 @@ Projects.helpers({
       query._id = {
         $in: eventIds,
       };
-      queryOptions.fields.startDate = 1;
-      queryOptions.fields.startDate = 1;
-      queryOptions.fields.geo = 1;
       const inputDate = new Date();
       // query.startDate = { $lte: inputDate };
       query.endDate = {
@@ -441,7 +438,7 @@ Projects.helpers({
       options.sort = {
         startDate: 1,
       };
-      return Events.find(query, queryOptions);
+      return Events.find(query, options);
     }
   },
   countEventsCreator () {

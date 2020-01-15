@@ -10,6 +10,7 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import { HTTP } from 'meteor/http';
 import { Blaze } from 'meteor/blaze';
+import { Mongo } from 'meteor/mongo';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import MarkdownIt from 'markdown-it';
 
@@ -23,7 +24,7 @@ import { SchemasOrganizationsRest, BlockOrganizationsRest } from '../../api/orga
 import { SchemasProjectsRest, BlockProjectsRest } from '../../api/projects.js';
 import { SchemasPoiRest, BlockPoiRest } from '../../api/poi.js';
 import { SchemasClassifiedRest } from '../../api/classified.js';
-import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest } from '../../api/citoyens.js';
+import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest, Citoyens } from '../../api/citoyens.js';
 import { SchemasNewsRest, SchemasNewsRestBase } from '../../api/news.js';
 import { SchemasCommentsRest, SchemasCommentsEditRest } from '../../api/comments.js';
 import { SchemasRoomsRest } from '../../api/rooms.js';
@@ -461,6 +462,15 @@ Meteor.startup(function () {
     const result = md.render(content);
     return HTML.Raw(result);
   }));
+
+  Template.registerHelper('userCredit', () => {
+    if (Meteor.userId()) {
+      const citoyenOne = Citoyens.findOne({
+        _id: new Mongo.ObjectID(Meteor.userId())
+      });
+      return citoyenOne && citoyenOne.userCredit();
+    }
+  });
 
   Template.registerHelper('SchemasFollowRest', SchemasFollowRest);
   Template.registerHelper('SchemasInviteAttendeesEventRest', SchemasInviteAttendeesEventRest);
