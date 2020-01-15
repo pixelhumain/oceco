@@ -76,7 +76,7 @@ Template.itemInputAction.helpers({
     return Template.instance().displayDesc.get();
   },
   projectDay(date) {
-    return moment(date).format(' ddd Do MMM à h:mm ');
+    return moment(date).format(' ddd Do MMM à HH:mm ');
   },
   projectDuration(start, end) {
     const startDate = moment(start);
@@ -105,25 +105,8 @@ Template.itemInputAction.helpers({
   },
 });
 
-Template.scrollPrez.onCreated(function() {
-  this.scrollPrez = new ReactiveVar(false);
-});
+Template.itemInputActionDetail.inheritsHelpersFrom('itemInputAction');
 
-Template.scrollPrez.events({
-  'click .scroll-prez-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().scrollPrez.get()) {
-      Template.instance().scrollPrez.set(true);
-    } else {
-      Template.instance().scrollPrez.set(false);
-    }
-  },
-});
-Template.scrollPrez.helpers({
-  scrollP() {
-    return Template.instance().scrollPrez.get();
-  },
-});
 
 Template.home.events({
   'click #sortByDate '(event, instance) {
@@ -135,34 +118,40 @@ Template.home.events({
   },
 });
 
-Template.buttonSubscribeAction.onCreated(function () {
-  this.state = new ReactiveDict();
-  this.state.setDefault({
-    call: false,
-  });
-});
-
-Template.buttonSubscribeAction.helpers({
-  isCall() {
-    return Template.instance().state.get('call');
-  },
-});
-
 Template.buttonSubscribeAction.events({
-  'click .assign-action-js' (event, instance) {
+  'click .action-assignme-js' (event) {
     event.preventDefault();
-    instance.state.set('call', true);
-    Meteor.call('assignmeActionRooms', { id: this.id }, (error) => {
+    Meteor.call('assignmeActionRooms', { id: this._id._str }, (error) => {
       if (error) {
-        console.log(error);
-        IonPopup.alert({ template: i18n.__('Pas assé de crédits désolé') });
-        instance.state.set('call', false);
-      } else {
+        IonPopup.alert({ template: i18n.__(error.reason) });
       }
     });
   },
-});
+  'click .action-depenseme-js' (event) {
+    event.preventDefault();
+    const self = this;
+    IonPopup.confirm({
+      title: 'Depenser',
+      template: 'Voulez vous depenser vos credits ?',
+      onOk() {
+        Meteor.call('assignmeActionRooms', {
+          id: self._id._str,
+        }, (error) => {
+          if (error) {
+            IonPopup.alert({
+              template: i18n.__(error.reason),
+            });
+          }
+        });
+      },
+      onCancel() {
 
+      },
+      cancelText: i18n.__('no'),
+      okText: i18n.__('yes'),
+    });
+  },
+});
 
 Template.actionDuration.helpers({
   projectDuration(start, end) {

@@ -14,6 +14,8 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 import { Rooms } from '../../api/rooms.js';
 
+import { arrayLinkProper } from '../../api/helpers.js';
+
 import './wallet.html';
 
 
@@ -59,54 +61,6 @@ Template.buttonActionFinish.events({
 });
 
 Template.wallet.events({
-  'click #scroll-1-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().scroll1.get()) {
-      Template.instance().scroll1.set(true);
-    } else Template.instance().scroll1.set(false);
-  },
-  'click #scroll-2-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().scroll2.get()) {
-      Template.instance().scroll2.set(true);
-    } else Template.instance().scroll2.set(false);
-  },
-  'click .scroll-3-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().scroll3.get()) {
-      Template.instance().scroll3.set(true);
-      if (Template.instance().scroll4.get()) {
-        Template.instance().scroll4.set(false);
-      }
-    } else Template.instance().scroll3.set(false);
-  },
-  'click .scroll-4-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().scroll4.get()) {
-      Template.instance().scroll4.set(true);
-      if (Template.instance().scroll3.get()) {
-        Template.instance().scroll3.set(false);
-      }
-    } else Template.instance().scroll4.set(false);
-  },
-  'click .action-validate-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().displayValidateActions.get()) {
-      if (Template.instance().displaySpendActions.get()) {
-        Template.instance().displaySpendActions.set(false);
-      }
-      Template.instance().displayValidateActions.set(true);
-    }
-  },
-  'click .action-spend-js'(event, instance) {
-    event.preventDefault();
-    if (!Template.instance().displaySpendActions.get()) {
-      if (Template.instance().displayValidateActions.get()) {
-        Template.instance().displayValidateActions.set(false);
-      }
-      Template.instance().displaySpendActions.set(true);
-    }
-  },
   'click .change-selectview-js'(event, instance) {
     event.preventDefault();
     Template.instance().selectview.set(event.currentTarget.id);
@@ -129,34 +83,12 @@ Template.wallet.helpers({
   actionsValidate() {
     const id = `links.contributors.${Meteor.userId()}`;
     const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $gt: '0' } }] });
-  },
-  userCredits() {
-    const finish = `finishedBy.${Meteor.userId()}`;
-    let credits = 0;
-    Actions.find({ [finish]: 'validated' }).forEach(function (u) { credits += parseInt(u.credits, 10); });
-    return credits;
+    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $gt: 0 } }] });
   },
   actionsSpend() {
     const id = `links.contributors.${Meteor.userId()}`;
     const finished = `finishedBy.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $lt: '0' } }] });
-  },
-
-  scroll1() {
-    return Template.instance().scroll1.get();
-  },
-  scroll2() {
-    return Template.instance().scroll2.get();
-  },
-  scroll3() {
-    return Template.instance().scroll3.get();
-  },
-  scroll4() {
-    return Template.instance().scroll4.get();
-  },
-  selectSpend() {
-    return Template.instance().displaySpendActions.get();
+    return Actions.find({ $and: [{ [id]: { $exists: 1 } }, { [finished]: 'validated' }, { credits: { $lt: 0 } }] });
   },
   dataReady() {
     return Template.instance().ready.get();
@@ -165,9 +97,9 @@ Template.wallet.helpers({
     return Template.instance().selectview.get();
   },
   userCredit() {
-    const userObjId = new Mongo.ObjectID(Meteor.userId())
-    const orgId = Meteor.settings.public.orgaCibleId
-    return(Citoyens.findOne({_id: userObjId}).userWallet[`${orgId}`].userCredits)
+    const userObjId = new Mongo.ObjectID(Meteor.userId());
+    const orgId = Meteor.settings.public.orgaCibleId;
+    return (Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits);
   },
 });
 
@@ -201,7 +133,7 @@ Template.whalletInputAction.helpers({
   },
 
   projectDay(date) {
-    return moment(date).format(' ddd Do MMM à h:mm ');
+    return moment(date).format(' ddd Do MMM à HH:mm ');
   },
   projectDuration(start, end) {
     const startDate = moment(start);
@@ -214,8 +146,8 @@ Template.whalletInputAction.helpers({
     }
     return false;
   },
-  creditNegative(credit){
-    return -credit
+  creditNegative(credit) {
+    return -credit;
   },
   actionParticipantsNbr(actionId) {
     // const actionId = Router.current().params.id

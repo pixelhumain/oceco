@@ -53,7 +53,7 @@ Template.detailActions.helpers({
   },
 });
 
-Template.detailViewActions.events({
+/* Template.detailViewActions.events({
   'click .action-assignme-js' (event) {
     event.preventDefault();
     Meteor.call('assignmeActionRooms', { id: pageSession.get('actionId') }, (error) => {
@@ -62,13 +62,37 @@ Template.detailViewActions.events({
       }
     });
   },
-});
+  'click .action-depenseme-js' (event) {
+    event.preventDefault();
+    const self = this;
+    IonPopup.confirm({
+      title: 'Depenser',
+      template: 'Voulez vous depenser vos credits ?',
+      onOk() {
+        Meteor.call('assignmeActionRooms', {
+          id: pageSession.get('actionId'),
+        }, (error) => {
+          if (error) {
+            IonPopup.alert({
+              template: i18n.__(error.reason),
+            });
+          }
+        });
+      },
+      onCancel() {
+
+      },
+      cancelText: i18n.__('no'),
+      okText: i18n.__('yes'),
+    });
+  },
+}); */
 
 Template.buttonsActions.events({
   'click .action-action-js' (event) {
     event.preventDefault();
     const action = $(event.currentTarget).data('action');
-    Meteor.call('actionsType', { parentType: pageSession.get('scope'), parentId: pageSession.get('scopeId'), type: 'actions', id: pageSession.get('actionId'), name:'status', value: action }, (error) => {
+    Meteor.call('actionsType', { parentType: pageSession.get('scope'), parentId: pageSession.get('scopeId'), type: 'actions', id: pageSession.get('actionId'), name: 'status', value: action }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });
       }

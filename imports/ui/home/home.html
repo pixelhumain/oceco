@@ -73,8 +73,6 @@
         <i class="icon fa fa-calendar"></i> {{__ "events"}} <span
             class="badge badge-dark">{{countProjectsEventsCreator}}</span>
     </div>
-    <div class="item item-text-wrap">Gestion des évenements</div>
-
 
     {{#each item in listProjectsEventsCreator}}
 
@@ -193,9 +191,91 @@
         </div>
         {{/if}}
         <div class="row">
-            {{>buttonSubscribeAction id=action._id._str action=action }}
+            {{>buttonSubscribeAction action }}
         </div>
     </div>
+</template>
+
+<template name="itemInputActionDetail">
+    <div class="item">
+        <div class="row row-center padding-bottom">
+            {{> actionParticipantNeeded action=action}}
+            {{> actionDuration action=action }}
+        </div>
+
+        <div div class="col ">
+            <div class="item item-text-wrap">{{action.description}}
+                {{#if creditPositive action.credits }}
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-card"> </i></div>Vous gagnerez {{action.credits}} crédits
+                </div>
+                {{else}}
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-card"> </i></div> Vous serez prélevé de
+                    {{creditNegative action.credits }} crédits
+                </div>
+                {{/if}}
+                <div class="row">
+                    <div class="col-10"> <i class="ion-android-calendar"></i></div> Début le
+                    {{projectDay action.startDate}}
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="ion-clock"></i></div> Durée
+                    {{projectDuration action.startDate action.endDate}} H
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="ion-man"></i></div> Il y a {{actionParticipantsNbr action._id}}
+                    participant
+                </div>
+                <div class="row">
+                    <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div> Pour un besoin minimum de
+                    {{action.min}} participant
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div> Et un maximum de {{action.max}}
+                    participant
+                </div>
+            </div>
+        </div>
+    </div>
+    {{>buttonSubscribeAction action }}
+    
+</template>
+
+<template name="buttonSubscribeAction">
+
+{{#if isContributors}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span>
+</div>
+{{else}}
+{{#if isAFaire}}
+{{#if isNotMax}}
+<div class="button-bar bar-positive">
+    <button class="button action-assignme-js"><i class="fa fa-handshake-o"></i>
+        {{__ "dda.actions.wantparticipateaction"}}</button>
+</div>
+{{else}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
+</div>
+{{/if}}
+{{else}}
+{{#if isDepense}}
+{{#if isNotMax}}
+<div class="button-bar bar-positive">
+    <button class="button action-depenseme-js"><i class="ion-card"></i>
+        Dépenser {{credits}}</button>
+</div>
+{{else}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
+</div>
+{{/if}}
+{{/if}}
+
+{{/if}}
+{{/if}}
 </template>
 
 <template name="actionDuration">
@@ -227,7 +307,7 @@
 
 
 
-<template name="buttonSubscribeAction">
+<template name="buttonSubscribeActionold">
     {{#if creditPositive action.credits }}
     <button class="button button-dark button-block button-small assign-action-js {{#if isCall}}disabled{{/if}}">
         {{#if isCall}}

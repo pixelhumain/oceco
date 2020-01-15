@@ -58,6 +58,9 @@
       </p>
       {{/if}}
     </div>
+    
+    {{> itemInputActionDetail action=this}}
+
   </div>
 
     {{#if equals status 'todo'}}
@@ -74,25 +77,6 @@
     <div class="item item-divider">
     <i class="fa fa-group"></i> {{__ "dda.actions.theytakeaction"}}
     </div>
-    {{#if isContributors}}
-    <div class="item">
-      <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span>
-    </div>
-      {{else}}
-      {{#if isAFaire}}
-      <div class="button-bar bar-positive">
-        <button class="button button-small action-assignme-js"><i class="fa fa-handshake-o"></i>
-          {{__ "dda.actions.wantparticipateaction"}}</button>
-      </div>
-      {{else}}
-            {{#if isDepense}}
-            <div class="button-bar bar-positive">
-              <button class="button button-small action-assignme-js"><i class="fa fa-handshake-o"></i> Dépenser</button>
-            </div>
-            {{/if}}
-      
-      {{/if}}
-      {{/if}} 
 
     {{#each contributor in listContributors}}
     <div class="item {{#if contributor.profilThumbImageUrl}}item-avatar{{/if}}">

@@ -493,7 +493,7 @@ Meteor.methods({
 
     // verifier si tout les users sont valider
     const actionOne = Actions.findOne({ _id: actionId });
-    if (actionOne.finishedBy && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
+    if (actionOne.finishedBy && actionOne.countContributors() === Object.keys(actionOne.finishedBy).map(id => id).length && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
       Actions.update({ _id: actionId }, { $set: { 'status': 'done' } });
       countActionEvents(actionOne.parentId, 'done');
     }

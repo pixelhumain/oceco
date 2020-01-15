@@ -253,6 +253,9 @@ Actions.helpers({
   isAFaire() {
     return this.credits > 0;
   },
+  isNotMax() {
+    return this.max > this.countContributors();
+  },
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
     return this.listContributors(search) && this.listContributors(search).count();
