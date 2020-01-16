@@ -75,48 +75,10 @@ Template.itemInputAction.helpers({
   displayDesc() {
     return Template.instance().displayDesc.get();
   },
-  projectDay(date) {
-    return moment(date).format(' ddd Do MMM à HH:mm ');
-  },
-  projectDuration(start, end) {
-    const startDate = moment(start);
-    const endDate = moment(end);
-    return Math.round(endDate.diff(startDate, 'minutes') / 60);
-  },
-  creditPositive(credit) {
-    if (credit >= 0) {
-      return true;
-    }
-    return false;
-  },
-  creditNegative(credit) {
-    return -credit;
-  },
-  actionParticipantsNbr(actionId) {
-    // const actionId = Router.current().params.id
-    // const actionObjectId = new Mongo.ObjectID(actionId)
-    const actionCursor = Actions.findOne({ _id: actionId });
-    if (actionCursor && actionCursor.links) {
-      const numberParticipant = arrayLinkProper(actionCursor.links.contributors).length;
-      return numberParticipant;
-    }
-
-    return 'aucun';
-  },
 });
 
 Template.itemInputActionDetail.inheritsHelpersFrom('itemInputAction');
 
-
-Template.home.events({
-  'click #sortByDate '(event, instance) {
-    Template.instance().sortByDate.set(true);
-  },
-  'change #sortByDay'(event, instance) {
-    const selectedDay = event.currentTarget.value;
-    Template.instance().sortByDay.set(selectedDay);
-  },
-});
 
 Template.buttonSubscribeAction.events({
   'click .action-assignme-js' (event) {
@@ -153,79 +115,3 @@ Template.buttonSubscribeAction.events({
   },
 });
 
-Template.actionDuration.helpers({
-  projectDuration(start, end) {
-    const startDate = moment(start);
-    const endDate = moment(end);
-    return Math.round(endDate.diff(startDate, 'minutes') / 60);
-  },
-});
-
-Template.actionParticipantNeeded.helpers({
-  actionParticipantsNbr(actionId) {
-    // const actionId = Router.current().params.id
-    // const actionObjectId = new Mongo.ObjectID(actionId)
-    const actionCursor = Actions.findOne({ _id: actionId });
-    if (actionCursor && actionCursor.links) {
-      const numberParticipant = arrayLinkProper(actionCursor.links.contributors).length;
-      return numberParticipant;
-    }
-
-    return 0;
-  },
-});
-Template.actionDate.helpers({
-  projectDay(date) {
-    return moment(date).format(' ddd Do MMM ');
-  },
-});
-Template.home.helpers({
-  projectAction() {
-    const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    if (Template.instance().sortByDate.get()) {
-      if (Template.instance().sortByDay.get()) {
-        const dayWanted = Template.instance().sortByDay.get();
-        const actionCursor = Actions.find();
-        const arrayActionToDisplay = [];
-        actionCursor.forEach((action) => {
-          const day = moment(action.startDate).format('dddd');
-          if (day === dayWanted) {
-            arrayActionToDisplay.push(action._id);
-          }
-        });
-        return Actions.find({ $and: [{ _id: { $in: arrayActionToDisplay } }, { sort: { startDate: 1 } },
-          { [userAddedAction]: { exists: false } }] });
-      }
-      return Actions.find({ $and: [{}, { sort: { startDate: -1 } }, { [userAddedAction]: { $exists: false } }] });
-    }
-    if (Template.instance().sortByDay.get()) {
-      const dayWanted = Template.instance().sortByDay.get();
-      const actionCursor = Actions.find();
-      const arrayActionToDisplay = [];
-      actionCursor.forEach((action) => {
-        const day = moment(action.startDate).format('dddd');
-        if (day === dayWanted) {
-          arrayActionToDisplay.push(action._id);
-        }
-      });
-      return Actions.find({ $and: [{ _id: { $in: arrayActionToDisplay } },
-        { [userAddedAction]: { $exists: false } }] });
-    }
-    return Actions.find({ $and: [{}, { [userAddedAction]: { $exists: false } }] });
-  },
-  returnId(id) {
-    return id.valueOf();
-  },
-  dataReady() {
-    return Template.instance().ready.get();
-  },
-});
-
-Template.buttonSubscribeAction.helpers({
-  creditPositive(credit) {
-    if (credit >= 0) {
-      return true;
-    }
-    return false;
-  },
-});

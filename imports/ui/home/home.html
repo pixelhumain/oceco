@@ -157,26 +157,26 @@
         {{#if displayDesc}}
         <div div class="col ">
             <div class="item item-text-wrap">{{action.description}}
-                {{#if creditPositive action.credits }}
+                {{#if action.creditPositive }}
                 <div class="row">
                     <div class="col-10"><i class="icon ion-card"> </i></div>Vous gagnerez {{action.credits}} crédits
                 </div>
                 {{else}}
                 <div class="row">
                     <div class="col-10"><i class="icon ion-card"> </i></div> Vous serez prélevé de
-                    {{creditNegative action.credits }} crédits
+                    {{action.creditNegative}} crédits
                 </div>
                 {{/if}}
                 <div class="row">
                     <div class="col-10"> <i class="ion-android-calendar"></i></div> Début le
-                    {{projectDay action.startDate}}
+                    {{action.projectDay}}
                 </div>
                 <div class="row">
                     <div class="col-10"><i class="ion-clock"></i></div> Durée
-                    {{projectDuration action.startDate action.endDate}} H
+                    {{action.projectDuration}} H
                 </div>
                 <div class="row">
-                    <div class="col-10"><i class="ion-man"></i></div> Il y a {{actionParticipantsNbr action._id}}
+                    <div class="col-10"><i class="ion-man"></i></div> Il y a {{action.actionParticipantsNbr}}
                     participant
                 </div>
                 <div class="row">
@@ -205,26 +205,26 @@
 
         <div div class="col ">
             <div class="item item-text-wrap">{{action.description}}
-                {{#if creditPositive action.credits }}
+                {{#if action.creditPositive}}
                 <div class="row">
                     <div class="col-10"><i class="icon ion-card"> </i></div>Vous gagnerez {{action.credits}} crédits
                 </div>
                 {{else}}
                 <div class="row">
                     <div class="col-10"><i class="icon ion-card"> </i></div> Vous serez prélevé de
-                    {{creditNegative action.credits }} crédits
+                    {{action.creditNegative}} crédits
                 </div>
                 {{/if}}
                 <div class="row">
                     <div class="col-10"> <i class="ion-android-calendar"></i></div> Début le
-                    {{projectDay action.startDate}}
+                    {{action.projectDay}}
                 </div>
                 <div class="row">
                     <div class="col-10"><i class="ion-clock"></i></div> Durée
-                    {{projectDuration action.startDate action.endDate}} H
+                    {{action.projectDuration}} H
                 </div>
                 <div class="row">
-                    <div class="col-10"><i class="ion-man"></i></div> Il y a {{actionParticipantsNbr action._id}}
+                    <div class="col-10"><i class="ion-man"></i></div> Il y a {{action.actionParticipantsNbr}}
                     participant
                 </div>
                 <div class="row">
@@ -280,7 +280,7 @@
 
 <template name="actionDuration">
     <div class="col text-center col-center borderMenuItem stable-border"><i class="ion-clock"></i>
-        {{projectDuration action.startDate action.endDate}}H </div>
+        {{action.projectDuration}}H </div>
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-card"></i>
         {{action.credits}}
         R</div>
@@ -288,7 +288,7 @@
 
 <template name="actionParticipantNeeded">
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-man"></i>
-        {{actionParticipantsNbr action._id}}</div>
+        {{action.actionParticipantsNbr}}</div>
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-down"></i>
         {{action.min}}</div>
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-up"></i>
@@ -296,7 +296,7 @@
 </template>
 
 <template name="actionDate">
-    <span><i class="ion-android-calendar"></i>{{projectDay action.startDate}}</span>
+    <span><i class="ion-android-calendar"></i>{{action.projectDay}}</span>
 </template>
 
 <template name="linkForAction">
@@ -306,29 +306,3 @@
 </template>
 
 
-
-<template name="buttonSubscribeActionold">
-    {{#if creditPositive action.credits }}
-    <button class="button button-dark button-block button-small assign-action-js {{#if isCall}}disabled{{/if}}">
-        {{#if isCall}}
-        <i class="icon fa fa-refresh fa-spin"></i>
-        {{else}}
-        <i class="fa fa-handshake-o"></i> Participer
-        {{/if}}
-    </button>
-    {{else}}
-    {{#if action}}
-    <button class="button button-positive button-block button-small assign-action-js"><i class="fa fa-handshake-o"></i>
-        Dépenser</button>
-    {{/if}}
-    {{/if}}
-</template>
-
-<template name="scrollPrez">
-    <div class="item item-light item-divider">{{#if icon}}<i class="icon {{icon}}"></i> {{/if}}{{title}}</div>
-
-    <div class="item item-dark item-text-wrap">
-        {{prez}}
-    </div>
-
-</template>

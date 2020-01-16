@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
-import { pageSession } from '../../api/client/reactive.js';
 
 // collection
 import { Events } from '../../api/events.js';
@@ -14,7 +12,6 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 import { Rooms } from '../../api/rooms.js';
 
-import { arrayLinkProper } from '../../api/helpers.js';
 
 import './wallet.html';
 
@@ -39,23 +36,22 @@ Template.wallet.onCreated(function() {
 
 
 Template.buttonActionFinish.events({
-  'click .finish-action-js' (event, instance) {
+  'click .finish-action-js' (event) {
     event.preventDefault();
     const actionId = this.action._id._str;
     Meteor.call('finishAction', {
       id: actionId,
-    }, (err, res) => {
-      if (err) {
+    }, (error) => {
+      if (error) {
         alert(err);
-      } else {
-        console.log('succesw');
+        IonPopup.alert({ template: i18n.__(error.reason) });
       }
     });
   },
 });
 
 Template.wallet.events({
-  'click .change-selectview-js'(event, instance) {
+  'click .change-selectview-js'(event) {
     event.preventDefault();
     Template.instance().selectview.set(event.currentTarget.id);
   },
@@ -92,7 +88,7 @@ Template.whalletInputAction.onCreated(function() {
 });
 
 Template.whalletInputAction.events({
-  'click .display-desc-js'(event, instance) {
+  'click .display-desc-js'(event) {
     event.preventDefault();
     if (!Template.instance().displayDesc.get()) {
       Template.instance().displayDesc.set(true);

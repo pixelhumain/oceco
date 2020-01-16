@@ -269,6 +269,15 @@ Actions.helpers({
     }
     return 'aucun';
   },
+  creditPositive() {
+    if (this.credits >= 0) {
+      return true;
+    }
+    return false;
+  },
+  creditNegative() {
+    return -this.credits;
+  },
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
     return this.listContributors(search) && this.listContributors(search).count();
