@@ -62,14 +62,6 @@
       {{#transition in="slideInDown" out="slideOutUp"}}
       <p class="right-top animated in">
         {{#if modified}}<i class="icon ion-android-alarm-clock"></i> {{__ "modified"}} : {{livestamp modified}}<br>{{/if}}
-        {{#if preferences}}
-        {{#if equals preferences.isOpenData 'true'}}
-        <span class="icon fa-stack opendata" style="font-size:14px;width:14px;">
-                <i class="fa fa-database main fa-stack-1x dark"></i>
-                <i class="fa fa-share-alt  mainTop fa-stack-1x light" style="text-shadow: 0px 0px 2px rgb(15,15,15);"></i>
-              </span>
-        {{/if}}
-        {{/if}}
       </p>
       {{/transition}}
       {{else}}
@@ -82,20 +74,6 @@
         {{#if endDate}}<i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>{{/if}}
         {{/if}}
         {{#if modified}}<i class="icon ion-android-alarm-clock"></i> {{__ "modified"}} : {{livestamp modified}}<br>{{/if}}
-        {{#if preferences}}
-        {{#if preferenceTrue preferences.isOpenData}}
-        <span class="icon fa-stack opendata" style="font-size:14px;width:14px;">
-                <i class="icon fa fa-database main fa-stack-1x dark"></i>
-                <i class="icon fa fa-share-alt  mainTop fa-stack-1x light" style="text-shadow: 0px 0px 2px rgb(15,15,15);"></i>
-              </span>
-        {{/if}}
-        {{#if preferenceTrue preferences.isOpenEdition}}
-        <i class="icon fa fa-creative-commons dark"></i>
-        {{/if}}
-        {{#if preferenceTrue preferences.private}}
-        <i class="icon fa fa-lock positive"></i> {{__ "Private"}}
-        {{/if}}
-        {{/if}}
       </p>
       {{/transition}}
       {{/if}}

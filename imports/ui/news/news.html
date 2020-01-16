@@ -29,23 +29,31 @@
 
   {{#if equals scope.scopeVar 'citoyens'}}
 
+  
+
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'organizations'}}
-  <div class="item tabs tabs-icon-left">
-    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+  <div class="item tabs">
+    <div class="tabs tabs-striped">
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
     <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>
+    </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'projects'}}
-  <div class="item tabs tabs-icon-left">
-    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+  <div class="item tabs">
+    <div class="tabs tabs-striped">
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
     <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+    </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'events'}}
-<div class="item tabs tabs-icon-left">
-    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
+<div class="item tabs">
+    <div class="tabs tabs-striped">
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
     <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i></a>
+    </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'poi'}}
@@ -670,13 +678,13 @@
   {{#if isAdmin}}
   <a href="#" class="button button-positive action-card-events"><i class="icon fa fa-cog"></i></a>
   {{else}}
-  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  
   {{/if}}
   {{else if equals scopeVar 'projects'}}
   {{#if isAdmin}}
   <a href="#" class="button button-positive action-card-projects"><i class="icon fa fa-cog"></i></a>
   {{else}}
-  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+  
   {{/if}}
   {{else if equals scopeVar 'poi'}}
   {{#if isAdmin}}
@@ -694,7 +702,7 @@
   {{#if isAdmin}}
   <a href="#" class="button button-positive action-card-organizations"><i class="icon fa fa-cog"></i></a>
   {{else}}
-  <a href="{{pathFor 'share' _id=_id._str scope=scopeVar}}" class="button button-clear"><i class="icon fa fa-share"></i></a>
+
   {{/if}}
   {{else if equals scopeVar 'citoyens'}}
   {{#if isMe}}

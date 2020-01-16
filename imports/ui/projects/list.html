@@ -227,6 +227,7 @@
   {{#if equals block 'descriptions'}}
   {{> afQuickField name='shortDescription' type="textarea" label-type='placeholder' rows=8}}
   {{> afQuickField name='description' type="textarea" label-type='placeholder' rows=8}}
+  {{> afQuickField name='tags'}}
   {{/if}}
 
   {{#if equals block 'when'}}
@@ -284,6 +285,8 @@
   {{> afQuickField name='endDate' type="datetime-local"}}
   {{> afQuickField name='public'}}
 
+  {{> afQuickField name='tags'}}
+  
   {{> afQuickField name='country' autocomplete="off" value=country }}
   {{#if currentFieldValue "country"}}
   {{> afQuickField name='postalCode' value=postalCode autocomplete="off"}}

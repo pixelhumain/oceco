@@ -199,11 +199,12 @@ Template.projectsBlockEdit.helpers({
     if (Router.current().params.block === 'descriptions') {
       projectEdit.description = project.description;
       projectEdit.shortDescription = project.shortDescription;
-    } else if (Router.current().params.block === 'info') {
-      projectEdit.name = project.name;
       if (project.tags) {
         projectEdit.tags = project.tags;
       }
+    } else if (Router.current().params.block === 'info') {
+      projectEdit.name = project.name;
+      
       if (project.properties && project.properties.avancement) {
         projectEdit.avancement = project.properties.avancement;
       }
