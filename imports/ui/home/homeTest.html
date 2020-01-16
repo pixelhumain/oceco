@@ -60,7 +60,7 @@
         </div>
           {{/if}}
         </div>
-    
+        
           {{#if scroll }}
           {{#each event in projectEvents project._id}}
           {{>eventsList2 item=event}}
@@ -78,17 +78,22 @@
         <!-- <a class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}"
             href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}"> -->
             {{#with item}}
-            <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}">
+            <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} item-button-right">
             {{#if profilThumbImageUrl}}
             <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
             {{/if}}
             <a href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}">
             <h2>{{name}}</h2>
             </a>
-            {{#if actionsCount.todo}}
+            <!-- {{#if actionsCount.todo}}
             <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon fa fa-inbox"></i>
                 {{actionsCount.todo}}</span>
+            {{/if}} -->
+            {{#if isAdminRaf}}
+            <a href="{{pathFor 'actionsAdd' _id=_id._str scope='events'}}"
+            class="button button-positive "><i class="icon fa fa-plus"></i></a>
             {{/if}}
+
 
             {{#if typeValue}}
             <p>{{typeValue}}</p>
@@ -124,16 +129,20 @@
             {{/if}}
          
         <!-- </a> -->
-        {{#if scrollAction }}
-          <div>
-            <button class="button button-small button-see-actions-js">Cacher actions <i class="icon ion-ios-arrow-up"></i></button>
-          </div>
-        {{else}}
-          <div>
-            <button class="button button-small button-see-actions-js">Voir actions <i class="icon ion-ios-arrow-down"></i></button>
-          </div>
+        {{#if actionsCount.todo}}
+               
+            {{#if scrollAction }}
+            <div>
+                <button class="button button-small button-see-actions-js">Cacher  {{actionsCount.todo}} actions <i class="icon ion-ios-arrow-up"></i></button>
+            </div>
+            {{else}}
+            <div>
+                <button class="button button-small button-see-actions-js">Voir  {{actionsCount.todo}} actions <i class="icon ion-ios-arrow-down"></i></button>
+            </div>
+            {{/if}}
         {{/if}}
         </div>
+        
         {{/with}}
 
       {{#if scrollAction }}
