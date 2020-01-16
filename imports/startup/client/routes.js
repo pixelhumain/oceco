@@ -539,7 +539,7 @@ Router.map(function() {
 
   });
   this.route('home', {
-    template: 'home',
+    template: 'homeView',
     path: '/',
     loadingTemplate: 'loading',
 

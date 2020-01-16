@@ -63,7 +63,7 @@
     
           {{#if scroll }}
           {{#each event in projectEvents project._id}}
-            {{>eventsList2 event=event}}
+          {{>eventsList2 item=event}}
           {{/each}}
           
           {{/if}}
@@ -72,10 +72,58 @@
     </template  >
     
     <template name="eventsList2">
-      <div class="item  item-avatar">
-        {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
+        <!-- {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
         {{event.name}} 
-        <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+        <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p> -->
+        <!-- <a class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}"
+            href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}"> -->
+            {{#with item}}
+            <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}">
+            {{#if profilThumbImageUrl}}
+            <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
+            {{/if}}
+            <a href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}">
+            <h2>{{name}}</h2>
+            </a>
+            {{#if actionsCount.todo}}
+            <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon fa fa-inbox"></i>
+                {{actionsCount.todo}}</span>
+            {{/if}}
+
+            {{#if typeValue}}
+            <p>{{typeValue}}</p>
+            {{/if}}
+
+            {{#if organizerEvent}}
+            <p>Projet :
+                {{#each organizerItem in organizerEvent}}
+                {{#each organizerItemValue in organizerItem.values}}
+                <a href="{{pathFor 'detailList' _id=organizerItemValue._id._str scope=organizerItem.type}}"
+                    class="positive">{{organizerItemValue.name}}</a>
+                {{/each}}
+                {{/each}}
+            </p>
+            {{/if}}
+
+
+            {{#if startDate}}
+            <p>
+                {{#if isStart}}
+                <i class="icon ion-android-alarm-clock"></i> {{__ "start"}} : {{livestamp startDate}} <br>
+                {{#if endDate}}
+                <i class="icon ion-android-alarm-clock"></i> {{__ "end"}} : {{livestamp endDate}} <br>
+                <i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>
+                {{/if}}
+                {{else}}
+                <i class="icon ion-android-alarm-clock"></i> {{__ "start"}} : {{livestamp startDate}} <br>
+                {{#if endDate}}
+                <i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>
+                {{/if}}
+                {{/if}}
+            </p>
+            {{/if}}
+         
+        <!-- </a> -->
         {{#if scrollAction }}
           <div>
             <button class="button button-small button-see-actions-js">Cacher actions <i class="icon ion-ios-arrow-up"></i></button>
@@ -85,9 +133,11 @@
             <button class="button button-small button-see-actions-js">Voir actions <i class="icon ion-ios-arrow-down"></i></button>
           </div>
         {{/if}}
-      </div>
+        </div>
+        {{/with}}
+
       {{#if scrollAction }}
-      {{#each action in eventAction event._id._str}}  
+      {{#each action in eventAction item._id._str}}  
            
       {{> itemInputAction action=action}}
     
