@@ -36,16 +36,7 @@
       </div>
       {{>account}}
 
-      {{#each poles in RaffineriePoles}}
-      {{#ionItem buttonRight=true  class="my-class" id="my-id"}}
-        <h2> {{poles}} </h2>    
-
-        <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="button button-dark" data-ion-menu-close>
-            <p style="color: white;"> <b>{{nbActionPoles poles}}</b>                           {{> ionIcon icon="clock"}}</p>
-          
-          </a> 
-      {{/ionItem}}
-      {{/each}}
+      
       
 
       <a class="item item-stable item-icon-right" href="{{pathFor 'notifications'}}" data-ion-menu-close>{{__ "Notifications"}} <span class="badge badge-positive">{{#if notificationsCount}}{{notificationsCount}}{{else}}0{{/if}}</span></a>

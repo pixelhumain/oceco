@@ -194,18 +194,7 @@ Template.layout.helpers({
   notifications() {
     return ActivityStream.api.isUnread();
   },
-  RaffineriePoles() {
-    if (Template.instance().ready.get()) {
-      const id = new Mongo.ObjectID(Meteor.settings.public.orgaCibleId);
-      const raffinerieCursor = Organizations.findOne({ _id: id });
-      if (raffinerieCursor) {
-        const raffinerieArray = raffinerieCursor.listProjectsCreator();
-        const raffinerieTags = raffinerieArray ? raffinerieArray.map(tag => tag.tags && tag.tags[0]) : null;
-        const uniqueRaffinerieTags = raffinerieTags ? Array.from(new Set(raffinerieTags)) : null;
-        return uniqueRaffinerieTags || {};
-      }
-    }
-  },
+  
   // A revoir pour les actions par projets
   //  nbAction(poles){
   //   let polesProjectsArray = Projects.find({tags: poles}).fetch()

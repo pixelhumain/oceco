@@ -3038,10 +3038,11 @@ Meteor.publish('action.to.admin', function(raffId) {
 
 Meteor.publish('poles.events', function (raffId, poleName) {
   check(raffId, String);
-  check(poleName, String);
+  check(poleName, Match.Maybe(String));
   if (!this.userId) {
     return null;
   }
+  if(poleName){
   const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
   const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
   const projectsId = [];
@@ -3054,6 +3055,23 @@ Meteor.publish('poles.events', function (raffId, poleName) {
     poleProjectsId.push(element._id._str);
   });
   return Events.find({ organizerId: { $in: poleProjectsId } });
+}
+else{
+const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
+const projectsId = [];
+projectId.forEach((element) => {
+  projectsId.push(element._id);
+});
+const poleProjects = Projects.find({ _id: { $in: projectsId }  }).fetch();
+const poleProjectsId = [];
+poleProjects.forEach((element) => {
+  poleProjectsId.push(element._id._str);
+});
+return Events.find({ organizerId: { $in: poleProjectsId } });
+
+}
+
 });
 
 
