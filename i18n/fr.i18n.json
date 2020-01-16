@@ -707,7 +707,7 @@
         }
       },
       "organizerId":{
-        "label": "Organisateur",
+        "label": "Projet",
         "placeholder": "Sélectionnez un...",
         "options": {
 

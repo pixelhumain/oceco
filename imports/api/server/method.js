@@ -457,6 +457,46 @@ Meteor.methods({
     Actions.update({ _id: actionId }, { $set: { [parent]: 'toModerate' } });
     return true;
   },
+  'exitAction'({
+    id
+  }) {
+    new SimpleSchema({
+      id: {
+        type: String
+      },
+    }).validate({
+      id
+    });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (!Actions.findOne({
+        _id: new Mongo.ObjectID(id)
+      })) {
+      throw new Meteor.Error('not-action');
+    }
+    // admin ou creator
+    // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
+    //   throw new Meteor.Error('not-authorized');
+    // }
+
+    // const docRetour = {}
+    // docRetour.id = _id;
+    // docRetour.participants = this.userId
+    // docRetour.participants.states = "finish"
+    const actionId = new Mongo.ObjectID(id);
+    const parent = `links.contributors.${Meteor.userId()}`;
+    Actions.update({
+      _id: actionId
+    }, {
+      $unset: {
+        [parent]: ''
+      }
+    });
+    return true;
+  },
+  
 
   'ValidateAction'({ actId, usrId, orgId }) {
     new SimpleSchema({

@@ -71,7 +71,6 @@ Template.actionSheet.events({
         { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -116,7 +115,6 @@ Template.actionSheet.events({
         { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -154,11 +152,10 @@ Template.actionSheet.events({
       titleText: i18n.__('Actions Projects'),
       buttons: [
         { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
+        //{ text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
+        //{ text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
+        //{ text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {

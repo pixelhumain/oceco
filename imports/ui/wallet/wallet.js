@@ -48,6 +48,17 @@ Template.buttonActionFinish.events({
       }
     });
   },
+  'click .sortir-action-js' (event) {
+    event.preventDefault();
+    const actionId = this.action._id._str;
+    Meteor.call('exitAction', {
+      id: actionId,
+    }, (error) => {
+      if (error) {
+        IonPopup.alert({ template: i18n.__(error.reason) });
+      }
+    });
+  },
 });
 
 Template.wallet.events({

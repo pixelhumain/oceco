@@ -160,8 +160,8 @@ Meteor.startup(function () {
     if (Meteor.isServer) return;
 
     defaults = defaults || {};
-    defaults.placeholder = defaults.placeholder || 'Type something...';
-    defaults.firstOption = defaults.firstOption || 'Select something...';
+    defaults.placeholder = defaults.placeholder || '';
+    defaults.firstOption = defaults.firstOption || 'Sélectionnez ...';
 
     const schema = this._schema;
     _.each(schema, function (value, key) {
