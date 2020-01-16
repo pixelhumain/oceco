@@ -1,3 +1,4 @@
+/* global IonPopup */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -43,7 +44,6 @@ Template.buttonActionFinish.events({
       id: actionId,
     }, (error) => {
       if (error) {
-        alert(err);
         IonPopup.alert({ template: i18n.__(error.reason) });
       }
     });

@@ -573,9 +573,8 @@ Events.helpers({
     }
     const options = {};
     options.sort = {
-      startDate: 1
+      startDate: 1,
     };
-    console.log(query);
     return Actions.find(query, options);
   },
   countActionsCreator(type = 'all', status = 'todo') {

@@ -34,40 +34,40 @@ export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'desc
 SchemasActionsRest.extend({
   participants: {
     type: Array,
-    optional:true
+    optional: true,
   },
   'participants.$': {
     type: String,
   },
   finishedBy: {
     type: Array,
-    optional:true
+    optional: true,
   },
   'finishedBy.$': {
     type: String,
   },
   validated: {
     type: Array,
-    optional:true
+    optional: true,
   },
   'validated.$': {
     type: String,
   },
   credits: {
     type: Number,
-    optional:false
+    optional: false,
   },
   max: {
     type: Number,
-    optional: true
+    optional: true,
   },
   min: {
     type: Number,
-    optional: true
+    optional: true,
   },
   idParentRoom: {
     type: String,
-    optional: true
+    optional: true,
   },
   startDate: {
     type: Date,
@@ -241,7 +241,7 @@ Actions.helpers({
   },
   userCredit() {
     const citoyenOne = Citoyens.findOne({
-      _id: Meteor.userId()
+      _id: Meteor.userId(),
     });
     return citoyenOne && citoyenOne.userCredit();
   },

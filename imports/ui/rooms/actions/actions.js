@@ -168,13 +168,13 @@ Template.actionsEdit.helpers({
 
 AutoForm.addHooks(['addAction', 'editAction'], {
   after: {
-    method(error, result) {
+    method(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
         Router.go('detailList', { _id: pageSession.get('scopeId'), scope: 'events' }, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
         Router.go('detailList', { _id: pageSession.get('scopeId'), scope: 'events' }, { replaceState: true });
@@ -197,7 +197,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       return modifier;
     },
   },
-  onError(formType, error) {
+  onError(error) {
     if (error.errorType && error.errorType === 'Meteor.Error') {
       if (error && error.error === 'error_call') {
         pageSession.set('error', error.reason.replace(': ', ''));
