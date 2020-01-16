@@ -241,7 +241,7 @@ Actions.helpers({
   },
   userCredit() {
     const citoyenOne = Citoyens.findOne({
-      _id: Meteor.userId(),
+      _id: new Mongo.ObjectID(Meteor.userId()),
     });
     return citoyenOne && citoyenOne.userCredit();
   },
