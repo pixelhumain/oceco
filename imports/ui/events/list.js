@@ -103,7 +103,7 @@ Template.listEvents.onRendered(function () {
             description: event.description,
             start: event.startDate,
             end: event.endDate,
-            url: `/events/detail/${event._id._str}`,
+            url: `/events/actions/${event._id._str}`,
             extendedProps: {
               event,
             },

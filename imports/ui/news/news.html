@@ -33,26 +33,26 @@
 
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'organizations'}}
-  <div class="item tabs">
+  <div class="item tabs tabs-icon-top">
     <div class="tabs tabs-striped">
-     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
-    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i></a>
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
+    <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i> Projets</a>
     </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'projects'}}
-  <div class="item tabs">
+  <div class="item tabs tabs-icon-top">
     <div class="tabs tabs-striped">
-     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
-    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i></a>
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
+    <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i> Evénements</a>
     </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'events'}}
-<div class="item tabs">
+  <div class="item tabs tabs-icon-top">
     <div class="tabs tabs-striped">
-     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i></a>
-    <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i></a>
+     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
+    <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
     </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
@@ -356,19 +356,13 @@
     </div>
     {{#if equals selectsubview 'aFaire'}}
         {{#each item in listActionsCreator selectsubview 'todo'}}
-        <div class="item">
-          <h2><a
-              href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
-              class="dark">{{item.name}}</a></h2>
-        </div>
+
+        {{> itemInputAction action=item}}
         {{/each}}
     {{else if equals selectsubview 'depenses'}}
         {{#each item in listActionsCreator selectsubview 'todo'}}
-        <div class="item">
-          <h2><a
-              href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}"
-              class="dark">{{item.name}}</a></h2>
-        </div>
+
+        {{> itemInputAction action=item}}
         {{/each}}
     {{/if}}
 

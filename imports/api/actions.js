@@ -254,8 +254,11 @@ Actions.helpers({
   isNotMax() {
     return this.max > this.countContributors();
   },
-  projectDay() {
+  projectDayHour() {
     return moment(this.startDate).format(' ddd Do MMM à HH:mm ');
+  },
+  projectDay() {
+    return moment(this.startDate).format(' ddd Do MMM ');
   },
   projectDuration() {
     const startDate = moment(this.startDate);

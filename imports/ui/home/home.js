@@ -80,18 +80,34 @@ Template.itemInputAction.helpers({
 Template.itemInputActionDetail.inheritsHelpersFrom('itemInputAction');
 
 
+Template.buttonSubscribeAction.onCreated(function () {
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    call: false,
+  });
+});
+
+Template.buttonSubscribeAction.helpers({
+  isCall() {
+    return Template.instance().state.get('call');
+  },
+});
+
 Template.buttonSubscribeAction.events({
-  'click .action-assignme-js' (event) {
+  'click .action-assignme-js'(event, instance) {
     event.preventDefault();
+    instance.state.set('call', true);
     Meteor.call('assignmeActionRooms', { id: this._id._str }, (error) => {
       if (error) {
+        instance.state.set('call', false);
         IonPopup.alert({ template: i18n.__(error.reason) });
       }
     });
   },
-  'click .action-depenseme-js' (event) {
+  'click .action-depenseme-js'(event, instance) {
     event.preventDefault();
     const self = this;
+    instance.state.set('call', true);
     IonPopup.confirm({
       title: 'Depenser',
       template: 'Voulez vous depenser vos credits ?',
@@ -100,6 +116,7 @@ Template.buttonSubscribeAction.events({
           id: self._id._str,
         }, (error) => {
           if (error) {
+            instance.state.set('call', false);
             IonPopup.alert({
               template: i18n.__(error.reason),
             });
@@ -107,7 +124,7 @@ Template.buttonSubscribeAction.events({
         });
       },
       onCancel() {
-
+        instance.state.set('call', false);
       },
       cancelText: i18n.__('no'),
       okText: i18n.__('yes'),
