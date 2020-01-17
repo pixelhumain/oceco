@@ -408,7 +408,7 @@ URL._encodeParams = function(params, prefix) {
 };
 
 const countActionEvents = (parentId, status) => {
-  // ajouter 
+  // ajouter
   /* actionsCount {
       todo : 1,
       done : 0,
@@ -436,7 +436,7 @@ Meteor.methods({
     new SimpleSchema({
       id: { type: String },
     }).validate({ id });
- 
+
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -447,7 +447,7 @@ Meteor.methods({
     // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
     //   throw new Meteor.Error('not-authorized');
     // }
-    
+
     // const docRetour = {}
     // docRetour.id = _id;
     // docRetour.participants = this.userId
@@ -472,8 +472,8 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
     if (!Actions.findOne({
-        _id: new Mongo.ObjectID(id)
-      })) {
+      _id: new Mongo.ObjectID(id)
+    })) {
       throw new Meteor.Error('not-action');
     }
     // admin ou creator
@@ -496,7 +496,7 @@ Meteor.methods({
     });
     return true;
   },
-  
+
 
   'ValidateAction'({ actId, usrId, orgId }) {
     new SimpleSchema({
@@ -1583,7 +1583,7 @@ indexMax:20 */
         throw new Meteor.Error('not-authorized');
       }
     }
-    
+
     const docRetour = baseDocRetour({}, doc, 'events');
     docRetour.key = 'event';
     docRetour.collection = 'events';
@@ -1956,23 +1956,20 @@ indexMax:20 */
       email: user.email,
       username: user.username,
       pwd: user.password,
-      cp: user.codepostal,
     };
 
-    if (user.codepostal) {
-      params.cp = user.codepostal;
-    }
     if (user.city) {
-      const insee = Cities.findOne({
+      const locality = Cities.findOne({
         insee: user.city,
       });
-      if (insee.insee && insee.insee) {
-        params.city = insee.insee;
-        params.geoPosLatitude = insee.geo.latitude;
-        params.geoPosLongitude = insee.geo.longitude;
+
+      if (locality && locality.insee) {
+        params.addressCountry = locality.country;
+        params.postalCode = user.codepostal;
+        params.codeInsee = locality.insee;
+        params.addressLocality = locality.postalCodes[0].name;
       }
     }
-
 
     // console.log(params);
 
@@ -1987,6 +1984,7 @@ indexMax:20 */
       }
       throw new Meteor.Error(response.data.msg);
     } catch (e) {
+      // console.log(e);
       throw new Meteor.Error('Error server');
     }
   },
@@ -2387,7 +2385,7 @@ export const insertAction = new ValidatedMethod({
       } else {
         throw new Meteor.Error('not-authorized citoyen');
       }
-      
+
     }
 
     const docRetour = doc;
@@ -2405,11 +2403,11 @@ export const insertAction = new ValidatedMethod({
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.idParentRoom = room._id._str;
-    
+
 
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
 
-    // count 
+    // count
     countActionEvents(doc.parentId, 'todo');
     //
 
@@ -2444,8 +2442,8 @@ export const updateAction = new ValidatedMethod({
     if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
-    
-    
+
+
     const docRetour = modifier.$set;
 
     if(modifier.$set.participants) {
@@ -2479,8 +2477,8 @@ export const updateAction = new ValidatedMethod({
 
   // finishUserAction(id){
   //   check(id, String);
-    
-  // 
+
+  //
 
 
 
@@ -2659,7 +2657,7 @@ export const assignmeActionRooms = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
 
-    
+
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
     const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
