@@ -1,7 +1,6 @@
 <template name='homeView'>
-    
     {{#contentFor "headerTitle"}}
-       Accueil
+       <h1 class="title">Accueil</h1>
     {{/contentFor}}
     {{#contentFor "headerButtonLeft"}}
       <button class="button button-clear pull-left" data-ion-menu-toggle="left">
@@ -47,12 +46,12 @@
       {{/ionView}}
     </template>
     <template name="projectList2">
-      <div class="item item-stable item-avatar item-button-right">
+      <div class="item item-stable item-avatar {{#if isAdminRaf}}item-button-right{{/if}}">
         {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
         {{project.name}} 
         {{#if isAdminRaf}}
         <a href="{{pathFor 'eventsAdd' _id=project._id._str scope='events'}}" class="button button-small"><i
-            class="icon fa fa-plus"></i>évènements</a>
+            class="icon fa fa-plus"></i> évènements</a>
         {{/if}}
         {{#if scroll }}
           <div>
@@ -82,12 +81,12 @@
         <!-- <a class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}"
             href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}"> -->
             {{#with item}}
-            <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} item-button-right">
+            <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} {{#if isAdminRaf}}item-button-right{{/if}}">
             {{#if profilThumbImageUrl}}
             <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
             {{/if}}
-            <a href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}">
-            <h2>{{name}}</h2>
+            <a href="{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}" class="positive">
+            <h2 class="positive">{{name}}</h2>
             </a>
             <!-- {{#if actionsCount.todo}}
             <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon fa fa-inbox"></i>

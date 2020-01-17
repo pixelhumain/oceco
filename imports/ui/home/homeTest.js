@@ -27,9 +27,9 @@ window.Citoyens = Citoyens;
 Template.homeView.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    this.poleName =new ReactiveVar("");
+    this.poleName = new ReactiveVar('');
     const handle = this.subscribe('poles.actions2', Meteor.settings.public.orgaCibleId);
-    const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId)
+    const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId);
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }
@@ -39,30 +39,30 @@ Template.homeView.onCreated(function() {
 // this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
 });
 
-Template.projectList2.onCreated(function(){
-  this.scroll= new ReactiveVar(false);
+Template.projectList2.onCreated(function() {
+  this.scroll = new ReactiveVar(false);
 });
-Template.eventsList2.onCreated(function(){
-  this.scrollAction= new ReactiveVar(false);
+Template.eventsList2.onCreated(function() {
+  this.scrollAction = new ReactiveVar(false);
 });
 
 Template.projectList2.helpers({
   projectEvents(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).fetch()
+    return Events.find({ organizerId: projectId }).fetch();
   },
-  scroll(){
-    return Template.instance().scroll.get()
-  }
+  scroll() {
+    return Template.instance().scroll.get();
+  },
 });
 Template.eventsList2.helpers({
-  scrollAction(){
-    return Template.instance().scrollAction.get()
-  }
+  scrollAction() {
+    return Template.instance().scrollAction.get();
+  },
 });
 Template.homeView.helpers({
   poleName() {
-    const poleName = Template.instance().poleName.get()
+    const poleName = Template.instance().poleName.get();
     return poleName;
   },
   RaffineriePoles() {
@@ -74,20 +74,20 @@ Template.homeView.helpers({
       const uniqueRaffinerieTags = raffinerieTags ? Array.from(new Set(raffinerieTags)) : null;
       return uniqueRaffinerieTags || {};
     }
-},
- 
+  },
+
   poleProjects2() {
-    const poleName = Template.instance().poleName.get()
+    const poleName = Template.instance().poleName.get();
     const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
-    const projectId = Projects.find({[queryProjectId]:{$exists: 1}}).fetch();
-    let projectsId = [];
-    projectId.forEach(element => {
+    const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
+    const projectsId = [];
+    projectId.forEach((element) => {
       projectsId.push(element._id);
     });
-    const poleProjectsCursor = Projects.find({$and:[{tags : poleName}, {_id :{$in: projectsId}}]})
+    const poleProjectsCursor = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] });
     return poleProjectsCursor;
   },
-  
+
   projectAction(projectObjectId) {
     const projectId = projectObjectId.valueOf();
     return Actions.find({ parentId: projectId });
@@ -105,38 +105,32 @@ Template.homeView.helpers({
     return Template.instance().ready.get();
   },
 });
-Template.projectList2.events({ 
-  'click .button-see-event-js': function(event, instance) { 
-     event.preventDefault()
-     if (Template.instance().scroll.get() ){
-      Template.instance().scroll.set(false)
-
-     }
-     else  Template.instance().scroll.set(true);
-
-  } 
+Template.projectList2.events({
+  'click .button-see-event-js'(event, instance) {
+    event.preventDefault();
+    if (Template.instance().scroll.get()) {
+      Template.instance().scroll.set(false);
+    } else Template.instance().scroll.set(true);
+  },
 });
-Template.eventsList2.events({ 
-  'click .button-see-actions-js': function(event, instance) { 
-     event.preventDefault()
-     if (Template.instance().scrollAction.get() ){
-      Template.instance().scrollAction.set(false)
-
-     }
-     else  Template.instance().scrollAction.set(true);
-
-  } 
+Template.eventsList2.events({
+  'click .button-see-actions-js'(event, instance) {
+    event.preventDefault();
+    if (Template.instance().scrollAction.get()) {
+      Template.instance().scrollAction.set(false);
+    } else Template.instance().scrollAction.set(true);
+  },
 });
 Template.eventsList2.helpers({
   eventAction(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ parentId: eventId},{ [userAddedAction]: { $exists: false } }] })
-  }
+    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }] });
+  },
 });
 
-Template.homeView.events({ 
-    'change #selectPole': function(event, instance) { 
-        let query = event.currentTarget.value
-        Template.instance().poleName.set(query)
-    } 
+Template.homeView.events({
+  'change #selectPole'(event, instance) {
+    const query = event.currentTarget.value;
+    Template.instance().poleName.set(query);
+  },
 });
