@@ -6,6 +6,8 @@ import { Accounts } from 'meteor/accounts-base';
 // collection
 import { Citoyens } from '../citoyens.js';
 import { apiCommunecter } from './api.js';
+import { Organizations } from '../organizations.js';
+import { Projects } from '../projects.js';
 
 /* const validateEntityByPass = (childId) => {
   const doc = {};
@@ -25,6 +27,39 @@ Accounts.onLogin(function(user) {
   } else {
     if (!userC.isScope('organizations', Meteor.settings.public.orgaCibleId)) {
       Meteor.call('connectEntity', Meteor.settings.public.orgaCibleId, 'organizations', userC._id._str, 'member');
+    }
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId) });
+    if (orgaOne && orgaOne.isAdmin()) {
+      if (orgaOne.links && orgaOne.links.projects) {
+        if (userC && userC.links && userC.links.projects) {
+          const arrayIds = Object.keys(orgaOne.links.projects)
+            .filter(k => !(userC.links.projects[k] && userC.links.projects[k].isAdmin))
+            .map((k) => {
+              console.log(k);
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $set: {
+                  [`links.projects.${k}`]: {
+                    type: 'projects',
+                    isAdmin: true,
+                  },
+                },
+              });
+
+              Projects.update({
+                _id: new Mongo.ObjectID(k),
+              }, {
+                $set: {
+                  [`links.contributors.${userC._id._str}`]: {
+                    type: 'citoyens',
+                    isAdmin: true,
+                  },
+                },
+              });
+            });
+        }
+      }
     }
 
     // ok valide
