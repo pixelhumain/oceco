@@ -30,7 +30,7 @@ Template.homeView.onCreated(function() {
     this.poleName = new ReactiveVar('');
     const handle = this.subscribe('poles.actions2', Meteor.settings.public.orgaCibleId);
     const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId);
-    if (handle.ready()) {
+    if (handle.ready()&& handleEvents.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));

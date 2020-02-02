@@ -4,15 +4,9 @@
       <h1 class="title">{{poleName}}</h1>
 {{/contentFor}}
 {{#contentFor "headerButtonLeft"}}
-  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
-  {{#if isAndroid}}
-    {{> ionIcon icon='android-more-vertical'}}
-  {{else}}
-    {{> ionIcon icon='navicon'}}
-  {{/if}}
-  </button>
-  {{/contentFor}}
-  {{#contentFor "headerButtonRight"}}
+                   {{>ionNavBackButton}}
+{{/contentFor}}
+{{#contentFor "headerButtonRight"}}
 
   <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
    {{#transition in="bounceInDown" out="bounceOutUp"}}
@@ -28,7 +22,7 @@
     {{#if dataReady}}
     <div class="list">
       {{#each project in poleProjects2}}
-            {{>projectList project=project}}
+        {{>projectList2 project=project}}
       {{/each}} 
       </div>
       {{/if}}

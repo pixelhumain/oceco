@@ -25,17 +25,18 @@
       {{#ionView}}
         {{#ionContent class="scroll-bg"}}
         {{#if dataReady}}
-        <div class=" row row-center">
-            <div class=" col text-center padding">
-            <select class="button " name="selectPole" id="selectPole">
-                <option value="">Choisissez votre pole</option>
-                {{#each poles in RaffineriePoles}}
-                <option value="{{poles}}">{{poles}}</option>
-                {{/each}}
-            </select>    
-            </div>
-        </div>    
+        {{> scrollPrez title='Choix du pole' prez='Sur cette page vous devrez chosir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"' icon="ion-home"}}
         
+                {{#each poles in RaffineriePoles}}
+               {{#ionItem}}
+               <div class="">
+               <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="" data-ion-menu-close>
+                  <h2 > {{poles}} </h2>    
+                </a>
+                 
+                </div>
+              {{/ionItem}}              
+              {{/each}}
           <div class="list">
           {{#each project in poleProjects2}}
                 {{>projectList2 project=project}}
@@ -45,6 +46,7 @@
         {{/ionContent}}
       {{/ionView}}
     </template>
+    
     <template name="projectList2">
       <div class="item item-stable item-avatar {{#if isAdminRaf}}item-button-right{{/if}}">
         {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
