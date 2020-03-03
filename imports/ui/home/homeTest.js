@@ -16,6 +16,7 @@ import { Actions } from '../../api/actions.js';
 // submanager
 // import { singleSubs } from '../../api/client/subsmanager.js';
 
+
 import { nameToCollection } from '../../api/helpers.js';
 import './homeTest.html';
 
@@ -28,15 +29,15 @@ Template.homeView.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     this.poleName = new ReactiveVar('');
-    const handle = this.subscribe('poles.actions2', Meteor.settings.public.orgaCibleId);
-    const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('poles.actions2', Session.get('orgaCibleId'));
+    const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'));
     if (handle.ready()&& handleEvents.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
-// this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
-// this.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
-// this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
+// this.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
+// this.subscribe('directoryList', 'organizations', Session.get('orgaCibleId'));
+// this.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
 });
 
 Template.projectList2.onCreated(function() {
@@ -66,11 +67,11 @@ Template.homeView.helpers({
     return poleName;
   },
   RaffineriePoles() {
-    const id = new Mongo.ObjectID(Meteor.settings.public.orgaCibleId);
+    const id = new Mongo.ObjectID(Session.get('orgaCibleId'));
     const raffinerieCursor = Organizations.findOne({ _id: id });
     if (raffinerieCursor) {
       const raffinerieArray = raffinerieCursor.listProjectsCreator();
-      const raffinerieTags = raffinerieArray ? raffinerieArray.map(tag => tag.tags && tag.tags[0]) : null;
+      const raffinerieTags = raffinerieArray ? raffinerieArray.map(tag => tag.tags && tag.tags[0]).filter(tag => typeof tag !== 'undefined') : null;
       const uniqueRaffinerieTags = raffinerieTags ? Array.from(new Set(raffinerieTags)) : null;
       return uniqueRaffinerieTags || {};
     }
@@ -78,7 +79,7 @@ Template.homeView.helpers({
 
   poleProjects2() {
     const poleName = Template.instance().poleName.get();
-    const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+    const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
     const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
     const projectsId = [];
     projectId.forEach((element) => {

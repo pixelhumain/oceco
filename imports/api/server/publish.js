@@ -184,6 +184,15 @@ Meteor.publish('cities', function(cp, country) {
   return lists;
 });
 
+Meteor.publish('orga.switch', function () {
+  if (!this.userId) {
+    return null;
+  }
+  const lists = Organizations.find({ oceco: true });
+  return lists;
+});
+
+
 Meteor.publish('organizerEvents', function(organizerType) {
   if (!this.userId) {
     return null;

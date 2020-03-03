@@ -316,6 +316,12 @@ if (Meteor.isClient) {
   window.Events = Events;
   window.Poi = Poi;
   window.Classified = Classified;
+
+  Citoyens.helpers({
+    userCredit() {
+      return this.userWallet && this.userWallet[`${Session.get('orgaCibleId')}`] && this.userWallet[`${Session.get('orgaCibleId')}`].userCredits;
+    },
+  });
 }
 
 Citoyens.helpers({
@@ -566,9 +572,6 @@ Citoyens.helpers({
   },
   listScope () {
     return 'listCitoyens';
-  },
-  userCredit() {
-    return this.userWallet && this.userWallet[`${Meteor.settings.public.orgaCibleId}`] && this.userWallet[`${Meteor.settings.public.orgaCibleId}`].userCredits;
   },
   newsJournal (target, userId, limit) {
     const query = {};

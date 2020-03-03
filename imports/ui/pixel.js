@@ -8,6 +8,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import { ActivityStream } from '../api/activitystream.js';
 
+
 import './settings/settings.js';
 import './notifications/notifications.js';
 
@@ -30,8 +31,8 @@ Template.layout.onCreated(function() {
 
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
-    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
+    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
     const handleCitoyen = Meteor.subscribe('citoyen');
     if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen.ready()) {
       this.ready.set(handleScopeDetail.ready());
@@ -185,6 +186,11 @@ Template.layout.events({
 });
 
 Template.layout.helpers({
+  scope() {
+    return Organizations.findOne({
+      _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
+    });
+  },
   allReadChecked (notificationsCount) {
     if (notificationsCount === 0) {
       return 'checked';
@@ -207,7 +213,7 @@ Template.layout.helpers({
   //  },
   nbActionPoles(poles) {
     if (Template.instance().ready.get()) {
-      const id = new Mongo.ObjectID(Meteor.settings.public.orgaCibleId);
+      const id = new Mongo.ObjectID(Session.get('orgaCibleId'));
       const raffinerieCursor = Organizations.findOne({ _id: id });
       if (raffinerieCursor) {
         const raffProjectsArray = raffinerieCursor.listProjectsCreator();

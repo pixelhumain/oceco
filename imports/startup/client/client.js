@@ -35,6 +35,8 @@ import { SchemasShareRest, SchemasRolesRest } from '../../api/schema.js';
 
 import { notifyDisplay } from '../../api/helpers.js';
 
+
+
 Meteor.startup(function () {
   window.HTML.isConstructedObject = function(x) {
     return _.isObject(x) && !$.isPlainObject(x);
@@ -431,11 +433,16 @@ Meteor.startup(function () {
   Template.registerHelper('isConnected', () => Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain);
 
   Template.registerHelper('isAdminRaf', () => {
-    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
-      const RaffId = Meteor.settings.public.orgaCibleId;
+    console.log(Session.get('orgaCibleId'));
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+      const RaffId = Session.get('orgaCibleId');
       return Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
     }
     return false;
+  });
+
+  Template.registerHelper('orgaCibleId', () => {
+    return Session.get('orgaCibleId');
   });
 
   Template.registerHelper('hasPublishedCounter', (name) => {

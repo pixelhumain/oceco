@@ -21,6 +21,7 @@ import '../components/news/button-card.js';
 import { arrayLinkToModerate, arrayLinkValidated } from '../../api/helpers.js';
 
 
+
 const pageSession = new ReactiveDict('pageAdmin');
 
 window.Events = Events;
@@ -33,7 +34,7 @@ window.Actions = Actions;
 Template.adminDashboard.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handleScope = this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handleScope = this.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
     if (handleScope.ready()) {
       this.ready.set(handleScope.ready());
     }
@@ -62,7 +63,7 @@ Template.adminDashboard.events({
   //   const usrId = $(event.currentTarget).attr('usrId');
   //   const actionId = $(event.currentTarget).attr('actionId');
   //   Meteor.call('ValidateAction', {
-  //     actId: actionId, usrId,orgId: Meteor.settings.public.orgaCibleId,
+  //     actId: actionId, usrId,orgId: Session.get('orgaCibleId'),
 
   //   }, (err, res) => {
   //     if (err) {
@@ -80,7 +81,7 @@ Template.adminDashboard.events({
 Template.adminDashboard.helpers({
   scope() {
     return Organizations.findOne({
-      _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId),
+      _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
     });
   },
   actionToaccept() {
@@ -109,12 +110,12 @@ Template.listProjectsAValiderRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-    pageSession.set('scopeId', Meteor.settings.public.orgaCibleId);
+    pageSession.set('scopeId', Session.get('orgaCibleId'));
     pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Meteor.settings.public.orgaCibleId, 'finishedBy');
+    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Session.get('orgaCibleId'), 'finishedBy');
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -144,7 +145,7 @@ Template.listProjectsAValiderRaf.events({
       Meteor.call('ValidateAction', {
         actId: actionId,
         usrId,
-        orgId: Meteor.settings.public.orgaCibleId
+        orgId: Session.get('orgaCibleId')
       }, (err, res) => {
         if (err) {
           alert(err);
@@ -160,12 +161,12 @@ Template.listProjectsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-    pageSession.set('scopeId', Meteor.settings.public.orgaCibleId);
+    pageSession.set('scopeId', Session.get('orgaCibleId'));
     pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -180,12 +181,12 @@ Template.listProjectsEventsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-   pageSession.set('scopeId', Meteor.settings.public.orgaCibleId);
+   pageSession.set('scopeId', Session.get('orgaCibleId'));
    pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -200,12 +201,12 @@ Template.listProjectsEventsActionsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-   pageSession.set('scopeId', Meteor.settings.public.orgaCibleId);
+   pageSession.set('scopeId', Session.get('orgaCibleId'));
    pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });

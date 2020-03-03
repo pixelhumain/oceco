@@ -1,7 +1,7 @@
 App.info({
-  id: 're.laraffinerie.mobile',
-  name: 'laraffinerie',
-  description: 'laraffinerie mobile',
+  id: 'org.communecter.oceco',
+  name: 'oceco',
+  description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
   version: '0.0.1',
@@ -16,7 +16,7 @@ App.configurePlugin('phonegap-plugin-push', {
 });
 
 App.configurePlugin('cordova-plugin-customurlscheme', {
-  URL_SCHEME: 'laraffinerie',
+  URL_SCHEME: 'oceco',
 });
 
 App.configurePlugin('net.yoik.cordova.plugins.intentfilter', {

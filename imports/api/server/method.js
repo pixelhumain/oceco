@@ -431,7 +431,57 @@ const countActionEvents = (parentId, status) => {
   //
 };
 
+
+
+
 Meteor.methods({
+  'testConnectAdmin'({ id }) {
+    new SimpleSchema({
+      id: { type: String },
+    }).validate({ id });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { pwd: 0 } });
+    if (!userC.isScope('organizations', id)) {
+      Meteor.call('connectEntity', id, 'organizations', userC._id._str, 'member');
+    }
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(id) });
+    if (orgaOne && orgaOne.isAdmin()) {
+      if (orgaOne.links && orgaOne.links.projects) {
+        if (userC && userC.links && userC.links.projects) {
+          const arrayIds = Object.keys(orgaOne.links.projects)
+            .filter(k => !(userC.links.projects[k] && userC.links.projects[k].isAdmin))
+            .map((k) => {
+              console.log(k);
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $set: {
+                  [`links.projects.${k}`]: {
+                    type: 'projects',
+                    isAdmin: true,
+                  },
+                },
+              });
+
+              Projects.update({
+                _id: new Mongo.ObjectID(k),
+              }, {
+                $set: {
+                  [`links.contributors.${userC._id._str}`]: {
+                    type: 'citoyens',
+                    isAdmin: true,
+                  },
+                },
+              });
+            });
+        }
+      }
+    }
+    return true;
+  },
   'finishAction'({ id }) {
     new SimpleSchema({
       id: { type: String },

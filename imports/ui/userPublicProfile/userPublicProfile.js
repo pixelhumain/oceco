@@ -12,6 +12,7 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 import { moment } from 'meteor/momentjs:moment';
 
+
 import './userPublicProfile.html';
 
 window.Events = Events;
@@ -24,7 +25,7 @@ Template.userPublicProfile.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     const memberId = Router.current().params.id;
-    const handle = this.subscribe('projects.actions', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('projects.actions', Session.get('orgaCibleId'));
     const handleProfile = this.subscribe('member.profile', memberId);
     if (handle.ready() && handleProfile.ready()) {
       this.ready.set(handle.ready());

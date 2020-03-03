@@ -28,7 +28,7 @@ import '../components/scope/item.js';
 
 import './list.html';
 
-import { pageSession } from '../../api/client/reactive.js';
+import { pageSession, orgaCible } from '../../api/client/reactive.js';
 import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
 
 Template.listEvents.onCreated(function () {
@@ -37,7 +37,7 @@ Template.listEvents.onCreated(function () {
   const self = this;
   self.ready = new ReactiveVar();
   self.autorun(function () {
-    const handle = self.subscribe('directoryProjectsListEvents', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = self.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
     self.ready.set(handle.ready());
   });
 });
@@ -71,6 +71,12 @@ Template.listEvents.onRendered(function () {
         }
       } */
     },
+    eventClick: function (info) {
+      info.jsEvent.preventDefault(); // don't let the browser navigate
+      if (info.event.url) {
+        Router.go(info.event.url);
+      }
+    }
   });
 
   calendar.render();
@@ -94,7 +100,7 @@ Template.listEvents.onRendered(function () {
       if (searchEvents) {
         query = searchQuery(query, searchEvents);
       }
-      const events = Organizations.findOne({ _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId) }).listProjectsEventsCreator(query);
+      const events = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).listProjectsEventsCreator(query);
       if (events) {
         events.forEach((event) => {
           const eventParse = {

@@ -17,6 +17,8 @@ import { Actions } from '../../api/actions.js';
 // import { singleSubs } from '../../api/client/subsmanager.js';
 
 import { nameToCollection } from '../../api/helpers.js';
+
+
 import '../home/home.js';
 import './polesView.html';
 
@@ -29,15 +31,15 @@ Template.polesView.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     const poleName = Router.current().params.pole;
-    const handle = this.subscribe('poles.actions2', Meteor.settings.public.orgaCibleId, poleName);
-    const handleEvents = this.subscribe('poles.events', Meteor.settings.public.orgaCibleId, poleName)
+    const handle = this.subscribe('poles.actions2', Session.get('orgaCibleId'), poleName);
+    const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'), poleName)
     if (handle.ready()&&handleEvents.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
-// this.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
-// this.subscribe('directoryList', 'organizations', Meteor.settings.public.orgaCibleId);
-// this.subscribe('directoryListProjects', 'organizations', Meteor.settings.public.orgaCibleId);
+// this.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
+// this.subscribe('directoryList', 'organizations', Session.get('orgaCibleId'));
+// this.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
 });
 
 Template.projectList.onCreated(function(){
@@ -69,7 +71,7 @@ Template.polesView.helpers({
  
   poleProjects2() {
     const poleName = Router.current().params.pole;
-    const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+    const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
     const projectId = Projects.find({[queryProjectId]:{$exists: 1}}).fetch();
     let projectsId = [];
     projectId.forEach(element => {

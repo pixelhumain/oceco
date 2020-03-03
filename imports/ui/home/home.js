@@ -10,6 +10,7 @@ import { moment } from 'meteor/momentjs:moment';
 import './home.html';
 import { arrayLinkProper, nameToCollection } from '../../api/helpers';
 
+
 // collection
 import { Events } from '../../api/events.js';
 import { Organizations } from '../../api/organizations.js';
@@ -26,7 +27,7 @@ window.Actions = Actions;
 Template.home.onCreated(function() {
   this.readyScopeDetail = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = Meteor.subscribe('scopeDetail', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = Meteor.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
     this.readyScopeDetail.set(handle.ready());
   }.bind(this));
   this.sortByDate = new ReactiveVar(false);
@@ -35,7 +36,7 @@ Template.home.onCreated(function() {
 
 Template.home.helpers({
   scope () {
-    return Organizations.findOne({ _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId) });
+    return Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
   },
   dataReadyScopeDetail() {
     return Template.instance().readyScopeDetail.get();
@@ -45,7 +46,7 @@ Template.home.helpers({
 Template.listProjectsEventsRafHome.onCreated(function () {
   this.ready = new ReactiveVar();
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });

@@ -14,6 +14,7 @@ import { Actions } from '../../api/actions.js';
 import { Rooms } from '../../api/rooms.js';
 
 
+
 import './wallet.html';
 
 
@@ -27,7 +28,7 @@ window.Rooms = Rooms;
 Template.wallet.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handle = this.subscribe('user.actions', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('user.actions', 'organizations', Session.get('orgaCibleId'));
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }
@@ -73,7 +74,7 @@ Template.wallet.events({
 Template.wallet.helpers({
   scope() {
     return Organizations.findOne({
-      _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId),
+      _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
     });
   },
   dataReady() {

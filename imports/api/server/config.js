@@ -25,7 +25,7 @@ Accounts.onLogin(function(user) {
   if (!userC) {
   // throw new Meteor.Error(Accounts.LoginCancelledError.numericError, 'Communecter Login Failed');
   } else {
-    if (!userC.isScope('organizations', Meteor.settings.public.orgaCibleId)) {
+    /* if (!userC.isScope('organizations', Meteor.settings.public.orgaCibleId)) {
       Meteor.call('connectEntity', Meteor.settings.public.orgaCibleId, 'organizations', userC._id._str, 'member');
     }
     const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Meteor.settings.public.orgaCibleId) });
@@ -60,7 +60,7 @@ Accounts.onLogin(function(user) {
             });
         }
       }
-    }
+    } */
 
     // ok valide
     const userM = Meteor.users.findOne({ _id: userC._id._str });

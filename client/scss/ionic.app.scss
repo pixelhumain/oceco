@@ -9,13 +9,13 @@ $color-room: #229296;
 
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
-$positive:                        rgba(239,42,0, 1) !default;
+$positive:                        #E33551 !default;
 $calm:                            #229296 !default;
-$balanced:                        #1cc991 !default;
+$balanced:                        #51e335 !default;
 $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
-$dark:                            #01829c !default;
+$dark:                            #324553 !default;
 
 $ionicons-font-path: "/fonts" !default;
 
@@ -53,8 +53,8 @@ $big-bg:      '/images/fabric_plaid.png';
 		font-family: "customFont";
 		 src: url("/fonts/cardenioModernBold.woff") format("woff");
   }
-
-.homestead{font-family:"customFont"}
+  
+.homestead{font-family:"Homestead"}
 
 @import 'ionic';
 @import 'ionicons';
@@ -66,7 +66,6 @@ $big-bg:      '/images/fabric_plaid.png';
 @media print {
   @import 'fullcalendar/common/print';
 }
-
 
 body *, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: $font-family-base , Fallback, sans-serif;
@@ -91,24 +90,24 @@ $sidebar-profile-background : '';
 .rubyonic-pane .ruby-button-clear {border:none; background:none;}
 
 .scroll-bg {
-  background-color: #ffffff;
+  background-color: #E8E8E8;
 }
 
 .logo {padding:20px 0 0 0; text-align: center;}
 
 
 #iron-router-progress {
-  background-color : #ea4736;
-  box-shadow       : 0 0 5px #ea4736;
+  background-color : #E33551;
+  box-shadow       : 0 0 5px #E33551;
 }
 #iron-router-progress.spinner:before {
-  border-color : #ea4736;
+  border-color : #E33551;
 }
 
 
 .meteor-status {
   z-index:100;
-  background-color: #01829c;
+  background-color: #324553;
 }
 .avatar{
   float: left;
@@ -137,8 +136,8 @@ body, .view{
 }
 
 .bar.bar-dark .title {
-  font-family: "customFont";
-  color: #ea4736;
+  font-family: "Homestead";
+  color: #E33551;
   text-align: center;
 }
 
@@ -147,8 +146,8 @@ body, .view{
 }
 
 .bar.bar-stable .title {
-  font-family: "customFont";
-  color: #ea4736;
+  font-family: "Homestead";
+  color: #E33551;
   text-align: center;
 }
 
@@ -386,7 +385,7 @@ $button-follower-active-border:   darken($assertive, 10%) !default;
    color:#8C5AA1 !important;
  }
  .red{
-   color:#ea4736 !important;
+   color:#E33551 !important;
  }
  .azure{
    color:#2BB0C6 !important;

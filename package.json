@@ -1,7 +1,7 @@
 {
-  "name": "laraffinerie",
+  "name": "oceco",
   "version": "0.0.1",
-  "description": "la raffinerie",
+  "description": "oceco",
   "private": true,
   "scripts": {
     "start": "meteor run",

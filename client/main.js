@@ -10,6 +10,8 @@ import '../imports/ui/login/login.js';
 
 import '../imports/ui/images/images.js';
 
+import '../imports/ui/switch/switch.js';
+
 import '../imports/ui/dashboard/dashboard.js';
 
 import '../imports/ui/about/about.js';

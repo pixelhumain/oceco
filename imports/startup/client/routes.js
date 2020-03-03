@@ -1,6 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
+import { Tracker } from 'meteor/tracker';
+
+Tracker.autorun(() => {
+  if (Meteor.userId() && Meteor.user()) {
+    if (Session.get('orgaCibleId')) {
+      Meteor.call('testConnectAdmin', { id : Session.get('orgaCibleId') });
+      console.log(`testConnectAdmin ${Session.get('orgaCibleId')}`);
+    }
+  }
+});
+
 
 Router.configure({
   layoutTemplate: 'layout',
@@ -79,6 +90,22 @@ Router.map(function() {
     template: 'sensors',
     loadingTemplate: 'loading',
   }); */
+
+  this.route('switch', {
+    path: '/switch',
+    template: 'switch',
+    loadingTemplate: 'loading',
+  });
+
+  Router.route('/switch/:_id', function () {
+    const id = this.params._id;
+    //Meteor.settings.public.orgaCibleId = id;
+    Session.setPersistent('orgaCibleId', id);
+    //Session.get('orgaCibleId');
+    this.redirect('home');
+  }, {
+    name: 'switchRedirect',
+  });
 
   this.route('listEvents', {
     path: '/events',
@@ -578,6 +605,14 @@ Router.map(function() {
   });
 });
 
+const ensurePixelSwitch = function () {
+  console.log(Session.get('orgaCibleId'));
+  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+    this.next();
+  } else {
+    this.render('switch');
+  }
+};
 
 const ensurePixelSignin = function () {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
@@ -589,7 +624,8 @@ const ensurePixelSignin = function () {
 
 const ensurePixelIsAdmin = function() {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
-    const RaffId = Meteor.settings.public.orgaCibleId;
+    const RaffId = Session.get('orgaCibleId');
+    console.log(RaffId);
     const IsAdmin = Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
     if (IsAdmin === true) {
       this.next();
@@ -601,7 +637,7 @@ const ensurePixelIsAdmin = function() {
 
 Router.onBeforeAction(ensurePixelSignin, { except: ['login', 'signin'] });
 Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction'] });
-
+Router.onBeforeAction(ensurePixelSwitch, { except: ['login', 'signin','switch', 'switchRedirect'] });
 
 Router.routes.login.options.progress = false;
 Router.routes.signin.options.progress = false;

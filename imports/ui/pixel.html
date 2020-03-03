@@ -1,5 +1,5 @@
 <head>
-  <title>La Raffinerie</title>
+  <title>OCECO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 
@@ -16,7 +16,7 @@
 
   {{#ionSideMenu}}
   <div class="bar bar-header bar-stable">
-    <h1 class="title">La Raffinerie</h1>
+    <h1 class="title">OCECO</h1>
     <button class="button button-clear pull-right" data-ion-menu-close>
       <i class="icon ion-ios-arrow-right"></i>
     </button>
@@ -34,13 +34,18 @@
         <h2><a href="{{pathFor 'detailList' _id=currentUser._id scope='citoyens'}}" class="positive" data-ion-menu-close>{{currentUser.profile.pixelhumain.name}}</a></h2>
         <p>{{currentUser.profile.pixelhumain.email}}</p>
       </div>
+
+      {{#if orgaCibleId}}
       {{>account}}
+      {{/if}}
 
       
       
 
       <a class="item item-stable item-icon-right" href="{{pathFor 'notifications'}}" data-ion-menu-close>{{__ "Notifications"}} <span class="badge badge-positive">{{#if notificationsCount}}{{notificationsCount}}{{else}}0{{/if}}</span></a>
 
+      <a class="item item-stable item-icon-right" href="{{pathFor 'switch'}}" data-ion-menu-close>{{__ "switch"}}</a>
+      
       <a class="item item-stable item-icon-right" href="{{pathFor 'signOut'}}" data-ion-menu-close>{{__ "logout"}} {{> ionIcon icon="log-out"}}</a>
       
       {{/if}}
@@ -72,6 +77,7 @@
   {{> yield}}
 
   {{#if isConnected}}
+  {{#if orgaCibleId}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
   {{> ionTab title="Espace Temps" path="wallet" iconOff="clock" iconOn="clock"}}
@@ -80,6 +86,7 @@
   {{/if}}
   {{> ionTab title="Agenda" path="listEvents" iconOff="ios-calendar" iconOn="ios-calendar"}}
   {{/ionTabs}}
+  {{/if}}
   {{/if}}
 
   

@@ -15,3 +15,5 @@ export const SessionSensors = new ReactiveDict('SessionSensors');
 export const pageVideo = new ReactiveDict('pageVideo');
 
 export const userTest = new ReactiveDict('userTest');
+
+export const orgaCible = new ReactiveDict('orgaCible');

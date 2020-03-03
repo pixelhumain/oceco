@@ -35,6 +35,8 @@ import '../components/directory/list.js';
 import '../components/news/button-card.js';
 import '../components/news/card.js';
 
+
+
 window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
@@ -42,6 +44,7 @@ window.Poi = Poi;
 window.Classified = Classified;
 window.Citoyens = Citoyens;
 window.Rooms = Rooms;
+
 
 const pageSession = new ReactiveDict('pageNews');
 
@@ -334,7 +337,7 @@ Template.scopeProjectsTemplate.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });
