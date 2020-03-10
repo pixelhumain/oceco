@@ -541,6 +541,33 @@ Organizations.helpers({
       return Events.find(query, options);
     }
   },
+  /*
+  WARNING j'ai du créer listProjectsEventsCreator1M pour rajouter un delai de visibiliter 15 jours
+  des actions lier au evenement pour pouvoir valider apres la fin
+  */
+  listProjectsEventsCreator1M(querySearch) {
+
+    if (this.links && this.links.projects) {
+      const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
+      const query = querySearch || {};
+      query.$or = [];
+      projectIds.forEach((id) => {
+        const queryCo = {};
+        queryCo[`organizer.${id}`] = { $exists: true };
+        query.$or.push(queryCo);
+      });
+      // queryOptions.fields.parentId = 1;
+      //const inputDate = new Date();
+      const inputDate = moment(new Date()).subtract(15, 'day').toDate();
+      //query.startDate = { $lte: inputDate };
+      query.endDate = { $gte: inputDate };
+      const options = {};
+      options.sort = {
+        startDate: 1
+      };
+      return Events.find(query, options);
+    }
+  },
   countProjectsEventsCreator() {
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
@@ -564,26 +591,32 @@ Organizations.helpers({
   actionsInWaiting() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: raffProjectsArray } });
   },
   actionsToValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: raffProjectsArray } });
   },
   actionsValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: raffProjectsArray } });  
   },
   actionsSpend() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator().map(event => event._id._str);
+    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: raffProjectsArray } });
+  },
+  actionsValidateSpend() {
+    const finished = `finishedBy.${Meteor.userId()}`;
+    const UserId = `links.contributors.${Meteor.userId()}`;
+    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

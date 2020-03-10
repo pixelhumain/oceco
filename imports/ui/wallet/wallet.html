@@ -33,12 +33,11 @@
         <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">Coup de main</a>
         <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
         <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
-        <a class="tab-item {{#if equals selectview 'depenses'}}tab-item-active{{/if}} change-selectview-js" id="depenses">Dépensés</a>
     </div>
     </div>
     
     {{#if equals selectview 'aFaire'}}
-    <div class="item item-divider">A faire</div>
+    <div class="item item-divider">Programmés</div>
     <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
 
         {{#each action in scope.actionsInWaiting}}
@@ -56,11 +55,10 @@
 
     {{else if equals selectview 'valides'}}
         <div class="item item-divider">Validés</div>
-        <div class="item item-text-wrap">C'est la liste de toute vos ancienne actions qui vous ont rapporté des
-            crédits</div>
+        <div class="item item-text-wrap">C'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits</div>
 
-        {{#each action in scope.actionsValidate}}
-        {{> whalletInputInWaitingAction action=action badgeColor="balanced"}}
+        {{#each action in scope.actionsValidateSpend}}
+        {{> whalletInputInWaitingAction action=action badgeColor="balanced" badgeColorDepense="dark"}}
         {{/each}}
 
 
@@ -132,7 +130,7 @@
 
 <template name='whalletInputInWaitingAction'>
 <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item">{{action.name}}
-    <div class="badge badge-{{badgeColor}}">{{action.credits}} R</div>
+    <div class="badge badge-{{badgeColorTest}}">{{action.credits}} R</div>
 </a>
 </template>
 
