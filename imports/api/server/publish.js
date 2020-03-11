@@ -2938,7 +2938,7 @@ Meteor.publish('poles.actions2', function(raffId, poleName) {
   if (!this.userId) {
     return null;
   }
-  const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+  const queryProjectId = `parent.${raffId}`;
   const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
   const projectsId = [];
   projectId.forEach((element) => {
@@ -2982,12 +2982,13 @@ Meteor.publish('member.profile', function(memberId) {
   }
 }); */
 
-Meteor.publishComposite('user.actions', function (scope, scopeId) {
+Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
   check(scopeId, String);
   check(scope, String);
   check(scope, Match.Where(function (name) {
     return _.contains(['organizations'], name);
   }));
+  check(etat, String);
   const collection = nameToCollection(scope);
   if (!this.userId) {
     return null;
@@ -3013,17 +3014,32 @@ Meteor.publishComposite('user.actions', function (scope, scopeId) {
     {
       find(scopeD) {
         if (scope === 'organizations') {
-          return scopeD.listProjectsEventsCreator();
+          return scopeD.listProjectsEventsCreator1M();
         }
       },
       children: [{
         find(scopeD) {
-          return Actions.find({
-            parentId: scopeD._id._str,
-            [UserId]: {
-              $exists: 1
-            }
-          });
+          const finished = `finishedBy.${this.userId}`;
+          const query = {};
+          query.parentId = scopeD._id._str;
+          query[UserId] = {
+            $exists: 1,
+          };
+          const option = {};
+          if (etat === 'aFaire') {
+            query[finished] = { $exists: false };
+            option.sort = { endDate: -1 };
+          } else if (etat === 'enAttente') {
+            query[finished] = 'toModerate';
+            option.sort = { endDate: -1 };
+          } else if (etat === 'valides') {
+            /* WARNING pour l'historique listProjectsEventsCreator1M ne va pas aller car il prend les evenements qui ne sont pas terminer ou 15 jous apres la fin */
+            query[finished] = 'validated';
+            option.sort = { endDate: -1 };
+            option.limit = 100;
+          }
+          console.log(query);
+          return Actions.find(query, option);
         },
       },
       ],
@@ -3031,6 +3047,7 @@ Meteor.publishComposite('user.actions', function (scope, scopeId) {
     ],
   };
 });
+
 
 Meteor.publish('action.to.admin', function(raffId) {
   check(raffId, String);
@@ -3051,36 +3068,37 @@ Meteor.publish('poles.events', function (raffId, poleName) {
   if (!this.userId) {
     return null;
   }
-  if(poleName){
-  const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
+
+  const queryProjectId = `parent.${raffId}`;
   const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
   const projectsId = [];
   projectId.forEach((element) => {
     projectsId.push(element._id);
   });
-  const poleProjects = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] }).fetch();
-  const poleProjectsId = [];
-  poleProjects.forEach((element) => {
-    poleProjectsId.push(element._id._str);
-  });
-  return Events.find({ organizerId: { $in: poleProjectsId } });
-}
-else{
-const queryProjectId = `parent.${Meteor.settings.public.orgaCibleId}`;
-const projectId = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
-const projectsId = [];
-projectId.forEach((element) => {
-  projectsId.push(element._id);
-});
-const poleProjects = Projects.find({ _id: { $in: projectsId }  }).fetch();
-const poleProjectsId = [];
-poleProjects.forEach((element) => {
-  poleProjectsId.push(element._id._str);
-});
-return Events.find({ organizerId: { $in: poleProjectsId } });
+  let poleProjects;
+  if (poleName) {
+    poleProjects = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] }).fetch();
+  } else {
+    poleProjects = Projects.find({ _id: { $in: projectsId } }).fetch();
+  }
 
-}
+  if (poleProjects) {
+    const poleProjectsId = [];
+    poleProjects.forEach((element) => {
+      poleProjectsId.push(element._id._str);
+    });
 
+    const inputDate = new Date();
+    const query = {};
+    query.organizerId = { $in: poleProjectsId };
+    query.endDate = { $gte: inputDate };
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+    return Events.find(query);
+  }
+  return;
 });
 
 

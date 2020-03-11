@@ -27,13 +27,14 @@ window.Rooms = Rooms;
 
 Template.wallet.onCreated(function() {
   this.ready = new ReactiveVar(false);
+  this.selectview = new ReactiveVar('aFaire');
   this.autorun(function () {
-    const handle = this.subscribe('user.actions', 'organizations', Session.get('orgaCibleId'));
+    const handle = this.subscribe('user.actions', 'organizations', Session.get('orgaCibleId'), this.selectview.get());
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
-  this.selectview = new ReactiveVar('aFaire');
+  
 });
 
 
@@ -112,6 +113,12 @@ Template.whalletInputAction.events({
 Template.whalletInputAction.helpers({
   displayDesc() {
     return Template.instance().displayDesc.get();
+  },
+});
+
+Template.whalletInputInWaitingAction.helpers({
+  badgeColorTest() {
+    return this.action.credits > 0 ? this.badgeColor : this.badgeColorDepense;
   },
 });
 
