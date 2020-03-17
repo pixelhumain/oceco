@@ -16,7 +16,7 @@ Template.map.onRendered(function () {
   if (Mapbox.loaded()) {
     const self = this;
     L.mapbox.accessToken = Meteor.settings.public.mapbox;
-    const map = L.mapbox.map('map', 'mapbox.streets');
+    const map = L.mapbox.map('map');
     let marker;
     self.autorun(function() {
       const latitude = pageSession.get('geoPosLatitude') || AutoForm.getFieldValue('geoPosLatitude');
@@ -24,7 +24,8 @@ Template.map.onRendered(function () {
       // console.log(`${city} ${latitude} ${longitude}`);
       if (latitude && longitude) {
       // console.log('recompute');
-        map.setView(new L.LatLng(parseFloat(latitude), parseFloat(longitude)), 13);
+        map.setView(new L.LatLng(parseFloat(latitude), parseFloat(longitude)), 13)
+          .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
         if (marker) {
           map.removeLayer(marker);
         }
