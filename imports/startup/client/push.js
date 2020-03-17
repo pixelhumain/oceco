@@ -78,7 +78,7 @@ Meteor.startup(function () {
 
     /* Push.Configure({
       android: {
-        senderID: 376774334081,
+        senderID: 653253366584,
         alert: true,
         badge: true,
         sound: true,

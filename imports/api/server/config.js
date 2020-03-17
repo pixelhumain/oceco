@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-// import { Push } from 'meteor/raix:push';
+import { Push } from 'meteor/raix:push';
 import { Mongo } from 'meteor/mongo';
 import { Accounts } from 'meteor/accounts-base';
 
@@ -77,7 +77,7 @@ Accounts.onLogin(function(user) {
   }
 });
 
-/* let serviceAccountJson = JSON.parse(Assets.getText('communecter-5647e-firebase-adminsdk-0baqw-4ea1186253.json'));
+ let serviceAccountJson = JSON.parse(Assets.getText('oceco-a60b5-firebase-adminsdk-rfgzm-f8a214638f.json'));
 
 
 if (Meteor.isDevelopment) {
@@ -88,7 +88,7 @@ if (Meteor.isDevelopment) {
     },
     gcm: {
       apiKey: Meteor.settings.pushapiKey,
-      projectNumber: 376774334081,
+      projectNumber: 653253366584,
     },
     production: true,
     sound: true,
@@ -105,7 +105,7 @@ if (Meteor.isDevelopment) {
     },
     gcm: {
       apiKey: Meteor.settings.pushapiKey,
-      projectNumber: 376774334081,
+      projectNumber: 653253366584,
     },
     production: true,
     sound: true,
@@ -122,4 +122,4 @@ Push.allow({
     return true;
   },
 });
-*/
+
