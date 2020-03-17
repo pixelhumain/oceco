@@ -330,6 +330,7 @@ Meteor.publishComposite('geo.scope', function(scope, latlng, radius) {
 
       options.fields = { _id: 1,
         profilThumbImageUrl: 1,
+        profilMarkerImageUrl: 1,
         type: 1,
         startDate: 1,
         endDate: 1,
