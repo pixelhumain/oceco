@@ -12,7 +12,7 @@ App.setPreference('android-targetSdkVersion', '28');
 App.setPreference('android-minSdkVersion', '21');
 
 App.configurePlugin('phonegap-plugin-push', {
-  SENDER_ID: 376774334081,
+  SENDER_ID: 653253366584,
 });
 
 App.configurePlugin('cordova-plugin-customurlscheme', {
@@ -115,4 +115,13 @@ App.accessRule('*.openstreetmap.org/*', { type: 'navigation' });
 App.accessRule('*.tile.thunderforest.com/*', { type: 'navigation' });
 App.accessRule('http://a.tiles.mapbox.com/*', { type: 'navigation' });
 App.accessRule('https://api.tiles.mapbox.com/*', { type: 'navigation' });
+App.accessRule('http://*.tiles.mapbox.com/*', { type: 'network' });
+App.accessRule('https://*.tiles.mapbox.com/*', { type: 'network' });
+App.accessRule('http://*.tiles.mapbox.com/*', { type: 'navigation' });
+App.accessRule('https://*.tiles.mapbox.com/*', { type: 'navigation' });
+App.accessRule('https://api.mapbox.com/*', { type: 'navigation' });
 App.accessRule('https://placeholdit.imgix.net/*', { type: 'navigation' });
+App.accessRule('https://mapbox.com/*', { type: 'navigation' });
+App.accessRule('https://www.mapbox.com/*', { type: 'navigation' });
+App.accessRule('https://api.mapbox.com/*', { type: 'navigation' });
+
