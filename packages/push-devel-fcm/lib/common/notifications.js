@@ -2,7 +2,7 @@
 _matchToken = Match.OneOf({ apn: String }, { gcm: String }, { fcm: String });
 
 // Notifications collection
-Push.notifications = new Mongo.Collection('_raix_push_notifications');
+Push.notifications = new Mongo.Collection('_raix_push_notifications_oceco');
 
 _legalPayload = function(payload){
   if (typeof payload !== 'undefined'){

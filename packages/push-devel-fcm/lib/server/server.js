@@ -1,4 +1,4 @@
-Push.appCollection = new Mongo.Collection('_raix_push_app_tokens');
+Push.appCollection = new Mongo.Collection('_raix_push_app_tokens_oceco');
 Push.appCollection._ensureIndex({ userId: 1 });
 
 Push.addListener('token', function(currentToken, value) {

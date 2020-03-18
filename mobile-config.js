@@ -4,8 +4,8 @@ App.info({
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.3',
-  buildNumber: '111',
+  version: '0.0.4',
+  buildNumber: '124',
 });
 
 App.setPreference('android-targetSdkVersion', '28');
