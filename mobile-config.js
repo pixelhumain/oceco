@@ -4,8 +4,8 @@ App.info({
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.2',
-  buildNumber: '110',
+  version: '0.0.3',
+  buildNumber: '111',
 });
 
 App.setPreference('android-targetSdkVersion', '28');
@@ -75,8 +75,8 @@ App.launchScreens({
   <resource-file src="google-services.json" target="google-services.json" />
 </platform>`); */
 
-/* App.addResourceFile('google-services.json', 'app/google-services.json', 'android');
-App.addResourceFile('GoogleService-Info.plist', 'GoogleService-Info.plist', 'ios'); */
+App.addResourceFile('google-services.json', 'app/google-services.json', 'android');
+/* App.addResourceFile('GoogleService-Info.plist', 'GoogleService-Info.plist', 'ios'); */
 
 App.setPreference('StatusBarOverlaysWebView', 'false');
 App.setPreference('StatusBarBackgroundColor', '#01829c');
