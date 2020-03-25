@@ -573,7 +573,7 @@ Organizations.helpers({
     return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
   },
   listProjectsEventsActionsCreator() {
-    const listEvents = this.listProjectsEventsCreator();
+    const listEvents = this.listProjectsEventsCreator1M();
     if (listEvents) {
       const eventIds = listEvents.map(event => event._id._str);
       const query = {};

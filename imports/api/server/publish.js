@@ -1189,7 +1189,7 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
     {
       find(scopeD) {
         if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-          return scopeD.listProjectsEventsCreator();
+          return scopeD.listProjectsEventsCreator1M();
         }
       },
       children:

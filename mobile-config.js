@@ -21,7 +21,7 @@ App.configurePlugin('cordova-plugin-customurlscheme', {
 
 App.configurePlugin('net.yoik.cordova.plugins.intentfilter', {
   URL_SCHEME: 'https',
-  HOST_NAME: 'mobile.laraffinerie.re',
+  HOST_NAME: 'oce.co.tools',
 });
 
 App.icons({
@@ -109,7 +109,7 @@ App.accessRule('http://qa.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://qa.communecter.org/*', { type: 'navigation' });
 App.accessRule('http://www.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://www.communecter.org/*', { type: 'navigation' });
-App.accessRule('https://mobile.laraffinerie.re/*');
+App.accessRule('https://oce.co.tools/*');
 // App.accessRule('http://localhost*');
 App.accessRule('*.openstreetmap.org/*', { type: 'navigation' });
 App.accessRule('*.tile.thunderforest.com/*', { type: 'navigation' });

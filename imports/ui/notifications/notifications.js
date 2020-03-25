@@ -102,7 +102,7 @@ Template.notificationsList.events({
   'click .removeMe'(event) {
     event.preventDefault();
     // console.log(this._id._str);
-    Meteor.call('markRead', this._id._str);
+    //Meteor.call('markRead', this._id._str);
   },
   'click .clickGo'(event) {
     event.preventDefault();
@@ -141,7 +141,7 @@ Template.notificationsList.events({
     */
 
 
-    if (this.verb === 'comment') {
+    /*if (this.verb === 'comment') {
       if (this.target.type === 'news') {
         Router.go('newsDetailComments', { _id: this.target.parent.id, newsId: this.target.id, scope: this.target.parent.type });
       }
@@ -195,6 +195,59 @@ Template.notificationsList.events({
           }
         }
       }
+    }*/
+
+    if (this.verb === 'add') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+          const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
+    } else if (this.verb === 'finish') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('adminDashboard');
+          }
+        }
+      }
+    } else if (this.verb === 'join') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
+    } else if (this.verb === 'validate') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
+    } else if (this.verb === 'exit') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
     }
+
   },
 });

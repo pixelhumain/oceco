@@ -41,7 +41,7 @@ const pushUser = (title, text, payload, query, badge) => {
 };
 
 Meteor.startup(function() {
-  const query = {};
+  const query = { type: 'oceco' };
   query.created = { $gt: new Date() };
   const options = {};
   options.sort = { created: 1 };

@@ -433,8 +433,50 @@ const countActionEvents = (parentId, status) => {
 
 
 
-
 Meteor.methods({
+  'testNotif'({ idOrganization, idAction, idAuthor, verb }) {
+    new SimpleSchema({
+      idAction: { type: String },
+      idOrganization: { type: String },
+      idAuthor: { type: String },
+      verb: { type: String },
+    }).validate({ idAction, idOrganization, idAuthor, verb });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(idAction)
+    });
+    if (!actionOne) {
+      throw new Meteor.Error('not-action');
+    }
+
+    const organizationOne = Organizations.findOne({
+      _id: new Mongo.ObjectID(idOrganization)
+    });
+
+    if (!organizationOne) {
+      throw new Meteor.Error('not-action');
+    }
+
+    const notif = {};
+    // author
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(idAuthor) }, { fields: { _id: 1, name: 1, email: 1 } });
+
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+
+    // target
+    notif.target = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
+
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+    // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
+    ActivityStream.api.add(notif, verb, 'isAdmin');
+  },
   'testConnectAdmin'({ id }) {
     new SimpleSchema({
       id: { type: String },
@@ -505,6 +547,20 @@ Meteor.methods({
     const actionId = new Mongo.ObjectID(id);
     const parent = `finishedBy.${Meteor.userId()}`;
     Actions.update({ _id: actionId }, { $set: { [parent]: 'toModerate' } });
+
+    // notification
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(id)
+    });
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    ActivityStream.api.add(notif, 'finish', 'isAdmin');
+
     return true;
   },
   'exitAction'({
@@ -544,6 +600,20 @@ Meteor.methods({
         [parent]: ''
       }
     });
+
+    // notification
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(id)
+    });
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    ActivityStream.api.add(notif, 'leave', 'isAdmin');
+
     return true;
   },
 
@@ -574,7 +644,7 @@ Meteor.methods({
     const credit = parseInt(Actions.findOne({ _id: actionId }).credits, 10);
     const userActions = `userWallet.${orgId}.userActions.${actId}`;
     const userCredits = `userWallet.${orgId}.userCredits`;
-    if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists:1 } })) {
+    if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists: 1 } })) {
       Citoyens.update({ _id: userNeed }, { $set: { [userCredits]: 0 } });
     }
     Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
@@ -584,10 +654,20 @@ Meteor.methods({
     // verifier si tout les users sont valider
     const actionOne = Actions.findOne({ _id: actionId });
     if (actionOne.finishedBy && actionOne.countContributors() === Object.keys(actionOne.finishedBy).map(id => id).length && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
-      Actions.update({ _id: actionId }, { $set: { 'status': 'done' } });
+      Actions.update({ _id: actionId }, { $set: { status: 'done' } });
       countActionEvents(actionOne.parentId, 'done');
     }
     //
+
+    // notification
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
+    ActivityStream.api.add(notif, 'validate', 'isUser', usrId);
 
     return true;
   },
@@ -2461,6 +2541,21 @@ export const insertAction = new ValidatedMethod({
     countActionEvents(doc.parentId, 'todo');
     //
 
+    // notification
+    if (retour && retour.data && retour.data.id){
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(retour.data.id)
+    });
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    ActivityStream.api.add(notif, 'add', 'isMember');
+    ActivityStream.api.add(notif, 'add', 'isAdmin');
+    }
     return retour;
   },
 });
@@ -2497,7 +2592,7 @@ export const updateAction = new ValidatedMethod({
     const docRetour = modifier.$set;
 
     if(modifier.$set.participants) {
-      console.log("yolo");
+      console.log('yolo');
     }
 
     if (modifier.$set.startDate) {
@@ -2674,9 +2769,9 @@ export const assignmeActionRooms = new ValidatedMethod({
     const parentObjectId =new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
     const eventId = Events.findOne({ _id: parentObjectId })._id._str;
     const event = `links.events.${eventId}`;
-    const projectId = Projects.findOne({ [event]:{ $exists:1 } })._id._str;
+    const projectId = Projects.findOne({ [event]: { $exists: 1 } })._id._str;
     const project = `links.projects.${projectId}`;
-    const orgId = Organizations.findOne({ [project]:{ $exists:1 } })._id._str;
+    const orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
     const parent = `finishedBy.${ Meteor.userId()}`;
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
@@ -2692,7 +2787,7 @@ export const assignmeActionRooms = new ValidatedMethod({
         const userActions = `userWallet.${orgId}.userActions.${id}`;
         const userCredits = `userWallet.${orgId}.userCredits`;
         const userObjectId = new Mongo.ObjectID( Meteor.userId());
-        if (!Citoyens.findOne({ _id: userObjectId, [userCredits]: { $exists:1 } })) {
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredits]: { $exists: 1 } })) {
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredits]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
@@ -2737,6 +2832,16 @@ export const assignmeActionRooms = new ValidatedMethod({
     const docRetour = {};
     docRetour.id = id;
     const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
+    
+    // notification
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: action._id._str, name: action.name, type: 'actions', parentId: action.parentId, idParentRoom: action.idParentRoom };
+    ActivityStream.api.add(notif, 'join', 'isAdmin');
+
     return retour;
   },
 });
