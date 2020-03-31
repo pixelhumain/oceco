@@ -44,8 +44,14 @@
     </div>
     {{> statusActions status=status}}
     <div class="item item-text-wrap">
+      {{#if isActionDepense}}
+      <p>{{__ "dda.actions.spentstartenddate" start=formatStartDate  end=formatEndDate}},
+        {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
+      {{else}}
       <p>{{__ "dda.actions.actionstartenddate" start=formatStartDate  end=formatEndDate}},
-      {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
+        {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
+      {{/if}}
+      
     </div>
 
     <div class="item item-text-wrap">
@@ -168,6 +174,7 @@
   <h1 class="title">{{__ "actions"}}</h1>
   {{/contentFor}}
 
+  {{#if dataReady}}
   {{#ionView}}
   {{#ionContent}}
   <div class="list" data-snap-ignore="true">
@@ -181,7 +188,7 @@
       </div>
     </div>
     {{/if}}
-    {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" singleMethodArgument=true template="ionic" class="padding"}}
+    {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" doc=action singleMethodArgument=true template="ionic" class="padding"}}
     {{> actionsFields}}
     <div class="item">
       <div class="button-bar">
@@ -192,6 +199,9 @@
   </div>
   {{/ionContent}}
   {{/ionView}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
 </template>
 
 

@@ -302,7 +302,11 @@
 "who_participate_to_the_action_what_from_where": "__who__ participate to the action __what__ from __where__",
 "who_leave_the_action_what_from_where": "__who__ leave the action __what__ from __where__",
 "who_finished_the_action_what_from_where": "__who__ finished the action __what__ from __where__",
-"who_validated_the_action_what_from_where": "__who__ (admin) validated the action __what__ from __where__"
+"who_validated_the_action_what_from_where": "__who__ (admin) validated the action __what__ from __where__",
+"start_of_the_action_what_in_where": "start of the action __what__ in __where__",
+"end_of_the_action_what_in_where":"end of the action __what__ in __where__",
+"a_possible_expense_what_has_been_added_on_where":"a possible expense __what__ has been added on __where__",
+"who_spent_credit_on_what_from_where": "__who__ spent credit on __what__ from __where__"
     }
   },
   "on the program of":"on the program of :",
@@ -407,6 +411,7 @@
     "actions":{
       "action":"Action",
       "actionstartenddate":"Action from __start__ to __end__",
+      "spentstartenddate": "Spent from __start__ to __end__",
       "endofaction":"End of the action",
       "theytakeaction":"They take part in this action",
       "youparticipatingaction":"You are participating in this action",

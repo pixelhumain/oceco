@@ -360,7 +360,7 @@ Template.scopeActionsTemplate.onCreated(function () {
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryListActions', Router.current().params.scope, Router.current().params._id);
+    const handle = this.subscribe('directoryListActions', Router.current().params.scope, Router.current().params._id, 'todo');
     this.ready.set(handle.ready());
   }.bind(this));
 });

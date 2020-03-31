@@ -3,3 +3,4 @@ import '../../../i18n/fr.i18n.json';
 import '../../api/simpleschema-messages.js';
 import './startup.js';
 import './observePush.js';
+import '../../api/server/syncedcron.js';

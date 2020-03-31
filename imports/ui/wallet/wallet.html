@@ -37,7 +37,7 @@
     </div>
     
     {{#if equals selectview 'aFaire'}}
-    <div class="item item-divider">Programmés</div>
+    <div class="item item-divider">Coup de main</div>
     <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
 
         {{#each action in scope.actionsInWaiting}}
@@ -135,11 +135,22 @@
 </template>
 
 <template name='buttonActionFinish'>
+
     <div class="button-bar bar-positive">
-        <button class="button button-small button-balanced button-block finish-action-js"><i
-                class="fa fa-check"></i> Action Fini</button>
+        
+        {{#if action.isNotStartDate}}
         <button class="button button-small button-positive button-block sortir-action-js"><i
                 class="fa fa-times-circle-o"></i> Ne plus participer</button>
+        {{else}}
+            {{#if action.isEndDate}}
+                <button class="button button-small button-balanced button-block finish-action-js"><i class="fa fa-check"></i> Action
+                    Fini</button>
+                    {{else}}
+                    <div class="item">
+                        <span class="balanced"><i class="fa fa-check"></i> En cours</span>
+                    </div>
+            {{/if}}
+        {{/if}}
     </div>
         
 </template>

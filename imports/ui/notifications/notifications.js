@@ -197,7 +197,7 @@ Template.notificationsList.events({
       }
     }*/
 
-    if (this.verb === 'add') {
+    if (this.verb === 'add' || this.verb === 'addSpent') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {
@@ -211,13 +211,12 @@ Template.notificationsList.events({
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {
-            const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
             Router.go('adminDashboard');
           }
         }
       }
-    } else if (this.verb === 'join') {
+    } else if (this.verb === 'join' || this.verb === 'joinSpent') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {
@@ -244,6 +243,25 @@ Template.notificationsList.events({
             const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
             Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
+    } else if (this.verb === 'startAction') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+          }
+        }
+      }
+    } else if (this.verb === 'endAction') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            Session.setPersistent('orgaCibleId', this.target.id);
+            Router.go('wallet');
           }
         }
       }

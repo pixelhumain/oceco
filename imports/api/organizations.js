@@ -615,8 +615,9 @@ Organizations.helpers({
   actionsValidateSpend() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
+    // const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    // return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated' }, { sort: { endDate: -1 } });
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

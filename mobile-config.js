@@ -4,8 +4,8 @@ App.info({
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.4',
-  buildNumber: '124',
+  version: '0.0.6',
+  buildNumber: '126',
 });
 
 App.setPreference('android-targetSdkVersion', '28');
@@ -79,7 +79,7 @@ App.addResourceFile('google-services.json', 'app/google-services.json', 'android
 /* App.addResourceFile('GoogleService-Info.plist', 'GoogleService-Info.plist', 'ios'); */
 
 App.setPreference('StatusBarOverlaysWebView', 'false');
-App.setPreference('StatusBarBackgroundColor', '#01829c');
+App.setPreference('StatusBarBackgroundColor', '#324553');
 App.setPreference('Orientation', 'portrait');
 
 App.appendToConfig(`<platform name="ios">
@@ -107,6 +107,8 @@ App.accessRule('http://*', { type: 'navigation' });
 App.accessRule('https://*', { type: 'navigation' });
 App.accessRule('http://qa.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://qa.communecter.org/*', { type: 'navigation' });
+App.accessRule('http://qa.communecter.org/*', { type: 'network' });
+App.accessRule('https://qa.communecter.org/*', { type: 'network' });
 App.accessRule('http://www.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://www.communecter.org/*', { type: 'navigation' });
 App.accessRule('https://oce.co.tools/*');

@@ -167,6 +167,14 @@ if (Meteor.isClient) {
   import { Chronos } from './client/chronos.js';
 
   Actions.helpers({
+    isStartDate() {
+      const start = moment(this.startDate).toDate();
+      return Chronos.moment(start).isBefore(); // True
+    },
+    isNotStartDate() {
+      const start = moment(this.startDate).toDate();
+      return Chronos.moment().isBefore(start); // True
+    },
     isEndDate() {
       const end = moment(this.endDate).toDate();
       return Chronos.moment(end).isBefore(); // True
@@ -244,6 +252,9 @@ Actions.helpers({
       _id: new Mongo.ObjectID(Meteor.userId()),
     });
     return citoyenOne && citoyenOne.userCredit();
+  },
+  isActionDepense() {
+    return Math.sign(this.credits) === -1;
   },
   isDepense() {
     return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;

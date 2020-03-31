@@ -257,6 +257,11 @@
 </div>
 {{else}}
 {{#if isAFaire}}
+{{#if isStartDate}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> En cours</span>
+</div>
+{{else}}
 {{#if isNotMax}}
 <div class="button-bar bar-positive padding-top">
     <button class="button action-assignme-js {{#if isCall}}disabled{{/if}}">
@@ -271,6 +276,7 @@
 <div class="item">
     <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
 </div>
+{{/if}}
 {{/if}}
 {{else}}
 {{#if isDepense}}

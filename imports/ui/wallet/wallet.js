@@ -29,10 +29,18 @@ Template.wallet.onCreated(function() {
   this.ready = new ReactiveVar(false);
   this.selectview = new ReactiveVar('aFaire');
   this.autorun(function () {
-    const handle = this.subscribe('user.actions', 'organizations', Session.get('orgaCibleId'), this.selectview.get());
-    if (handle.ready()) {
-      this.ready.set(handle.ready());
+    if (this.selectview.get() === 'valides') {
+      const handle = this.subscribe('user.actions.historique', 'organizations', Session.get('orgaCibleId'));
+      if (handle.ready()) {
+        this.ready.set(handle.ready());
+      }
+    } else {
+      const handle = this.subscribe('user.actions', 'organizations', Session.get('orgaCibleId'), this.selectview.get());
+      if (handle.ready()) {
+        this.ready.set(handle.ready());
+      }
     }
+    
   }.bind(this));
   
 });

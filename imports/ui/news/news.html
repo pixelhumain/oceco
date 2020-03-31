@@ -311,6 +311,7 @@
 </template>
 
 <template name="scopeEventsTemplate">
+  {{> boutonCardprojects}}
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
@@ -345,6 +346,7 @@
 </template>
 
 <template name="scopeActionsTemplate">
+  {{> boutonCardevents}}
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-calendar"></i> {{__ "actions"}}<span
@@ -712,7 +714,7 @@
 <template name="boutonCardevents">
     <div class="button-bar bar-positive">
       {{#if isAdmin}}
-      <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-plus"></i></a>
+      <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une action</a>
       {{/if}}
     </div>
 
@@ -753,7 +755,7 @@
     <div class="button-bar bar-positive">
       {{#if isContributors}}
       {{#if isAdmin}}
-      <a href="{{pathFor 'eventsAdd' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-plus"></i></a>
+      <a href="{{pathFor 'eventsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un événement</a>
       {{/if}}
       {{/if}}
     </div>
@@ -809,7 +811,6 @@
 </template>
 
 <template name="listCardevents">
-{{> boutonCardevents}}
 {{> listCard}}
 </template>
 
@@ -819,7 +820,6 @@
 </template>
 
 <template name="listCardprojects">
-{{> boutonCardprojects}}
 {{> listCard}}
 </template>
 

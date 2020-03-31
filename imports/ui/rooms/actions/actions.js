@@ -101,12 +101,22 @@ Template.buttonsActions.events({
 });
 
 Template.actionsAdd.onCreated(function () {
+  const template = Template.instance();
+  template.ready = new ReactiveVar();
   pageSession.set('error', false);
 
   this.autorun(function() {
+    console.log(Router.current().params._id);
     pageSession.set('scopeId', Router.current().params._id);
     pageSession.set('scope', Router.current().params.scope);
     // pageSession.set('roomId', Router.current().params.roomId);
+  });
+
+  this.autorun(function () {
+    const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
+    if (handle.ready()) {
+      template.ready.set(handle.ready());
+    }
   });
 });
 
@@ -131,8 +141,23 @@ Template.actionsEdit.onCreated(function () {
 });
 
 Template.actionsAdd.helpers({
+  action() {
+    const event = Events.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+    const actionEdit = {};
+    if (event.startDate) {
+      actionEdit.startDate = event.startDate;
+    }
+    if (event.endDate) {
+      actionEdit.endDate = event.endDate;
+    }
+    console.log(actionEdit);
+    return actionEdit;
+  },
   error () {
     return pageSession.get('error');
+  },
+  dataReady() {
+    return Template.instance().ready.get();
   },
 });
 
@@ -186,7 +211,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       doc.parentType = pageSession.get('scope');
       doc.parentId = pageSession.get('scopeId');
       // doc.idParentRoom = pageSession.get('roomId');
-
+      console.log(pageSession.get('scopeId'));
       return doc;
     },
     'method-update'(modifier) {

@@ -32,7 +32,7 @@ Template.polesView.onCreated(function() {
   this.autorun(function () {
     const poleName = Router.current().params.pole;
     const handle = this.subscribe('poles.actions2', Session.get('orgaCibleId'), poleName);
-    const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'), poleName)
+    const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'), poleName);
     if (handle.ready()&&handleEvents.ready()) {
       this.ready.set(handle.ready());
     }

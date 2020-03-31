@@ -115,7 +115,7 @@ Template.listProjectsAValiderRaf.onCreated(function () {
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Session.get('orgaCibleId'), 'finishedBy');
+    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Session.get('orgaCibleId'), 'todo');
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -166,7 +166,7 @@ Template.listProjectsRaf.onCreated(function () {
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Session.get('orgaCibleId'));
+    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });

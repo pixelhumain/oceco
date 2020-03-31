@@ -1198,12 +1198,10 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
             find(scopeD) {
               const query = {};
               query.parentId = scopeD._id._str;
-              if (etat === 'finishedBy') {
-                query.finishedBy = { $exists: true };
+              if (etat) {
+                query.status = etat;
               }
-              return Actions.find({
-                parentId: scopeD._id._str,
-              });
+              return Actions.find(query);
             },
             children: [{
               find(scopeD) {
@@ -1278,7 +1276,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
     {
       find(scopeD) {
         if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-          return scopeD.listActionsCreator();
+          return scopeD.listActionsCreator('all', etat);
         }
       },
     },
@@ -2953,7 +2951,7 @@ Meteor.publish('poles.actions2', function(raffId, poleName) {
   const eventsArrayId = [];
   Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function(event) { eventsArrayId.push(event._id._str) ;});
   if (poleName) {
-    const eventActions = Actions.find({ parentId: { $in: eventsArrayId } });
+    const eventActions = Actions.find({ parentId: { $in: eventsArrayId }, status: 'todo' });
     return eventActions;
   }
   const eventActions = Actions.find({ parentId: { $in: eventsArrayId } });
@@ -3026,6 +3024,7 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
           query[UserId] = {
             $exists: 1,
           };
+          query.status = 'todo';
           const option = {};
           if (etat === 'aFaire') {
             query[finished] = { $exists: false };
@@ -3049,6 +3048,63 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
   };
 });
 
+Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['organizations'], name);
+  }));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  const UserId = `links.contributors.${this.userId}`;
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      let query = {};
+      query._id = new Mongo.ObjectID(scopeId);
+      return collection.find(query, options);
+    },
+    children: [{
+      find(scopeD) {
+        if (scope === 'organizations') {
+          //return scopeD.listProjectsEventsCreator1M();
+          if (scopeD.links && scopeD.links.projects) {
+            const projectIds = arrayLinkParentNoObject(scopeD.links.projects, 'projects');
+            const query = {};
+            query.$or = [];
+            projectIds.forEach((id) => {
+              const queryCo = {};
+              queryCo[`organizer.${id}`] = { $exists: true };
+              query.$or.push(queryCo);
+            });
+            /* const options = {};
+            options.sort = {
+              startDate: 1
+            }; */
+            const arrayEventsIds = Events.find(query).fetch().map(event => event._id._str);
+            const finished = `finishedBy.${this.userId}`;
+            const queryAction = {};
+            queryAction.parentId = { $in: arrayEventsIds };
+            queryAction[UserId] = {
+              $exists: 1,
+            };
+            const option = {};
+            /* WARNING pour l'historique listProjectsEventsCreator1M ne va pas aller car il prend les evenements qui ne sont pas terminer ou 15 jous apres la fin */
+            queryAction[finished] = 'validated';
+            option.sort = { endDate: -1 };
+            option.limit = 100;
+            console.log(queryAction);
+            return Actions.find(queryAction, option);
+          }
+        }
+      },
+    },
+    ],
+  };
+});
 
 Meteor.publish('action.to.admin', function(raffId) {
   check(raffId, String);

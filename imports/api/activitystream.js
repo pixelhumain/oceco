@@ -81,7 +81,7 @@ ActivityStream.api = {
     }
     const options = {};
     options.sort = { created: -1 };
-    /*options.fields = {};
+    /* options.fields = {};
     options.fields[`notify.id.${bothUserId}.isUnread`] = 1;
     options.fields[`notify.id.${bothUserId}.isUnseen`] = 1;
     options.fields['notify.displayName'] = 1;
@@ -97,7 +97,7 @@ ActivityStream.api = {
     options.fields.object = 1;
     options.fields.created = 1;
     options.fields.author = 1;
-    options.fields.type = 1;*/
+    options.fields.type = 1; */
     return ActivityStream.find(query, options);
   },
   isUnseen (userId, scopeId) {
@@ -170,7 +170,7 @@ ActivityStream.api = {
     }
     const options = {};
     options.sort = { created: -1 };
-    /*options.fields = {};
+    /* options.fields = {};
     options.fields[`notify.id.${bothUserId}`] = 1;
     options.fields['notify.displayName'] = 1;
     options.fields['notify.labelArray'] = 1;
@@ -185,7 +185,7 @@ ActivityStream.api = {
     options.fields.object = 1;
     options.fields.created = 1;
     options.fields.author = 1;
-    options.fields.type = 1;*/
+    options.fields.type = 1; */
     return ActivityStream.find(query, options);
   },
   listUserOrga(array, type, idUser = null) {
@@ -203,6 +203,10 @@ ActivityStream.api = {
       // users
       arrayIdsUsers = Object.keys(array)
         .filter(k => array[k].isInviting !== true && !(array[k].type === 'citoyens' && array[k].toBeValidated === true) && array[k].type === 'citoyens' && k === idUser)
+        .map(k => k);
+    } else if (type === 'isActionMembers') {
+      arrayIdsUsers = Object.keys(array)
+        .filter(k => array[k].type === 'citoyens')
         .map(k => k);
     }
 
@@ -282,7 +286,7 @@ ActivityStream.api = {
     notificationObj.type = 'oceco';
     notificationObj.verb = verb;
 
-    if (object && object.type === 'actions') {
+    if (object && object.type === 'actions' && object.parentType === 'events') {
       const eventOne = Events.findOne({
         _id: new Mongo.ObjectID(object.parentId),
       });
@@ -292,11 +296,21 @@ ActivityStream.api = {
       const project = `links.projects.${projectOne._id._str}`;
       const organizationOne = Organizations.findOne({ [project]: { $exists: 1 } });
 
-      if (!target){
+      if (!target) {
         // target
         target = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
       }
- 
+
+      if (type === 'isActionMembers') {
+        if (object && object.links && object.links.contributors) {
+          target.links.members = object.links.contributors;
+        } else {
+          target.links.members = null;
+        }
+      }
+
+      //console.log(target);
+      //console.log(object);
       const roomOne = Rooms.findOne({
         _id: new Mongo.ObjectID(object.idParentRoom),
       });
@@ -336,11 +350,11 @@ ActivityStream.api = {
 
     // listes des users à notifier
     // list des citoyens membre de l'orga
-    if (target.links && target.links.members) {
+    if (target && target.links && target.links.members) {
       // users / admin
       const idUsersObj = ActivityStream.api.listUserOrga(target.links.members, type, idUser);
 
-      console.log(idUsersObj);
+      //console.log(idUsersObj);
 
       if (idUsersObj) {
         /* notificationObj.notify.id['55ed9107e41d75a41a558524'] = {
@@ -357,6 +371,27 @@ ActivityStream.api = {
               notificationObj.notify.displayName = '{who} participate to the action {what} from {where}';
               // notificationObj.notify.displayName = '{who} participates to {where}';
               notificationObj.notify.icon = 'fa-group';
+              notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
+            } else if (type === 'isMember') {
+
+            } else if (type === 'isUser') {
+
+            }
+          }
+        } else if (verb === 'joinSpent') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} spent credit on {what} from {where}';
+              // notificationObj.notify.displayName = '{who} participates to {where}';
+              notificationObj.notify.icon = 'fa-money';
               notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
               // labelAuthorObject ne sait pas a quoi ça sert
               notificationObj.notify.labelAuthorObject = 'author';
@@ -434,11 +469,23 @@ ActivityStream.api = {
         } else if (verb === 'add') {
           if (object.type === 'actions') {
             if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} added a new action {what} in {where}';
+              notificationObj.notify.icon = 'fa-plus';
 
+              notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
             } else if (type === 'isMember') {
               notificationObj.notify.id = idUsersObj;
               notificationObj.notify.displayName = '{who} added a new action {what} in {where}';
               notificationObj.notify.icon = 'fa-plus';
+
               notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
               // labelAuthorObject ne sait pas a quoi ça sert
               notificationObj.notify.labelAuthorObject = 'author';
@@ -448,14 +495,78 @@ ActivityStream.api = {
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
             } else if (type === 'isUser') {
-            
+
+            }
+          }
+        } else if (verb === 'addSpent') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+
+            } else if (type === 'isMember') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = 'a possible expense {what} has been added on {where}';
+              notificationObj.notify.icon = 'fa-money';
+
+              notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
+            } else if (type === 'isUser') {
+
+            }
+          }
+        } else if (verb === 'startAction') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+
+            } else if (type === 'isMember') {
+
+            } else if (type === 'isUser') {
+
+            } else if (type === 'isActionMembers') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = 'start of the action {what} in {where}';
+              notificationObj.notify.icon = 'fa-hourglass-start';
+              notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              // notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
+            }
+          }
+        } else if (verb === 'endAction') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+
+            } else if (type === 'isMember') {
+
+            } else if (type === 'isUser') {
+
+            } else if (type === 'isActionMembers') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = 'end of the action {what} in {where}';
+              notificationObj.notify.icon = 'fa-hourglass-end';
+              notificationObj.notify.url = `page/type/${notificationObj.targetEvent.type}/id/${notificationObj.targetEvent.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              // notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [notificationObj.targetEvent.name];
             }
           }
         }
-          
       }
 
-      console.log(notificationObj);
+      //console.log(notificationObj);
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);
       }
