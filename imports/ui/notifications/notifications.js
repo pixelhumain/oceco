@@ -210,7 +210,6 @@ Template.notificationsList.events({
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
-            
           }
         }
       }

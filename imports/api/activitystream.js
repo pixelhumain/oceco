@@ -258,7 +258,7 @@ ActivityStream.api = {
       notificationObj.targetEvent.id = eventOne._id._str;
       notificationObj.targetEvent.name = eventOne.name;
     }
-    
+
     // room
     notificationObj.targetRoom = {};
     notificationObj.targetRoom.type = 'rooms';
@@ -304,7 +304,6 @@ ActivityStream.api = {
         // oceco
         notificationObj = ActivityStream.api.ocecoNotif(notificationObj, { projectOne, roomOne });
       }
-
     } else if (object && object.type === 'actions' && object.parentType === 'events') {
       const eventOne = Events.findOne({
         _id: new Mongo.ObjectID(object.parentId),
@@ -390,7 +389,7 @@ ActivityStream.api = {
           targetNofifScope = { ...notificationObj.targetProject };
           console.log(targetNofifScope);
         }
-        
+
 
         if (verb === 'join') {
           if (object.type === 'actions') {

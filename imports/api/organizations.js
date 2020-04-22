@@ -575,7 +575,6 @@ Organizations.helpers({
   listProjectsEventsActionsCreator() {
     const listEvents = this.listProjectsEventsCreator1M();
     const listProjects = this.listProjects();
-    
     if (listEvents || listProjects) {
       const eventIds = listEvents.map(event => event._id._str);
       const projectIds = listProjects.map(project => project._id._str);

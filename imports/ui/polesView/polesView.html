@@ -29,56 +29,349 @@
     {{/ionContent}}
   {{/ionView}}
 </template>
-<template name="projectList">
-  <div class="item item-stable item-avatar">
+
+<template name="projectList2">
+  <div class="item item-stable item-avatar {{#if isAdminRaf}}item-button-right{{/if}}">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
-    {{project.name}} 
-    <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+    {{project.name}}
+
+    {{#if isAdminRaf}}
+    <a href="{{pathFor 'eventsAdd' _id=project._id._str scope='events'}}" class="button button-small"><i
+        class="icon fa fa-plus"></i> évènements</a>
+    {{/if}}
+
+    {{#if projectGlobalCount project._id}}
 
     {{#if scroll }}
-      <div>
-        <button class="button button-small button-dark button-see-event-js">Cacher évènements <i class="icon ion-ios-arrow-up"></i></button>
-      </div>
+    <div>
+      <button class="button button-small button-dark button-see-event-js">Cacher évènements <i
+          class="icon ion-ios-arrow-up"></i></button>
+    </div>
     {{else}}
     <div>
-      <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
+      <button class="button button-small button-dark button-see-event-js">Voir évènements <i
+          class="icon ion-ios-arrow-down"></i></button>
     </div>
-      {{/if}}
+    {{/if}}
 
-    </div>
+    {{/if}}
 
-      {{#if scroll }}
-      
-      {{#each event in projectEvents project._id}}
-        {{>eventsList event=event}}
-      {{/each}}
-      
-      {{/if}}
+  </div>
 
- 
+  {{#if scroll }}
+
+  {{#if projectActionsCount project._id}}
+  <div class="item item-stable">Action de Projets</div>
+  {{#each action in projectAction project._id}}
+  {{> itemInputAction action=action}}
+  {{/each}}
+  {{/if}}
+
+  {{#if projectEventsCount project._id}}
+  <div class="item item-stable">Evenements</div>
+  {{#each event in projectEvents project._id}}
+  {{>eventsList2 item=event}}
+  {{/each}}
+  {{/if}}
+
+  {{/if}}
+
+
 </template>
 
-<template name="eventsList">
-  <div class="item  item-avatar">
-    {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
-    {{event.name}} 
-    <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p>
+<template name="eventsList2">
+  <!-- {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
+        {{event.name}} 
+        <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p> -->
+  <!-- <a class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}"
+            href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}"> -->
+  {{#with item}}
+  <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} {{#if isAdminRaf}}item-button-right{{/if}}">
+    {{#if profilThumbImageUrl}}
+    <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
+    {{/if}}
+    <a href="{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}" class="positive">
+      <h2 class="positive">{{name}}</h2>
+    </a>
+    <!-- {{#if actionsCount.todo}}
+            <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon fa fa-inbox"></i>
+                {{actionsCount.todo}}</span>
+            {{/if}} -->
+    {{#if isAdminRaf}}
+    <a href="{{pathFor 'actionsAdd' _id=_id._str scope='events'}}" class="button button-positive "><i
+        class="icon fa fa-plus"></i></a>
+    {{/if}}
+
+
+    {{#if typeValue}}
+    <p>{{typeValue}}</p>
+    {{/if}}
+
+    {{#if organizerEvent}}
+    <p>Projet :
+      {{#each organizerItem in organizerEvent}}
+      {{#each organizerItemValue in organizerItem.values}}
+      <a href="{{pathFor 'detailList' _id=organizerItemValue._id._str scope=organizerItem.type}}"
+        class="positive">{{organizerItemValue.name}}</a>
+      {{/each}}
+      {{/each}}
+    </p>
+    {{/if}}
+
+
+    {{#if startDate}}
+    <p>
+      {{#if isStart}}
+      <i class="icon ion-android-alarm-clock"></i> {{__ "start"}} : {{livestamp startDate}} <br>
+      {{#if endDate}}
+      <i class="icon ion-android-alarm-clock"></i> {{__ "end"}} : {{livestamp endDate}} <br>
+      <i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>
+      {{/if}}
+      {{else}}
+      <i class="icon ion-android-alarm-clock"></i> {{__ "start"}} : {{livestamp startDate}} <br>
+      {{#if endDate}}
+      <i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>
+      {{/if}}
+      {{/if}}
+    </p>
+    {{/if}}
+
+    <!-- </a> -->
+    {{#if eventActionCount item._id._str}}
+    {{#if actionsCount.todo}}
+
     {{#if scrollAction }}
-      <div>
-        <button class="button button-small button-see-actions-js">Cacher actions <i class="icon ion-ios-arrow-up"></i></button>
-      </div>
+    <div>
+      <button class="button button-small button-see-actions-js">Cacher {{actionsCount.todo}} actions <i
+          class="icon ion-ios-arrow-up"></i></button>
+    </div>
     {{else}}
-      <div>
-        <button class="button button-small button-see-actions-js">Voir actions <i class="icon ion-ios-arrow-down"></i></button>
-      </div>
+    <div>
+      <button class="button button-small button-see-actions-js">Voir {{actionsCount.todo}} actions <i
+          class="icon ion-ios-arrow-down"></i></button>
+    </div>
+    {{/if}}
+
+    {{/if}}
     {{/if}}
   </div>
+
+  {{/with}}
+
   {{#if scrollAction }}
-  {{#each action in eventAction event._id._str}}  
-       
+  {{#each action in eventAction item._id._str}}
+
   {{> itemInputAction action=action}}
 
   {{/each}}
   {{/if}}
 
 </template>
+
+<template name="itemAction">
+
+    {{> itemInputAction action=action}}
+
+</template>
+
+<template name="itemInputAction">
+    <div class="item">
+        <div class="row row-center padding-bottom">
+            <div class="col">{{> actionDate action=action}}</div>
+        </div>
+        <div class="row row-center padding-bottom">
+            {{> actionParticipantNeeded action=action}}
+            {{> actionDuration action=action }}
+        </div>
+        <div class="row row-center">
+            <div class="col-90 col-center">
+                <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
+                    class="subdued dark item-content">{{action.name}}</a>
+            </div>
+            <div class="col-10">
+                {{#if displayDesc}}
+                <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
+                {{else}}
+                <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+                {{/if}}
+            </div>
+        </div>
+
+        {{#if displayDesc}}
+        <div div class="col ">
+            {{#if action.creditPositive}}
+            <div class="row">
+                <div class="col-10"><i class="icon ion-card"> </i></div>
+                <div class="col">Vous gagnerez {{action.credits}} crédits</div>
+            </div>
+            {{else}}
+            <div class="row">
+                <div class="col-10"><i class="icon ion-card"> </i></div>
+                <div class="col">Vous serez prélevé de
+                    {{action.creditNegative}} crédits</div>
+            </div>
+            {{/if}}
+            <div class="row">
+                <div class="col-10"> <i class="ion-android-calendar"></i></div>
+                <div class="col">Début le
+                    {{action.projectDay}}</div>
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="ion-clock"></i></div>
+                <div class="col">Durée
+                    {{action.projectDuration}} H</div>
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="ion-man"></i></div>
+                <div class="col">Il y a {{action.actionParticipantsNbr}}
+                    participant</div>
+            </div>
+            <div class="row row-wrap">
+                <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
+                <div class="col item-text-wrap ">Pour un besoin minimum de
+                    {{action.min}} participant</div>
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
+                <div class="col">Et un maximum de {{action.max}}
+                    participant</div>
+            </div>
+        </div>
+        {{/if}}
+        <div class="row">
+            {{>buttonSubscribeAction action }}
+        </div>
+    </div>
+</template>
+
+<template name="itemInputActionDetail">
+    <div class="item">
+        <div class="row row-center padding-bottom">
+            {{> actionParticipantNeeded action=action}}
+            {{> actionDuration action=action }}
+        </div>
+
+        <div div class="col ">
+                {{#if action.creditPositive}}
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-card"> </i></div>
+                    <div class="col">Vous gagnerez {{action.credits}} crédits</div>
+                </div>
+                {{else}}
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-card"> </i></div>
+                    <div class="col">Vous serez prélevé de
+                    {{action.creditNegative}} crédits</div>
+                </div>
+                {{/if}}
+                <div class="row">
+                    <div class="col-10"> <i class="ion-android-calendar"></i></div>
+                    <div class="col">Début le
+                    {{action.projectDay}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="ion-clock"></i></div>
+                    <div class="col">Durée
+                    {{action.projectDuration}} H</div>
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="ion-man"></i></div>
+                    <div class="col">Il y a {{action.actionParticipantsNbr}}
+                    participant</div>
+                </div>
+                <div class="row row-wrap">
+                    <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
+                    <div class="col item-text-wrap ">Pour un besoin minimum de
+                    {{action.min}} participant</div>
+                </div>
+                <div class="row">
+                    <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
+                    <div class="col">Et un maximum de {{action.max}}
+                    participant</div>
+                </div>
+        </div>
+    </div>
+    {{>buttonSubscribeAction action }}
+    
+</template>
+
+<template name="buttonSubscribeAction">
+
+{{#if isContributors}}
+<div class="col col-center text-center">
+    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span>
+</div>
+{{else}}
+{{#if isAFaire}}
+{{#if isStartDate}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> En cours</span>
+</div>
+{{else}}
+{{#if isNotMax}}
+<div class="button-bar bar-positive padding-top">
+    <button class="button action-assignme-js {{#if isCall}}disabled{{/if}}">
+        {{#if isCall}}
+        <i class="icon fa fa-refresh fa-spin"></i>
+        {{else}}
+        <i class="fa fa-handshake-o"></i>
+        {{/if}}
+        {{__ "dda.actions.wantparticipateaction"}}</button>
+</div>
+{{else}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
+</div>
+{{/if}}
+{{/if}}
+{{else}}
+{{#if isDepense}}
+{{#if isNotMax}}
+<div class="button-bar bar-balanced padding-top">
+    <button class="button action-depenseme-js {{#if isCall}}disabled{{/if}}">
+        {{#if isCall}}
+        <i class="icon fa fa-refresh fa-spin"></i>
+        {{else}}
+        <i class="ion-card"></i>
+        {{/if}}
+        Dépenser {{credits}}</button>
+</div>
+{{else}}
+<div class="item">
+    <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
+</div>
+{{/if}}
+{{/if}}
+
+{{/if}}
+{{/if}}
+</template>
+
+<template name="actionDuration">
+    <div class="col text-center col-center borderMenuItem stable-border"><i class="ion-clock"></i>
+        {{action.projectDuration}}H </div>
+    <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-card"></i>
+        {{action.credits}}
+        R</div>
+</template>
+
+<template name="actionParticipantNeeded">
+    <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-man"></i>
+        {{action.actionParticipantsNbr}}</div>
+    <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-down"></i>
+        {{action.min}}</div>
+    <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-up"></i>
+        {{action.max}}</div>
+</template>
+
+<template name="actionDate">
+    <span><i class="ion-android-calendar"></i>{{action.projectDayHour}}</span>
+</template>
+
+<template name="linkForAction">
+    <b><a
+            href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}">{{action.name}}</a>
+    </b> <br>
+</template>
+
+

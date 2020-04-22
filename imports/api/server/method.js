@@ -1840,7 +1840,7 @@ indexMax:20 */
     // eslint-disable-next-line no-unused-vars
     const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
     //
-    
+
     return retour;
   },
   updateProject ({ modifier, _id }) {
@@ -2532,7 +2532,7 @@ export const insertAction = new ValidatedMethod({
     const scopeOne = collectionScope.findOne({
       _id: new Mongo.ObjectID(doc.parentId),
     });
-    
+
     if (!scopeOne) {
       throw new Meteor.Error('not-authorized');
     }
@@ -2559,7 +2559,7 @@ export const insertAction = new ValidatedMethod({
         const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId).split(',') : null;
         if (roles && room.roles.some(role => roles.includes(role))) {
           // true
-          
+
         } else {
           // false
           throw new Meteor.Error('not-authorized role');

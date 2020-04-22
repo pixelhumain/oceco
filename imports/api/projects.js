@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
@@ -240,6 +241,7 @@ if (Meteor.isClient) {
 }
 
 Projects.helpers({
+  // eslint-disable-next-line no-unused-vars
   isVisibleFields (field) {
     /* if(this.isMe()){
         return true;
@@ -515,26 +517,26 @@ Projects.helpers({
     }
   },
   detailRooms (roomId) {
-    //if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
-      const query = {};
-      if (this.isAdmin()) {
-        query._id = new Mongo.ObjectID(roomId);
-        query.status = 'open';
-      } else {
-        query.$or = [];
-        const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str) ? Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str).split(',') : null;
-        if (roles) {
-          query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: true, $in: roles } });
-        }
-        query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
+    // if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+    const query = {};
+    if (this.isAdmin()) {
+      query._id = new Mongo.ObjectID(roomId);
+      query.status = 'open';
+    } else {
+      query.$or = [];
+      const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str) ? Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str).split(',') : null;
+      if (roles) {
+        query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: true, $in: roles } });
       }
-      return Rooms.find(query);
-    //}
+      query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
+    }
+    return Rooms.find(query);
+    // }
   },
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
   },
-  room (roomId) {
+  room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
   listActionsCreator(type = 'all', status = 'todo') {

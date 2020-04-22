@@ -1,9 +1,11 @@
 /* eslint-disable meteor/no-session */
-/* global Session */
+/* global Session IonPopup */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { Router } from 'meteor/iron:router';
+import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
 
 // collection
@@ -13,8 +15,6 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 
-
-import '../home/home.js';
 import './polesView.html';
 
 window.Events = Events;
@@ -32,32 +32,8 @@ Template.polesView.onCreated(function() {
       this.ready.set(handle.ready());
     }
   }.bind(this));
-// this.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
-// this.subscribe('directoryList', 'organizations', Session.get('orgaCibleId'));
-// this.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
 });
 
-Template.projectList.onCreated(function() {
-  this.scroll = new ReactiveVar(false);
-});
-Template.eventsList.onCreated(function() {
-  this.scrollAction = new ReactiveVar(false);
-});
-
-Template.projectList.helpers({
-  projectEvents(projectObjectId) {
-    const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId });
-  },
-  scroll() {
-    return Template.instance().scroll.get();
-  },
-});
-Template.eventsList.helpers({
-  scrollAction() {
-    return Template.instance().scrollAction.get();
-  },
-});
 Template.polesView.helpers({
   poleName() {
     const poleName = Router.current().params.pole;
@@ -75,25 +51,53 @@ Template.polesView.helpers({
     const poleProjectsCursor = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] });
     return poleProjectsCursor;
   },
-
-  projectAction(projectObjectId) {
-    const projectId = projectObjectId.valueOf();
-    return Actions.find({ parentId: projectId });
-  },
-  projectDay(date) {
-    return moment(date).format(' dddd Do MMM ');
-  },
-
-  projectDuration(start, end) {
-    const startDate = moment(start);
-    const endDate = moment(end);
-    return Math.round(endDate.diff(startDate, 'minutes') / 60);
-  },
   dataReady() {
     return Template.instance().ready.get();
   },
 });
-Template.projectList.events({
+
+
+Template.projectList2.onCreated(function () {
+  this.scroll = new ReactiveVar(false);
+});
+
+Template.eventsList2.onCreated(function () {
+  this.scrollAction = new ReactiveVar(false);
+});
+
+Template.projectList2.helpers({
+  projectEvents(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Events.find({ organizerId: projectId });
+  },
+  projectGlobalCount(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find({ parentId: projectId, status: 'todo' }).count() > 0;
+  },
+  projectEventsCount(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Events.find({ organizerId: projectId }).count() > 0;
+  },
+  projectActionsCount(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Actions.find({ parentId: projectId, status: 'todo' }).count() > 0;
+  },
+  projectAction(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Actions.find({ parentId: projectId, status: 'todo' });
+  },
+  scroll() {
+    return Template.instance().scroll.get();
+  },
+});
+
+Template.eventsList2.helpers({
+  scrollAction() {
+    return Template.instance().scrollAction.get();
+  },
+});
+
+Template.projectList2.events({
   'click .button-see-event-js'(event) {
     event.preventDefault();
     if (Template.instance().scroll.get()) {
@@ -101,7 +105,7 @@ Template.projectList.events({
     } else Template.instance().scroll.set(true);
   },
 });
-Template.eventsList.events({
+Template.eventsList2.events({
   'click .button-see-actions-js'(event) {
     event.preventDefault();
     if (Template.instance().scrollAction.get()) {
@@ -109,9 +113,89 @@ Template.eventsList.events({
     } else Template.instance().scrollAction.set(true);
   },
 });
-Template.eventsList.helpers({
+Template.eventsList2.helpers({
   eventAction(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }] });
+    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] });
+  },
+  eventActionCount(eventId) {
+    const userAddedAction = `links.contributors.${Meteor.userId()}`;
+    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] }).count() > 0;
+  },
+});
+
+Template.itemInputAction.onCreated(function () {
+  this.displayDesc = new ReactiveVar(false);
+});
+
+Template.itemInputAction.events({
+  'click .display-desc-js'(event) {
+    event.preventDefault();
+    if (!Template.instance().displayDesc.get()) {
+      Template.instance().displayDesc.set(true);
+    } else {
+      Template.instance().displayDesc.set(false);
+    }
+  },
+});
+
+Template.itemInputAction.helpers({
+  displayDesc() {
+    return Template.instance().displayDesc.get();
+  },
+});
+
+Template.itemInputActionDetail.inheritsHelpersFrom('itemInputAction');
+
+
+Template.buttonSubscribeAction.onCreated(function () {
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    call: false,
+  });
+});
+
+Template.buttonSubscribeAction.helpers({
+  isCall() {
+    return Template.instance().state.get('call');
+  },
+});
+
+Template.buttonSubscribeAction.events({
+  'click .action-assignme-js'(event, instance) {
+    event.preventDefault();
+    instance.state.set('call', true);
+    Meteor.call('assignmeActionRooms', { id: this._id._str }, (error) => {
+      if (error) {
+        instance.state.set('call', false);
+        IonPopup.alert({ template: i18n.__(error.reason) });
+      }
+    });
+  },
+  'click .action-depenseme-js'(event, instance) {
+    event.preventDefault();
+    const self = this;
+    instance.state.set('call', true);
+    IonPopup.confirm({
+      title: 'Depenser',
+      template: 'Voulez vous depenser vos credits ?',
+      onOk() {
+        Meteor.call('assignmeActionRooms', {
+          id: self._id._str,
+        }, (error) => {
+          if (error) {
+            instance.state.set('call', false);
+            IonPopup.alert({
+              template: i18n.__(error.reason),
+            });
+          }
+        });
+      },
+      onCancel() {
+        instance.state.set('call', false);
+      },
+      cancelText: i18n.__('no'),
+      okText: i18n.__('yes'),
+    });
   },
 });
