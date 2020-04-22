@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
@@ -23,7 +24,7 @@ import { Actions } from './actions.js';
 import { News } from './news.js';
 import { Documents } from './documents.js';
 import { ActivityStream } from './activitystream.js';
-import { queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkIsInviting, queryLinkAttendees, arrayLinkAttendees, queryOptions, nameToCollection } from './helpers.js';
+import { queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkIsInviting, queryLinkAttendees, arrayLinkAttendees, queryOptions } from './helpers.js';
 
 export const Events = new Mongo.Collection('events', { idGeneration: 'MONGO' });
 
@@ -290,7 +291,7 @@ if (Meteor.isClient) {
 }
 
 Events.helpers({
-  isVisibleFields (field) {
+  isVisibleFields () {
     /* if(this.isMe()){
         return true;
       }else{
@@ -559,7 +560,7 @@ Events.helpers({
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
   },
-  room (roomId) {
+  room () {
     return Rooms.findOne({ parentId: this._id._str });
   },
   listActionsCreator(type = 'all', status = 'todo') {

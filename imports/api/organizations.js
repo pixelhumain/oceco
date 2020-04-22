@@ -1,9 +1,11 @@
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { _ } from 'meteor/underscore';
 import { Router } from 'meteor/iron:router';
 import { Tracker } from 'meteor/tracker';
+import { moment } from 'meteor/momentjs:moment';
 
 // schemas
 import { baseSchema, blockBaseSchema, geoSchema, preferences } from './schema.js';
@@ -19,7 +21,7 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, searchQuery, queryOptions } from './helpers.js';
+import { queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
@@ -45,13 +47,13 @@ SchemasOrganizationsRest.extend({
       options() {
         if (Meteor.isClient) {
           const listSelect = Lists.findOne({
-            name: 'organisationTypes'
+            name: 'organisationTypes',
           });
           if (listSelect && listSelect.list) {
             return _.map(listSelect.list, function (value, key) {
               return {
                 label: value,
-                value: key
+                value: key,
               };
             });
           }
@@ -232,7 +234,7 @@ BlockOrganizationsRest.preferences.extend({
 
 
 Organizations.helpers({
-  isVisibleFields (field) {
+  isVisibleFields () {
     /* if(this.isMe()){
         return true;
       }else{
@@ -448,7 +450,7 @@ Organizations.helpers({
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
   },
-  room (roomId) {
+  room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
   listMembers (search) {
@@ -495,7 +497,7 @@ Organizations.helpers({
   listPoiCreator () {
     const query = {};
     query[`parent.${this._id._str}`] = {
-      $exists: true
+      $exists: true,
     };
     return Poi.find(query);
   },
@@ -520,7 +522,6 @@ Organizations.helpers({
     return this.listEventsCreator() && this.listEventsCreator().count();
   },
   listProjectsEventsCreator(querySearch) {
-    
     if (this.links && this.links.projects) {
       const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
       const query = querySearch || {};
@@ -532,11 +533,11 @@ Organizations.helpers({
       });
       // queryOptions.fields.parentId = 1;
       const inputDate = new Date();
-      //query.startDate = { $lte: inputDate };
+      // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
       const options = {};
       options.sort = {
-        startDate: 1
+        startDate: 1,
       };
       return Events.find(query, options);
     }
@@ -546,7 +547,6 @@ Organizations.helpers({
   des actions lier au evenement pour pouvoir valider apres la fin
   */
   listProjectsEventsCreator1M(querySearch) {
-
     if (this.links && this.links.projects) {
       const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
       const query = querySearch || {};
@@ -557,13 +557,13 @@ Organizations.helpers({
         query.$or.push(queryCo);
       });
       // queryOptions.fields.parentId = 1;
-      //const inputDate = new Date();
+      // const inputDate = new Date();
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();
-      //query.startDate = { $lte: inputDate };
+      // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
       const options = {};
       options.sort = {
-        startDate: 1
+        startDate: 1,
       };
       return Events.find(query, options);
     }
@@ -574,11 +574,15 @@ Organizations.helpers({
   },
   listProjectsEventsActionsCreator() {
     const listEvents = this.listProjectsEventsCreator1M();
-    if (listEvents) {
+    const listProjects = this.listProjects();
+    
+    if (listEvents || listProjects) {
       const eventIds = listEvents.map(event => event._id._str);
+      const projectIds = listProjects.map(project => project._id._str);
+      const mergeArray = [...eventIds, ...projectIds];
       const query = {};
       query.parentId = {
-        $in: eventIds,
+        $in: mergeArray,
       };
       query.status = 'todo';
       return Actions.find(query);
@@ -591,26 +595,34 @@ Organizations.helpers({
   actionsInWaiting() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: raffProjectsArray } });
+    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: mergeArray }, status: 'todo' });
   },
   actionsToValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: raffProjectsArray } });
+    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: mergeArray }, status: 'todo' });
   },
   actionsValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: raffProjectsArray } });  
+    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: mergeArray } });
   },
   actionsSpend() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: raffProjectsArray } });
+    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: mergeArray } });
   },
   actionsValidateSpend() {
     const finished = `finishedBy.${Meteor.userId()}`;

@@ -17,6 +17,7 @@ import { Documents } from './documents.js';
 import { Events } from './events.js';
 import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
+import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
 import { queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions, nameToCollection } from './helpers.js';
 
@@ -514,7 +515,7 @@ Projects.helpers({
     }
   },
   detailRooms (roomId) {
-    if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+    //if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
       const query = {};
       if (this.isAdmin()) {
         query._id = new Mongo.ObjectID(roomId);
@@ -528,13 +529,31 @@ Projects.helpers({
         query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
       }
       return Rooms.find(query);
-    }
+    //}
   },
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
   },
   room (roomId) {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
+  },
+  listActionsCreator(type = 'all', status = 'todo') {
+    const query = {};
+    query.parentId = this._id._str;
+    query.status = status;
+    if (type === 'aFaire') {
+      query.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      query.credits = { $lt: 0 };
+    }
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+    return Actions.find(query, options);
+  },
+  countActionsCreator(type = 'all', status = 'todo') {
+    return this.listActionsCreator(type, status) && this.listActionsCreator(type, status).count();
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

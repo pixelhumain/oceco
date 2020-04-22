@@ -1,11 +1,12 @@
+/* eslint-disable no-undef */
 App.info({
   id: 'org.communecter.oceco',
   name: 'oceco',
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.6',
-  buildNumber: '126',
+  version: '0.0.7',
+  buildNumber: '127',
 });
 
 App.setPreference('android-targetSdkVersion', '28');

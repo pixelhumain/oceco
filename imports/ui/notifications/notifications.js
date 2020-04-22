@@ -1,9 +1,10 @@
+/* eslint-disable meteor/no-session */
+/* global Session Slip */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import { ReactiveVar } from 'meteor/reactive-var';
 import i18n from 'meteor/universe:i18n';
-import { $ } from 'meteor/jquery';
 import { IonPopup } from 'meteor/meteoric:ionic';
 
 import { ActivityStream } from '../../api/activitystream.js';
@@ -28,6 +29,7 @@ Template.notificationsListSwip.onRendered(function () {
   self.autorun(function (c) {
     if (self.data && self.data.notifications) {
       const list = self.$('.list')[0];
+      // eslint-disable-next-line no-unused-vars
       const slip = new Slip(list);
       c.stop();
     }
@@ -102,7 +104,7 @@ Template.notificationsList.events({
   'click .removeMe'(event) {
     event.preventDefault();
     // console.log(this._id._str);
-    //Meteor.call('markRead', this._id._str);
+    // Meteor.call('markRead', this._id._str);
   },
   'click .clickGo'(event) {
     event.preventDefault();
@@ -141,7 +143,7 @@ Template.notificationsList.events({
     */
 
 
-    /*if (this.verb === 'comment') {
+    /* if (this.verb === 'comment') {
       if (this.target.type === 'news') {
         Router.go('newsDetailComments', { _id: this.target.parent.id, newsId: this.target.id, scope: this.target.parent.type });
       }
@@ -195,15 +197,20 @@ Template.notificationsList.events({
           }
         }
       }
-    }*/
+    } */
 
     if (this.verb === 'add' || this.verb === 'addSpent') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {
-          const arrayIdAction = Object.keys(this.object);
+            const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
-            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            if (this.targetEvent) {
+              Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
+            
           }
         }
       }
@@ -222,7 +229,11 @@ Template.notificationsList.events({
           if (this.notify.objectType === 'actions') {
             const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
-            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            if (this.targetEvent) {
+              Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
           }
         }
       }
@@ -232,7 +243,11 @@ Template.notificationsList.events({
           if (this.notify.objectType === 'actions') {
             const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
-            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            if (this.targetEvent) {
+              Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
           }
         }
       }
@@ -242,7 +257,11 @@ Template.notificationsList.events({
           if (this.notify.objectType === 'actions') {
             const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
-            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            if (this.targetEvent) {
+              Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
           }
         }
       }
@@ -252,7 +271,11 @@ Template.notificationsList.events({
           if (this.notify.objectType === 'actions') {
             const arrayIdAction = Object.keys(this.object);
             Session.setPersistent('orgaCibleId', this.target.id);
-            Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            if (this.targetEvent) {
+              Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
           }
         }
       }
@@ -266,6 +289,5 @@ Template.notificationsList.events({
         }
       }
     }
-
   },
 });

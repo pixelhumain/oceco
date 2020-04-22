@@ -1,5 +1,7 @@
+/* eslint-disable no-shadow */
+/* global device cordova */
 import { Meteor } from 'meteor/meteor';
-
+import { Tracker } from 'meteor/tracker';
 import position from '../../api/client/position.js';
 
 Meteor.startup(() => {
@@ -15,7 +17,7 @@ Meteor.startup(() => {
 
       Tracker.autorun((c) => {
         const error = () => {
-          console.warn('Camera, record audio and audio setting is not turned on');
+          // console.warn('Camera, record audio and audio setting is not turned on');
         };
 
         const success = (status) => {
@@ -43,7 +45,6 @@ Meteor.startup(() => {
     } else {
       position.setPermissions(true);
     }
-    
   } else {
     position.setPermissions(true);
   }

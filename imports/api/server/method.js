@@ -1,3 +1,8 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-empty */
+/* eslint-disable meteor/audit-argument-checks */
+/* eslint-disable no-shadow */
+/* eslint-disable no-underscore-dangle */
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
 import { _ } from 'meteor/underscore';
@@ -13,13 +18,12 @@ import { ValidEmail, IsValidEmail } from 'meteor/froatsnook:valid-email';
 import { ActivityStream } from '../activitystream.js';
 import { Citoyens, BlockCitoyensRest, SchemasCitoyensRest, SchemasInvitationsRest, SchemasFollowRest, SchemasInviteAttendeesEventRest } from '../citoyens.js';
 import { News, SchemasNewsRest, SchemasNewsRestBase } from '../news.js';
-import { Documents } from '../documents.js';
 import { Cities } from '../cities.js';
 import { Lists } from '../lists.js';
 import { Events, SchemasEventsRest, BlockEventsRest } from '../events.js';
 import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest } from '../organizations.js';
 import { Projects, SchemasProjectsRest, BlockProjectsRest } from '../projects.js';
-import { Poi, SchemasPoiRest, BlockPoiRest } from '../poi.js';
+import { Poi, SchemasPoiRest } from '../poi.js';
 import { Classified, SchemasClassifiedRest } from '../classified.js';
 import { Comments, SchemasCommentsRest, SchemasCommentsEditRest } from '../comments.js';
 import { SchemasShareRest, SchemasRolesRest } from '../schema.js';
@@ -29,7 +33,7 @@ import { Resolutions } from '../resolutions.js';
 import { Rooms, SchemasRoomsRest } from '../rooms.js';
 import { Proposals, SchemasProposalsRest, BlockProposalsRest } from '../proposals.js';
 // Game
-import { Gamesmobile, Playersmobile, Questsmobile, SchemasPlayersmobileRest } from '../gamemobile.js';
+import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
 
 // function api
 import { apiCommunecter } from './api.js';
@@ -81,7 +85,7 @@ const baseDocRetour = (docRetour, doc, scope) => {
         docRetour.birthDate = doc.birthDate ? moment(doc.birthDate).format() : '';
       }
       if (doc.block === 'preferences') {
-
+        // preferences
       }
     } else if (doc.typeElement === 'events') {
       if (doc.block === 'descriptions') {
@@ -392,7 +396,9 @@ address[level4Name]:
 
 URL._encodeParams = function(params, prefix) {
   const str = [];
+  // eslint-disable-next-line no-restricted-syntax
   for (const p in params) {
+    // eslint-disable-next-line no-prototype-builtins
     if (params.hasOwnProperty(p)) {
       const k = prefix ? `${prefix}[${p}]` : p;
       const v = params[p];
@@ -407,7 +413,7 @@ URL._encodeParams = function(params, prefix) {
   return str.join('&').replace(/%20/g, '+');
 };
 
-const countActionEvents = (parentId, status) => {
+const countActionScope = (parentType, parentId, status) => {
   // ajouter
   /* actionsCount {
       todo : 1,
@@ -415,22 +421,22 @@ const countActionEvents = (parentId, status) => {
       disabled: 0,
     } */
   const actionsCount = `actionsCount.${status}`;
-  if (!Events.findOne({ _id: new Mongo.ObjectID(parentId), [actionsCount]: { $exists: 1 } })) {
+  const collection = nameToCollection(parentType);
+  if (!collection.findOne({ _id: new Mongo.ObjectID(parentId), [actionsCount]: { $exists: 1 } })) {
     console.log('existe pas');
-    Events.update({ _id: new Mongo.ObjectID(parentId) }, { $set: { [actionsCount]: 1 } });
+    collection.update({ _id: new Mongo.ObjectID(parentId) }, { $set: { [actionsCount]: 1 } });
     if (status === 'done' || status === 'disabled') {
-      Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
+      collection.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
     }
   } else {
-    Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { [actionsCount]: 1 } });
+    collection.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { [actionsCount]: 1 } });
     console.log('existe');
     if (status === 'done' || status === 'disabled') {
-      Events.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
+      collection.update({ _id: new Mongo.ObjectID(parentId) }, { $inc: { 'actionsCount.todo': -1 } });
     }
   }
   //
 };
-
 
 
 Meteor.methods({
@@ -447,14 +453,14 @@ Meteor.methods({
     }
 
     const actionOne = Actions.findOne({
-      _id: new Mongo.ObjectID(idAction)
+      _id: new Mongo.ObjectID(idAction),
     });
     if (!actionOne) {
       throw new Meteor.Error('not-action');
     }
 
     const organizationOne = Organizations.findOne({
-      _id: new Mongo.ObjectID(idOrganization)
+      _id: new Mongo.ObjectID(idOrganization),
     });
 
     if (!organizationOne) {
@@ -493,8 +499,10 @@ Meteor.methods({
     if (orgaOne && orgaOne.isAdmin()) {
       if (orgaOne.links && orgaOne.links.projects) {
         if (userC && userC.links && userC.links.projects) {
+          // eslint-disable-next-line no-unused-vars
           const arrayIds = Object.keys(orgaOne.links.projects)
             .filter(k => !(userC.links.projects[k] && userC.links.projects[k].isAdmin))
+            // eslint-disable-next-line array-callback-return
             .map((k) => {
               console.log(k);
               Citoyens.update({
@@ -550,7 +558,7 @@ Meteor.methods({
 
     // notification
     const actionOne = Actions.findOne({
-      _id: new Mongo.ObjectID(id)
+      _id: new Mongo.ObjectID(id),
     });
 
     const notif = {};
@@ -564,21 +572,21 @@ Meteor.methods({
     return true;
   },
   'exitAction'({
-    id
+    id,
   }) {
     new SimpleSchema({
       id: {
-        type: String
+        type: String,
       },
     }).validate({
-      id
+      id,
     });
 
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
     if (!Actions.findOne({
-      _id: new Mongo.ObjectID(id)
+      _id: new Mongo.ObjectID(id),
     })) {
       throw new Meteor.Error('not-action');
     }
@@ -594,16 +602,16 @@ Meteor.methods({
     const actionId = new Mongo.ObjectID(id);
     const parent = `links.contributors.${Meteor.userId()}`;
     Actions.update({
-      _id: actionId
+      _id: actionId,
     }, {
       $unset: {
-        [parent]: ''
-      }
+        [parent]: '',
+      },
     });
 
     // notification
     const actionOne = Actions.findOne({
-      _id: new Mongo.ObjectID(id)
+      _id: new Mongo.ObjectID(id),
     });
 
     const notif = {};
@@ -641,7 +649,7 @@ Meteor.methods({
     const actionId = new Mongo.ObjectID(actId);
     const userNeed = new Mongo.ObjectID(usrId);
     const parent = `finishedBy.${usrId}`;
-    const credit = parseInt(Actions.findOne({ _id: actionId }).credits, 10);
+    const credit = parseInt(Actions.findOne({ _id: actionId }).credits);
     const userActions = `userWallet.${orgId}.userActions.${actId}`;
     const userCredits = `userWallet.${orgId}.userCredits`;
     if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists: 1 } })) {
@@ -655,7 +663,7 @@ Meteor.methods({
     const actionOne = Actions.findOne({ _id: actionId });
     if (actionOne.finishedBy && actionOne.countContributors() === Object.keys(actionOne.finishedBy).map(id => id).length && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
       Actions.update({ _id: actionId }, { $set: { status: 'done' } });
-      countActionEvents(actionOne.parentId, 'done');
+      countActionScope(actionOne.parentType, actionOne.parentId, 'done');
     }
     //
 
@@ -926,13 +934,13 @@ Meteor.methods({
     doc.parentType = parentType;
     const retour = apiCommunecter.postPixel('co2/link', 'connect', doc);
 
-    //WARNING passe l'user en member
+    // WARNING passe l'user en member
     if (parentType === 'organizations' && connectType !== 'admin') {
       Citoyens.update({
         _id: new Mongo.ObjectID(doc.childId),
       }, {
         $unset: {
-          [`links.memberOf.${connectId}.toBeValidated`]: ""
+          [`links.memberOf.${connectId}.toBeValidated`]: '',
         },
       });
 
@@ -940,7 +948,7 @@ Meteor.methods({
         _id: new Mongo.ObjectID(connectId),
       }, {
         $unset: {
-          [`links.members.${doc.childId}.toBeValidated`]: ""
+          [`links.members.${doc.childId}.toBeValidated`]: '',
         },
       });
     }
@@ -1209,8 +1217,6 @@ Meteor.methods({
       options.limit = 50;
     }
 
-    // TODO fix regexp to support multiple tokens
-    const regex = new RegExp(`^${query}`);
     // List.find({$or : [{name: {$regex:  regex, $options: "i"}},{'postalCodes.postalCode': {$regex:  regex}}]}, options).fetch();
     return Lists.findOne({ name: 'tags' }).list;
   },
@@ -1751,6 +1757,7 @@ indexMax:20 */
     docRoom.status = 'open';
     docRoom.key = 'room';
     docRoom.collection = 'rooms';
+    // eslint-disable-next-line no-unused-vars
     const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
     //
 
@@ -1820,6 +1827,20 @@ indexMax:20 */
     // console.log(docRetour);
 
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
+
+    // create room sur project auto
+    const docRoom = {};
+    docRoom.name = docRetour.name;
+    docRoom.description = 'action bénévolat';
+    docRoom.parentType = 'projects';
+    docRoom.parentId = retour.data.id;
+    docRoom.status = 'open';
+    docRoom.key = 'room';
+    docRoom.collection = 'rooms';
+    // eslint-disable-next-line no-unused-vars
+    const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
+    //
+    
     return retour;
   },
   updateProject ({ modifier, _id }) {
@@ -2198,7 +2219,7 @@ indexMax:20 */
     }
     return ActivityStream.api.queryUnseen().count();
   },
-  registerClick (notifId) {
+  registerClick () {
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -2499,7 +2520,6 @@ export const updateProposal = new ValidatedMethod({
 });
 
 
-
 export const insertAction = new ValidatedMethod({
   name: 'insertAction',
   validate: SchemasActionsRest.validator(),
@@ -2507,15 +2527,39 @@ export const insertAction = new ValidatedMethod({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
+
+    const collectionScope = nameToCollection(doc.parentType);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(doc.parentId),
+    });
+    
+    if (!scopeOne) {
+      throw new Meteor.Error('not-authorized');
+    }
     // membre ou membre avec roles si room à des roles
-    const room = Rooms.findOne({ parentId: doc.parentId });
+    let room = Rooms.findOne({ parentId: doc.parentId });
     if (!room) {
-      throw new Meteor.Error('not-authorized room');
-    } else if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(room.parentType, room.parentId)) {
+      // create room sur project auto
+      const docRoom = {};
+      docRoom.name = scopeOne.name;
+      docRoom.description = 'action bénévolat';
+      docRoom.parentType = doc.parentType;
+      docRoom.parentId = doc.parentId;
+      docRoom.status = 'open';
+      docRoom.key = 'room';
+      docRoom.collection = 'rooms';
+      // eslint-disable-next-line no-unused-vars
+      const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
+    //
+    }
+    room = room || Rooms.findOne({ parentId: doc.parentId });
+    if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
+      console.log('citoyen is scope');
       if (room.roles && room.roles.length > 0) {
-        const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId).split(',') : null;
+        const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId).split(',') : null;
         if (roles && room.roles.some(role => roles.includes(role))) {
           // true
+          
         } else {
           // false
           throw new Meteor.Error('not-authorized role');
@@ -2523,19 +2567,22 @@ export const insertAction = new ValidatedMethod({
       }
     } else {
       // si event difficile de voir le lien admin docn je remonte
-      if (room.parentType === 'events') {
-        const collectionOrga = nameToCollection(room.parentType);
-        const scopeOneOrga = collectionOrga.findOne({
-          _id: new Mongo.ObjectID(room.parentId),
-        });
+      // eslint-disable-next-line no-lonely-if
+      if (doc.parentType === 'events') {
+        console.log('event is admin');
 
-        if (!(scopeOneOrga && scopeOneOrga.isAdmin())) {
+        if (!(scopeOne && scopeOne.isAdmin())) {
           throw new Meteor.Error('not-authorized event');
+        }
+      } else if (doc.parentType === 'projects') {
+        console.log('project is admin');
+
+        if (!(scopeOne && scopeOne.isAdmin())) {
+          throw new Meteor.Error('not-authorized project');
         }
       } else {
         throw new Meteor.Error('not-authorized citoyen');
       }
-
     }
 
     const docRetour = doc;
@@ -2558,13 +2605,13 @@ export const insertAction = new ValidatedMethod({
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
 
     // count
-    countActionEvents(doc.parentId, 'todo');
+    countActionScope(doc.parentType, doc.parentId, 'todo');
     //
 
     // notification
     if (retour && retour.data && retour.data.id) {
       const actionOne = Actions.findOne({
-        _id: new Mongo.ObjectID(retour.data.id)
+        _id: new Mongo.ObjectID(retour.data.id),
       });
 
       const notif = {};
@@ -2572,7 +2619,7 @@ export const insertAction = new ValidatedMethod({
       // author
       notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
       // object
-      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
       if (actionOne.isActionDepense()) {
         ActivityStream.api.add(notif, 'addSpent', 'isMember');
         ActivityStream.api.add(notif, 'addSpent', 'isAdmin');
@@ -2580,8 +2627,6 @@ export const insertAction = new ValidatedMethod({
         ActivityStream.api.add(notif, 'add', 'isMember');
         ActivityStream.api.add(notif, 'add', 'isAdmin');
       }
-      
-
     }
     return retour;
   },
@@ -2651,7 +2696,6 @@ export const updateAction = new ValidatedMethod({
   //   check(id, String);
 
   //
-
 
 
 export const insertAmendement = new ValidatedMethod({
@@ -2793,27 +2837,31 @@ export const assignmeActionRooms = new ValidatedMethod({
   }).validator(),
   run({ id }) {
     const actionObjectId = new Mongo.ObjectID(id);
-    const parentObjectId =new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
-    const eventId = Events.findOne({ _id: parentObjectId })._id._str;
-    const event = `links.events.${eventId}`;
-    const projectId = Projects.findOne({ [event]: { $exists: 1 } })._id._str;
-    const project = `links.projects.${projectId}`;
+    const parentObjectId = new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
+
+    const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
+    const event = eventId ? `links.events.${eventId}` : null;
+
+    const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
+    const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
+
     const orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
-    const parent = `finishedBy.${ Meteor.userId()}`;
+    const parent = `finishedBy.${Meteor.userId()}`;
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
       return credits;
     }
+
     function walletIsOk(id) {
-      const cost = parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits, 10);
+      const cost = parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits);
       if (cost >= 0) {
         return true;
-      }
-      else if (userCredits() >= (cost * -1) ) {
+      } else if (userCredits() >= (cost * -1)) {
         const userActions = `userWallet.${orgId}.userActions.${id}`;
         const userCredit = `userWallet.${orgId}.userCredits`;
-        const userObjectId = new Mongo.ObjectID( Meteor.userId());
+        const userObjectId = new Mongo.ObjectID(Meteor.userId());
         if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
@@ -2822,8 +2870,8 @@ export const assignmeActionRooms = new ValidatedMethod({
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
         return true;
       }
-      else {
-        return false; }
+
+      return false;
     }
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
@@ -2851,7 +2899,7 @@ export const assignmeActionRooms = new ValidatedMethod({
         }
       } else {
         throw new Meteor.Error('not-authorized citoyen');
-      }*/
+      } */
     }
     if (!walletIsOk(id)) {
       throw new Meteor.Error('Pas assé de');
@@ -2859,7 +2907,7 @@ export const assignmeActionRooms = new ValidatedMethod({
     const docRetour = {};
     docRetour.id = id;
     const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
-    
+
     // notification
     const notif = {};
     const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
@@ -2946,7 +2994,7 @@ export const actionsType = new ValidatedMethod({
     const retour = apiCommunecter.postPixel('co2/element', 'updatefield', docRetour);
 
     if (type === 'actions' && value === 'done') {
-      countActionEvents(parentId, 'done');
+      countActionScope(parentType, parentId, 'done');
     }
     return retour;
   },

@@ -50,6 +50,8 @@
         <a href="{{pathFor 'eventsAdd' _id=project._id._str scope='events'}}" class="button button-small"><i
             class="icon fa fa-plus"></i> évènements</a>
         {{/if}}
+
+        {{#if projectEventsCount project._id}}
         {{#if scroll }}
           <div>
             <button class="button button-small button-dark button-see-event-js">Cacher évènements <i class="icon ion-ios-arrow-up"></i></button>
@@ -59,6 +61,8 @@
           <button class="button button-small button-dark button-see-event-js">Voir évènements <i class="icon ion-ios-arrow-down"></i></button>
         </div>
           {{/if}}
+          {{/if}}
+
         </div>
         
           {{#if scroll }}
@@ -129,6 +133,7 @@
             {{/if}}
          
         <!-- </a> -->
+        {{#if eventActionCount item._id._str}}
         {{#if actionsCount.todo}}
                
             {{#if scrollAction }}
@@ -140,6 +145,8 @@
                 <button class="button button-small button-see-actions-js">Voir  {{actionsCount.todo}} actions <i class="icon ion-ios-arrow-down"></i></button>
             </div>
             {{/if}}
+
+        {{/if}}
         {{/if}}
         </div>
         

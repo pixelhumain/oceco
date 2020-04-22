@@ -1,3 +1,4 @@
+/* eslint-disable */
 // This is the match pattern for tokens
 _matchToken = Match.OneOf({ apn: String }, { gcm: String }, { fcm: String });
 

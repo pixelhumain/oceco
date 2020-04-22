@@ -1,12 +1,13 @@
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Router } from 'meteor/iron:router';
-import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 
 Tracker.autorun(() => {
   if (Meteor.userId() && Meteor.user()) {
     if (Session.get('orgaCibleId')) {
-      Meteor.call('testConnectAdmin', { id : Session.get('orgaCibleId') });
+      Meteor.call('testConnectAdmin', { id: Session.get('orgaCibleId') });
       console.log(`testConnectAdmin ${Session.get('orgaCibleId')}`);
     }
   }
@@ -19,6 +20,7 @@ Router.configure({
 });
 
 
+// eslint-disable-next-line array-callback-return
 Router.map(function() {
   this.route('camera-page');
 
@@ -49,7 +51,7 @@ Router.map(function() {
     loadingTemplate: 'loading',
   }); */
 
-  /*this.route('detailListHome', {
+  /* this.route('detailListHome', {
     before () {
       if (Meteor.userId()) {
         // this.redirect('actusList', { scope: 'citoyens', _id: Meteor.userId() });
@@ -71,7 +73,7 @@ Router.map(function() {
     path: '/dashboard',
     template: 'dashboard',
     loadingTemplate: 'loading',
-  });*/
+  }); */
 
   this.route('about', {
     path: '/about',
@@ -99,9 +101,9 @@ Router.map(function() {
 
   Router.route('/switch/:_id', function () {
     const id = this.params._id;
-    //Meteor.settings.public.orgaCibleId = id;
+    // Meteor.settings.public.orgaCibleId = id;
     Session.setPersistent('orgaCibleId', id);
-    //Session.get('orgaCibleId');
+    // Session.get('orgaCibleId');
     this.redirect('home');
   }, {
     name: 'switchRedirect',
@@ -322,7 +324,7 @@ Router.map(function() {
     path: '/:scope/actionsDepense/:_id',
     loadingTemplate: 'loading',
   });
-  
+
 
   this.route('roomsList', {
     template: 'newsList',
@@ -400,7 +402,7 @@ Router.map(function() {
     path: '/:scope/rooms/:_id/room/add/actionadd',
     loadingTemplate: 'loading',
   });
-//events/rooms/5e18cc382cbfc70e008b4576/room/5e18cc382cbfc70d008b4573/actionadd
+  // events/rooms/5e18cc382cbfc70e008b4576/room/5e18cc382cbfc70d008b4573/actionadd
 
   this.route('actionsEdit', {
     template: 'actionsEdit',
@@ -531,7 +533,7 @@ Router.map(function() {
     path: '/profile',
     loadingTemplate: 'loading',
   });
-  
+
   this.route('settings', {
     template: 'settings',
     path: '/settings',
@@ -637,7 +639,7 @@ const ensurePixelIsAdmin = function() {
 
 Router.onBeforeAction(ensurePixelSignin, { except: ['login', 'signin'] });
 Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction'] });
-Router.onBeforeAction(ensurePixelSwitch, { except: ['login', 'signin','switch', 'switchRedirect'] });
+Router.onBeforeAction(ensurePixelSwitch, { except: ['login', 'signin', 'switch', 'switchRedirect'] });
 
 Router.routes.login.options.progress = false;
 Router.routes.signin.options.progress = false;

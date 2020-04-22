@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* global AutoForm */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -142,13 +144,16 @@ Template.actionsEdit.onCreated(function () {
 
 Template.actionsAdd.helpers({
   action() {
-    const event = Events.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+    const collection = nameToCollection(Router.current().params.scope);
+    const event = collection.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
     const actionEdit = {};
-    if (event.startDate) {
-      actionEdit.startDate = event.startDate;
-    }
-    if (event.endDate) {
-      actionEdit.endDate = event.endDate;
+    if (event) {
+      if (event.startDate) {
+        actionEdit.startDate = event.startDate;
+      }
+      if (event.endDate) {
+        actionEdit.endDate = event.endDate;
+      }
     }
     console.log(actionEdit);
     return actionEdit;
@@ -196,13 +201,13 @@ AutoForm.addHooks(['addAction', 'editAction'], {
     method(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
-        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: 'events' }, { replaceState: true });
+        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },
     'method-update'(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
-        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: 'events' }, { replaceState: true });
+        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },
   },

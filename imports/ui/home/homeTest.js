@@ -1,9 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
-import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
 
 // collection
@@ -13,11 +14,6 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 
-// submanager
-// import { singleSubs } from '../../api/client/subsmanager.js';
-
-
-import { nameToCollection } from '../../api/helpers.js';
 import './homeTest.html';
 
 window.Events = Events;
@@ -31,7 +27,7 @@ Template.homeView.onCreated(function() {
     this.poleName = new ReactiveVar('');
     const handle = this.subscribe('poles.actions2', Session.get('orgaCibleId'));
     const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'));
-    if (handle.ready()&& handleEvents.ready()) {
+    if (handle.ready() && handleEvents.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
@@ -50,7 +46,11 @@ Template.eventsList2.onCreated(function() {
 Template.projectList2.helpers({
   projectEvents(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).fetch();
+    return Events.find({ organizerId: projectId });
+  },
+  projectEventsCount(projectObjectId) {
+    const projectId = projectObjectId.valueOf();
+    return Events.find({ organizerId: projectId }).count() > 0;
   },
   scroll() {
     return Template.instance().scroll.get();
@@ -107,7 +107,7 @@ Template.homeView.helpers({
   },
 });
 Template.projectList2.events({
-  'click .button-see-event-js'(event, instance) {
+  'click .button-see-event-js'(event) {
     event.preventDefault();
     if (Template.instance().scroll.get()) {
       Template.instance().scroll.set(false);
@@ -115,7 +115,7 @@ Template.projectList2.events({
   },
 });
 Template.eventsList2.events({
-  'click .button-see-actions-js'(event, instance) {
+  'click .button-see-actions-js'(event) {
     event.preventDefault();
     if (Template.instance().scrollAction.get()) {
       Template.instance().scrollAction.set(false);
@@ -127,10 +127,14 @@ Template.eventsList2.helpers({
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
     return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }] });
   },
+  eventActionCount(eventId) {
+    const userAddedAction = `links.contributors.${Meteor.userId()}`;
+    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }] }).count() > 0;
+  },
 });
 
 Template.homeView.events({
-  'change #selectPole'(event, instance) {
+  'change #selectPole'(event) {
     const query = event.currentTarget.value;
     Template.instance().poleName.set(query);
   },

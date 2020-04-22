@@ -1,3 +1,9 @@
+/* eslint-disable meteor/no-session */
+/* eslint-disable consistent-return */
+/* eslint-disable no-shadow */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
+/* global Session __ HTML */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -8,7 +14,6 @@ import i18n from 'meteor/universe:i18n';
 import SimpleSchema from 'simpl-schema';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { HTTP } from 'meteor/http';
 import { Blaze } from 'meteor/blaze';
 import { Mongo } from 'meteor/mongo';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
@@ -34,7 +39,6 @@ import { SchemasActionsRest } from '../../api/actions.js';
 import { SchemasShareRest, SchemasRolesRest } from '../../api/schema.js';
 
 import { notifyDisplay } from '../../api/helpers.js';
-
 
 
 Meteor.startup(function () {
@@ -74,7 +78,7 @@ Meteor.startup(function () {
         // alert(`${Meteor.settings.public.endpoint}${m[0]}`);
         if (m && m[0] && m[1] && m[2]) {
           // ${Meteor.settings.public.endpoint}
-          Meteor.call('validateEmail', `${Meteor.settings.public.endpoint}${m[0]}`, (error, result) => {
+          Meteor.call('validateEmail', `${Meteor.settings.public.endpoint}${m[0]}`, (error) => {
             if (error) {
               // alert(`${error}`);
             } else {
@@ -131,7 +135,7 @@ Meteor.startup(function () {
       Router.go(`/${path}`);
     });
 
-    DeepLink.on('https', (data, url, scheme, path) => {
+    DeepLink.on('https', () => {
       /* console.log('HTTPS');
       console.log(url);
       console.log(scheme);
@@ -433,7 +437,7 @@ Meteor.startup(function () {
   Template.registerHelper('isConnected', () => Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain);
 
   Template.registerHelper('isAdminRaf', () => {
-    console.log(Session.get('orgaCibleId'));
+    // console.log(Session.get('orgaCibleId'));
     if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
       const RaffId = Session.get('orgaCibleId');
       return Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
@@ -441,9 +445,7 @@ Meteor.startup(function () {
     return false;
   });
 
-  Template.registerHelper('orgaCibleId', () => {
-    return Session.get('orgaCibleId');
-  });
+  Template.registerHelper('orgaCibleId', () => Session.get('orgaCibleId'));
 
   Template.registerHelper('hasPublishedCounter', (name) => {
     if (name) {
@@ -473,7 +475,7 @@ Meteor.startup(function () {
   Template.registerHelper('userCredit', () => {
     if (Meteor.userId()) {
       const citoyenOne = Citoyens.findOne({
-        _id: new Mongo.ObjectID(Meteor.userId())
+        _id: new Mongo.ObjectID(Meteor.userId()),
       });
       return citoyenOne && citoyenOne.userCredit() > 0 ? citoyenOne.userCredit() : 0;
     }

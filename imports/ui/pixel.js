@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable meteor/no-session */
+/* global Session  cordova */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
@@ -5,6 +8,7 @@ import i18n from 'meteor/universe:i18n';
 import { IonPopup } from 'meteor/meteoric:ionic';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { $ } from 'meteor/jquery';
 
 import { ActivityStream } from '../api/activitystream.js';
 
@@ -200,7 +204,7 @@ Template.layout.helpers({
   notifications() {
     return ActivityStream.api.isUnread();
   },
-  
+
   // A revoir pour les actions par projets
   //  nbAction(poles){
   //   let polesProjectsArray = Projects.find({tags: poles}).fetch()

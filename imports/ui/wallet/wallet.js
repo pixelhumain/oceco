@@ -1,4 +1,5 @@
-/* global IonPopup */
+/* eslint-disable meteor/no-session */
+/* global IonPopup Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -12,7 +13,6 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 import { Rooms } from '../../api/rooms.js';
-
 
 
 import './wallet.html';
@@ -40,9 +40,7 @@ Template.wallet.onCreated(function() {
         this.ready.set(handle.ready());
       }
     }
-    
   }.bind(this));
-  
 });
 
 

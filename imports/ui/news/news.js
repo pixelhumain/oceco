@@ -1,3 +1,10 @@
+/* eslint-disable no-template-curly-in-string */
+/* eslint-disable no-shadow */
+/* eslint-disable consistent-return */
+/* eslint-disable meteor/template-names */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable meteor/no-session */
+/* global Session  cordova */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
@@ -34,7 +41,6 @@ import './news.html';
 import '../components/directory/list.js';
 import '../components/news/button-card.js';
 import '../components/news/card.js';
-
 
 
 window.Events = Events;
@@ -79,7 +85,6 @@ Template.newsList.onCreated(function() {
     } else if (Router.current().route.getName() === 'actionsListDepense') {
       pageSession.set('selectview', 'scopeActionsTemplate');
       pageSession.set('selectsubview', 'depenses');
-
     } else if (Router.current().route.getName() === 'roomsList') {
       pageSession.set('selectview', 'scopeRoomsTemplate');
     } else if (Router.current().route.getName() === 'gamesList') {
@@ -378,7 +383,7 @@ Template.scopeActionsTemplate.helpers({
 });
 
 Template.scopeActionsTemplate.events({
-  'click .change-selectsubview-js'(event, instance) {
+  'click .change-selectsubview-js'(event) {
     event.preventDefault();
     pageSession.set('selectsubview', event.currentTarget.id);
   },
@@ -786,7 +791,7 @@ Template.newsList.events({
       _.each(instance.find('#file-upload-new').files, function(file) {
         if (file.size > 1) {
           const reader = new FileReader();
-          reader.onload = function(e) {
+          reader.onload = function() {
           // console.log(file.name);
           // console.log(file.type);
           // console.log(reader.result);
@@ -1223,7 +1228,7 @@ AutoForm.addHooks(['addNew', 'editNew'], {
       return modifier;
     },
   },
-  onError(formType, error) {
+  onError(error) {
     if (error.errorType && error.errorType === 'Meteor.Error') {
       if (error && error.error === 'error_call') {
         pageSession.set('error', error.reason.replace(':', ' '));
@@ -1264,7 +1269,7 @@ AutoForm.addHooks(['inviteAttendeesEvent'], {
       }
     },
   },
-  onError(formType, error) {
+  onError(error) {
     // console.log(error);
     if (error.errorType && error.errorType === 'Meteor.Error') {
       if (error && error.error === 'error_call') {

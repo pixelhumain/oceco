@@ -1,14 +1,13 @@
+/* eslint-disable meteor/no-session */
+/* global Session IonPopup */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
-import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
-import { moment } from 'meteor/momentjs:moment';
 
 import './home.html';
-import { arrayLinkProper, nameToCollection } from '../../api/helpers';
 
 
 // collection
@@ -62,7 +61,7 @@ Template.itemInputAction.onCreated(function() {
 });
 
 Template.itemInputAction.events({
-  'click .display-desc-js'(event, instance) {
+  'click .display-desc-js'(event) {
     event.preventDefault();
     if (!Template.instance().displayDesc.get()) {
       Template.instance().displayDesc.set(true);

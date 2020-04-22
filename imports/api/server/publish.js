@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
 import { Counts } from 'meteor/tmeasday:publish-counts';
@@ -11,7 +13,6 @@ import { Mongo } from 'meteor/mongo';
 import { ActivityStream } from '../activitystream.js';
 import { Citoyens } from '../citoyens.js';
 import { News } from '../news.js';
-import { Documents } from '../documents.js';
 import { Cities } from '../cities.js';
 import { Events } from '../events.js';
 import { Organizations } from '../organizations.js';
@@ -27,10 +28,10 @@ import { Resolutions } from '../resolutions.js';
 import { Rooms } from '../rooms.js';
 import { Proposals } from '../proposals.js';
 // Game
-import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
+import { Gamesmobile, Playersmobile } from '../gamemobile.js';
 import { Highlight } from '../highlight.js';
 
-import { arrayLinkProper, nameToCollection, arrayParent, arrayLinkParent, arrayLinkParentNoObject, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
+import { nameToCollection, arrayLinkParentNoObject, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -75,6 +76,7 @@ console.log(e)
 }
 }); */
 
+// eslint-disable-next-line meteor/audit-argument-checks
 Meteor.publish('smartcitizenSearch', function(query) {
   const self = this;
   try {
@@ -86,7 +88,6 @@ Meteor.publish('smartcitizenSearch', function(query) {
     // {"id":4123,"type":"Device","name":"Oceatoon 2","description":"reseau de capteur SCK Réunion ","owner_id":579,"owner_username":"oceatoon","city":"La Rivière Saint-Louis","url":"http://api.smartcitizen.me/v0/devices/4123","country_code":"RE","country":"Réunion"}
     _.each(response.data, function(item) {
       if (item.id) {
-        const response = HTTP.get(item.url);
         const doc = item;
 
         self.added('smartcitizen', Random.id(), doc);
@@ -220,6 +221,7 @@ Meteor.publish('citoyen', function() {
   return citoyen;
 });
 
+// eslint-disable-next-line meteor/audit-argument-checks
 Meteor.publish('geo.dashboard', function (geoId, latlng, radius) {
   if (!this.userId) {
     return null;
@@ -272,6 +274,7 @@ Meteor.publish('geo.dashboard', function (geoId, latlng, radius) {
   ];
 });
 
+// eslint-disable-next-line meteor/audit-argument-checks
 Meteor.publish('geo.dashboardOld', function(geoId, latlng, radius) {
   const query = {};
   if (radius) {
@@ -489,7 +492,7 @@ Meteor.publishComposite('scopeDetail', function(scope, scopeId) {
         },
       },
       {
-        find(scopeD) {
+        find() {
           if (scope !== 'citoyens') {
             return Citoyens.find({
               _id: new Mongo.ObjectID(this.userId),
@@ -572,7 +575,7 @@ Meteor.publishComposite('scopeDetail', function(scope, scopeId) {
     ] };
 });
 
-Meteor.publish('citoyenActusListCounter', function (geoId, latlng, radius) {
+Meteor.publish('citoyenActusListCounter', function () {
   if (!this.userId) {
     return null;
   }
@@ -721,7 +724,7 @@ Meteor.publishComposite('collectionsList', function(scope, scopeId, type) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['eventTypes', 'organisationTypes'] } });
         },
       },
@@ -867,7 +870,7 @@ Meteor.publishComposite('directoryList', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['eventTypes', 'organisationTypes'] } });
         },
       },
@@ -1008,7 +1011,7 @@ Meteor.publishComposite('directoryListEvents', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['eventTypes'] } });
         },
       },
@@ -1090,7 +1093,7 @@ Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId)
       return collection.find(query, options);
     },
     children: [{
-      find(scopeD) {
+      find() {
         return Lists.find({
           name: {
             $in: ['eventTypes'],
@@ -1178,7 +1181,7 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
       return collection.find(query, options);
     },
     children: [{
-      find(scopeD) {
+      find() {
         return Lists.find({
           name: {
             $in: ['eventTypes'],
@@ -1210,6 +1213,31 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
             }],
           },
         ],
+    },
+    {
+      find(scopeD) {
+        if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          return scopeD.listProjects();
+        }
+      },
+      children:
+          [
+            {
+              find(scopeD) {
+                const query = {};
+                query.parentId = scopeD._id._str;
+                if (etat) {
+                  query.status = etat;
+                }
+                return Actions.find(query);
+              },
+              children: [{
+                find(scopeD) {
+                  return scopeD.listContributors();
+                },
+              }],
+            },
+          ],
     },
     ],
   };
@@ -1265,7 +1293,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       return collection.find(query, options);
     },
     children: [{
-      find(scopeD) {
+      find() {
         return Lists.find({
           name: {
             $in: ['eventTypes'],
@@ -1415,7 +1443,7 @@ Meteor.publishComposite('directoryListProjects', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['organisationTypes'] } });
         },
       },
@@ -1516,7 +1544,7 @@ Meteor.publishComposite('directoryListRooms', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
             const options = {};
             options.fields = {
@@ -1534,7 +1562,7 @@ Meteor.publishComposite('directoryListRooms', function(scope, scopeId) {
         },
         children: [
           {
-            find(citoyen, scopeD) {
+            find(scopeD) {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return scopeD.listRooms();
               }
@@ -1615,7 +1643,7 @@ Meteor.publishComposite('directoryListOrganizations', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['organisationTypes'] } });
         },
       },
@@ -1650,7 +1678,7 @@ Meteor.publishComposite('directoryListInvitations', function(scope, scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['organisationTypes'] } });
         },
       },
@@ -1732,7 +1760,7 @@ Meteor.publishComposite('detailRooms', function(scope, scopeId, roomId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
             const options = {};
             options.fields = {
@@ -1750,7 +1778,7 @@ Meteor.publishComposite('detailRooms', function(scope, scopeId, roomId) {
         },
         children: [
           {
-            find(citoyen, scopeD) {
+            find(scopeD) {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return scopeD.detailRooms(roomId);
               }
@@ -1813,7 +1841,7 @@ Meteor.publishComposite('detailProposals', function(scope, scopeId, roomId, prop
         },
         children: [
           {
-            find(room) {
+            find() {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return Proposals.find({ _id: new Mongo.ObjectID(proposalId) });
               }
@@ -1867,7 +1895,7 @@ Meteor.publishComposite('proposalsDetailComments', function(scope, scopeId, room
         },
         children: [
           {
-            find(room) {
+            find() {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return Proposals.find({ _id: new Mongo.ObjectID(proposalId) });
               }
@@ -1940,7 +1968,7 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
         },
         children: [
           {
-            find(room) {
+            find() {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return Actions.find({ _id: new Mongo.ObjectID(actionId) });
               }
@@ -1999,7 +2027,7 @@ Meteor.publishComposite('actionsDetailComments', function(scope, scopeId, roomId
         },
         children: [
           {
-            find(room) {
+            find() {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return Actions.find({ _id: new Mongo.ObjectID(actionId) });
               }
@@ -2072,7 +2100,7 @@ Meteor.publishComposite('detailResolutions', function(scope, scopeId, roomId, re
         },
         children: [
           {
-            find(scopeD) {
+            find() {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
                 return Resolutions.find({ _id: new Mongo.ObjectID(resolutionId) });
               }
@@ -2212,7 +2240,7 @@ Meteor.publishComposite('listAttendees', function(scopeId) {
     },
     children: [
       {
-        find(scopeD) {
+        find() {
           return Lists.find({ name: { $in: ['organisationTypes'] } });
         },
       },
@@ -2949,12 +2977,12 @@ Meteor.publish('poles.actions2', function(raffId, poleName) {
     poleProjectsId.push(element._id._str);
   });
   const eventsArrayId = [];
-  Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function(event) { eventsArrayId.push(event._id._str) ;});
+  Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function(event) { eventsArrayId.push(event._id._str); });
   if (poleName) {
-    const eventActions = Actions.find({ parentId: { $in: eventsArrayId }, status: 'todo' });
+    const eventActions = Actions.find({ parentId: { $in: [...eventsArrayId, ...projectsId] }, status: 'todo' });
     return eventActions;
   }
-  const eventActions = Actions.find({ parentId: { $in: eventsArrayId } });
+  const eventActions = Actions.find({ parentId: { $in: [...eventsArrayId, ...projectsId] } });
   return eventActions;
 });
 
@@ -2997,12 +3025,12 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
     find() {
       const options = {};
       // options['_disableOplog'] = true;
-      let query = {};
+      const query = {};
       query._id = new Mongo.ObjectID(scopeId);
       return collection.find(query, options);
     },
     children: [{
-      find(scopeD) {
+      find() {
         return Lists.find({
           name: {
             $in: ['eventTypes'],
@@ -3044,9 +3072,45 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
       },
       ],
     },
+    {
+      find(scopeD) {
+        if (scope === 'organizations') {
+          return scopeD.listProjects();
+        }
+      },
+      children: [{
+        find(scopeD) {
+          const finished = `finishedBy.${this.userId}`;
+          const query = {};
+          query.parentId = scopeD._id._str;
+          query[UserId] = {
+            $exists: 1,
+          };
+          query.status = 'todo';
+          const option = {};
+          if (etat === 'aFaire') {
+            query[finished] = { $exists: false };
+            option.sort = { endDate: -1 };
+          } else if (etat === 'enAttente') {
+            query[finished] = 'toModerate';
+            option.sort = { endDate: -1 };
+          } else if (etat === 'valides') {
+            /* WARNING pour l'historique listProjectsEventsCreator1M ne va pas aller car il prend les evenements qui ne sont pas terminer ou 15 jous apres la fin */
+            query[finished] = 'validated';
+            option.sort = { endDate: -1 };
+            option.limit = 100;
+          }
+          console.log(query);
+          return Actions.find(query, option);
+        },
+      },
+      ],
+    },
     ],
   };
 });
+
+
 
 Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
   check(scopeId, String);
@@ -3063,14 +3127,14 @@ Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
     find() {
       const options = {};
       // options['_disableOplog'] = true;
-      let query = {};
+      const query = {};
       query._id = new Mongo.ObjectID(scopeId);
       return collection.find(query, options);
     },
     children: [{
       find(scopeD) {
         if (scope === 'organizations') {
-          //return scopeD.listProjectsEventsCreator1M();
+          // return scopeD.listProjectsEventsCreator1M();
           if (scopeD.links && scopeD.links.projects) {
             const projectIds = arrayLinkParentNoObject(scopeD.links.projects, 'projects');
             const query = {};
@@ -3087,7 +3151,7 @@ Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
             const arrayEventsIds = Events.find(query).fetch().map(event => event._id._str);
             const finished = `finishedBy.${this.userId}`;
             const queryAction = {};
-            queryAction.parentId = { $in: arrayEventsIds };
+            queryAction.parentId = { $in: [...arrayEventsIds, ...projectIds] };
             queryAction[UserId] = {
               $exists: 1,
             };
@@ -3155,7 +3219,6 @@ Meteor.publish('poles.events', function (raffId, poleName) {
     };
     return Events.find(query);
   }
-  return;
 });
 
 

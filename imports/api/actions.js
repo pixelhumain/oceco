@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { moment } from 'meteor/momentjs:moment';
@@ -198,7 +199,7 @@ if (Meteor.isClient) {
 }
 
 Actions.helpers({
-  isVisibleFields (field) {
+  isVisibleFields () {
     return true;
   },
   isPublicFields (field) {

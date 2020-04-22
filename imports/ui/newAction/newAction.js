@@ -1,9 +1,8 @@
+/* global AutoForm */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Router } from 'meteor/iron:router';
-import { Mongo } from 'meteor/mongo';
-import i18n from 'meteor/universe:i18n';
 // collection
 import { Events } from '../../api/events.js';
 import { Organizations } from '../../api/organizations.js';
@@ -11,9 +10,8 @@ import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 import { Rooms } from '../../api/rooms';
-import { moment } from 'meteor/momentjs:moment';
 
-import './newAction.html'
+import './newAction.html';
 import { pageSession } from '../../api/client/reactive';
 
 window.Events = Events;
@@ -26,9 +24,9 @@ window.Rooms = Rooms;
 Template.newAction.onCreated(function() {
   this.ready = new ReactiveVar(false);
   pageSession.set('scope', 'projects');
-  pageSession.set('roomId',"5dedd02f064fca0d008b4568");
+  pageSession.set('roomId', '5dedd02f064fca0d008b4568');
   this.autorun(function () {
-    const handle = this.subscribe('poles.actions',  Meteor.settings.public.orgaCibleId);
+    const handle = this.subscribe('poles.actions', Meteor.settings.public.orgaCibleId);
     if (handle.ready()) {
       this.ready.set(handle.ready());
     }
@@ -37,12 +35,12 @@ Template.newAction.onCreated(function() {
 
 AutoForm.addHooks(['addAction', 'editAction'], {
   after: {
-    method(error, result) {
+    method(error) {
       if (!error) {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
       }
@@ -64,7 +62,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       return modifier;
     },
   },
-  onError(formType, error) {
+  onError(error) {
     if (error.errorType && error.errorType === 'Meteor.Error') {
       if (error && error.error === 'error_call') {
         pageSession.set('error', error.reason.replace(': ', ''));
@@ -92,7 +90,7 @@ Template.newAction.helpers({
 Template.actionsFields.helpers({
   options() {
     const projectList = [];
-    Projects.find().forEach(function(project) { projectList.push({ label: project.name, value: project._id._str }) ;});
+    Projects.find().forEach(function(project) { projectList.push({ label: project.name, value: project._id._str }); });
     return projectList;
   },
 });

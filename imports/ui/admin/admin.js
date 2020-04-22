@@ -1,10 +1,11 @@
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
-import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
-import i18n from 'meteor/universe:i18n';
+import { $ } from 'meteor/jquery';
 import './admin.html';
 
 // collection
@@ -16,10 +17,9 @@ import { Actions } from '../../api/actions';
 
 import '../components/directory/list.js';
 import '../components/news/button-card.js';
-//import '../components/news/card.js';
+// import '../components/news/card.js';
 
-import { arrayLinkToModerate, arrayLinkValidated } from '../../api/helpers.js';
-
+import { arrayLinkToModerate } from '../../api/helpers.js';
 
 
 const pageSession = new ReactiveDict('pageAdmin');
@@ -42,13 +42,12 @@ Template.adminDashboard.onCreated(function() {
   this.selectview = new ReactiveVar('aValider');
 });
 
-Template.actionToValidate.onCreated(function(){
-  this.scrollValidateAction = new ReactiveVar(false);;
-
-})
+Template.actionToValidate.onCreated(function() {
+  this.scrollValidateAction = new ReactiveVar(false);
+});
 
 Template.actionToValidate.events({
-  'click .button-validate-js'(event,instance) {
+  'click .button-validate-js'(event) {
     event.preventDefault();
     if (!Template.instance().scrollValidateAction.get()) {
       Template.instance().scrollValidateAction.set(true);
@@ -56,7 +55,7 @@ Template.actionToValidate.events({
       Template.instance().scrollValidateAction.set(false);
     }
   },
-})
+});
 Template.adminDashboard.events({
   // 'click .admin-validation-js'(event, instance) {
   //   event.preventDefault();
@@ -72,7 +71,7 @@ Template.adminDashboard.events({
   //     }
   //   });
   // },
-  'click .change-selectview-js'(event, instance) {
+  'click .change-selectview-js'(event) {
     event.preventDefault();
     Template.instance().selectview.set(event.currentTarget.id);
   },
@@ -85,19 +84,19 @@ Template.adminDashboard.helpers({
     });
   },
   actionToaccept() {
-    let actionArray =[];
-    Actions.find({ finishedBy: { $exists: true } }).forEach(action => {
-      if (action.finishedBy ) {
-        $.each(action.finishedBy, function( index, value ) {
+    const actionArray = [];
+    Actions.find({ finishedBy: { $exists: true } }).forEach((action) => {
+      if (action.finishedBy) {
+        $.each(action.finishedBy, function(index, value) {
           if (value === 'toModerate') {
-            actionArray.push(action._id)
+            actionArray.push(action._id);
           }
         });
       }
     });
-    return Actions.find({_id: {$in: actionArray}})
+    return Actions.find({ _id: { $in: actionArray } });
   },
-  
+
   dataReady() {
     return Template.instance().ready.get();
   },
@@ -137,7 +136,7 @@ Template.listProjectsAValiderRaf.helpers({
 });
 
 Template.listProjectsAValiderRaf.events({
-  'click .admin-validation-js'(event, instance) {
+  'click .admin-validation-js'(event) {
     event.preventDefault();
     const usrId = $(event.currentTarget).attr('usrId');
     const actionId = $(event.currentTarget).attr('actionId');
@@ -145,15 +144,13 @@ Template.listProjectsAValiderRaf.events({
       Meteor.call('ValidateAction', {
         actId: actionId,
         usrId,
-        orgId: Session.get('orgaCibleId')
-      }, (err, res) => {
+        orgId: Session.get('orgaCibleId'),
+      }, (err) => {
         if (err) {
           alert(err);
-        } else {
         }
       });
     }
-    
   },
 });
 
@@ -181,8 +178,8 @@ Template.listProjectsEventsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-   pageSession.set('scopeId', Session.get('orgaCibleId'));
-   pageSession.set('scope', 'organizations');
+    pageSession.set('scopeId', Session.get('orgaCibleId'));
+    pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
@@ -201,8 +198,8 @@ Template.listProjectsEventsActionsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
   this.autorun(function () {
-   pageSession.set('scopeId', Session.get('orgaCibleId'));
-   pageSession.set('scope', 'organizations');
+    pageSession.set('scopeId', Session.get('orgaCibleId'));
+    pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
@@ -218,32 +215,32 @@ Template.listProjectsEventsActionsRaf.helpers({
 });
 
 Template.actionToValidate.helpers({
-  numberTovalidate(action){
-    let actionArray =[];
-      if (action.finishedBy ) {
-        $.each(action.finishedBy, function( index, value ) {
-          if (value === 'toModerate') {
-            let usrId = new Mongo.ObjectID(index)
-            actionArray.push(usrId)
-          }
-        });
-      }
-    return Citoyens.find({ _id: { $in: actionArray } }).count()
+  numberTovalidate(action) {
+    const actionArray = [];
+    if (action.finishedBy) {
+      $.each(action.finishedBy, function(index, value) {
+        if (value === 'toModerate') {
+          const usrId = new Mongo.ObjectID(index);
+          actionArray.push(usrId);
+        }
+      });
+    }
+    return Citoyens.find({ _id: { $in: actionArray } }).count();
   },
-  buttonActivate(){
+  buttonActivate() {
     return Template.instance().scrollValidateAction.get();
   },
-  userTovalidate(action){
-    let actionArray =[];
-      if (action.finishedBy ) {
-        $.each(action.finishedBy, function( index, value ) {
-          if (value === 'toModerate') {
-            let usrId = new Mongo.ObjectID(index)
-            actionArray.push(usrId)
-          }
-        });
-      }
-    return Citoyens.find({ _id: { $in: actionArray } })
-  }
-})
+  userTovalidate(action) {
+    const actionArray = [];
+    if (action.finishedBy) {
+      $.each(action.finishedBy, function(index, value) {
+        if (value === 'toModerate') {
+          const usrId = new Mongo.ObjectID(index);
+          actionArray.push(usrId);
+        }
+      });
+    }
+    return Citoyens.find({ _id: { $in: actionArray } });
+  },
+});
 

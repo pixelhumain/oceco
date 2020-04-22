@@ -1,3 +1,10 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-redeclare */
+/* eslint-disable no-useless-escape */
+/* eslint-disable block-scoped-var */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* global Desktop PushNotification */
 import { Meteor } from 'meteor/meteor';
 import { Push } from 'meteor/raix:push';
 import { Router } from 'meteor/iron:router';
@@ -73,7 +80,7 @@ Meteor.startup(function () {
           iconColor: '#6B97AF',
         },
       },
-      appName: 'main'
+      appName: 'main',
     });
 
     /* Push.Configure({
@@ -101,12 +108,12 @@ Meteor.startup(function () {
     Push.addListener('message', function(notification) {
       function alertDismissed(buttonIndex) {
         if (buttonIndex === 1) {
-          //const payload = JSON.parse(notification.payload);
-          //if (payload.url) {
+          // const payload = JSON.parse(notification.payload);
+          // if (payload.url) {
           //  Router.go('/notifications');
-          //} else {
-            Router.go('/notifications');
-          //}
+          // } else {
+          Router.go('/notifications');
+          // }
         }
       }
       window.confirm(notification.message, alertDismissed, 'notifications', ['Voir', 'fermer']);
@@ -115,7 +122,7 @@ Meteor.startup(function () {
     alert('This browser does not support desktop notification');
   } else {
     if (Notification.permission !== 'denied') {
-      Notification.requestPermission(function (permission) {
+      Notification.requestPermission(function () {
       });
     }
 
@@ -134,7 +141,7 @@ Meteor.startup(function () {
             data: notification,
           };
           const n = new Notification('notification', options);
-          n.onclick = function(e) {
+          n.onclick = function() {
             if (notification.notify.url) {
               // console.log(notification.notify.url);
               // Meteor.call('markRead',notification._id);
@@ -151,11 +158,11 @@ Meteor.startup(function () {
           };
           Meteor.setTimeout(n.close.bind(n), 5000);
         },
-        changed(notification) {
+        changed() {
           // console.log(NotificationHistory.find({}).count());
           // Electrify.call('setBadgeCount',NotificationHistory.find({}).count());
         },
-        removed(notification) {
+        removed() {
           // console.log(NotificationHistory.find({}).count());
           // Electrify.call('setBadgeCount',NotificationHistory.find({}).count());
         },
