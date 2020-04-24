@@ -650,14 +650,14 @@ Organizations.helpers({
     // return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated' }, { sort: { endDate: -1 } });
   },
-  settingOceco(){
-    /*{
+  settingOceco() {
+    /* {
       pole: true,
       organizations: true
       projectAction: true,
       eventAction: true,
       memberAuto: true,
-    }*/
+    } */
     return this.oceco;
   },
   listNotifications (userId) {

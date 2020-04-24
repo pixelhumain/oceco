@@ -23,11 +23,9 @@ import '../imports/ui/polesView/polesView.js';
 import '../imports/ui/wallet/wallet.js';
 
 
-
 // import '../imports/ui/video/video.js';
 
 // import '../imports/ui/sensors/sensors.js';
-
 
 
 import '../imports/ui/mapscope/mapscope.js';
@@ -59,7 +57,7 @@ import '../imports/ui/rooms/actions/comments/comments.js';
 import '../imports/ui/rooms/actions/actions.js';
 import '../imports/ui/rooms/resolutions/resolutions.js';
 
-/*import '../imports/ui/organizations/members/members.js';
+/* import '../imports/ui/organizations/members/members.js';
 import '../imports/ui/organizations/list.js';
 
 import '../imports/ui/citoyens/follows/follows.js';

@@ -2868,7 +2868,7 @@ export const assignmeActionRooms = new ValidatedMethod({
       orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
     }
 
-    
+
     const parent = `finishedBy.${Meteor.userId()}`;
 
     function userCredits() {
@@ -2903,7 +2903,7 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
-    const action = Actions.findOne({ _id: new Mongo.ObjectID(id), status: 'todo'  });
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(id), status: 'todo' });
     if (!action) {
       throw new Meteor.Error('not-authorized action');
     } else {

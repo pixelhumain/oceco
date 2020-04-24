@@ -247,10 +247,10 @@ ActivityStream.api = {
   ocecoNotif(notificationObj, { projectOne, eventOne, roomOne }) {
     // project
     if (projectOne) {
-    notificationObj.targetProject = {};
-    notificationObj.targetProject.type = 'projects';
-    notificationObj.targetProject.id = projectOne._id._str;
-    notificationObj.targetProject.name = projectOne.name;
+      notificationObj.targetProject = {};
+      notificationObj.targetProject.type = 'projects';
+      notificationObj.targetProject.id = projectOne._id._str;
+      notificationObj.targetProject.name = projectOne.name;
     }
     // event
     if (eventOne) {
@@ -275,7 +275,6 @@ ActivityStream.api = {
     let targetObj = target;
 
     if (object && object.type === 'actions' && object.parentType === 'organizations') {
-
       const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
 
       if (!targetObj) {
