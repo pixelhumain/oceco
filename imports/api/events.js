@@ -572,6 +572,8 @@ Events.helpers({
     } else if (type === 'depenses') {
       query.credits = { $lt: 0 };
     }
+    const inputDate = new Date();
+    query.endDate = { $gte: inputDate };
     const options = {};
     options.sort = {
       startDate: 1,

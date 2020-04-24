@@ -36,13 +36,13 @@
       </div>
 
       {{#if orgaCibleId}}
-      <div class="item {{#if scope.profilThumbImageUrl}}item-avatar{{/if}}">
+      <a href="{{pathFor 'detailList' _id=scope._id._str scope='organizations'}}" class="item {{#if scope.profilThumbImageUrl}}item-avatar{{/if}}" data-ion-menu-close>
         {{#if scope.profilThumbImageUrl}}
         {{> imgDoc profilThumbImageUrl=scope.profilThumbImageUrl}}
         {{/if}}
         {{scope.name}}
         <p>{{scope.description}}</p>
-      </div>
+      </a>
       {{>account}}
       {{/if}}
 
@@ -83,7 +83,9 @@
   {{#ionNavView}}
   {{> yield}}
 
+  
   {{#if isConnected}}
+  {{#if scope.isMembers}}
   {{#if orgaCibleId}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
@@ -91,8 +93,11 @@
   {{#if isAdminRaf}}
   {{> ionTab title="Admin" path="adminDashboard" iconOff="compose" iconOn="compose"}}
   {{/if}}
+  {{#if settingOceco.agenda}}
   {{> ionTab title="Agenda" path="listEvents" iconOff="ios-calendar" iconOn="ios-calendar"}}
+  {{/if}}
   {{/ionTabs}}
+  {{/if}}
   {{/if}}
   {{/if}}
 

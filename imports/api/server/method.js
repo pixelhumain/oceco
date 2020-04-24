@@ -491,11 +491,17 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { pwd: 0 } });
-    if (!userC.isScope('organizations', id)) {
-      Meteor.call('connectEntity', id, 'organizations', userC._id._str, 'member');
-    }
     const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(id) });
+
+    // membre auto true
+    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { pwd: 0 } });
+    if (orgaOne && orgaOne.oceco && orgaOne.oceco.memberAuto) {
+      if (!userC.isScope('organizations', id)) {
+        Meteor.call('connectEntity', id, 'organizations', userC._id._str, 'member');
+      }
+    }
+
+    // admin
     if (orgaOne && orgaOne.isAdmin()) {
       if (orgaOne.links && orgaOne.links.projects) {
         if (userC && userC.links && userC.links.projects) {
@@ -935,22 +941,26 @@ Meteor.methods({
     const retour = apiCommunecter.postPixel('co2/link', 'connect', doc);
 
     // WARNING passe l'user en member
+    // si auto member true
     if (parentType === 'organizations' && connectType !== 'admin') {
-      Citoyens.update({
-        _id: new Mongo.ObjectID(doc.childId),
-      }, {
-        $unset: {
-          [`links.memberOf.${connectId}.toBeValidated`]: '',
-        },
-      });
+      const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(connectId) });
+      if (orgaOne && orgaOne.oceco && orgaOne.oceco.memberAuto) {
+        Citoyens.update({
+          _id: new Mongo.ObjectID(doc.childId),
+        }, {
+          $unset: {
+            [`links.memberOf.${connectId}.toBeValidated`]: '',
+          },
+        });
 
-      Organizations.update({
-        _id: new Mongo.ObjectID(connectId),
-      }, {
-        $unset: {
-          [`links.members.${doc.childId}.toBeValidated`]: '',
-        },
-      });
+        Organizations.update({
+          _id: new Mongo.ObjectID(connectId),
+        }, {
+          $unset: {
+            [`links.members.${doc.childId}.toBeValidated`]: '',
+          },
+        });
+      }
     }
 
     return retour;
@@ -2580,6 +2590,12 @@ export const insertAction = new ValidatedMethod({
         if (!(scopeOne && scopeOne.isAdmin())) {
           throw new Meteor.Error('not-authorized project');
         }
+      } else if (doc.parentType === 'organizations') {
+        console.log('organization is admin');
+
+        if (!(scopeOne && scopeOne.isAdmin())) {
+          throw new Meteor.Error('not-authorized project');
+        }
       } else {
         throw new Meteor.Error('not-authorized citoyen');
       }
@@ -2838,14 +2854,21 @@ export const assignmeActionRooms = new ValidatedMethod({
   run({ id }) {
     const actionObjectId = new Mongo.ObjectID(id);
     const parentObjectId = new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
+    const orgOne = Organizations.findOne({ _id: parentObjectId });
+    let orgId;
+    if (orgOne) {
+      orgId = orgOne._id._str;
+    } else {
+      const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
+      const event = eventId ? `links.events.${eventId}` : null;
 
-    const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
-    const event = eventId ? `links.events.${eventId}` : null;
+      const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
+      const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
 
-    const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
-    const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
+      orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
+    }
 
-    const orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
+    
     const parent = `finishedBy.${Meteor.userId()}`;
 
     function userCredits() {
@@ -2880,7 +2903,7 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
-    const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(id), status: 'todo'  });
     if (!action) {
       throw new Meteor.Error('not-authorized action');
     } else {

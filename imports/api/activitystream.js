@@ -246,11 +246,12 @@ ActivityStream.api = {
   },
   ocecoNotif(notificationObj, { projectOne, eventOne, roomOne }) {
     // project
+    if (projectOne) {
     notificationObj.targetProject = {};
     notificationObj.targetProject.type = 'projects';
     notificationObj.targetProject.id = projectOne._id._str;
     notificationObj.targetProject.name = projectOne.name;
-
+    }
     // event
     if (eventOne) {
       notificationObj.targetEvent = {};
@@ -273,7 +274,34 @@ ActivityStream.api = {
 
     let targetObj = target;
 
-    if (object && object.type === 'actions' && object.parentType === 'projects') {
+    if (object && object.type === 'actions' && object.parentType === 'organizations') {
+
+      const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
+
+      if (!targetObj) {
+        // target
+        targetObj = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
+      }
+
+      if (type === 'isActionMembers') {
+        if (object && object.links && object.links.contributors) {
+          targetObj.links.members = object.links.contributors;
+        } else {
+          targetObj.links.members = null;
+        }
+      }
+
+      // console.log(targetObj);
+      // console.log(object);
+      const roomOne = Rooms.findOne({
+        _id: new Mongo.ObjectID(object.idParentRoom),
+      });
+
+      if (roomOne) {
+        // oceco
+        notificationObj = ActivityStream.api.ocecoNotif(notificationObj, { roomOne });
+      }
+    } else if (object && object.type === 'actions' && object.parentType === 'projects') {
       const projectOne = Projects.findOne({
         _id: new Mongo.ObjectID(object.parentId),
       });
@@ -385,8 +413,11 @@ ActivityStream.api = {
         let targetNofifScope = {};
         if (notificationObj && notificationObj.targetEvent) {
           targetNofifScope = { ...notificationObj.targetEvent };
-        } else {
+        } else if (notificationObj && !notificationObj.targetEvent && notificationObj.targetProject) {
           targetNofifScope = { ...notificationObj.targetProject };
+          console.log(targetNofifScope);
+        } else if (notificationObj && !notificationObj.targetEvent && !notificationObj.targetProject) {
+          targetNofifScope = { ...targetObj };
           console.log(targetNofifScope);
         }
 

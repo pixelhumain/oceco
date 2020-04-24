@@ -31,27 +31,30 @@
 </template>
 
 <template name="projectList2">
-  <div class="item item-stable item-avatar {{#if isAdminRaf}}item-button-right{{/if}}">
+
+    {{#if organizationActionsCount}}
+    <div class="item item-stable">Action de l'organisation</div>
+    {{#each action in organizationActions}}
+    {{> itemInputAction action=action}}
+    {{/each}}
+    {{/if}}
+
+  <div class="item item-stable item-avatar item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
     {{project.name}}
-
-    {{#if isAdminRaf}}
-    <a href="{{pathFor 'eventsAdd' _id=project._id._str scope='events'}}" class="button button-small"><i
-        class="icon fa fa-plus"></i> évènements</a>
-    {{/if}}
 
     {{#if projectGlobalCount project._id}}
 
     {{#if scroll }}
-    <div>
-      <button class="button button-small button-dark button-see-event-js">Cacher évènements <i
+
+      <button class="button button-small button-dark button-see-event-js">Cacher <i
           class="icon ion-ios-arrow-up"></i></button>
-    </div>
+
     {{else}}
-    <div>
-      <button class="button button-small button-dark button-see-event-js">Voir évènements <i
+
+      <button class="button button-small button-dark button-see-event-js">Voir <i
           class="icon ion-ios-arrow-down"></i></button>
-    </div>
+
     {{/if}}
 
     {{/if}}
@@ -62,7 +65,7 @@
 
   {{#if projectActionsCount project._id}}
   <div class="item item-stable">Action de Projets</div>
-  {{#each action in projectAction project._id}}
+  {{#each action in projectActions project._id}}
   {{> itemInputAction action=action}}
   {{/each}}
   {{/if}}
@@ -80,28 +83,15 @@
 </template>
 
 <template name="eventsList2">
-  <!-- {{> imgDoc profilThumbImageUrl=event.profilThumbImageUrl}}
-        {{event.name}} 
-        <p class="badge badge-dark"><span>{{> ionIcon icon="clock"}}</span></p> -->
-  <!-- <a class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}}"
-            href="{{#if equals scopeVar 'gamesmobile'}}{{pathFor 'gamesDetail' _id=_id._str}}{{else}}{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}{{/if}}"> -->
+
   {{#with item}}
-  <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} {{#if isAdminRaf}}item-button-right{{/if}}">
+  <div class="item {{#if profilThumbImageUrl}}item-thumbnail-left{{/if}} item-button-right">
     {{#if profilThumbImageUrl}}
     <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
     {{/if}}
     <a href="{{pathFor 'actionsList' _id=_id._str scope=scopeVar}}" class="positive">
       <h2 class="positive">{{name}}</h2>
     </a>
-    <!-- {{#if actionsCount.todo}}
-            <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon fa fa-inbox"></i>
-                {{actionsCount.todo}}</span>
-            {{/if}} -->
-    {{#if isAdminRaf}}
-    <a href="{{pathFor 'actionsAdd' _id=_id._str scope='events'}}" class="button button-positive "><i
-        class="icon fa fa-plus"></i></a>
-    {{/if}}
-
 
     {{#if typeValue}}
     <p>{{typeValue}}</p>
@@ -136,23 +126,16 @@
     </p>
     {{/if}}
 
-    <!-- </a> -->
-    {{#if eventActionCount item._id._str}}
-    {{#if actionsCount.todo}}
+    {{#if eventActionCount _id._str}}
 
     {{#if scrollAction }}
-    <div>
       <button class="button button-small button-see-actions-js">Cacher {{actionsCount.todo}} actions <i
           class="icon ion-ios-arrow-up"></i></button>
-    </div>
     {{else}}
-    <div>
       <button class="button button-small button-see-actions-js">Voir {{actionsCount.todo}} actions <i
           class="icon ion-ios-arrow-down"></i></button>
-    </div>
     {{/if}}
 
-    {{/if}}
     {{/if}}
   </div>
 

@@ -453,6 +453,26 @@ Organizations.helpers({
   room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
+  listActionsCreator(type = 'all', status = 'todo') {
+    const query = {};
+    query.parentId = this._id._str;
+    query.status = status;
+    if (type === 'aFaire') {
+      query.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      query.credits = { $lt: 0 };
+    }
+    const inputDate = new Date();
+    query.endDate = { $gte: inputDate };
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+    return Actions.find(query, options);
+  },
+  countActionsCreator(type = 'all', status = 'todo') {
+    return this.listActionsCreator(type, status) && this.listActionsCreator(type, status).count();
+  },
   listMembers (search) {
     if (this.links && this.links.members) {
       const query = queryLinkType(this.links.members, search, 'citoyens');
@@ -578,7 +598,7 @@ Organizations.helpers({
     if (listEvents || listProjects) {
       const eventIds = listEvents.map(event => event._id._str);
       const projectIds = listProjects.map(project => project._id._str);
-      const mergeArray = [...eventIds, ...projectIds];
+      const mergeArray = [...eventIds, ...projectIds, this._id._str];
       const query = {};
       query.parentId = {
         $in: mergeArray,
@@ -596,7 +616,7 @@ Organizations.helpers({
     const UserId = `links.contributors.${Meteor.userId()}`;
     const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     const raffProjectsArray = this.listProjects().map(project => project._id._str);
-    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: mergeArray }, status: 'todo' });
   },
   actionsToValidate() {
@@ -604,7 +624,7 @@ Organizations.helpers({
     const UserId = `links.contributors.${Meteor.userId()}`;
     const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     const raffProjectsArray = this.listProjects().map(project => project._id._str);
-    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: mergeArray }, status: 'todo' });
   },
   actionsValidate() {
@@ -612,7 +632,7 @@ Organizations.helpers({
     const UserId = `links.contributors.${Meteor.userId()}`;
     const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     const raffProjectsArray = this.listProjects().map(project => project._id._str);
-    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: mergeArray } });
   },
   actionsSpend() {
@@ -620,7 +640,7 @@ Organizations.helpers({
     const UserId = `links.contributors.${Meteor.userId()}`;
     const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     const raffProjectsArray = this.listProjects().map(project => project._id._str);
-    const mergeArray = [...raffEventsArray, ...raffProjectsArray];
+    const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: mergeArray } });
   },
   actionsValidateSpend() {
@@ -629,6 +649,16 @@ Organizations.helpers({
     // const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     // return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated' }, { sort: { endDate: -1 } });
+  },
+  settingOceco(){
+    /*{
+      pole: true,
+      organizations: true
+      projectAction: true,
+      eventAction: true,
+      memberAuto: true,
+    }*/
+    return this.oceco;
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

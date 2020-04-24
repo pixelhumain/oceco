@@ -28,7 +28,15 @@
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
 
+
+    {{#if scope.isMembers}}
+    {{#if settingOceco.pole}}
     {{> scrollPrez title='Choix du pole' prez='Sur cette page vous devrez chosir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"' icon="ion-home"}}
+    {{else}}
+    {{> scrollPrez title='Choix' prez='' icon="ion-home"}}
+    {{/if}}
+
+    {{#if settingOceco.pole}}
 
     {{#each poles in RaffineriePoles}}
     <a href="{{pathFor 'polesView' pole=poles scope='project'}}" class="item">
@@ -36,7 +44,41 @@
     </a>
     {{/each}}
 
+    {{else}}
+
+    {{>projectsView}}
+
+    {{/if}}
+    {{else}}
+    
+    {{> scrollPrez title='Membre' prez='Vous devez être un membre validé par un administrateur de l\'organisation' icon="ion-home"}}
+    
+    {{#if scope.toBeValidated}}
+    <button class="button button-block disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+    </button>
+    {{else}}
+    {{#if scope.isInviting 'members' currentUser._id}}
+    <button class="button button-block disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+    </button>
+    {{else}}
+    {{> Bouton_card id=scope._id._str scope=scope.scopeVar isConnect=scope.isMembers classOff="button-block connectscope-link" classOn="button-block disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOn="Ne plus être membre de l'organisation" titleOff="Devenir membre de l'organisation"}}
+    {{/if}}
+    {{/if}}
+    
+    {{/if}}
+
     {{/ionContent}}
     {{/ionView}}
 </template>
 
+<template name='projectsView'>
+    {{#if dataReady}}
+    <div class="list">
+      {{#each project in poleProjects2}}
+        {{>projectList2 project=project}}
+      {{/each}} 
+      </div>
+      {{/if}}
+</template>

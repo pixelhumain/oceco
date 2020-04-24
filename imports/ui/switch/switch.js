@@ -18,7 +18,7 @@ Template.switch.onCreated(function () {
 
 Template.switch.helpers({
   OrganizationsOceco() {
-    return Organizations.find({ oceco: true });
+    return Organizations.find({ oceco: { $exists: true } });
   },
   dataReady() {
     return Template.instance().ready.get();

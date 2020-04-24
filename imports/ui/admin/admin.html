@@ -25,6 +25,13 @@
         {{> scrollPrez title='Admin' prez="Gestion de l'application" icon="ion-compose"}}
 
         {{#if dataReady}}
+
+        {{#if settingOceco.organizationAction}}
+        <div class="button-bar bar-positive">
+            <a href="{{pathFor 'actionsAdd' _id=scope._id._str scope='organizations'}}" class="button button-positive"><i
+                    class="icon fa fa-plus"></i> Ajouter une action d'organisation</a>
+        </div>
+        {{/if}}
         <div class="item tabs">
             <div class="tabs tabs-striped">
                 <a class="tab-item {{#if equals selectview 'aValider'}}tab-item-active{{/if}} change-selectview-js"

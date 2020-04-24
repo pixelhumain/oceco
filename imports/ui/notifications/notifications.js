@@ -209,6 +209,8 @@ Template.notificationsList.events({
               Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetail', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
           }
         }
@@ -232,6 +234,8 @@ Template.notificationsList.events({
               Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetail', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
           }
         }
@@ -246,6 +250,8 @@ Template.notificationsList.events({
               Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetail', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
           }
         }
@@ -260,6 +266,8 @@ Template.notificationsList.events({
               Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetail', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
           }
         }
@@ -274,6 +282,8 @@ Template.notificationsList.events({
               Router.go('actionsDetail', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             } else if (!this.targetEvent && this.targetProject) {
               Router.go('actionsDetail', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetail', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
             }
           }
         }

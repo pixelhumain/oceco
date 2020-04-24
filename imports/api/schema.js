@@ -131,6 +131,7 @@ export const geoSchema = new SimpleSchema({
   country: {
     type: String,
     min: 1,
+    optional: true,
   },
   streetAddress: {
     type: String,
@@ -140,18 +141,21 @@ export const geoSchema = new SimpleSchema({
     type: String,
     min: 3,
     max: 9,
+    optional: true,
   },
   city: {
     type: String,
     autoform: {
       type: 'select',
     },
+    optional: true,
   },
   cityName: {
     type: String,
     autoform: {
       type: 'hidden',
     },
+    optional: true,
   },
   regionName: {
     type: String,

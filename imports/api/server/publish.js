@@ -189,7 +189,7 @@ Meteor.publish('orga.switch', function () {
   if (!this.userId) {
     return null;
   }
-  const lists = Organizations.find({ oceco: true });
+  const lists = Organizations.find({ oceco: { $exists: true } });
   return lists;
 });
 
@@ -1225,7 +1225,7 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
             {
               find(scopeD) {
                 const query = {};
-                query.parentId = scopeD._id._str;
+                query.parentId = scopeId;
                 if (etat) {
                   query.status = etat;
                 }
@@ -1238,6 +1238,21 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
               }],
             },
           ],
+    },
+    {
+      find(scopeD) {
+        const query = {};
+        query.parentId = scopeD._id._str;
+        if (etat) {
+          query.status = etat;
+        }
+        return Actions.find(query);
+      },
+      children: [{
+        find(scopeD) {
+          return scopeD.listContributors();
+        },
+      }],
     },
     ],
   };
@@ -1290,6 +1305,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       } else {
         query._id = new Mongo.ObjectID(scopeId);
       }
+      console.log(JSON.stringify(query));
       return collection.find(query, options);
     },
     children: [{
@@ -2988,6 +3004,35 @@ Meteor.publish('poles.actions2', function(raffId, poleName) {
   return eventActions;
 });
 
+Meteor.publish('all.actions2', function (raffId) {
+  check(raffId, String);
+  if (!this.userId) {
+    return null;
+  }
+  const queryProjectId = `parent.${raffId}`;
+  const poleProjects = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
+  const poleProjectsId = [];
+  poleProjects.forEach((element) => {
+    poleProjectsId.push(element._id._str);
+  });
+
+  const eventsArrayId = [];
+  Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function (event) { eventsArrayId.push(event._id._str); });
+
+  const inputDate = new Date();
+  const query = {};
+  query.endDate = { $gte: inputDate };
+  query.parentId = { $in: [...eventsArrayId, ...poleProjectsId, raffId] };
+  query.status = 'todo';
+  const options = {};
+  options.sort = {
+    startDate: 1,
+  };
+
+  const eventActions = Actions.find(query);
+  return eventActions;
+});
+
 Meteor.publish('member.profile', function(memberId) {
   check(memberId, String);
   if (!this.userId) {
@@ -3108,6 +3153,32 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
       },
       ],
     },
+    {
+      find(scopeD) {
+        const finished = `finishedBy.${this.userId}`;
+        const query = {};
+        query.parentId = scopeId;
+        query[UserId] = {
+          $exists: 1,
+        };
+        query.status = 'todo';
+        const option = {};
+        if (etat === 'aFaire') {
+          query[finished] = { $exists: false };
+          option.sort = { endDate: -1 };
+        } else if (etat === 'enAttente') {
+          query[finished] = 'toModerate';
+          option.sort = { endDate: -1 };
+        } else if (etat === 'valides') {
+          /* WARNING pour l'historique listProjectsEventsCreator1M ne va pas aller car il prend les evenements qui ne sont pas terminer ou 15 jous apres la fin */
+          query[finished] = 'validated';
+          option.sort = { endDate: -1 };
+          option.limit = 100;
+        }
+        console.log(query);
+        return Actions.find(query, option);
+      },
+    },
     ],
   };
 });
@@ -3152,7 +3223,7 @@ Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
             const arrayEventsIds = Events.find(query).fetch().map(event => event._id._str);
             const finished = `finishedBy.${this.userId}`;
             const queryAction = {};
-            queryAction.parentId = { $in: [...arrayEventsIds, ...projectIds] };
+            queryAction.parentId = { $in: [...arrayEventsIds, ...projectIds, scopeId] };
             queryAction[UserId] = {
               $exists: 1,
             };

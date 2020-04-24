@@ -447,6 +447,8 @@ Meteor.startup(function () {
 
   Template.registerHelper('orgaCibleId', () => Session.get('orgaCibleId'));
 
+  Template.registerHelper('settingOceco', () => Session.get('settingOceco'));
+
   Template.registerHelper('hasPublishedCounter', (name) => {
     if (name) {
       const count = Counter.get(name);

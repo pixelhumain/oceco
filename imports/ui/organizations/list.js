@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
@@ -401,37 +404,42 @@ Template.organizationsFields.onRendered(function() {
   && Router.current().route.getName() !== 'eventsEdit' && Router.current().route.getName() !== 'eventsBlockEdit'
   && Router.current().route.getName() !== 'poiEdit' && Router.current().route.getName() !== 'poiBlockEdit'
   && Router.current().route.getName() !== 'classifiedEdit') {
-    IonPopup.confirm({ template: i18n.__('Use your current location'),
-      onOk() {
-        const latlngObj = position.getLatlngObject();
-        if (latlngObj) {
-          Meteor.call('getcitiesbylatlng', latlngObj, function(error, result) {
-            if (result) {
-            // console.log(result);
-              pageSession.set('postalCode', result.postalCodes[0].postalCode);
-              pageSession.set('country', result.country);
-              pageSession.set('city', result.insee);
-              pageSession.set('cityName', result.postalCodes[0].name);
-              pageSession.set('localityId', result._id._str);
-              if (result.regionName) {
-                pageSession.set('regionName', result.regionName);
-              } else if (result.level3Name) {
-                pageSession.set('regionName', result.level3Name);
+    if ((Router.current().route.getName() === 'eventsAdd' && Session.get('settingOceco').costum.events.form.geo) ||
+      (Router.current().route.getName() === 'projectAdd' && Session.get('settingOceco').costum.projects.form.geo)
+    ) {
+      IonPopup.confirm({
+        template: i18n.__('Use your current location'),
+        onOk() {
+          const latlngObj = position.getLatlngObject();
+          if (latlngObj) {
+            Meteor.call('getcitiesbylatlng', latlngObj, function (error, result) {
+              if (result) {
+                // console.log(result);
+                pageSession.set('postalCode', result.postalCodes[0].postalCode);
+                pageSession.set('country', result.country);
+                pageSession.set('city', result.insee);
+                pageSession.set('cityName', result.postalCodes[0].name);
+                pageSession.set('localityId', result._id._str);
+                if (result.regionName) {
+                  pageSession.set('regionName', result.regionName);
+                } else if (result.level3Name) {
+                  pageSession.set('regionName', result.level3Name);
+                }
+                if (result.depName) {
+                  pageSession.set('depName', result.depName);
+                } else if (result.level4Name) {
+                  pageSession.set('depName', result.level4Name);
+                }
+                pageSession.set('geoPosLatitude', latlngObj.latitude);
+                pageSession.set('geoPosLongitude', latlngObj.longitude);
               }
-              if (result.depName) {
-                pageSession.set('depName', result.depName);
-              } else if (result.level4Name) {
-                pageSession.set('depName', result.level4Name);
-              }
-              pageSession.set('geoPosLatitude', latlngObj.latitude);
-              pageSession.set('geoPosLongitude', latlngObj.longitude);
-            }
-          });
-        }
-      },
-      cancelText: i18n.__('no'),
-      okText: i18n.__('yes'),
-    });
+            });
+          }
+        },
+        cancelText: i18n.__('no'),
+        okText: i18n.__('yes'),
+      });
+    }
   }
 
   self.autorun(function() {

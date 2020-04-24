@@ -35,11 +35,27 @@ Template.layout.onCreated(function() {
 
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
-    const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
-    const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
-    const handleCitoyen = Meteor.subscribe('citoyen');
-    if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen.ready()) {
-      this.ready.set(handleScopeDetail.ready());
+    if (Session.get('orgaCibleId')) {
+      const handleScopeDetail = Meteor.subscribe('scopeDetail', 'organizations', Session.get('orgaCibleId'));
+      const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
+      const handleCitoyen = Meteor.subscribe('citoyen');
+      if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen.ready()) {
+        /* {
+pole: true,
+organizationAction: true
+projectAction: true,
+eventAction: true,
+memberAuto: true,
+} */
+        const orgaOne = Organizations.findOne({
+          _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
+        });
+        if (orgaOne && orgaOne.oceco) {
+          Session.setPersistent('settingOceco', orgaOne.oceco);
+        }
+
+        this.ready.set(handleScopeDetail.ready());
+      }
     }
   }.bind(this));
 });

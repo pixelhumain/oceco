@@ -259,6 +259,8 @@
   {{> afQuickField name='type'}}
   {{> afQuickField name='startDate' type="datetime-local"}}
   {{> afQuickField name='endDate' type="datetime-local"}}
+
+  {{#if settingOceco.costum.event.form.geo}}
   {{> afQuickField name='country' autocomplete="off" value=country }}
   {{#if currentFieldValue "country"}}
   {{> afQuickField name='postalCode' value=postalCode autocomplete="off"}}
@@ -279,6 +281,8 @@
   {{> afQuickField name='regionName' type="hidden" value=regionName}}
   {{> afQuickField name='depName' type="hidden" value=depName}}
   {{> afQuickField name='localityId' type="hidden" value=localityId}}
+  {{/if}}
+  
   {{#if update}}
   {{> afQuickField name='preferences'}}
   {{/if}}
