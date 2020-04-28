@@ -31,9 +31,17 @@
 
     {{#if scope.isMembers}}
     {{#if settingOceco.pole}}
-    {{> scrollPrez title='Choix du pole' prez='Sur cette page vous devrez chosir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"' icon="ion-home"}}
+    {{#if settingOceco.home}}
+    {{> scrollPrez title=settingOceco.home.textTitre prez=settingOceco.home.textInfo icon="ion-home"}}
+    {{else}}
+    {{> scrollPrez title='Choix du pole' prez='Sur cette page vous devrez choisir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"' icon="ion-home"}}
+    {{/if}}
+    {{else}}
+    {{#if settingOceco.home}}
+    {{> scrollPrez title=settingOceco.home.textTitre prez=settingOceco.home.textInfo icon="ion-home"}}
     {{else}}
     {{> scrollPrez title='Choix' prez='' icon="ion-home"}}
+    {{/if}}
     {{/if}}
 
     {{#if settingOceco.pole}}

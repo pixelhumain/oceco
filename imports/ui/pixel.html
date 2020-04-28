@@ -89,7 +89,15 @@
   {{#if orgaCibleId}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
+  {{#if settingOceco.wallet}}
+  {{#if settingOceco.wallet.textBouton}}
+  {{> ionTab title=settingOceco.wallet.textBouton path="wallet" iconOff="clock" iconOn="clock"}}
+  {{else}}
   {{> ionTab title="Espace Temps" path="wallet" iconOff="clock" iconOn="clock"}}
+  {{/if}}
+  {{else}}
+  {{> ionTab title="Espace Temps" path="wallet" iconOff="clock" iconOn="clock"}}
+  {{/if}}
   {{#if isAdminRaf}}
   {{> ionTab title="Admin" path="adminDashboard" iconOff="compose" iconOn="compose"}}
   {{/if}}
@@ -136,6 +144,10 @@
 
 <template name="account">
   <div class="item item-icon-left">
+    {{#if settingOceco.account}}
+    <i class="icon ion-card positive"></i> {{#if settingOceco.account.textVotreCreditTemps}}{{settingOceco.account.textVotreCreditTemps}}{{else}}Votre crédit temps{{/if}} <span class="badge badge-positive">{{userCredit}} {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}</span>
+    {{else}}
     <i class="icon ion-card positive"></i> Votre crédit temps <span class="badge badge-positive">{{userCredit}} R</span>
+    {{/if}}
   </div>
 </template>

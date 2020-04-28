@@ -1,6 +1,12 @@
 <template name='wallet'>
     {{#contentFor "headerTitle"}}
-        <h1 class="title">     {{currentUser.profile.pixelhumain.username}}:{{userCredit}} R</h1>
+        <h1 class="title">     {{currentUser.profile.pixelhumain.username}}:{{userCredit}} 
+            {{#if settingOceco.account}}
+                {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}
+            {{else}}
+            R
+            {{/if}}
+            </h1>
     {{/contentFor}}
   {{#contentFor "headerButtonLeft"}}
         <button class="button button-clear pull-left" data-ion-menu-toggle="left">
@@ -25,20 +31,67 @@
     {{#ionView}}
     {{#ionContent class="scroll-bg"}}
     <div class="list">
-    {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' icon="ion-clock"}}
-
+        {{#if settingOceco.account}}
+        {{#if settingOceco.wallet}}
+        {{> scrollPrez title=settingOceco.wallet.textTitre prez=settingOceco.wallet.textInfo icon="ion-clock"}}
+        {{else}}
+        {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' icon="ion-clock"}}
+        {{/if}}
+        {{else}}
+        {{> scrollPrez title='Espace Temps' prez='Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir ' icon="ion-clock"}}
+        {{/if}}
+    
     {{#if dataReady}}
     <div class="item tabs">
     <div class="tabs tabs-striped">
+
+        {{#if settingOceco.wallet}}
+        {{#if settingOceco.wallet.coupDeMain}}
+        <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">{{settingOceco.wallet.coupDeMain.textBouton}}</a>
+        {{else}}
+        <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">Coup de main</a>
+        {{/if}}
+
+        {{#if settingOceco.wallet.enAttente}}
+        <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">{{settingOceco.wallet.enAttente.textBouton}}</a>
+        {{else}}
+        <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
+        {{/if}}
+
+        {{#if settingOceco.wallet.valides}}
+        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">{{settingOceco.wallet.valides.textBouton}}</a>
+        {{else}}
+        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
+        {{/if}}
+
+        {{else}}
         <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">Coup de main</a>
         <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
         <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
+        {{/if}}
+
+
+        
+        
     </div>
     </div>
     
     {{#if equals selectview 'aFaire'}}
-    <div class="item item-divider">Coup de main</div>
-    <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
+
+        {{#if settingOceco.wallet}}
+        {{#if settingOceco.wallet.coupDeMain}}
+        <div class="item item-divider">{{settingOceco.wallet.coupDeMain.textTitre}}</div>
+        <div class="item item-text-wrap">{{settingOceco.wallet.coupDeMain.textInfo}}</div>
+        {{else}}
+        <div class="item item-divider">Coup de main</div>
+        <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
+        {{/if}}
+
+        {{else}}
+        <div class="item item-divider">Coup de main</div>
+        <div class="item item-text-wrap">C'est la liste de toute vos actions à faire au quels vous êtes inscrit</div>
+        {{/if}}
+
 
         {{#each action in scope.actionsInWaiting}}
         {{> whalletInputAction action=action}}
@@ -46,16 +99,45 @@
         
     
     {{else if equals selectview 'enAttente'}}
+
+    {{#if settingOceco.wallet}}
+    {{#if settingOceco.wallet.enAttente}}
+    <div class="item item-divider">{{settingOceco.wallet.enAttente.textTitre}}</div>
+    <div class="item item-text-wrap">{{settingOceco.wallet.enAttente.textInfo}}</div>
+    {{else}}
     <div class="item item-divider">En attente de validations</div>
     <div class="item item-text-wrap">C'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur</div>
+    {{/if}}
+    
+    {{else}}
+    <div class="item item-divider">En attente de validations</div>
+    <div class="item item-text-wrap">C'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur</div>
+    {{/if}}
+
+
+    
 
         {{#each action in scope.actionsToValidate}}
         {{> whalletInputInWaitingAction action=action badgeColor="energized"}}
         {{/each}}
 
     {{else if equals selectview 'valides'}}
-        <div class="item item-divider">Validés</div>
+
+    {{#if settingOceco.wallet}}
+    {{#if settingOceco.wallet.valides}}
+    <div class="item item-divider">{{settingOceco.wallet.valides.textTitre}}</div>
+    <div class="item item-text-wrap">{{settingOceco.wallet.valides.textInfo}}</div>
+    {{else}}
+    <div class="item item-divider">Validés</div>
         <div class="item item-text-wrap">C'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits</div>
+    {{/if}}
+    
+    {{else}}
+    <div class="item item-divider">Validés</div>
+        <div class="item item-text-wrap">C'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits</div>
+    {{/if}}
+
+        
 
         {{#each action in scope.actionsValidateSpend}}
         {{> whalletInputInWaitingAction action=action badgeColor="balanced" badgeColorDepense="dark"}}

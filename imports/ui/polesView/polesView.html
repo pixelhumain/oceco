@@ -335,7 +335,11 @@
         {{action.projectDuration}}H </div>
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-card"></i>
         {{action.credits}}
-        R</div>
+        {{#if settingOceco.account}}
+        {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}
+        {{else}}
+        R
+        {{/if}}</div>
 </template>
 
 <template name="actionParticipantNeeded">

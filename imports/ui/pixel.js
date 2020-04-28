@@ -40,13 +40,54 @@ Template.layout.onCreated(function() {
       const handleDirectoryListProjects = Meteor.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
       const handleCitoyen = Meteor.subscribe('citoyen');
       if (handleScopeDetail.ready() && handleDirectoryListProjects.ready() && handleCitoyen.ready()) {
-        /* {
-pole: true,
-organizationAction: true
-projectAction: true,
-eventAction: true,
-memberAuto: true,
-} */
+        /* "oceco" : {
+        "pole" : true,
+        "organizationAction" : false,
+        "projectAction" : false,
+        "eventAction" : true,
+        "memberAuto" : false,
+        "agenda" : true,
+        "costum" : {
+            "projects" : {
+                "form" : {
+                    "geo" : false
+                }
+            },
+            "events" : {
+                "form" : {
+                    "geo" : false
+                }
+            }
+        },
+        account: {
+          textVotreCreditTemps:'Votre crédit temps',
+          textUnite : 'R'
+        },
+        home: {
+          textTitre: 'Choix du pole',
+          textInfo: 'Sur cette page vous devrez choisir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"'
+        },
+        wallet: {
+          textBouton: 'Espace temps',
+          textTitre: 'Espace temps',
+          textInfo: 'Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir',
+          coupDeMain: {
+            textBouton: 'Coup de main',
+            textTitre: 'Coup de main',
+            textInfo: 'C\'est la liste de toute vos actions à faire au quels vous êtes inscrit'
+          },
+          enAttente: {
+            textBouton: 'En attente',
+            textTitre: 'En attente',
+            textInfo: 'C\'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur'
+          },
+          valides: {
+            textBouton: 'Validés',
+            textTitre: 'Validés',
+            textInfo: 'C\'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits'
+          }
+        }
+    } */
         const orgaOne = Organizations.findOne({
           _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
         });
