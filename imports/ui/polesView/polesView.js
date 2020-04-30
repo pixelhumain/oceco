@@ -72,7 +72,7 @@ Template.projectList2.helpers({
   },
   projectGlobalCount(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find({ parentId: { $in: [projectId, Session.get('orgaCibleId')] }, status: 'todo' }).count() > 0;
+    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find({ parentId: { $in: [projectId] }, status: 'todo' }).count() > 0;
   },
   projectEventsCount(projectObjectId) {
     const projectId = projectObjectId.valueOf();
@@ -86,14 +86,17 @@ Template.projectList2.helpers({
     const projectId = projectObjectId.valueOf();
     return Actions.find({ parentId: projectId, status: 'todo' });
   },
+  scroll() {
+    return Template.instance().scroll.get();
+  },
+});
+
+Template.organizationList.helpers({
   organizationActionsCount() {
     return Actions.find({ parentId: Session.get('orgaCibleId'), status: 'todo' }).count() > 0;
   },
   organizationActions() {
     return Actions.find({ parentId: Session.get('orgaCibleId'), status: 'todo' });
-  },
-  scroll() {
-    return Template.instance().scroll.get();
   },
 });
 

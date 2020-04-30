@@ -21,6 +21,7 @@
     {{#ionContent class="scroll-bg"}}
     {{#if dataReady}}
     <div class="list">
+        {{>organizationList}}
       {{#each project in poleProjects2}}
         {{>projectList2 project=project}}
       {{/each}} 
@@ -30,14 +31,16 @@
   {{/ionView}}
 </template>
 
-<template name="projectList2">
+<template name="organizationList">
+{{#if organizationActionsCount}}
+<div class="item item-stable">Action de l'organisation</div>
+{{#each action in organizationActions}}
+{{> itemInputAction action=action}}
+{{/each}}
+{{/if}}
+</template>
 
-    {{#if organizationActionsCount}}
-    <div class="item item-stable">Action de l'organisation</div>
-    {{#each action in organizationActions}}
-    {{> itemInputAction action=action}}
-    {{/each}}
-    {{/if}}
+<template name="projectList2">
 
   <div class="item item-stable item-avatar item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
