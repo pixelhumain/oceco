@@ -33,7 +33,7 @@
 
 <template name="organizationList">
 {{#if organizationActionsCount}}
-<div class="item item-stable">Action de l'organisation</div>
+<div class="item item-stable">Action de l'organisation <span class="badge badge-dark">{{organizationActions.count}}</span></div>
 {{#each action in organizationActions}}
 {{> itemInputAction action=action}}
 {{/each}}
@@ -42,39 +42,38 @@
 
 <template name="projectList2">
 
+{{#if projectGlobalCount project._id}}
   <div class="item item-stable item-avatar item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
-    {{project.name}}
 
-    {{#if projectGlobalCount project._id}}
+    <a href="{{pathFor 'actionsList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{project.name}}</h2>
+    </a>
 
     {{#if scroll }}
-
-      <button class="button button-small button-dark button-see-event-js">Cacher <i
+      <button class="button button-dark button-see-event-js"> <i
           class="icon ion-ios-arrow-up"></i></button>
 
     {{else}}
 
-      <button class="button button-small button-dark button-see-event-js">Voir <i
+      <button class="button button-dark button-see-event-js"> <i
           class="icon ion-ios-arrow-down"></i></button>
 
     {{/if}}
-
-    {{/if}}
-
   </div>
+{{/if}}
 
   {{#if scroll }}
 
   {{#if projectActionsCount project._id}}
-  <div class="item item-stable">Action de Projets</div>
+  <div class="item item-stable">Action du projet <span class="badge badge-dark">{{projectActionsCount project._id}}</span></div>
   {{#each action in projectActions project._id}}
   {{> itemInputAction action=action}}
   {{/each}}
   {{/if}}
 
   {{#if projectEventsCount project._id}}
-  <div class="item item-stable">Evenements</div>
+  <div class="item item-stable">Evenements du projet<span class="badge badge-dark">{{projectEventsCount project._id}}</span></div>
   {{#each event in projectEvents project._id}}
   {{>eventsList2 item=event}}
   {{/each}}
@@ -145,6 +144,7 @@
   {{/with}}
 
   {{#if scrollAction }}
+  <div class="item item-stable">Action de l'evenement <span class="badge badge-dark">{{eventActionCount item._id._str}}</span></div>
   {{#each action in eventAction item._id._str}}
 
   {{> itemInputAction action=action}}
@@ -161,29 +161,22 @@
 </template>
 
 <template name="itemInputAction">
+    <div class="item item-button-right">
+        <h2><a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
+            class="dark">{{action.name}}</a></h2>
+        <p>{{> actionDate action=action}}</p>
+            {{#if displayDesc}}
+            <div class="button display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
+            {{else}}
+            <div class="button display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
+            {{/if}}
+    </div>
+    {{#if displayDesc}}
     <div class="item">
-        <div class="row row-center padding-bottom">
-            <div class="col">{{> actionDate action=action}}</div>
-        </div>
         <div class="row row-center padding-bottom">
             {{> actionParticipantNeeded action=action}}
             {{> actionDuration action=action }}
         </div>
-        <div class="row row-center">
-            <div class="col-90 col-center">
-                <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
-                    class="subdued dark item-content">{{action.name}}</a>
-            </div>
-            <div class="col-10">
-                {{#if displayDesc}}
-                <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
-                {{else}}
-                <div class="button button-small display-desc-js"> <i class="icon ion-ios-arrow-down"></i> </div>
-                {{/if}}
-            </div>
-        </div>
-
-        {{#if displayDesc}}
         <div div class="col ">
             {{#if action.creditPositive}}
             <div class="row">
@@ -223,11 +216,12 @@
                     participant</div>
             </div>
         </div>
+                <div class="row">
+                    {{>buttonSubscribeAction action }}
+                </div>
+                </div>
         {{/if}}
-        <div class="row">
-            {{>buttonSubscribeAction action }}
-        </div>
-    </div>
+
 </template>
 
 <template name="itemInputActionDetail">

@@ -76,11 +76,11 @@ Template.projectList2.helpers({
   },
   projectEventsCount(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).count() > 0;
+    return Events.find({ organizerId: projectId }).count();
   },
   projectActionsCount(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Actions.find({ parentId: projectId, status: 'todo' }).count() > 0;
+    return Actions.find({ parentId: projectId, status: 'todo' }).count();
   },
   projectActions(projectObjectId) {
     const projectId = projectObjectId.valueOf();
@@ -129,7 +129,7 @@ Template.eventsList2.helpers({
   },
   eventActionCount(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] }).count() > 0;
+    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] }).count();
   },
 });
 
@@ -145,6 +145,10 @@ Template.itemInputAction.events({
     } else {
       Template.instance().displayDesc.set(false);
     }
+  },
+  'click .action-redirect-js'(event) {
+    event.preventDefault();
+    Router.go('actionsDetail', { _id: this.action.parentId, scope: this.action.parentType, roomId: this.action.idParentRoom, actionId: this.action._id._str });
   },
 });
 

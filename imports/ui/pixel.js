@@ -32,7 +32,6 @@ window.Actions = Actions;
 
 Template.layout.onCreated(function() {
   Meteor.subscribe('notificationsUser');
-
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     if (Session.get('orgaCibleId')) {
@@ -93,9 +92,10 @@ Template.layout.onCreated(function() {
         });
         if (orgaOne && orgaOne.oceco) {
           Session.setPersistent('settingOceco', orgaOne.oceco);
+          this.ready.set(handleScopeDetail.ready());
         }
 
-        this.ready.set(handleScopeDetail.ready());
+        
       }
     }
   }.bind(this));
