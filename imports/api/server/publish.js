@@ -1576,15 +1576,11 @@ Meteor.publishComposite('directoryListRooms', function(scope, scopeId) {
             return Citoyens.find({ _id: new Mongo.ObjectID(this.userId) }, options);
           }
         },
-        children: [
-          {
-            find(scopeD) {
-              if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
-                return scopeD.listRooms();
-              }
-            },
-          },
-        ],
+        find(scopeD) {
+          if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+            return scopeD.listRooms();
+          }
+        },
       },
     ] };
 });
@@ -1792,36 +1788,32 @@ Meteor.publishComposite('detailRooms', function(scope, scopeId, roomId) {
             return Citoyens.find({ _id: new Mongo.ObjectID(this.userId) }, options);
           }
         },
+        find(scopeD) {
+          if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+            return scopeD.detailRooms(roomId);
+          }
+        },
         children: [
           {
-            find(scopeD) {
+            find(room) {
               if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
-                return scopeD.detailRooms(roomId);
+                return room.listProposals();
               }
             },
-            children: [
-              {
-                find(room) {
-                  if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
-                    return room.listProposals();
-                  }
-                },
-              },
-              {
-                find(room) {
-                  if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
-                    return room.listActions();
-                  }
-                },
-              },
-              {
-                find(room) {
-                  if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
-                    return room.listResolutions();
-                  }
-                },
-              },
-            ],
+          },
+          {
+            find(room) {
+              if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+                return room.listActions();
+              }
+            },
+          },
+          {
+            find(room) {
+              if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+                return room.listResolutions();
+              }
+            },
           },
         ],
       },

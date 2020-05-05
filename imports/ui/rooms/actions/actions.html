@@ -101,6 +101,16 @@
 
   </div>
 
+  {{#if settingOceco.commentsAction}}
+  <div class="list">
+    <a href="{{pathFor 'actionsDetailComments' _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str}}"
+      class="item">
+      <i class="icon fa fa-comments"></i> {{__ "dda.actions.discussion"}} <span
+        class="badge badge-balanced">{{commentsCount}}</span>
+    </a>
+  </div>
+  {{/if}}
+
 {{/with}}
 {{/with}}
 </template>

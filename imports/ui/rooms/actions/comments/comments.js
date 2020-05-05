@@ -46,7 +46,7 @@ Template.actionsDetailComments.onCreated(function () {
   this.autorun(function() {
     if (template.scope && template._id && template.roomId && template.actionId) {
       // const handle = singleSubs.subscribe('detailActions', template.scope, template._id, template.roomId, template.actionId);
-      const handle = singleSubs.subscribe('actionsDetailComments', template.scope, template._id, template.roomId, template.actionId);
+      const handle = Meteor.subscribe('actionsDetailComments', template.scope, template._id, template.roomId, template.actionId);
       if (handle.ready()) {
         template.ready.set(handle.ready());
       }
@@ -143,7 +143,7 @@ Template.commentsActionsEdit.onCreated(function () {
 
   self.autorun(function() {
     // const handle = singleSubs.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
-    const handle = singleSubs.subscribe('actionsDetailComments', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
+    const handle = Meteor.subscribe('actionsDetailComments', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
     if (handle.ready()) {
       self.ready.set(handle.ready());
     }

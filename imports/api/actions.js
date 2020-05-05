@@ -184,6 +184,12 @@ if (Meteor.isClient) {
       const end = moment(this.endDate).toDate();
       return Chronos.moment().isBefore(end); // True
     },
+    timeSpentStart() {
+      return Chronos.moment(this.startDate).fromNow();
+    },
+    timeSpentEnd() {
+      return Chronos.moment(this.endDate).fromNow();
+    },
   });
 } else {
   Actions.helpers({

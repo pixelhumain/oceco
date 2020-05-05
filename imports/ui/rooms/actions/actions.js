@@ -38,7 +38,7 @@ Template.detailActions.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = newsListSubs.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
+    const handle = Meteor.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
     this.ready.set(handle.ready());
   }.bind(this));
 });

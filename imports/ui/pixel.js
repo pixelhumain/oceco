@@ -44,6 +44,7 @@ Template.layout.onCreated(function() {
         "organizationAction" : false,
         "projectAction" : false,
         "eventAction" : true,
+        "commentsAction": false,
         "memberAuto" : false,
         "agenda" : true,
         "costum" : {
@@ -261,40 +262,9 @@ Template.layout.helpers({
   notifications() {
     return ActivityStream.api.isUnread();
   },
-
-  // A revoir pour les actions par projets
-  //  nbAction(poles){
-  //   let polesProjectsArray = Projects.find({tags: poles}).fetch()
-  //   // Penser à vérifier que le projet appartient bien à la Raffinerie
-  //   let polesProjectsObjectId = polesProjectsArray.map(project => project._id)
-  //   let polesProjectsId = []
-  //   polesProjectsObjectId.forEach(ObjectId => { polesProjectsId.push(ObjectId.valueOf())});
-  //   console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
-
-  //  },
-  nbActionPoles(poles) {
-    if (Template.instance().ready.get()) {
-      const id = new Mongo.ObjectID(Session.get('orgaCibleId'));
-      const raffinerieCursor = Organizations.findOne({ _id: id });
-      if (raffinerieCursor) {
-        const raffProjectsArray = raffinerieCursor.listProjectsCreator();
-        if (raffProjectsArray.count() > 0) {
-          const raffProjectsObjectId = raffProjectsArray.map(project => project._id);
-          const projectInPole = Projects.find({ _id: { $in: raffProjectsObjectId }, tags: poles }).map(project => project._id._str);
-          const nbActions = Actions.find({ parentId: { $in: projectInPole } }).count();
-          return nbActions;
-        }
-      }
-      return 0;
-    // console.log(Actions.find({parentId: {$in: polesProjectsId}}).fetch())
-    }
-  },
-
-  //  Comptage(poleId){
-  //   // let id = poleId.valueOf()
-  //   let poleCursor = Projects.findOne({_id: poleId})
-  //   return poleCursor
-  //  }
+  routeSwitch() {
+    return Router.current().route.getName() !== 'switch';
+  }
 });
 
 Template.forceUpdateAvailable.events({

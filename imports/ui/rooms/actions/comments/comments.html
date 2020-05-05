@@ -29,7 +29,7 @@
   {{#with scope.room}}
   {{#with action}}
   <div class="item item-divider">
-  {{__ 'dda.action.action'}} : <a href="{{pathFor 'actionsDetail' _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str}}" class="positive">{{name}}</a>
+  Commentaire : <a href="{{pathFor 'actionsDetail' _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str}}" class="positive">{{name}}</a>
   </div>
   {{#each listComments}}
   <div class="list card">
@@ -74,8 +74,8 @@
 </template>
 
 <template name="commentsActionsAdd">
-  {{#autoForm id="addActionsComment" schema=SchemasCommentsRest type="method" meteormethod="insertComment" template="ionic" class=""}}
-  {{> afQuickField name='content' label-type='placeholder' rows=2}}
+  {{#autoForm id="addActionsComment" schema=SchemasCommentsRest type="method" meteormethod="insertComment" singleMethodArgument=true template="ionic" class=""}}
+  {{> afQuickField name='text' label-type='placeholder' rows=2}}
   <div class="item">
     <div class="button-bar">
       <button type="submit" class="button button-dark">{{__ "publish"}}</button>

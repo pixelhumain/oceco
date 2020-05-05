@@ -278,14 +278,27 @@
 <template name="buttonSubscribeAction">
 
 {{#if isContributors}}
-<div class="col col-center text-center">
-    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span>
+<div class="item col col-center text-center">
+    {{#if isEndDate}}
+    <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
+    {{else}}
+    {{#if isStartDate}}
+    <span class="energized"><i class="fa fa-clock-o"></i> {{__ "dda.actions.youparticipatingaction"}}</span> <br> fin <strong>{{timeSpentEnd}}</strong>
+    {{else}}
+    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span> <br> commence <strong>{{timeSpentStart}}</strong>
+    {{/if}}
+    {{/if}}
 </div>
 {{else}}
 {{#if isAFaire}}
+{{#if isEndDate}}
+<div class="item col col-center text-center">
+    <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
+</div>
+{{else}}
 {{#if isStartDate}}
-<div class="item">
-    <span class="balanced"><i class="fa fa-check"></i> En cours</span>
+<div class="item col col-center text-center">
+    <span class="energized"><i class="fa fa-clock-o"></i> En cours</span> <br> fin <strong>{{timeSpentEnd}}</strong>
 </div>
 {{else}}
 {{#if isNotMax}}
@@ -299,11 +312,13 @@
         {{__ "dda.actions.wantparticipateaction"}}</button>
 </div>
 {{else}}
-<div class="item">
+<div class="item col col-center text-center">
     <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
 </div>
 {{/if}}
 {{/if}}
+{{/if}}
+
 {{else}}
 {{#if isDepense}}
 {{#if isNotMax}}
@@ -317,7 +332,7 @@
         Dépenser {{credits}}</button>
 </div>
 {{else}}
-<div class="item">
+<div class="item col col-center text-center">
     <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>
 </div>
 {{/if}}

@@ -87,6 +87,7 @@
   {{#if isConnected}}
   {{#if scope.isMembers}}
   {{#if orgaCibleId}}
+  {{#if routeSwitch}}
   {{#ionTabs class="tabs-dark tabs-icon-top" style="ios"}}
   {{> ionTab title="Accueil" path="home" iconOff="ios-home" iconOn="ios-home"}}
   {{#if settingOceco.wallet}}
@@ -108,6 +109,8 @@
   {{/if}}
   {{/if}}
   {{/if}}
+  {{/if}}
+
 
   
   {{/ionNavView}}

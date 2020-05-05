@@ -18,8 +18,12 @@
 
     <div class="list">
     {{#each orga in OrganizationsOceco}}
-    <a href="{{pathFor 'switchRedirect' _id=orga._id._str}}" class="item">
+    <a href="{{pathFor 'switchRedirect' _id=orga._id._str}}" class="item {{#if orga.profilThumbImageUrl}}item-avatar{{/if}}">
         {{orga.name}}
+        {{#if orga.profilThumbImageUrl}}
+        {{> imgDoc profilThumbImageUrl=orga.profilThumbImageUrl}}
+        {{/if}}
+        <p>{{orga.description}}</p>
     </a>
     {{/each}}
     </div>

@@ -432,6 +432,8 @@ Organizations.helpers({
   },
   detailRooms (roomId) {
     if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+
+    }
       const query = {};
       if (this.isAdmin()) {
         query._id = new Mongo.ObjectID(roomId);
@@ -444,8 +446,9 @@ Organizations.helpers({
         }
         query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
       }
+    console.log(query);
       return Rooms.find(query);
-    }
+    
   },
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
