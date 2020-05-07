@@ -156,7 +156,9 @@ Template.commentsActionsEdit.onRendered(function () {
 
 Template.commentsActionsEdit.helpers({
   comment () {
-    return Comments.findOne({ _id: new Mongo.ObjectID(Router.current().params.commentId) });
+    const comment = Comments.findOne({ _id: new Mongo.ObjectID(Router.current().params.commentId) });
+    comment._id = comment._id._str;
+    return comment;
   },
   error () {
     return pageSession.get('error');
