@@ -3011,11 +3011,16 @@ Meteor.publish('all.actions2', function (raffId) {
   const eventsArrayId = [];
   Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function (event) { eventsArrayId.push(event._id._str); });
 
-  const inputDate = new Date();
+  //faire un ou si date pas remplie
   const query = {};
-  query.endDate = { $gte: inputDate };
-  query.parentId = { $in: [...eventsArrayId, ...poleProjectsId, raffId] };
-  query.status = 'todo';
+  const inputDate = new Date();
+  //query.endDate = { $gte: inputDate };
+  query.$or = [];
+  query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, raffId] }, status: 'todo' });
+  query.$or.push({ endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, raffId] }, status: 'todo' });
+
+  //query.parentId = { $in: [...eventsArrayId, ...poleProjectsId, raffId] };
+  //query.status = 'todo';
   const options = {};
   options.sort = {
     startDate: 1,

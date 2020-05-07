@@ -161,10 +161,12 @@
 </template>
 
 <template name="itemInputAction">
-    <div class="item item-button-right">
+    <div class="item item-text-wrap item-button-right">
         <h2><a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
             class="dark">{{action.name}}</a></h2>
+            {{#if action.startDate}}
         <p>{{> actionDate action=action}}</p>
+        {{/if}}
             {{#if displayDesc}}
             <div class="button display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
             {{else}}
@@ -173,10 +175,7 @@
     </div>
     {{#if displayDesc}}
     <div class="item">
-        <div class="row row-center padding-bottom">
-            {{> actionParticipantNeeded action=action}}
-            {{> actionDuration action=action }}
-        </div>
+
         <div div class="col ">
             {{#if action.creditPositive}}
             <div class="row">
@@ -190,31 +189,39 @@
                     {{action.creditNegative}} crédits</div>
             </div>
             {{/if}}
+            {{#if action.startDate}}
             <div class="row">
                 <div class="col-10"> <i class="ion-android-calendar"></i></div>
                 <div class="col">Début le
                     {{action.projectDay}}</div>
             </div>
+            {{/if}}
+            {{#if action.endDate}}
             <div class="row">
                 <div class="col-10"><i class="ion-clock"></i></div>
                 <div class="col">Durée
                     {{action.projectDuration}} H</div>
             </div>
+            {{/if}}
             <div class="row">
                 <div class="col-10"><i class="ion-man"></i></div>
                 <div class="col">Il y a {{action.actionParticipantsNbr}}
                     participant</div>
             </div>
+            {{#if action.min}}
             <div class="row row-wrap">
                 <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
                 <div class="col item-text-wrap ">Pour un besoin minimum de
                     {{action.min}} participant</div>
             </div>
+            {{/if}}
+            {{#if action.max}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
                 <div class="col">Et un maximum de {{action.max}}
                     participant</div>
             </div>
+            {{/if}}
         </div>
                 <div class="row">
                     {{>buttonSubscribeAction action }}
@@ -226,10 +233,6 @@
 
 <template name="itemInputActionDetail">
     <div class="item">
-        <div class="row row-center padding-bottom">
-            {{> actionParticipantNeeded action=action}}
-            {{> actionDuration action=action }}
-        </div>
 
         <div div class="col ">
                 {{#if action.creditPositive}}
@@ -244,11 +247,13 @@
                     {{action.creditNegative}} crédits</div>
                 </div>
                 {{/if}}
+                {{#if action.startDate}}
                 <div class="row">
                     <div class="col-10"> <i class="ion-android-calendar"></i></div>
                     <div class="col">Début le
                     {{action.projectDay}}</div>
                 </div>
+                {{/if}}
                 <div class="row">
                     <div class="col-10"><i class="ion-clock"></i></div>
                     <div class="col">Durée
@@ -259,16 +264,20 @@
                     <div class="col">Il y a {{action.actionParticipantsNbr}}
                     participant</div>
                 </div>
+                {{#if action.min}}
                 <div class="row row-wrap">
                     <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
                     <div class="col item-text-wrap ">Pour un besoin minimum de
                     {{action.min}} participant</div>
                 </div>
+                {{/if}}
+                {{#if action.max}}
                 <div class="row">
                     <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
                     <div class="col">Et un maximum de {{action.max}}
                     participant</div>
                 </div>
+                {{/if}}
         </div>
     </div>
     {{>buttonSubscribeAction action }}
@@ -279,14 +288,18 @@
 
 {{#if isContributors}}
 <div class="item col col-center text-center">
+    {{#if equals status 'todo'}}
     {{#if isEndDate}}
     <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
     {{else}}
     {{#if isStartDate}}
-    <span class="energized"><i class="fa fa-clock-o"></i> {{__ "dda.actions.youparticipatingaction"}}</span> <br> fin <strong>{{timeSpentEnd}}</strong>
+    <span class="energized"><i class="fa fa-clock-o"></i> {{__ "dda.actions.youparticipatingaction"}}</span> {{#if timeSpentEnd}}<br> fin <strong>{{timeSpentEnd}}</strong>{{/if}}
     {{else}}
-    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span> <br> commence <strong>{{timeSpentStart}}</strong>
+    <span class="balanced"><i class="fa fa-check"></i> {{__ "dda.actions.youparticipatingaction"}}</span> {{#if timeSpentStart}}<br> commence <strong>{{timeSpentStart}}</strong>{{/if}}
     {{/if}}
+    {{/if}}
+    {{else if equals status 'done'}}
+    <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
     {{/if}}
 </div>
 {{else}}
@@ -298,7 +311,7 @@
 {{else}}
 {{#if isStartDate}}
 <div class="item col col-center text-center">
-    <span class="energized"><i class="fa fa-clock-o"></i> En cours</span> <br> fin <strong>{{timeSpentEnd}}</strong>
+    <span class="energized"><i class="fa fa-clock-o"></i> En cours</span> {{#if timeSpentEnd}}<br> fin <strong>{{timeSpentEnd}}</strong>{{/if}}
 </div>
 {{else}}
 {{#if isNotMax}}
@@ -355,12 +368,18 @@
 </template>
 
 <template name="actionParticipantNeeded">
+    {{#if action.min}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-man"></i>
         {{action.actionParticipantsNbr}}</div>
+        {{/if}}
+        {{#if action.min}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-down"></i>
         {{action.min}}</div>
+        {{/if}}
+        {{#if action.max}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-up"></i>
         {{action.max}}</div>
+        {{/if}}
 </template>
 
 <template name="actionDate">
@@ -368,8 +387,7 @@
 </template>
 
 <template name="linkForAction">
-    <b><a
-            href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}">{{action.name}}</a>
+    <b><a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}">{{action.name}}</a>
     </b> <br>
 </template>
 

@@ -2931,6 +2931,17 @@ export const assignmeActionRooms = new ValidatedMethod({
     docRetour.id = id;
     const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
 
+    if (!action.startDate) {
+      Actions.update({ _id: actionObjectId }, { $set: { startDate: new Date() } });
+    }
+
+    if (!action.min) {
+      Actions.update({ _id: actionObjectId }, { $set: { min: 1 } });
+    }
+    if (!action.max) {
+      Actions.update({ _id: actionObjectId }, { $set: { max: 1 } });
+    }
+
     // notification
     const notif = {};
     const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });

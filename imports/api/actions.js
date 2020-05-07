@@ -168,38 +168,71 @@ if (Meteor.isClient) {
   import { Chronos } from './client/chronos.js';
 
   Actions.helpers({
+
     isStartDate() {
+      if (this.startDate) {
       const start = moment(this.startDate).toDate();
       return Chronos.moment(start).isBefore(); // True
+      } else {
+        return false;
+      }
     },
     isNotStartDate() {
+      if (this.startDate) {
       const start = moment(this.startDate).toDate();
       return Chronos.moment().isBefore(start); // True
+      } else {
+        return false;
+      }
     },
     isEndDate() {
+      if (this.endDate){
       const end = moment(this.endDate).toDate();
       return Chronos.moment(end).isBefore(); // True
+      } else {
+        return false;
+      }
     },
     isNotEndDate() {
+      if (this.endDate) {
       const end = moment(this.endDate).toDate();
       return Chronos.moment().isBefore(end); // True
+      } else {
+        return false;
+      }
     },
     timeSpentStart() {
+      if (this.startDate) {
       return Chronos.moment(this.startDate).fromNow();
+      } else {
+        return false;
+      }
     },
     timeSpentEnd() {
+      if (this.endDate) {
       return Chronos.moment(this.endDate).fromNow();
+      } else {
+        return false;
+      }
     },
   });
 } else {
   Actions.helpers({
     isEndDate() {
+      if (this.endDate) {
       const end = moment(this.endDate).toDate();
       return moment(end).isBefore(); // True
+      } else {
+        return false;
+      }
     },
     isNotEndDate() {
+      if (this.endDate) {
       const end = moment(this.endDate).toDate();
       return moment().isBefore(end); // True
+      } else {
+        return false;
+      }
     },
   });
 }
@@ -270,7 +303,7 @@ Actions.helpers({
     return this.credits > 0;
   },
   isNotMax() {
-    return this.max > this.countContributors();
+    return this.max ? (this.max > this.countContributors()) : true;
   },
   projectDayHour() {
     return moment(this.startDate).format(' ddd Do MMM à HH:mm ');

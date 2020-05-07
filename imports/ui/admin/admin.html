@@ -89,10 +89,10 @@
 
                {{#each action in listProjectsEventsActionsCreator}}
                {{#if action.finishedBy}}
-               <div class="item item-divider">
+               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-divider">
                    {{action.name}}
                    <p> {{numberTovalidate action.finishedBy}} à valider</p>
-               </div>
+               </a>
 
                {{#each user in userTovalidate action.finishedBy}}
                <div class="item item-button-right">

@@ -170,7 +170,7 @@
             <div class="row row-no-padding">{{> actionDuration action=action }}</div>
         </div>
     </div>
-    <div class="row row-center">
+    <div class="row row-center padding-bottom">
         <div class="col-90 col-center">
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content">{{action.name}}</a>
         </div>
@@ -219,20 +219,27 @@
 <template name='buttonActionFinish'>
 
     <div class="button-bar bar-positive">
-        
+        {{#if action.endDate}}
         {{#if action.isNotStartDate}}
-        <button class="button button-small button-positive button-block sortir-action-js"><i
-                class="fa fa-times-circle-o"></i> Ne plus participer</button>
+        <button class="button button-small button-positive button-block sortir-action-js"><i class="fa fa-times-circle-o"></i>
+            Ne plus participer</button>
         {{else}}
-            {{#if action.isEndDate}}
-                <button class="button button-small button-balanced button-block finish-action-js"><i class="fa fa-check"></i> Action
-                    Fini</button>
-                    {{else}}
-                    <div class="item">
-                        <span class="balanced"><i class="fa fa-check"></i> En cours</span>
-                    </div>
-            {{/if}}
+        {{#if action.isEndDate}}
+        <button class="button button-small button-balanced button-block finish-action-js"><i class="fa fa-check"></i> Action
+            Fini</button>
+        {{else}}
+        <div class="item col col-center text-center">
+            <span class="balanced"><i class="fa fa-check"></i> En cours</span>
+        </div>
         {{/if}}
+        {{/if}}
+        {{else}}
+        <button class="button button-small button-positive button-block sortir-action-js"><i class="fa fa-times-circle-o"></i>
+            Ne plus participer</button>
+        <button class="button button-small button-balanced button-block finish-action-js"><i class="fa fa-check"></i> Action
+            Fini</button>
+        {{/if}}
+        
     </div>
         
 </template>

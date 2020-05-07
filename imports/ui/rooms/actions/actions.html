@@ -31,7 +31,7 @@
   <div class="list card">
     {{> buttonsActions _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str status=status isCreator=isCreator isAdmin=../../isAdmin}}
 
-    <div class="item item-divider">
+    <div class="item item-divider item-text-wrap">
       {{name}}
     </div>
     <div class="item {{#if creatorProfile.profilThumbImageUrl}}item-avatar{{/if}}">
@@ -48,8 +48,17 @@
       <p>{{__ "dda.actions.spentstartenddate" start=formatStartDate  end=formatEndDate}},
         {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
       {{else}}
-      <p>{{__ "dda.actions.actionstartenddate" start=formatStartDate  end=formatEndDate}},
-        {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
+      <p>
+        {{#if startDate}}
+        {{#if endDate}}
+        Action à réaliser du {{formatStartDate}} au {{formatEndDate}},
+        {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong>
+        {{else}}
+        Action à réaliser commençant le {{formatStartDate}}
+         <strong>{{livestamp startDate}}</strong>
+        {{/if}}
+        {{/if}}
+      </p>
       {{/if}}
       
     </div>
