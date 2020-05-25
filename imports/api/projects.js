@@ -20,7 +20,7 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions, nameToCollection } from './helpers.js';
+import { searchQuery, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions, nameToCollection } from './helpers.js';
 
 export const Projects = new Mongo.Collection('projects', { idGeneration: 'MONGO' });
 
@@ -539,25 +539,53 @@ Projects.helpers({
   room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
-  listActionsCreator(type = 'all', status = 'todo') {
+  listActionsCreator(type = 'all', status = 'todo', search) {
     const query = {};
-    query.parentId = this._id._str;
-    query.status = status;
-    if (type === 'aFaire') {
-      query.credits = { $gt: 0 };
-    } else if (type === 'depenses') {
-      query.credits = { $lt: 0 };
-    }
     const inputDate = new Date();
-    query.endDate = { $gte: inputDate };
+
+    let queryone = {};
+    queryone.endDate = { $exists: true, $gte: inputDate };
+    queryone.parentId = { $in: [this._id._str] };
+    queryone.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        queryone = searchQuery(queryone, search);
+      }
+    }
+
+    let querytwo = {};
+    querytwo.endDate = { $exists: false };
+    querytwo.parentId = { $in: [this._id._str] };
+    querytwo.status = status;
+
+    if (Meteor.isClient) {
+      if (search) {
+        querytwo = searchQuery(querytwo, search);
+      }
+    }
+
+
+    if (type === 'aFaire') {
+      queryone.credits = { $gt: 0 };
+      querytwo.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      queryone.credits = { $lt: 0 };
+      querytwo.credits = { $lt: 0 };
+    }
+
+    query.$or = [];
+    query.$or.push(queryone);
+    query.$or.push(querytwo);
+
     const options = {};
     options.sort = {
       startDate: 1,
     };
+
     return Actions.find(query, options);
   },
-  countActionsCreator(type = 'all', status = 'todo') {
-    return this.listActionsCreator(type, status) && this.listActionsCreator(type, status).count();
+  countActionsCreator(type = 'all', status = 'todo', search) {
+    return this.listActionsCreator(type, status, search) && this.listActionsCreator(type, status, search).count();
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

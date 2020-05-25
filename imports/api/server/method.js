@@ -21,7 +21,7 @@ import { News, SchemasNewsRest, SchemasNewsRestBase } from '../news.js';
 import { Cities } from '../cities.js';
 import { Lists } from '../lists.js';
 import { Events, SchemasEventsRest, BlockEventsRest } from '../events.js';
-import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest } from '../organizations.js';
+import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../organizations.js';
 import { Projects, SchemasProjectsRest, BlockProjectsRest } from '../projects.js';
 import { Poi, SchemasPoiRest } from '../poi.js';
 import { Classified, SchemasClassifiedRest } from '../classified.js';
@@ -567,6 +567,10 @@ Meteor.methods({
       _id: new Mongo.ObjectID(id),
     });
 
+    if (actionOne && actionOne.max === 1 && actionOne.min === 1 && !actionOne.endDate) {
+      Actions.update({ _id: actionId }, { $set: { endDate: new Date() } });
+    }
+
     const notif = {};
     const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
     // author
@@ -615,10 +619,15 @@ Meteor.methods({
       },
     });
 
+
     // notification
     const actionOne = Actions.findOne({
       _id: new Mongo.ObjectID(id),
     });
+
+    if (actionOne && actionOne.max === 1 && actionOne.min === 1 && actionOne.startDate && actionOne.noStartDate) {
+      Actions.update({ _id: actionId }, { $unset: { startDate: '' } });
+    }
 
     const notif = {};
     const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
@@ -1312,10 +1321,40 @@ indexMax:20 */
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
+
+    if (doc.contextType === 'actions') {
+      if (!Actions.findOne({
+        _id: new Mongo.ObjectID(doc.contextId),
+      })) {
+        throw new Meteor.Error('not-authorized');
+      }
+    }
+
     if (!doc.parentCommentId) {
       doc.parentCommentId = '';
     }
     const retour = apiCommunecter.postPixel('co2/comment', 'save', doc);
+
+    // notif
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(doc.contextId),
+    });
+
+    // au participant
+    // au admin
+
+    if (doc.contextType === 'actions') {
+      const notif = {};
+      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+      // author
+      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+      // object
+      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+      ActivityStream.api.add(notif, 'addComment', 'isActionMembers');
+      ActivityStream.api.add(notif, 'addComment', 'isAdmin');
+
+    }
     return retour;
   },
   updateComment ({ modifier, _id }) {
@@ -2362,6 +2401,43 @@ export const updateRoles = new ValidatedMethod({
   },
 });
 
+export const updateOceco = new ValidatedMethod({
+  name: 'updateOceco',
+  validate: new SimpleSchema({
+    modifier: {
+      type: Object,
+      blackbox: true,
+    },
+    _id: {
+      type: String,
+    },
+  }).validator(),
+  run({ modifier, _id }) {
+    SchemasOrganizationsOcecoRest.clean(modifier);
+    SchemasOrganizationsOcecoRest.validate(modifier, { modifier: true });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    console.log(_id);
+    console.log(modifier);
+
+    if (!Organizations.findOne({ _id: new Mongo.ObjectID(_id) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const retour = Organizations.update({ _id: new Mongo.ObjectID(_id) }, modifier);
+    console.log(retour);
+    if (retour) {
+      return _id;
+    }
+    throw new Meteor.Error('error');
+  },
+});
+
+
+
 export const insertRoom = new ValidatedMethod({
   name: 'insertRoom',
   validate: SchemasRoomsRest.validator(),
@@ -2850,8 +2926,14 @@ export const assignmeActionRooms = new ValidatedMethod({
   name: 'assignmeActionRooms',
   validate: new SimpleSchema({
     id: { type: String },
+    startDate: {
+      type: String,
+      optional: true },
+    endDate: {
+      type: String,
+      optional: true },
   }).validator(),
-  run({ id }) {
+  run({ id, startDate, endDate }) {
     const actionObjectId = new Mongo.ObjectID(id);
     const parentObjectId = new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
     const orgOne = Organizations.findOne({ _id: parentObjectId });
@@ -2871,6 +2953,16 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     const parent = `finishedBy.${Meteor.userId()}`;
 
+    function typeOfNaN(x) {
+      if (Number.isNaN(x)) {
+        return true;
+      }
+      if (isNaN(x)) {
+        return true;
+      }
+      return false;
+    }
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
@@ -2878,7 +2970,8 @@ export const assignmeActionRooms = new ValidatedMethod({
     }
 
     function walletIsOk(id) {
-      const cost = parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits);
+
+      const cost = Actions.findOne({ _id: new Mongo.ObjectID(id) }) && Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits && !typeOfNaN(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits) ? parseInt(Actions.findOne({ _id: new Mongo.ObjectID(id) }).credits) : 1;
       if (cost >= 0) {
         return true;
       } else if (userCredits() >= (cost * -1)) {
@@ -2889,6 +2982,7 @@ export const assignmeActionRooms = new ValidatedMethod({
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
+        
         Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
         return true;
@@ -2896,6 +2990,7 @@ export const assignmeActionRooms = new ValidatedMethod({
 
       return false;
     }
+
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -2931,8 +3026,19 @@ export const assignmeActionRooms = new ValidatedMethod({
     docRetour.id = id;
     const retour = apiCommunecter.postPixel('co2/rooms', 'assignme', docRetour);
 
+    
     if (!action.startDate) {
-      Actions.update({ _id: actionObjectId }, { $set: { startDate: new Date() } });
+      if (startDate) {
+        Actions.update({ _id: actionObjectId }, { $set: { startDate: new Date(startDate), noStartDate: true } });
+      }else{
+        Actions.update({ _id: actionObjectId }, { $set: { startDate: new Date(), noStartDate: true } });
+      }
+    }
+
+    if (!action.endDate) {
+      if (endDate) {
+        Actions.update({ _id: actionObjectId }, { $set: { endDate: new Date(endDate), noEndDate: true } });
+      }
     }
 
     if (!action.min) {

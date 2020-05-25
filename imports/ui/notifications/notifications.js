@@ -215,6 +215,22 @@ Template.notificationsList.events({
           }
         }
       }
+    } else if (this.verb === 'addComment') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'actions') {
+            const arrayIdAction = Object.keys(this.object);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            if (this.targetEvent) {
+              Router.go('actionsDetailComments', { _id: this.targetEvent.id, scope: 'events', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && this.targetProject) {
+              Router.go('actionsDetailComments', { _id: this.targetProject.id, scope: 'projects', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            } else if (!this.targetEvent && !this.targetProject) {
+              Router.go('actionsDetailComments', { _id: this.target.id, scope: 'organizations', roomId: this.targetRoom.id, actionId: arrayIdAction[0] });
+            }
+          }
+        }
+      }
     } else if (this.verb === 'finish') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {

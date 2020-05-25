@@ -5,6 +5,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { Router } from 'meteor/iron:router';
+import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
 
@@ -14,6 +15,9 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
+
+import { searchAction } from '../../api/client/reactive.js';
+import { searchQuery } from '../../api/helpers.js';
 
 import './polesView.html';
 
@@ -51,6 +55,20 @@ Template.polesView.helpers({
     const poleProjectsCursor = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] });
     return poleProjectsCursor;
   },
+  allTags() {
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
+    if (!orgaOne) {
+      return null;
+    }
+
+    const arrayAll = orgaOne.actionsAll().map(action => action.tags);
+    const mergeDedupe = (arr) => {
+      return [...new Set([].concat(...arr))];
+    }
+    const arrayAllMerge = mergeDedupe(arrayAll);
+    console.log('output', arrayAllMerge);
+    return arrayAllMerge;
+  },
   dataReady() {
     return Template.instance().ready.get();
   },
@@ -71,20 +89,45 @@ Template.projectList2.helpers({
     return Events.find({ organizerId: projectId });
   },
   projectGlobalCount(projectObjectId) {
+    const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find({ parentId: { $in: [projectId] }, status: 'todo' }).count() > 0;
+
+    let query = {};
+    query.parentId = projectId;
+    query.status = 'todo';
+    if (search) {
+      query = searchQuery(query, search);
+    }
+
+    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find(query).count() > 0;
   },
   projectEventsCount(projectObjectId) {
     const projectId = projectObjectId.valueOf();
     return Events.find({ organizerId: projectId }).count();
   },
   projectActionsCount(projectObjectId) {
+    const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
-    return Actions.find({ parentId: projectId, status: 'todo' }).count();
+
+    let query = {};
+    query.parentId = projectId;
+    query.status = 'todo';
+    if (search) {
+      query = searchQuery(query, search);
+    }
+
+    return Actions.find(query).count();
   },
   projectActions(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    return Actions.find({ parentId: projectId, status: 'todo' });
+    const search = searchAction.get('search');
+    let query = {};
+    query.parentId = projectId;
+    query.status = 'todo';
+    if (search) {
+      query = searchQuery(query, search);
+    }
+    return Actions.find(query);
   },
   scroll() {
     return Template.instance().scroll.get();
@@ -93,10 +136,26 @@ Template.projectList2.helpers({
 
 Template.organizationList.helpers({
   organizationActionsCount() {
-    return Actions.find({ parentId: Session.get('orgaCibleId'), status: 'todo' }).count() > 0;
+    const search = searchAction.get('search');
+    let query = {};
+    query.parentId = Session.get('orgaCibleId');
+    query.status = 'todo';
+    if (search) {
+      query = searchQuery(query, search);
+    }
+
+    return Actions.find(query).count() > 0;
   },
   organizationActions() {
-    return Actions.find({ parentId: Session.get('orgaCibleId'), status: 'todo' });
+    const search = searchAction.get('search');
+    let query = {};
+    query.parentId = Session.get('orgaCibleId');
+    query.status = 'todo';
+    if (search) {
+      query = searchQuery(query, search);
+    }
+
+    return Actions.find(query);
   },
 });
 
@@ -125,11 +184,27 @@ Template.eventsList2.events({
 Template.eventsList2.helpers({
   eventAction(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] });
+    const search = searchAction.get('search');
+    let query = {};
+    query.parentId = eventId;
+    query.status = 'todo';
+    query[userAddedAction] = { $exists: false };
+    if (search) {
+      query = searchQuery(query, search);
+    }
+    return Actions.find(query);
   },
   eventActionCount(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;
-    return Actions.find({ $and: [{ parentId: eventId }, { [userAddedAction]: { $exists: false } }, { status: 'todo' }] }).count();
+    const search = searchAction.get('search');
+    let query = {};
+    query.parentId = eventId;
+    query.status = 'todo';
+    query[userAddedAction] = { $exists: false };
+    if (search) {
+      query = searchQuery(query, search);
+    }
+    return Actions.find(query).count();
   },
 });
 
@@ -152,6 +227,17 @@ Template.itemInputAction.events({
   },
 });
 
+Template.itemInputActionTags.events({
+  'click .searchtag-js'(event) {
+    event.preventDefault();
+    if (this) {
+      searchAction.set('search', `#${this}`);
+    } else {
+      searchAction.set('search', null);
+    }
+  }
+});
+
 Template.itemInputAction.helpers({
   displayDesc() {
     return Template.instance().displayDesc.get();
@@ -172,9 +258,36 @@ Template.buttonSubscribeAction.helpers({
   isCall() {
     return Template.instance().state.get('call');
   },
+  startDateDefault() {
+    return moment().format('YYYY-MM-DDTHH:mm');
+  }
 });
 
 Template.buttonSubscribeAction.events({
+  'submit .form-assignme-js'(event, instance) {
+    event.preventDefault();
+    instance.state.set('call', true);
+    const action = { id: this._id._str };
+
+    if (!this.startDate && event.target && event.target.startDate && event.target.startDate.value) {
+      action.startDate = moment(event.target.startDate.value).format('YYYY-MM-DDTHH:mm:ssZ');
+      console.log(action.startDate);
+    }
+    if (!this.endDate && event.target && event.target.endDate && event.target.endDate.value) {
+      action.endDate = moment(event.target.endDate.value).format('YYYY-MM-DDTHH:mm:ssZ');
+      console.log(action.endDate);
+    }
+
+
+    Meteor.call('assignmeActionRooms', action, (error) => {
+      if (error) {
+        instance.state.set('call', false);
+        IonPopup.alert({ template: i18n.__(error.reason) });
+      }
+    });
+    
+
+  },
   'click .action-assignme-js'(event, instance) {
     event.preventDefault();
     instance.state.set('call', true);

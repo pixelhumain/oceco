@@ -212,7 +212,7 @@
 
 <template name='whalletInputInWaitingAction'>
 <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item">{{action.name}}
-    <div class="badge badge-{{badgeColorTest}}">{{action.credits}} R</div>
+    <div class="badge badge-{{badgeColorTest}}">{{action.credits}} {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}</div>
 </a>
 </template>
 

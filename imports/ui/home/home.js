@@ -12,11 +12,13 @@ import './home.html';
 import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 
+import { searchAction } from '../../api/client/reactive.js';
+
 window.Organizations = Organizations;
 window.Projects = Projects;
 
 Template.homeView.onCreated(function () {
-
+  searchAction.set('search', null);
 });
 
 Template.homeView.helpers({
@@ -24,6 +26,20 @@ Template.homeView.helpers({
     return Organizations.findOne({
       _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
     });
+  },
+  allTags() {
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
+    if (!orgaOne) {
+      return null;
+    }
+
+    const arrayAll = orgaOne.actionsAll().map(action => action.tags);
+    const mergeDedupe = (arr) => {
+      return [...new Set([].concat(...arr))];
+    };
+    const arrayAllMerge = mergeDedupe(arrayAll);
+    console.log('output', arrayAllMerge);
+    return arrayAllMerge;
   },
   RaffineriePoles() {
     if (Session.get('settingOceco').pole === true) {
@@ -40,6 +56,9 @@ Template.homeView.helpers({
       const raffinerieCursor = Organizations.findOne({ _id: id });
       return raffinerieCursor.listProjectsCreator();
     }
+  },
+  search() {
+    return searchAction.get('search');
   },
 });
 
@@ -62,4 +81,21 @@ Template.projectsView.helpers({
   dataReady() {
     return Template.instance().ready.get();
   },
+});
+
+Template.searchActions.helpers({
+  search() {
+    return searchAction.get('search');
+  },
+});
+
+Template.searchActions.events({
+  'keyup #search, change #search': _.throttle((event) => {
+    if (event.currentTarget.value.length > 0) {
+      // console.log(event.currentTarget.value);
+      searchAction.set('search', event.currentTarget.value);
+    } else {
+      searchAction.set('search', null);
+    }
+  }, 500),
 });

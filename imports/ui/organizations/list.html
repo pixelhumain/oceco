@@ -319,3 +319,58 @@
   {{/if}}
   {{/unless}}
 </template>
+
+<template name="ocecoEdit">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">Configuration</h1>
+  {{/contentFor}}
+
+  {{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      Configuration Oceco
+    </div>
+    {{#if error}}
+    <div class="card">ddataReadyataReady
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#autoForm id="editOceco" schema=SchemasOrganizationsOcecoRest type="method-update" meteormethod="updateOceco" doc=oceco template="ionic" class="padding"}}
+    {{> afQuickField name='oceco.pole'}}
+    {{> afQuickField name='oceco.organizationAction'}}
+    {{> afQuickField name='oceco.projectAction'}}
+    {{> afQuickField name='oceco.eventAction'}}
+    {{> afQuickField name='oceco.commentsAction'}}
+    {{> afQuickField name='oceco.spendView'}}
+    {{> afQuickField name='oceco.memberAuto'}}
+    {{> afQuickField name='oceco.agenda'}}
+    {{> afQuickField name='oceco.costum.projects.form.geo'}}
+    {{> afQuickField name='oceco.costum.events.form.geo'}}
+    {{> afQuickField name='oceco.account'}}
+    {{> afQuickField name='oceco.home'}}
+    {{> afQuickField name='oceco.wallet'}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "edit"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
+</template>

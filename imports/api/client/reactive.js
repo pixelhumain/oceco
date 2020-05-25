@@ -4,6 +4,8 @@ export const pageSession = new ReactiveDict('pageSession');
 
 export const pageDirectory = new ReactiveDict('pageDirectory');
 
+export const searchAction = new ReactiveDict('searchAction');
+
 export const pageCollections = new ReactiveDict('pageCollections');
 
 export const geoId = new ReactiveDict('geoId');

@@ -356,19 +356,22 @@
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-calendar"></i> {{__ "actions"}}<span
-        class="badge badge-dark">{{countActionsCreator selectsubview 'todo'}}</span>
+        class="badge badge-dark">{{countActionsCreator selectsubview 'todo' search}}</span>
     </div>
+    {{#if settingOceco.spendView}}
     <div class="item tabs">
         <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">Programmés</a>
         <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés</a>
     </div>
+    {{/if}}
+    {{>searchActions}}
     {{#if equals selectsubview 'aFaire'}}
-        {{#each item in listActionsCreator selectsubview 'todo'}}
+        {{#each item in listActionsCreator selectsubview 'todo' search}}
 
         {{> itemInputAction action=item}}
         {{/each}}
     {{else if equals selectsubview 'depenses'}}
-        {{#each item in listActionsCreator selectsubview 'todo'}}
+        {{#each item in listActionsCreator selectsubview 'todo' search}}
 
         {{> itemInputAction action=item}}
         {{/each}}
@@ -740,7 +743,7 @@
     <div class="button-bar bar-positive">
       {{#if isMembers}}
       {{#if isAdmin}}
-      <a href="{{pathFor 'projectsAdd' _id=_id._str scope=scopeVar}}" class="button button-small"><i class="icon fa fa-plus"></i></a>
+      <a href="{{pathFor 'projectsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un projet</a>
       {{/if}}
       {{/if}}
     </div>

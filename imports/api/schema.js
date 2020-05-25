@@ -17,6 +17,300 @@ export const rolesPlusSelect = ['Organisateur', 'Partenaire', 'Financeur', 'Pré
 
 export const statusProposals = ['amendable', 'tovote', 'resolved', 'disabled', 'closed', 'archived'];
 
+
+export const SchemasOcecoText = new SimpleSchema({
+  textTitre: {
+    type: String,
+    optional: true,
+  },
+  textInfo: {
+    type: String,
+    optional: true,
+  },
+  textBouton: {
+    type: String,
+    optional: true,
+  },
+});
+
+
+export const SchemasOcecoObj = new SimpleSchema({
+  pole: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  organizationAction: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  projectAction: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  eventAction: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  commentsAction: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  spendView: {
+    type: Boolean,
+    defaultValue: true,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  memberAuto: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  agenda: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  costum: {
+    type: Object,
+    optional: true,
+  },
+  'costum.projects': {
+    type: Object,
+    optional: true,
+  },
+  'costum.projects.form': {
+    type: Object,
+    optional: true,
+  },
+  'costum.projects.form.geo': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  'costum.events': {
+    type: Object,
+    optional: true,
+  },
+  'costum.events.form': {
+    type: Object,
+    optional: true,
+  },
+  'costum.events.form.geo': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  account: {
+    type: Object,
+    optional: true,
+  },
+  'account.textVotreCreditTemps': {
+    type: String,
+    optional: true,
+  },
+  'account.textUnite': {
+    type: String,
+    optional: true,
+  },
+  home: {
+    type: Object,
+    optional: true,
+  },
+  'home.textTitre': {
+    type: String,
+    optional: true,
+  },
+  'home.textInfo': {
+    type: String,
+    optional: true,
+  },
+  wallet: {
+    type: Object,
+    optional: true,
+  },
+  'wallet.textTitre': {
+    type: String,
+    optional: true,
+  },
+  'wallet.textInfo': {
+    type: String,
+    optional: true,
+  },
+  'wallet.textBouton': {
+    type: String,
+    optional: true,
+  },
+  'wallet.coupDeMain': {
+    type: Object,
+    optional: true,
+  },
+  'wallet.coupDeMain.textTitre': {
+    type: String,
+    optional: true,
+  },
+  'wallet.coupDeMain.textInfo': {
+    type: String,
+    optional: true,
+  },
+  'wallet.coupDeMain.textBouton': {
+    type: String,
+    optional: true,
+  },
+  'wallet.enAttente': {
+    type: Object,
+    optional: true,
+  },
+  'wallet.enAttente.textTitre': {
+    type: String,
+    optional: true,
+  },
+  'wallet.enAttente.textInfo': {
+    type: String,
+    optional: true,
+  },
+  'wallet.enAttente.textBouton': {
+    type: String,
+    optional: true,
+  },
+  'wallet.valides': {
+    type: Object,
+    optional: true,
+  },
+  'wallet.valides.textTitre': {
+    type: String,
+    optional: true,
+  },
+  'wallet.valides.textInfo': {
+    type: String,
+    optional: true,
+  },
+  'wallet.valides.textBouton': {
+    type: String,
+    optional: true,
+  },
+});
+
+export const SchemasOceco = new SimpleSchema({
+  oceco: {
+    type: SchemasOcecoObj,
+  },
+});
+
+/* "oceco" : {
+        "pole" : true,
+        "organizationAction" : false,
+        "projectAction" : false,
+        "eventAction" : true,
+        "commentsAction": false,
+        "memberAuto" : false,
+        "agenda" : true,
+        "costum" : {
+            "projects" : {
+                "form" : {
+                    "geo" : false
+                }
+            },
+            "events" : {
+                "form" : {
+                    "geo" : false
+                }
+            }
+        },
+        account: {
+          textVotreCreditTemps:'Votre crédit temps',
+          textUnite : 'R'
+        },
+        home: {
+          textTitre: 'Choix du pole',
+          textInfo: 'Sur cette page vous devrez choisir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"'
+        },
+        wallet: {
+          textBouton: 'Espace temps',
+          textTitre: 'Espace temps',
+          textInfo: 'Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir',
+          coupDeMain: {
+            textBouton: 'Coup de main',
+            textTitre: 'Coup de main',
+            textInfo: 'C\'est la liste de toute vos actions à faire au quels vous êtes inscrit'
+          },
+          enAttente: {
+            textBouton: 'En attente',
+            textTitre: 'En attente',
+            textInfo: 'C\'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur'
+          },
+          valides: {
+            textBouton: 'Validés',
+            textTitre: 'Validés',
+            textInfo: 'C\'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits'
+          }
+        }
+    } */
+
 export const SchemasRolesRest = new SimpleSchema({
   contextId: {
     type: String,

@@ -187,7 +187,7 @@ ActivityStream.api = {
     options.fields.type = 1; */
     return ActivityStream.find(query, options);
   },
-  listUserOrga(array, type, idUser = null) {
+  listUserOrga(array, type, idUser = null, author = null) {
     let arrayIdsUsers = [];
     if (type === 'isAdmin') {
       arrayIdsUsers = Object.keys(array)
@@ -209,13 +209,18 @@ ActivityStream.api = {
         .map(k => k);
     }
 
+
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        idUsersObj[id] = {
-          isUnread: true,
-          isUnseen: true,
-        };
+        if (author && author.id && author.id === id) {
+          // author not notif
+        } else {
+          idUsersObj[id] = {
+            isUnread: true,
+            isUnseen: true,
+          };
+        }
       });
       return idUsersObj;
     }
@@ -397,7 +402,7 @@ ActivityStream.api = {
     // list des citoyens membre de l'orga
     if (targetObj && targetObj.links && targetObj.links.members) {
       // users / admin
-      const idUsersObj = ActivityStream.api.listUserOrga(targetObj.links.members, type, idUser);
+      const idUsersObj = ActivityStream.api.listUserOrga(targetObj.links.members, type, idUser, author);
 
       // console.log(idUsersObj);
 
@@ -620,9 +625,37 @@ ActivityStream.api = {
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
+        } else if (verb === 'addComment') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} commented on action {what} in {where}';
+              notificationObj.notify.icon = 'fa-comments';
+
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            } else if (type === 'isActionMembers') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} commented on action {what} in {where}';
+              notificationObj.notify.icon = 'fa-comments';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            }
+          }
         }
       }
-
       // console.log(notificationObj);
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);

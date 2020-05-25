@@ -8,6 +8,7 @@ import { Router } from 'meteor/iron:router';
 import i18n from 'meteor/universe:i18n';
 import { IonPopup } from 'meteor/meteoric:ionic';
 import { $ } from 'meteor/jquery';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Actions } from '../../../api/actions.js';
 import { Events } from '../../../api/events.js';
@@ -144,18 +145,20 @@ Template.actionsEdit.onCreated(function () {
 
 Template.actionsAdd.helpers({
   action() {
-    const collection = nameToCollection(Router.current().params.scope);
-    const event = collection.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
     const actionEdit = {};
-    if (event) {
-      if (event.startDate) {
-        actionEdit.startDate = event.startDate;
+    if (Router.current().params.scope === 'events') {
+      const collection = nameToCollection(Router.current().params.scope);
+      const event = collection.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+      if (event) {
+        if (event.startDate) {
+          actionEdit.startDate = moment(event.startDate).toDate();
+        }
+        if (event.endDate) {
+          actionEdit.endDate = moment(event.endDate).toDate();
+        }
       }
-      if (event.endDate) {
-        actionEdit.endDate = event.endDate;
-      }
+      console.log(actionEdit);
     }
-    console.log(actionEdit);
     return actionEdit;
   },
   error () {
@@ -201,13 +204,13 @@ AutoForm.addHooks(['addAction', 'editAction'], {
     method(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
-        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
+        Router.go('actionsList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },
     'method-update'(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
-        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
+        Router.go('actionsList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },
   },

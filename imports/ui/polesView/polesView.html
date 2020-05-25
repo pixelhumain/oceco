@@ -160,13 +160,28 @@
 
 </template>
 
+<template name="itemInputActionTags">
+{{#if tags}}
+<p>
+    {{#each tags}}
+    <span class="searchtag-js">#{{this}}</span>
+    {{/each}}
+</p>
+{{/if}}
+</template>
+
 <template name="itemInputAction">
     <div class="item item-text-wrap item-button-right">
-        <h2><a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
+        <h2>
+            {{#if action.commentCount}}
+            <i class="icon fa fa-comment balanced"></i> 
+            {{/if}}
+            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
             class="dark">{{action.name}}</a></h2>
             {{#if action.startDate}}
         <p>{{> actionDate action=action}}</p>
         {{/if}}
+                {{>itemInputActionTags tags=action.tags}}
             {{#if displayDesc}}
             <div class="button display-desc-js"> <i class="icon ion-ios-arrow-up"></i> </div>
             {{else}}
@@ -222,10 +237,16 @@
                     participant</div>
             </div>
             {{/if}}
+            {{#if action.commentCount}}
+            <div class="row">
+                <div class="col-10 balanced"><i class="icon fa fa-comment"></i></div>
+                <div class="col"> <a href="{{pathFor 'actionsDetailComments' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="dark">{{action.commentCount}} commentaires</a></div>
+            </div>
+            {{/if}}
         </div>
-                <div class="row">
+
                     {{>buttonSubscribeAction action }}
-                </div>
+
                 </div>
         {{/if}}
 
@@ -315,7 +336,30 @@
 </div>
 {{else}}
 {{#if isNotMax}}
-<div class="button-bar bar-positive padding-top">
+
+{{#unless startDate}}
+<div class="padding-top">
+    <form class="form-assignme-js">
+    <label for="" class="item item-input">
+        <span class="input-label">Date de début</span>
+        <input type="datetime-local" name="startDate" value="{{startDateDefault}}">
+    </label>
+    <label for="" class="item item-input">
+        <span class="input-label">Date de fin</span>
+        <input type="datetime-local" name="endDate">
+    </label>
+    <button class="button button-block button-positive {{#if isCall}}disabled{{/if}}">
+        {{#if isCall}}
+        <i class="icon fa fa-refresh fa-spin"></i>
+        {{else}}
+        <i class="fa fa-handshake-o"></i>
+        {{/if}}
+        {{__ "dda.actions.wantparticipateaction"}}</button>
+        </form>
+        </div>
+        
+    {{else}}
+    <div class="button-bar bar-positive padding-top">
     <button class="button action-assignme-js {{#if isCall}}disabled{{/if}}">
         {{#if isCall}}
         <i class="icon fa fa-refresh fa-spin"></i>
@@ -323,7 +367,11 @@
         <i class="fa fa-handshake-o"></i>
         {{/if}}
         {{__ "dda.actions.wantparticipateaction"}}</button>
-</div>
+        </div>
+    {{/unless}}
+
+    
+
 {{else}}
 <div class="item col col-center text-center">
     <span class="balanced"><i class="fa fa-check"></i> Déja complet</span>

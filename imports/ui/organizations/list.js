@@ -633,3 +633,55 @@ AutoForm.addHooks(['editBlockOrganization'], {
     }
   },
 });
+
+
+Template.ocecoEdit.onCreated(function () {
+  const template = Template.instance();
+  template.ready = new ReactiveVar();
+
+  this.autorun(function () {
+    const handle = Meteor.subscribe('scopeDetail', 'organizations', Router.current().params._id);
+    if (handle.ready()) {
+      template.ready.set(handle.ready());
+    }
+  });
+});
+
+Template.ocecoEdit.helpers({
+  oceco() {
+    const organization = Organizations.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+    const oceco = {};
+    oceco._id = organization._id._str;
+    oceco.oceco = organization.oceco;
+    console.log(oceco);
+    return oceco;
+  },
+  error() {
+    return pageSession.get('error');
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+AutoForm.addHooks(['editOceco'], {
+  after: {
+    method(error, result) {
+      if (!error) {
+        Router.go('adminDashboard', {}, { replaceState: true });
+      }
+    },
+    'method-update'(error, result) {
+      if (!error) {
+        Router.go('adminDashboard', {}, { replaceState: true });
+      }
+    },
+  },
+  onError(formType, error) {
+    if (error.errorType && error.errorType === 'Meteor.Error') {
+      if (error && error.error === 'error_call') {
+        pageSession.set('error', error.reason.replace(': ', ''));
+      }
+    }
+  },
+});

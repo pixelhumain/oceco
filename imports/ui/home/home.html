@@ -55,6 +55,7 @@
 
     {{else}}
 
+    {{>searchActions}}
     {{>projectsView}}
 
     {{/if}}
@@ -84,6 +85,13 @@
 
     {{/ionContent}}
     {{/ionView}}
+</template>
+
+<template name="searchActions">
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input id="search" type="text" placeholder="Chercher une action par nom, #tag..." value="{{search}}">
+    </label>
 </template>
 
 <template name='projectsView'>

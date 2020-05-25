@@ -4,7 +4,8 @@
   "description": "oceco",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "MONGO_URL='mongodb://localhost:5017/pixelhumain' UNIVERSE_I18N_LOCALES=all meteor run --settings settings-test.json --port 3000",
+    "deploy": "METEOR_CORDOVA_COMPAT_VERSION_ANDROID=547e3f612c8ec49e89afee6d510441d4315a6259 METEOR_CORDOVA_COMPAT_VERSION_IOS=ab5d143fae19621c5217446c8a712347a9df9c85 mup deploy --config=.deploy/mup.js --settings=.deploy/settings.json",
     "desktop": "meteor-desktop",
     "lint": "eslint .",
     "pretest": "npm run lint --silent",

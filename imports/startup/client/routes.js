@@ -175,6 +175,13 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('ocecoEdit', {
+    template: 'ocecoEdit',
+    path: '/oceco/:_id/edit',
+    loadingTemplate: 'loading',
+  });
+
+  
   this.route('poiBlockEdit', {
     template: 'poiBlockEdit',
     path: '/poi/:_id/edit/block/:block',

@@ -22,10 +22,12 @@ export const arrayAllLink = (links) => {
 };
 
 export const searchQuery = (query, search) => {
-  if (search.charAt(0) === '#' && search.length > 1) {
-    query.tags = { $regex: search.substr(1), $options: 'i' };
-  } else {
-    query.name = { $regex: search, $options: 'i' };
+  if (search) {
+    if (search && search.charAt(0) === '#' && search.length > 1) {
+      query.tags = { $regex: search.substr(1), $options: 'i' };
+    } else {
+      query.name = { $regex: search, $options: 'i' };
+    }
   }
   return query;
 };

@@ -8,7 +8,7 @@ import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 
 // schemas
-import { baseSchema, blockBaseSchema, geoSchema, preferences } from './schema.js';
+import { baseSchema, blockBaseSchema, geoSchema, preferences, SchemasOceco } from './schema.js';
 
 // collection
 import { Lists } from './lists.js';
@@ -21,11 +21,23 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { searchQuery, queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
 // SimpleSchema.debug = true;
+
+export const SchemasOrganizationsOcecoRest = new SimpleSchema(SchemasOceco, {
+  tracker: Tracker,
+  clean: {
+    filter: true,
+    autoConvert: true,
+    removeEmptyStrings: true,
+    trimStrings: true,
+    getAutoValues: true,
+    removeNullsFromArrays: true,
+  },
+});
 
 export const SchemasOrganizationsRest = new SimpleSchema(baseSchema, {
   tracker: Tracker,
@@ -303,11 +315,15 @@ Organizations.helpers({
   },
   isAdmin (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    return !!((this.links && this.links.members && this.links.members[bothUserId] && this.links.members[bothUserId].isAdmin && this.isToBeValidated(bothUserId) && this.isIsInviting('members', bothUserId)));
+    return !!((this.links && this.links.members && this.links.members[bothUserId] && this.links.members[bothUserId].isAdmin && this.isToBeValidated(bothUserId) && this.isAdminPending(bothUserId) && this.isIsInviting('members', bothUserId)));
   },
   isToBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return !((this.links && this.links.members && this.links.members[bothUserId] && this.links.members[bothUserId].toBeValidated));
+  },
+  isAdminPending (userId) {
+    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
+    return !((this.links && this.links.members && this.links.members[bothUserId] && this.links.members[bothUserId].isAdminPending));
   },
   toBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
@@ -434,20 +450,20 @@ Organizations.helpers({
     if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
 
     }
-      const query = {};
-      if (this.isAdmin()) {
-        query._id = new Mongo.ObjectID(roomId);
-        query.status = 'open';
-      } else {
-        query.$or = [];
-        const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str) ? Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str).split(',') : null;
-        if (roles) {
-          query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: true, $in: roles } });
-        }
-        query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
+    const query = {};
+    if (this.isAdmin()) {
+      query._id = new Mongo.ObjectID(roomId);
+      query.status = 'open';
+    } else {
+      query.$or = [];
+      const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str) ? Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str).split(',') : null;
+      if (roles) {
+        query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: true, $in: roles } });
       }
+      query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
+    }
     console.log(query);
-      return Rooms.find(query);
+    return Rooms.find(query);
     
   },
   countRooms (search) {
@@ -456,25 +472,50 @@ Organizations.helpers({
   room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
-  listActionsCreator(type = 'all', status = 'todo') {
+  listActionsCreator(type = 'all', status = 'todo', search) {
     const query = {};
-    query.parentId = this._id._str;
-    query.status = status;
-    if (type === 'aFaire') {
-      query.credits = { $gt: 0 };
-    } else if (type === 'depenses') {
-      query.credits = { $lt: 0 };
-    }
     const inputDate = new Date();
-    query.endDate = { $gte: inputDate };
+
+    let queryone = {};
+    queryone.endDate = { $exists: true, $gte: inputDate };
+    queryone.parentId = { $in: [this._id._str] };
+    queryone.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        queryone = searchQuery(queryone, search);
+      }
+    }
+
+    let querytwo = {};
+    querytwo.endDate = { $exists: false };
+    querytwo.parentId = { $in: [this._id._str] };
+    querytwo.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        querytwo = searchQuery(querytwo, search);
+      }
+    }
+
+    if (type === 'aFaire') {
+      queryone.credits = { $gt: 0 };
+      querytwo.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      queryone.credits = { $lt: 0 };
+      querytwo.credits = { $lt: 0 };
+    }
+
+    query.$or = [];
+    query.$or.push(queryone);
+    query.$or.push(querytwo);
+
     const options = {};
     options.sort = {
       startDate: 1,
     };
     return Actions.find(query, options);
   },
-  countActionsCreator(type = 'all', status = 'todo') {
-    return this.listActionsCreator(type, status) && this.listActionsCreator(type, status).count();
+  countActionsCreator(type = 'all', status = 'todo', search) {
+    return this.listActionsCreator(type, status, search) && this.listActionsCreator(type, status, search).count();
   },
   listMembers (search) {
     if (this.links && this.links.members) {
@@ -598,7 +639,7 @@ Organizations.helpers({
   listProjectsEventsActionsCreator() {
     const listEvents = this.listProjectsEventsCreator1M();
     const listProjects = this.listProjects();
-    if (listEvents || listProjects) {
+    if (listEvents || listProjects || this._id._str) {
       const eventIds = listEvents.map(event => event._id._str);
       const projectIds = listProjects.map(project => project._id._str);
       const mergeArray = [...eventIds, ...projectIds, this._id._str];
@@ -607,6 +648,7 @@ Organizations.helpers({
         $in: mergeArray,
       };
       query.status = 'todo';
+      console.log(Actions.find(query).count());
       return Actions.find(query);
     }
   },
@@ -652,6 +694,32 @@ Organizations.helpers({
     // const raffProjectsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
     // return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', parentId: { $in: raffProjectsArray } }, { sort: { endDate: -1 } });
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated' }, { sort: { endDate: -1 } });
+  },
+  actionsAll() {
+    const queryProjectId = `parent.${this._id._str}`;
+    const poleProjects = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
+    const poleProjectsId = [];
+    poleProjects.forEach((element) => {
+      poleProjectsId.push(element._id._str);
+    });
+
+    const eventsArrayId = [];
+    Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function (event) { eventsArrayId.push(event._id._str); });
+
+    //faire un ou si date pas remplie
+    const query = {};
+    const inputDate = new Date();
+    //query.endDate = { $gte: inputDate };
+    query.$or = [];
+    query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
+    query.$or.push({ endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
+
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+
+    return Actions.find(query);
   },
   settingOceco() {
     /* {

@@ -26,13 +26,14 @@
 </template>
 
 <template name="detailViewActions">
+
   {{#with room}}
   {{#with action}}
   <div class="list card">
     {{> buttonsActions _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str status=status isCreator=isCreator isAdmin=../../isAdmin}}
 
     <div class="item item-divider item-text-wrap">
-      {{name}}
+    <h2><a href="{{pathFor 'detailList' _id=../../_id._str scope=../../scopeVar}}" class="positive">{{../../name}}</a> : {{name}}</h2>
     </div>
     <div class="item {{#if creatorProfile.profilThumbImageUrl}}item-avatar{{/if}}">
       {{#if creatorProfile.profilThumbImageUrl}}
@@ -43,13 +44,17 @@
       </h2>
     </div>
     {{> statusActions status=status}}
-    <div class="item item-text-wrap">
+    
       {{#if isActionDepense}}
+      <div class="item item-text-wrap">
       <p>{{__ "dda.actions.spentstartenddate" start=formatStartDate  end=formatEndDate}},
         {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong></p>
+        </div>
       {{else}}
-      <p>
+      
         {{#if startDate}}
+        <div class="item item-text-wrap">
+        <p>
         {{#if endDate}}
         Action à réaliser du {{formatStartDate}} au {{formatEndDate}},
         {{__ "dda.actions.endofaction"}} <strong>{{livestamp endDate}}</strong>
@@ -57,19 +62,30 @@
         Action à réaliser commençant le {{formatStartDate}}
          <strong>{{livestamp startDate}}</strong>
         {{/if}}
+        </p>
+        </div>
         {{/if}}
-      </p>
+
       {{/if}}
       
-    </div>
+    
 
     <div class="item item-text-wrap">
+      {{#if description}}
       <p>{{description}}</p>
+      {{/if}}
       {{#if tags}}
       <p>
       {{#each tags}}
       <span class=""><i class="icon ion-pound"></i> {{this}}</span>
       {{/each}}
+      </p>
+      {{/if}}
+      {{#if urls}}
+      <p>
+        {{#each urls}}
+        <span class="">{{{autolinker this}}}</span>
+        {{/each}}
       </p>
       {{/if}}
     </div>

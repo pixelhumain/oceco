@@ -1225,7 +1225,7 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
             {
               find(scopeD) {
                 const query = {};
-                query.parentId = scopeId;
+                query.parentId = scopeD._id._str;
                 if (etat) {
                   query.status = etat;
                 }
@@ -3001,33 +3001,12 @@ Meteor.publish('all.actions2', function (raffId) {
   if (!this.userId) {
     return null;
   }
-  const queryProjectId = `parent.${raffId}`;
-  const poleProjects = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
-  const poleProjectsId = [];
-  poleProjects.forEach((element) => {
-    poleProjectsId.push(element._id._str);
-  });
 
-  const eventsArrayId = [];
-  Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function (event) { eventsArrayId.push(event._id._str); });
-
-  //faire un ou si date pas remplie
-  const query = {};
-  const inputDate = new Date();
-  //query.endDate = { $gte: inputDate };
-  query.$or = [];
-  query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, raffId] }, status: 'todo' });
-  query.$or.push({ endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, raffId] }, status: 'todo' });
-
-  //query.parentId = { $in: [...eventsArrayId, ...poleProjectsId, raffId] };
-  //query.status = 'todo';
-  const options = {};
-  options.sort = {
-    startDate: 1,
-  };
-
-  const eventActions = Actions.find(query);
-  return eventActions;
+  const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(raffId) });
+  if (!orgaOne) {
+    return null;
+  }
+  return orgaOne.actionsAll();
 });
 
 Meteor.publish('member.profile', function(memberId) {

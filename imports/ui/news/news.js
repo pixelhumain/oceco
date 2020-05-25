@@ -36,6 +36,8 @@ import { News, SchemasNewsRestBase } from '../../api/news.js';
 
 import { nameToCollection } from '../../api/helpers.js';
 
+import { searchAction } from '../../api/client/reactive.js';
+
 import './news.html';
 
 import '../components/directory/list.js';
@@ -377,6 +379,9 @@ Template.scopeActionsTemplate.helpers({
   selectsubview () {
     return pageSession.get('selectsubview');
   },
+  search() {
+    return searchAction.get('search');
+  },
   dataReady() {
     return Template.instance().ready.get();
   },
@@ -586,64 +591,6 @@ Template.newsList.events({
     const scope = pageSession.get('scope');
     Meteor.call('disconnectEntity', scopeId, scope, 'followers');
   }, */
-  'click .scanner-event'(event) {
-    event.preventDefault();
-    if (Meteor.isCordova) {
-      const scopeId = pageSession.get('scopeId');
-      const scope = pageSession.get('scope');
-      cordova.plugins.barcodeScanner.scan(
-        function (result) {
-          if (result.cancelled === false && result.text && result.format === 'QR_CODE') {
-            let qr = {};
-            if (result.text.split('#').length === 2) {
-              const urlArray = result.text.split('#')[1].split('.');
-              if (urlArray && urlArray.length === 4) {
-                qr.type = urlArray[0];
-                qr._id = urlArray[3];
-              }
-            } else {
-              qr = JSON.parse(result.text);
-            }
-            if (qr && qr.type && qr._id) {
-              if (qr.type === 'person') {
-                if (scope === 'events') {
-                  Meteor.call('saveattendeesEvent', scopeId, undefined, qr._id, function (error) {
-                    if (!error) {
-                      window.alert("Connexion à l'entité réussie");
-                    } else {
-                      window.alert(error.reason);
-                      // console.log('error', error);
-                    }
-                  });
-                } else if (scope === 'organizations') {
-                  Meteor.call('connectEntity', scopeId, 'organizations', qr._id, function (error) {
-                    if (!error) {
-                      window.alert("Connexion à l'entité réussie");
-                    } else {
-                      window.alert(error.reason);
-                      // console.log('error', error);
-                    }
-                  });
-                } else if (scope === 'projects') {
-                  Meteor.call('connectEntity', scopeId, 'projects', qr._id, function (error) {
-                    if (!error) {
-                      window.alert("Connexion à l'entité réussie");
-                    } else {
-                      window.alert(error.reason);
-                      // console.log('error', error);
-                    }
-                  });
-                }
-              }
-            }
-          }
-        },
-        function (error) {
-          alert(`Scanning failed: ${error}`);
-        },
-      );
-    }
-  },
   'click .give-me-more' () {
     const newLimit = pageSession.get('limit') + 5;
     pageSession.set('limit', newLimit);

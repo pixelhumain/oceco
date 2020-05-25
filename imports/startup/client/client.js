@@ -25,7 +25,7 @@ import { Documents } from '../../api/documents.js';
 
 // schemas
 import { SchemasEventsRest, BlockEventsRest } from '../../api/events.js';
-import { SchemasOrganizationsRest, BlockOrganizationsRest } from '../../api/organizations.js';
+import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../../api/organizations.js';
 import { SchemasProjectsRest, BlockProjectsRest } from '../../api/projects.js';
 import { SchemasPoiRest, BlockPoiRest } from '../../api/poi.js';
 import { SchemasClassifiedRest } from '../../api/classified.js';
@@ -278,6 +278,7 @@ Meteor.startup(function () {
 
   const registerSchemaMessages = () => {
     SchemasOrganizationsRest.i18n('schemas.organizationsrest');
+    SchemasOrganizationsOcecoRest.i18n('schemas.organizationsocecorest');
     SchemasPoiRest.i18n('schemas.poirest');
     SchemasEventsRest.i18n('schemas.eventsrest');
     SchemasProjectsRest.i18n('schemas.projectsrest');
@@ -440,7 +441,10 @@ Meteor.startup(function () {
     // console.log(Session.get('orgaCibleId'));
     if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
       const RaffId = Session.get('orgaCibleId');
-      return Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
+      const orgaOne = Organizations.findOne({
+        _id: new Mongo.ObjectID(RaffId),
+      });
+      return orgaOne && orgaOne.isAdmin();
     }
     return false;
   });
@@ -489,6 +493,7 @@ Meteor.startup(function () {
   Template.registerHelper('SchemasNewsRest', SchemasNewsRest);
   Template.registerHelper('SchemasEventsRest', SchemasEventsRest);
   Template.registerHelper('SchemasOrganizationsRest', SchemasOrganizationsRest);
+  Template.registerHelper('SchemasOrganizationsOcecoRest', SchemasOrganizationsOcecoRest);
   Template.registerHelper('SchemasPoiRest', SchemasPoiRest);
   Template.registerHelper('SchemasClassifiedRest', SchemasClassifiedRest);
   Template.registerHelper('SchemasProjectsRest', SchemasProjectsRest);

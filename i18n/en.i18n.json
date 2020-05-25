@@ -864,6 +864,116 @@
         }
       }
     },
+    "organizationsocecorest": {
+      "oceco":{
+      "pole": {
+        "label": "pole display"
+      },
+  "organizationAction": {
+    "label": "organization Action"
+  },
+  "projectAction": {
+    "label": "project Action"
+  },
+  "eventAction": {
+"label": "event Action"
+  },
+  "commentsAction": {
+"label": "comments Action"
+  },
+  "spendView": {
+    "label": "spend view"
+  },
+  "memberAuto": {
+"label": "member Auto"
+  },
+  "agenda": {
+"label": "agenda display"
+  },
+  "costum": {
+    "projects": {
+      "form": {
+        "geo": {
+          "label": "Activer geo dans le formulaire"
+        }
+      }
+    },
+    "events": {
+      "form": {
+        "geo": {
+          "label": "Activer geo dans le formulaire"
+        }
+      }
+    }
+  },
+  "account": {
+    "label": "Compte",
+    "textVotreCreditTemps":{
+      "label": "Texte : Votre crédit temps"
+    },
+    "textUnite": {
+      "label": "Texte : unité"
+    }
+  },
+  "home": {
+    "label": "Accueil",
+    "textTitre": {
+      "label": "Texte : Titre"
+    },
+    "textInfo": {
+      "label": "Texte : Info"
+    }
+  },
+   "wallet": {
+    "label": "Espace temps",
+    "textTitre": {
+      "label": "Texte : Titre"
+    },
+    "textInfo": {
+      "label": "Texte : Info"
+    },
+    "textBouton": {
+      "label": "Texte : Bouton"
+    },
+    "coupDeMain": {
+      "label": "Coup de main",
+      "textTitre": {
+        "label": "Texte : Titre"
+      },
+      "textInfo": {
+        "label": "Texte : Info"
+      },
+      "textBouton": {
+        "label": "Texte : Bouton"
+      }
+    },
+    "enAttente": {
+      "label": "En attente",
+      "textTitre": {
+        "label": "Texte : Titre"
+      },
+      "textInfo": {
+        "label": "Texte : Info"
+      },
+      "textBouton": {
+        "label": "Texte : Bouton"
+      }
+    },
+    "valides": {
+      "label": "Validés",
+      "textTitre": {
+        "label": "Texte : Titre"
+      },
+      "textInfo": {
+        "label": "Texte : Info"
+      },
+      "textBouton": {
+        "label": "Texte : Bouton"
+      }
+    }
+  }
+}
+    },
     "projectsrest" : {
       "name":{
         "label": "name"

@@ -12,6 +12,12 @@ App.info({
 App.setPreference('android-targetSdkVersion', '28');
 App.setPreference('android-minSdkVersion', '21');
 
+// fix App Error connection to the server was unsuccessful.
+// https://forum.ionicframework.com/t/app-error-and-cordova-deviceready-not-fired/50996/5
+App.setPreference('LoadUrlTimeoutValue', '1000000', 'android');
+App.setPreference('WebAppStartupTimeout', '1000000', 'android');
+App.setPreference('WebAppStartupTimeout', 120000);
+
 App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: 653253366584,
 });
@@ -96,10 +102,10 @@ App.appendToConfig(`<platform name="ios">
     <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
       <string>Your current location is used to show services that are nearby</string>
     </config-file>
-    <config-file platform="ios" target="*-Info.plist" parent="NSContactsUsageDescription">
-      <string>Your current contacts is used to invite your friends who have an email</string>
-    </config-file>
-  </platform>`);
+  </platform>
+  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:usesCleartextTraffic="true"></application>
+  </edit-config>`);
 
 App.accessRule('*');
 App.accessRule('http://*');
