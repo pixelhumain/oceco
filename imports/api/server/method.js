@@ -59,6 +59,16 @@ SimpleSchema.defineValidationErrorTransform((error) => {
   return ddpError;
 });
 
+function typeOfNaN(x) {
+  if (Number.isNaN(x)) {
+    return true;
+  }
+  if (isNaN(x)) {
+    return true;
+  }
+  return false;
+}
+
 const baseDocRetour = (docRetour, doc, scope) => {
   if (scope === 'block') {
     if (doc.typeElement === 'citoyens') {
@@ -664,7 +674,8 @@ Meteor.methods({
     const actionId = new Mongo.ObjectID(actId);
     const userNeed = new Mongo.ObjectID(usrId);
     const parent = `finishedBy.${usrId}`;
-    const credit = parseInt(Actions.findOne({ _id: actionId }).credits);
+    const credit = Actions.findOne({ _id: actionId }) && Actions.findOne({ _id: actionId }).credits && !typeOfNaN(Actions.findOne({ _id: actionId }).credits) ? parseInt(Actions.findOne({ _id: actionId }).credits) : 1;
+    // const credit = parseInt(Actions.findOne({ _id: actionId }).credits);
     const userActions = `userWallet.${orgId}.userActions.${actId}`;
     const userCredits = `userWallet.${orgId}.userCredits`;
     if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists: 1 } })) {
@@ -2952,16 +2963,6 @@ export const assignmeActionRooms = new ValidatedMethod({
 
 
     const parent = `finishedBy.${Meteor.userId()}`;
-
-    function typeOfNaN(x) {
-      if (Number.isNaN(x)) {
-        return true;
-      }
-      if (isNaN(x)) {
-        return true;
-      }
-      return false;
-    }
 
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());

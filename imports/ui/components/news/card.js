@@ -166,11 +166,10 @@ Template.actionSheet.events({
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'info' });
         }
-        if (index === 1) {
-          // console.log('Edit!');
+        /*if (index === 1) {
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'network' });
-        }
-        if (index === 2) {
+        }*/
+        if (index === 1) {
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'descriptions' });
         }

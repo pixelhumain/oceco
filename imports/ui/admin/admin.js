@@ -4,6 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
+//import { Counts } from 'meteor/tmeasday:publish-counts';
+import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import './admin.html';
@@ -197,20 +199,65 @@ Template.listProjectsEventsRaf.helpers({
 Template.listProjectsEventsActionsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
+  pageSession.setDefault('limit', 5);
+  pageSession.setDefault('incremente', 5);
+
   this.autorun(function () {
     pageSession.set('scopeId', Session.get('orgaCibleId'));
     pageSession.set('scope', 'organizations');
   });
 
   this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEventsActions', 'organizations', Session.get('orgaCibleId'));
-    this.ready.set(handle.ready());
+    if (pageSession.get('limit')) {
+      const handleCounter = this.subscribe('directoryActionsAllCounter', 'organizations', Session.get('orgaCibleId'));
+      const handle = this.subscribe('directoryActionsAll', 'organizations', Session.get('orgaCibleId'), 'all', pageSession.get('limit'));
+      this.ready.set(handle.ready() && handleCounter.ready());
+    }
   }.bind(this));
 });
 
+Template.listProjectsEventsActionsRaf.onRendered(function () {
+  const showMoreVisible = () => {
+    const $target = $('#showMoreResults');
+    if (!$target.length) {
+      return;
+    }
+    const threshold =
+      $('.content.overflow-scroll').scrollTop() +
+      $('.content.overflow-scroll').height() + 10;
+    const heightLimit = $('.content.overflow-scroll .list').height();
+    if (heightLimit < threshold) {
+      if (!$target.data('visible')) {
+        $target.data('visible', true);
+        pageSession.set('limit', pageSession.get('limit') + pageSession.get('incremente'));
+      }
+    } else if ($target.data('visible')) {
+      $target.data('visible', false);
+    }
+  };
+
+  $('.content.overflow-scroll').scroll(showMoreVisible);
+});
+
 Template.listProjectsEventsActionsRaf.helpers({
+  isLimit(countActions) {
+    return countActions > pageSession.get('limit');
+  },
+  countActions() {
+    return Counter.get(`countActionsAll.${Session.get('orgaCibleId')}`);
+  },
+  limit() {
+    return pageSession.get('limit');
+  },
   dataReady() {
     return Template.instance().ready.get();
+  },
+});
+
+Template.listProjectsEventsActionsRaf.events({
+  'click .give-me-more'() {
+    const newLimit = pageSession.get('limit') + pageSession.get('incremente');
+    pageSession.set('limit', newLimit);
   },
 });
 

@@ -91,16 +91,17 @@
 </template>
 
 <template name="listProjectsAValiderRaf">
-
+    <div class="list">
+{{#transition in="zoomIn" out="bounceOut"}}
                {{#each action in listProjectsEventsActionsCreator}}
                {{#if action.finishedBy}}
-               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-divider">
+               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-divider animated in">
                    {{action.name}}
                    <p> {{numberTovalidate action.finishedBy}} à valider</p>
                </a>
 
                {{#each user in userTovalidate action.finishedBy}}
-               <div class="item item-button-right">
+               <div class="item item-button-right animated in">
                    <h2>{{user.name}}</h2>
                    <button class="button button-positive admin-validation-js" usrId="{{user._id._str}}"
                        actionId="{{action._id._str}}">Valider</button>
@@ -109,6 +110,8 @@
                {{/each}}
                {{/if}}
                {{/each}}
+            {{/transition}}
+            </div>
 
 </template>
 
@@ -129,13 +132,17 @@
 </template>
 
 <template name="Directory_list_projects">
+    <div class="list">
+    {{#transition in="zoomIn" out="bounceOut"}}
     {{#each item in list}}
     {{> Directory_item_projects item=item scope=scope }}
     {{/each}}
+    {{/transition}}
+    </div>
 </template>
 
 <template name="Directory_item_projects">
-    <div class="item item-avatar item-button-right">
+    <div class="item item-avatar item-button-right animated in">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
         <a href="{{pathFor 'eventsAdd' _id=item._id._str scope='events'}}" class="button button-positive"><i
@@ -155,13 +162,17 @@
 </template>
 
 <template name="Directory_list_projects_events">
+    <div class="list">
+    {{#transition in="zoomIn" out="bounceOut"}}
     {{#each item in list}}
     {{> Directory_item_projects_events item=item scope=scope }}
     {{/each}}
+    {{/transition}}
+    </div>
 </template>
 
 <template name="Directory_item_projects_events">
-    <div class="item item-avatar item-button-right">
+    <div class="item item-avatar item-button-right animated in">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
         <a href="{{pathFor 'actionsAdd' _id=item._id._str scope='events'}}"
@@ -173,22 +184,35 @@
 <template name="listProjectsEventsActionsRaf">
     <div class="item item-divider">
         <i class="icon fa fa-calendar"></i> {{__ "actions"}} <span
-            class="badge badge-dark">{{countProjectsEventsActionsCreator}}</span>
+            class="badge badge-dark">{{countActions}}</span>
     </div>
     <div class="item item-text-wrap">Gestion des actions</div>
 
-    {{> Directory_list_projects_events_action list=listProjectsEventsActionsCreator scope="actions"}}
+    {{> Directory_list_projects_events_action list=(listProjectsEventsActionsCreator 'all' limit)  scope="actions"}}
 
+    {{#if dataReady}}
+    {{#if isLimit countActions}}
+    <div class="padding">
+        <button id="showMoreResults" class="button button-block button-dark give-me-more">
+            {{__ "more"}}...
+        </button>
+    </div>
+    {{/if}}
+    {{/if}}
 </template>
 
 <template name="Directory_list_projects_events_action">
+    <div class="list">
+    {{#transition in="zoomIn" out="bounceOut"}}
     {{#each item in list}}
     {{> Directory_item_projects_events_action item=item scope=scope }}
     {{/each}}
+    {{/transition}}
+    </div>
 </template>
 
 <template name="Directory_item_projects_events_action">
-    <div class="item">
+    <div class="item animated in">
         <h2><a href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}" class="dark">{{item.name}}</a></h2>
     </div>
 </template>

@@ -636,7 +636,7 @@ Organizations.helpers({
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
   },
-  listProjectsEventsActionsCreator() {
+  listProjectsEventsActionsCreator(status = 'todo', limit) {
     const listEvents = this.listProjectsEventsCreator1M();
     const listProjects = this.listProjects();
     if (listEvents || listProjects || this._id._str) {
@@ -647,9 +647,22 @@ Organizations.helpers({
       query.parentId = {
         $in: mergeArray,
       };
-      query.status = 'todo';
-      console.log(Actions.find(query).count());
-      return Actions.find(query);
+      if (status === 'todo') {
+        query.status = 'todo';
+      } else if (status === 'done') {
+        query.status = 'done';
+      }   
+
+      const options = {};
+      options.sort = {
+        startDate: 1,
+      };
+
+      if (limit) {
+        options.limit = limit;
+      }
+      console.log(query);
+      return Actions.find(query, options);
     }
   },
   countProjectsEventsActionsCreator() {

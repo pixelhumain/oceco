@@ -1,7 +1,7 @@
 <template name="scopeCard">
   <div class="{{class}}">
     {{#with scope}}
-    <div class="item item-avatar item-button-right">
+    <div class="item item-avatar item-text-wrap item-button-right">
       {{#if profilThumbImageUrl}}
         <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
       {{else}}
@@ -90,9 +90,9 @@
       {{#transition in="slideInDown" out="slideOutUp"}}
       {{#if description}}
       {{#if descriptionHTML}}
-      <p class="right-top animated in">{{{textTags description tags}}}</p>
+      <p class="right-top animated in" style="white-space: pre-line;">{{{textTags description tags}}}</p>
       {{else}}
-      <p class="right-top animated in">{{#markdown}}{{textTags description tags}}{{/markdown}}</p>
+      <p class="right-top animated in" style="white-space: pre-line;">{{#markdown}}{{textTags description tags}}{{/markdown}}</p>
       {{/if}}
       {{/if}}
       {{/transition}}
