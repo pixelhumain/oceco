@@ -371,7 +371,7 @@ Meteor.startup(function () {
   },
   );
 
-  Template.registerHelper('notifyDisplay', notify => notifyDisplay(notify));
+  Template.registerHelper('notifyDisplay', notify => notifyDisplay(notify, null, true));
 
   Template.registerHelper('notificationsCount', () => ActivityStream.api.Unseen());
 

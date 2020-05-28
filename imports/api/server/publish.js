@@ -1380,7 +1380,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       } else {
         query._id = new Mongo.ObjectID(scopeId);
       }
-      console.log(JSON.stringify(query));
+      // console.log(JSON.stringify(query));
       return collection.find(query, options);
     },
     children: [{
@@ -2071,7 +2071,7 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
               },
               {
                 find(action) {
-                  return action.listMembersToBeValidated();
+                  return action.listContributors();
                 },
               },
             ],
@@ -3164,7 +3164,7 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
             option.sort = { endDate: -1 };
             option.limit = 100;
           }
-          console.log(query);
+          // console.log(query);
           return Actions.find(query, option);
         },
       },
@@ -3198,7 +3198,7 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
             option.sort = { endDate: -1 };
             option.limit = 100;
           }
-          console.log(query);
+          // console.log(query);
           return Actions.find(query, option);
         },
       },
@@ -3226,7 +3226,7 @@ Meteor.publishComposite('user.actions', function (scope, scopeId, etat) {
           option.sort = { endDate: -1 };
           option.limit = 100;
         }
-        console.log(query);
+        // console.log(query);
         return Actions.find(query, option);
       },
     },
@@ -3283,7 +3283,7 @@ Meteor.publishComposite('user.actions.historique', function (scope, scopeId) {
             queryAction[finished] = 'validated';
             option.sort = { endDate: -1 };
             option.limit = 100;
-            console.log(queryAction);
+            // console.log(queryAction);
             return Actions.find(queryAction, option);
           }
         }

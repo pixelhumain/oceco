@@ -145,6 +145,8 @@
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  
+  <a href="{{pathFor 'actionsAssign' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="ion-ios-people"></i> Assigner</a>
   <button class="button button-small action-action-js" data-action="done"><i class="fa fa-trash"></i> {{__ "dda.actions.buttons.close"}}</button>
 </div>
 {{else if isCreator}}

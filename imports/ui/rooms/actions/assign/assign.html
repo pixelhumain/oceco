@@ -1,0 +1,49 @@
+<template name="assignMembers">
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">Assigner</h1>
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+{{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+    <div class="list">
+      <div class="item item-divider">
+        <i class="icon ion-ios-people"></i> {{__ "members"}} <span class="badge badge-dark">{{organizations.countMembers}}</span>
+      </div>
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input id="search" type="text" placeholder="Chercher une action par nom..." value="{{search}}">
+      </label>
+      {{#transition in="zoomIn" out="bounceOut"}}
+      {{#each organizations.listMembers search}}
+      <div class="item item-avatar item-button-right animated out">
+        {{> imgDoc}}
+        <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
+        {{#if actions.isContributors _id._str}}
+        <button class="button button-positive unassignmember-js">
+          <i class="icon fa fa-unlink"></i>
+        </button>
+        {{else}}
+        <button class="button button-positive assignmember-js">
+          <i class="icon ion-person-add"></i>
+        </button>
+        {{/if}}
+      </div>
+      {{/each}}
+      {{/transition}}
+    </div>
+
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+{{> loading}}
+{{/if}}
+</template>

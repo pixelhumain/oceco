@@ -59,8 +59,9 @@ Template.buttonActionFinish.events({
   'click .sortir-action-js' (event) {
     event.preventDefault();
     const actionId = this.action._id._str;
+    const orgId = Session.get('orgaCibleId');
     Meteor.call('exitAction', {
-      id: actionId,
+      id: actionId, orgId,
     }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });

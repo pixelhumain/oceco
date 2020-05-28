@@ -240,7 +240,7 @@ Template.notificationsList.events({
           }
         }
       }
-    } else if (this.verb === 'join' || this.verb === 'joinSpent') {
+    } else if (this.verb === 'join' || this.verb === 'joinSpent' || this.verb === 'joinAssign') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {
@@ -272,7 +272,7 @@ Template.notificationsList.events({
           }
         }
       }
-    } else if (this.verb === 'exit') {
+    } else if (this.verb === 'leave' || this.verb === 'leaveAssign') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {
           if (this.notify.objectType === 'actions') {

@@ -651,10 +651,10 @@ if (Meteor.isClient) {
   };
 }
 
-export const notifyDisplay = (notify, lang = null) => {
+export const notifyDisplay = (notify, lang = null, html = false) => {
   if (notify) {
     let label = notify.displayName;
-    const arrayReplace = {};
+    let arrayReplace = {};
     if (lang) {
       arrayReplace._locale = lang;
     }
@@ -738,6 +738,11 @@ export const notifyDisplay = (notify, lang = null) => {
           }
         }
       });
+      if (Meteor.isClient && html) {
+        Object.keys(arrayReplace).forEach(function (item) {
+          arrayReplace[item] = `<strong>${arrayReplace[item]}</strong>`;
+        });
+      }
       // {author} invited {who} to join {where}
       return lang ? i18n.__(`activitystream.notification.${label}`, arrayReplace) : i18n.__(`activitystream.notification.${label}`, arrayReplace);
     }

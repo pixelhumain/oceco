@@ -199,8 +199,8 @@ Template.listProjectsEventsRaf.helpers({
 Template.listProjectsEventsActionsRaf.onCreated(function () {
   this.ready = new ReactiveVar();
 
-  pageSession.setDefault('limit', 5);
-  pageSession.setDefault('incremente', 5);
+  pageSession.setDefault('limit', 10);
+  pageSession.setDefault('incremente', 10);
 
   this.autorun(function () {
     pageSession.set('scopeId', Session.get('orgaCibleId'));

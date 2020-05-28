@@ -272,7 +272,7 @@ ActivityStream.api = {
     notificationObj.targetRoom.name = roomOne.name;
     return notificationObj;
   },
-  add({ target, object, author }, verb, type = 'isMember', idUser = null) {
+  add({ target, object, author, mention }, verb, type = 'isMember', idUser = null) {
     let notificationObj = {};
     notificationObj.type = 'oceco';
     notificationObj.verb = verb;
@@ -419,10 +419,10 @@ ActivityStream.api = {
           targetNofifScope = { ...notificationObj.targetEvent };
         } else if (notificationObj && !notificationObj.targetEvent && notificationObj.targetProject) {
           targetNofifScope = { ...notificationObj.targetProject };
-          console.log(targetNofifScope);
+          // console.log(targetNofifScope);
         } else if (notificationObj && !notificationObj.targetEvent && !notificationObj.targetProject) {
           targetNofifScope = { ...targetObj };
-          console.log(targetNofifScope);
+          // console.log(targetNofifScope);
         }
 
 
@@ -445,6 +445,39 @@ ActivityStream.api = {
               // isMember
             } else if (type === 'isUser') {
               // isUser
+            }
+          }
+        } else if (verb === 'joinAssign') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} assign to the action {what} from {where}';
+              // notificationObj.notify.displayName = '{who} participates to {where}';
+              notificationObj.notify.icon = 'fa-group';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+              notificationObj.notify.labelArray['{mentions}'] = [mention.name];
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              // isUser
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} assign the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-group';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
         } else if (verb === 'joinSpent') {
@@ -486,6 +519,38 @@ ActivityStream.api = {
               // isMember
             } else if (type === 'isUser') {
               // isUser
+            }
+          }
+        } else if (verb === 'leaveAssign') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} removed {mentions} from the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+              notificationObj.notify.labelArray['{mentions}'] = [mention.name];
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              // isUser
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} removed you from the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
         } else if (verb === 'finish') {

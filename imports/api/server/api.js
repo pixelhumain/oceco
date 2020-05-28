@@ -8,7 +8,7 @@ const callPixelRest = (token, method, controller, action, post) => {
   // post['X-Auth-Token'] = token;
   // post['X-User-Id'] = Meteor.userId();
   // post['json'] = 1;
-  console.log(post);
+   // console.log(post);
   const responsePost = HTTP.call(method, `${Meteor.settings.endpoint}/${controller}/${action}`, {
     headers: {
       'X-Auth-Token': token,
@@ -21,12 +21,12 @@ const callPixelRest = (token, method, controller, action, post) => {
       jar: true,
     },
   });
-    console.log(responsePost);
+     // console.log(responsePost);
   if (responsePost && responsePost.data && responsePost.data.result) {
     return responsePost;
   }
   if (responsePost && responsePost.data && responsePost.data.msg) {
-     console.log(responsePost);
+     // console.log(responsePost);
     throw new Meteor.Error('error_call', responsePost.data.msg);
   } else {
     throw new Meteor.Error('error_server', 'error server');

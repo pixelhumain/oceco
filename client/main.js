@@ -18,14 +18,7 @@ import '../imports/ui/home/home.js';
 
 import '../imports/ui/polesView/polesView.js';
 
-// import '../imports/ui/actionView/actionView.js';
-
 import '../imports/ui/wallet/wallet.js';
-
-
-// import '../imports/ui/video/video.js';
-
-// import '../imports/ui/sensors/sensors.js';
 
 
 import '../imports/ui/mapscope/mapscope.js';
@@ -55,6 +48,7 @@ import '../imports/ui/rooms/proposals/comments/comments.js';
 import '../imports/ui/rooms/proposals/proposals.js';
 import '../imports/ui/rooms/actions/comments/comments.js';
 import '../imports/ui/rooms/actions/actions.js';
+import '../imports/ui/rooms/actions/assign/assign.js';
 import '../imports/ui/rooms/resolutions/resolutions.js';
 
 /* import '../imports/ui/organizations/members/members.js';

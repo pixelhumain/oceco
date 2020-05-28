@@ -81,17 +81,6 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
-  /* this.route('videoRTC', {
-    path: '/call',
-    template: 'videoRTC',
-    loadingTemplate: 'loading',
-  }); */
-
-  /* this.route('sensors', {
-    path: '/sensors',
-    template: 'sensors',
-    loadingTemplate: 'loading',
-  }); */
 
   this.route('switch', {
     path: '/switch',
@@ -426,6 +415,11 @@ Router.map(function() {
     template: 'commentsActionsEdit',
     path: '/:scope/rooms/:_id/room/:roomId/action/:actionId/comments/:commentId/edit',
     loadingTemplate: 'loading',
+  });
+
+  this.route('actionsAssign', {
+    template: 'assignMembers',
+    path: '/:scope/rooms/:_id/room/:roomId/action/:actionId/assign',
   });
 
   this.route('resolutionsDetail', {

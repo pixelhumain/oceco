@@ -462,7 +462,7 @@ Organizations.helpers({
       }
       query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
     }
-    console.log(query);
+    // console.log(query);
     return Rooms.find(query);
     
   },
@@ -655,13 +655,13 @@ Organizations.helpers({
 
       const options = {};
       options.sort = {
-        startDate: 1,
+        created: -1,
       };
 
       if (limit) {
         options.limit = limit;
       }
-      console.log(query);
+      // console.log(query);
       return Actions.find(query, options);
     }
   },

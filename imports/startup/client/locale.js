@@ -15,6 +15,7 @@ i18n.setOptions({
   close: '__',
   defaultLocale: 'en',
   sameLocaleOnServerConnection: true,
+  purify: string => string
   // translationsHeaders: {'Cache-Control':'no-cache'},
 });
 
