@@ -47,7 +47,7 @@ export const AutoLinkerMessage = (message) => {
     const clean = sanitizeHtml(message, {
       allowedTags: ['b', 'i', 'em', 'strong', 'a'],
       allowedAttributes: {
-        a: ['href', 'name', 'target'],
+        a: ['href', 'name', 'target', 'class'],
       },
     });
     return autolinker.link(clean);

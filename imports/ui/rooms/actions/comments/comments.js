@@ -108,6 +108,70 @@ Template.actionsDetailComments.events({
 });
 
 
+Template.commentsActionsAdd.onRendered(function () {
+  const self = this;
+  pageSession.set('error', false);
+  pageSession.set('queryMention', false);
+  pageSession.set('mentions', false);
+  self.$('textarea').atwho({
+    at: '@',
+    limit: 20,
+    delay: 600,
+    displayTimeout: 300,
+    startWithSpace: true,
+    displayTpl(item) {
+      return item.avatar ? `<li><img src='${item.avatar}' height='20' width='20'/> ${item.name}</li>` : `<li>${item.name}</li>`;
+    },
+    insertTpl: '${atwho-at}${slug}',
+    searchKey: 'name',
+  }).on('matched.atwho', function (event, flag, query) {
+    // console.log(event, "matched " + flag + " and the result is " + query);
+    if (flag === '@' && query) {
+      // console.log(pageSession.get('queryMention'));
+      if (pageSession.get('queryMention') !== query) {
+        pageSession.set('queryMention', query);
+        const querySearch = {};
+        querySearch.search = query;
+        Meteor.call('searchMemberautocomplete', querySearch, function (error, result) {
+          if (!error) {
+            const citoyensArray = _.map(result.citoyens, (array, key) => (array.profilThumbImageUrl ? { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'citoyens', avatar: `${Meteor.settings.public.urlimage}${array.profilThumbImageUrl}` } : { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'citoyens' }));
+            const organizationsArray = _.map(result.organizations, (array, key) => (array.profilThumbImageUrl ? { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'organizations', avatar: `${Meteor.settings.public.urlimage}${array.profilThumbImageUrl}` } : { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'organizations' }));
+            const arrayUnions = _.union(citoyensArray, organizationsArray);
+            // console.log(citoyensArray);
+            self.$('textarea').atwho('load', '@', arrayUnions).atwho('run');
+          }
+        });
+      }
+    }
+  })
+    .on('inserted.atwho', function (event, $li) {
+      // console.log(JSON.stringify($li.data('item-data')));
+
+      if ($li.data('item-data')['atwho-at'] === '@') {
+        const mentions = {};
+        // const arrayMentions = [];
+        mentions.name = $li.data('item-data').name;
+        mentions.id = $li.data('item-data').id;
+        mentions.type = $li.data('item-data').type;
+        mentions.avatar = $li.data('item-data').avatar;
+        mentions.value = ($li.data('item-data').slug ? $li.data('item-data').slug : $li.data('item-data').name);
+        mentions.slug = ($li.data('item-data').slug ? $li.data('item-data').slug : null);
+        if (pageSession.get('mentions')) {
+          const arrayMentions = pageSession.get('mentions');
+          arrayMentions.push(mentions);
+          pageSession.set('mentions', arrayMentions);
+        } else {
+          pageSession.set('mentions', [mentions]);
+        }
+      }
+    });
+});
+
+Template.commentsActionsAdd.onDestroyed(function () {
+  this.$('textarea').atwho('destroy');
+});
+
+
 Template.commentsActionsAdd.onCreated(function () {
   this.autorun(function() {
     pageSession.set('scopeId', Router.current().params._id);
@@ -151,8 +215,66 @@ Template.commentsActionsEdit.onCreated(function () {
 });
 
 Template.commentsActionsEdit.onRendered(function () {
-  pageSession.set('error', false);
+  const self = this;
+  self.$('textarea').atwho({
+    at: '@',
+    limit: 20,
+    delay: 600,
+    displayTimeout: 300,
+    startWithSpace: true,
+    displayTpl(item) {
+      return item.avatar ? `<li><img src='${item.avatar}' height='20' width='20'/> ${item.name}</li>` : `<li>${item.name}</li>`;
+    },
+    insertTpl: '${atwho-at}${slug}',
+    searchKey: 'name',
+  }).on('matched.atwho', function (event, flag, query) {
+    // console.log(event, "matched " + flag + " and the result is " + query);
+    if (flag === '@' && query) {
+      // console.log(pageSession.get('queryMention'));
+      if (pageSession.get('queryMention') !== query) {
+        pageSession.set('queryMention', query);
+        const querySearch = {};
+        querySearch.search = query;
+        Meteor.call('searchMemberautocomplete', querySearch, function (error, result) {
+          if (!error) {
+            const citoyensArray = _.map(result.citoyens, (array, key) => (array.profilThumbImageUrl ? { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'citoyens', avatar: `${Meteor.settings.public.urlimage}${array.profilThumbImageUrl}` } : { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'citoyens' }));
+            const organizationsArray = _.map(result.organizations, (array, key) => (array.profilThumbImageUrl ? { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'organizations', avatar: `${Meteor.settings.public.urlimage}${array.profilThumbImageUrl}` } : { id: key, name: array.name, slug: (array.slug ? array.slug : array.name), type: 'organizations' }));
+            const arrayUnions = _.union(citoyensArray, organizationsArray);
+            // console.log(citoyensArray);
+            self.$('textarea').atwho('load', '@', arrayUnions).atwho('run');
+          }
+        });
+      }
+    }
+  })
+    .on('inserted.atwho', function (event, $li) {
+      // console.log(JSON.stringify($li.data('item-data')));
+
+      if ($li.data('item-data')['atwho-at'] === '@') {
+        const mentions = {};
+        // const arrayMentions = [];
+        mentions.name = $li.data('item-data').name;
+        mentions.id = $li.data('item-data').id;
+        mentions.type = $li.data('item-data').type;
+        mentions.avatar = $li.data('item-data').avatar;
+        mentions.value = ($li.data('item-data').slug ? $li.data('item-data').slug : $li.data('item-data').name);
+        mentions.slug = ($li.data('item-data').slug ? $li.data('item-data').slug : null);
+        if (pageSession.get('mentions')) {
+          const arrayMentions = pageSession.get('mentions');
+          arrayMentions.push(mentions);
+          pageSession.set('mentions', arrayMentions);
+        } else {
+          pageSession.set('mentions', [mentions]);
+        }
+      }
+    });
 });
+
+
+Template.commentsActionsEdit.onDestroyed(function () {
+  this.$('textarea').atwho('destroy');
+});
+
 
 Template.commentsActionsEdit.helpers({
   comment () {
@@ -174,12 +296,20 @@ AutoForm.addHooks(['addActionsComment', 'editActionsComment'], {
       const actionId = pageSession.get('actionId');
       doc.contextType = 'actions';
       doc.contextId = actionId;
+      if (pageSession.get('mentions')) {
+        const arrayMentions = Array.from(pageSession.get('mentions').reduce((m, t) => m.set(t.value, t), new Map()).values()).filter(array => doc.text.match(`@${array.value}`) !== null);
+        doc.mentions = arrayMentions;
+      }
       return doc;
     },
     'method-update'(modifier) {
       const actionId = pageSession.get('actionId');
       modifier.$set.contextType = 'actions';
       modifier.$set.contextId = actionId;
+      if (pageSession.get('mentions')) {
+        const arrayMentions = Array.from(pageSession.get('mentions').reduce((m, t) => m.set(t.value, t), new Map()).values()).filter(array => modifier.$set.text.match(`@${array.value}`) !== null);
+        modifier.$set.mentions = arrayMentions;
+      }
       return modifier;
     },
   },
