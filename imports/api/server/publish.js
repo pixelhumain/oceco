@@ -154,9 +154,10 @@ Meteor.publish('notificationsScope', function(scope, scopeId) {
   if (!collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).isAdmin(this.userId)) {
     return null;
   }
-  Counts.publish(this, `notifications.${scopeId}.Unseen`, ActivityStream.api.queryUnseen(this.userId, scopeId), { noReady: true });
-  Counts.publish(this, `notifications.${scopeId}.Unread`, ActivityStream.api.queryUnread(this.userId, scopeId), { noReady: true });
-  Counts.publish(this, `notifications.${scopeId}.UnseenAsk`, ActivityStream.api.queryUnseenAsk(this.userId, scopeId), { noReady: true });
+  const scopeCap = scope.charAt(0).toUpperCase() + scope.slice(1, -1);
+  Counts.publish(this, `notifications.${scopeId}.Unseen`, ActivityStream.api.queryUnseen(this.userId, scopeId, scopeCap), { noReady: true });
+  Counts.publish(this, `notifications.${scopeId}.Unread`, ActivityStream.api.queryUnread(this.userId, scopeId, scopeCap), { noReady: true });
+  Counts.publish(this, `notifications.${scopeId}.UnseenAsk`, ActivityStream.api.queryUnseenAsk(this.userId, scopeId, scopeCap), { noReady: true });
   return collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listNotifications(this.userId);
 });
 

@@ -95,6 +95,7 @@ Template.searchActions.events({
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
       searchAction.set('search', event.currentTarget.value);
+      searchAction.set('actionName', event.currentTarget.value);
     } else {
       searchAction.set('search', null);
     }

@@ -597,7 +597,7 @@ Projects.helpers({
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    return ActivityStream.api.isUnseen(bothUserId, this._id._str);
+    return ActivityStream.api.isUnseen(bothUserId, this._id._str, 'projects');
   },
   countListNotifications(userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
@@ -605,7 +605,7 @@ Projects.helpers({
   },
   listNotificationsAsk (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    return ActivityStream.api.isUnseenAsk(bothUserId, this._id._str);
+    return ActivityStream.api.isUnseenAsk(bothUserId, this._id._str, 'projects');
   },
   countPopMap () {
     return this.links && this.links.contributors && _.size(this.links.contributors);

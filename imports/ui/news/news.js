@@ -284,11 +284,11 @@ Template.scopeNotificationsTemplate.onCreated(function() {
 
   this.autorun(function() {
     if (Router.current().params.scope !== 'events') {
-      const handleToBeValidated = newsListSubs.subscribe('listMembersToBeValidated', Router.current().params.scope, Router.current().params._id);
-      const handle = newsListSubs.subscribe('notificationsScope', Router.current().params.scope, Router.current().params._id);
+      const handleToBeValidated = Meteor.subscribe('listMembersToBeValidated', Router.current().params.scope, Router.current().params._id);
+      const handle = Meteor.subscribe('notificationsScope', Router.current().params.scope, Router.current().params._id);
       if (handleToBeValidated.ready() && handle.ready()) { this.ready.set(handle.ready()); }
     } else {
-      const handle = newsListSubs.subscribe('notificationsScope', Router.current().params.scope, Router.current().params._id);
+      const handle = Meteor.subscribe('notificationsScope', Router.current().params.scope, Router.current().params._id);
       if (handle.ready()) { this.ready.set(handle.ready()); }
     }
   }.bind(this));
