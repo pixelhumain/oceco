@@ -4,3 +4,4 @@ import '../../api/simpleschema-messages.js';
 import './startup.js';
 import './observePush.js';
 import '../../api/server/syncedcron.js';
+import '../../api/server/rest.js';

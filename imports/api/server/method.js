@@ -448,8 +448,47 @@ const countActionScope = (parentType, parentId, status) => {
   //
 };
 
-
 Meteor.methods({
+  'testSendRC'({ userId, parentType, parentId, msg }) {
+    new SimpleSchema({
+      userId: { type: String },
+      parentType: { type: String },
+      parentId: { type: String },
+      msg: { type: String },
+    }).validate({ userId, parentType, parentId, msg });
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (!Meteor.isDevelopment) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const collectionScope = nameToCollection(parentType);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(parentId), 'tools.chat': { $exists: true }, slug: { $exists: true }
+    });
+
+    /*
+    version simple avec un chat par element en utilisant le slug
+    mais si ça change coté communecter il faudra adapter
+
+    oceco.notificationChat
+    */
+
+    if (!scopeOne) {
+      throw new Meteor.Error('not-chat-room-co');
+    }
+
+    /*
+    il faut que l'user ce soit deja connecter au chat une fois pour ecrire à ça place
+    */
+
+    const params = {};
+    params.text = msg;
+    const retour = apiCommunecter.callRCPostMessage(scopeOne.slug, params, userId);
+    return retour;
+  },
   'testNotif'({ idOrganization, idAction, idAuthor, verb }) {
     new SimpleSchema({
       idAction: { type: String },
@@ -459,6 +498,10 @@ Meteor.methods({
     }).validate({ idAction, idOrganization, idAuthor, verb });
 
     if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (!Meteor.isDevelopment) {
       throw new Meteor.Error('not-authorized');
     }
 
@@ -2663,6 +2706,35 @@ export const insertAction = new ValidatedMethod({
     if (!scopeOne) {
       throw new Meteor.Error('not-authorized');
     }
+
+    // doit tester si oceco ou pas
+    if (doc.parentType === 'organizations') {
+      // test organizations > verifie oceco exists
+      if (!scopeOne.oceco) {
+        throw new Meteor.Error('not-authorized organizations oceco');
+      }
+    } else if (doc.parentType === 'projects') {
+      // projects > organizations > verifie oceco exists
+      const project = `links.projects.${scopeOne._id._str}`;
+      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 }});
+      if (!organizationOne) {
+        throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+      }
+    } else if (doc.parentType === 'events') {
+      // events > projects > organizations > verifie oceco exists
+      const event = `links.events.${scopeOne._id._str}`;
+      const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
+      if (projectOne) {
+        const project = `links.projects.${projectOne._id._str}`;
+        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+        if (!organizationOne) {
+          throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+        }
+      } else {
+        throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+      }
+    }
+
     // membre ou membre avec roles si room à des roles
     let room = Rooms.findOne({ parentId: doc.parentId });
     if (!room) {
@@ -2711,7 +2783,7 @@ export const insertAction = new ValidatedMethod({
         // console.log('organization is admin');
 
         if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized project');
+          throw new Meteor.Error('not-authorized organizations');
         }
       } else {
         throw new Meteor.Error('not-authorized citoyen');

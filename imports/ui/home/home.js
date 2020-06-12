@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Router } from 'meteor/iron:router';
 
 import './home.html';
 
@@ -98,4 +99,23 @@ Template.searchActions.events({
       searchAction.set('search', null);
     }
   }, 500),
+  // Pressing Ctrl+Enter should submit action
+  'keydown #search'(event, instance) {
+    if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
+      // savoir si je suis dans le detail d'un element
+      // récupérer les valeurs utiles pour soit publier
+      // soit rediriger vers le form action avce le name préremplie
+      if (event.currentTarget.value.length > 0) {
+        if (Router.current().route.getName() === 'actionsList') {
+          console.log(Router.current().params._id);
+          console.log(Router.current().params.scope);
+          searchAction.set('actionName', event.currentTarget.value);
+          Router.go('actionsAdd', { _id: Router.current().params._id, scope: Router.current().params.scope });
+
+          
+
+        }
+      }
+    }
+  },
 });

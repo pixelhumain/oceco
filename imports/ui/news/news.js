@@ -382,6 +382,12 @@ Template.scopeActionsTemplate.helpers({
   search() {
     return searchAction.get('search');
   },
+  scopeVar() {
+    return pageSession.get('scope');
+  },
+  scopeId() {
+    return pageSession.get('scopeId');
+  },
   dataReady() {
     return Template.instance().ready.get();
   },

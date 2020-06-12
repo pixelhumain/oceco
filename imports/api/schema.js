@@ -123,6 +123,17 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
+  notificationChat: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
   costum: {
     type: Object,
     optional: true,

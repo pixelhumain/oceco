@@ -5,10 +5,8 @@ import { request } from 'meteor/froatsnook:request';
 export const apiCommunecter = {};
 
 const callPixelRest = (token, method, controller, action, post) => {
-  // post['X-Auth-Token'] = token;
-  // post['X-User-Id'] = Meteor.userId();
   // post['json'] = 1;
-   // console.log(post);
+  // console.log(post);
   const responsePost = HTTP.call(method, `${Meteor.settings.endpoint}/${controller}/${action}`, {
     headers: {
       'X-Auth-Token': token,
@@ -21,12 +19,12 @@ const callPixelRest = (token, method, controller, action, post) => {
       jar: true,
     },
   });
-     // console.log(responsePost);
+  // console.log(responsePost);
   if (responsePost && responsePost.data && responsePost.data.result) {
     return responsePost;
   }
   if (responsePost && responsePost.data && responsePost.data.msg) {
-     // console.log(responsePost);
+    // console.log(responsePost);
     throw new Meteor.Error('error_call', responsePost.data.msg);
   } else {
     throw new Meteor.Error('error_server', 'error server');
@@ -34,8 +32,6 @@ const callPixelRest = (token, method, controller, action, post) => {
 };
 
 const callPixelMethodRest = (token, method, controller, action, post) => {
-  // post['X-Auth-Token'] = token;
-  // post['X-User-Id'] = Meteor.userId();
   post['json'] = 1;
   // console.log(post);
   const responsePost = HTTP.call(method, `${Meteor.settings.endpoint}/${controller}/${action}`, {
@@ -50,7 +46,7 @@ const callPixelMethodRest = (token, method, controller, action, post) => {
       jar: true,
     },
   });
-   // console.log(responsePost);
+  // console.log(responsePost);
   if (responsePost && responsePost.data) {
     return responsePost;
   }
@@ -77,6 +73,85 @@ apiCommunecter.postPixelMethod = function(controller, action, params) {
   }
   throw new Meteor.Error('Error identification');
 };
+
+apiCommunecter.callRCRestUserToken = (userId, method, action, post) => {
+  // console.log(post);
+  const params = {};
+  params.userId = userId;
+  const auth = apiCommunecter.callRCrest('POST', 'users.createToken', params);
+  if (auth && auth.data && auth.data.authToken) {
+    try {
+      const responsePost = HTTP.call(method, `${Meteor.settings.rocketchat.host}/api/v1/${action}`, {
+        headers: {
+          'X-Auth-Token': auth.data.authToken,
+          'X-User-Id': auth.data.userId,
+          // 'Content-type': 'application/json'
+        },
+        params: post,
+      });
+      // console.log(responsePost);
+      if (responsePost && responsePost.data && responsePost.data.success) {
+        return responsePost.data;
+      } 
+    } catch (error) {
+      console.log(error.response.data.error);
+      throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+    }
+
+  }
+
+};
+
+apiCommunecter.callRCrest = (method, action, post) => {
+  // console.log(post);
+  try {
+    const responsePost = HTTP.call(method, `${Meteor.settings.rocketchat.host}/api/v1/${action}`, {
+      headers: {
+        'X-Auth-Token': Meteor.settings.rocketchat.token,
+        'X-User-Id': Meteor.settings.rocketchat.userId,
+        // 'Content-type': 'application/json'
+      },
+      params: post,
+    });
+    // console.log(responsePost);
+    if (responsePost && responsePost.data && responsePost.data.success) {
+      return responsePost.data;
+    }
+  } catch (error) {
+    console.log(error.response.data.error);
+    throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+  }
+};
+
+apiCommunecter.callRCInfo = (name) => {
+  const params = {};
+  params.roomName = name;
+  const info = apiCommunecter.callRCrest('GET', 'rooms.info', params);
+  if (info) {
+    const room = {};
+    room._id = info.room._id;
+    room.fname = info.room.fname;
+    room.type = info.room.t === 'c' ? 'channel' : 'group';
+    return room;
+  }
+};
+
+
+apiCommunecter.callRCPostMessage = (name, params, userId) => {
+  const info = apiCommunecter.callRCInfo(name);
+  if (info) {
+    params.roomId = info._id;
+    params.alias = 'oceco';
+    // params.emoji = '';
+    params.avatar = Meteor.isDevelopment ? Meteor.absoluteUrl('/avatar.png', { rootUrl: 'http://192.168.1.24:3000' }) : Meteor.absoluteUrl('/avatar.png');
+    // const userIdTarget = userId || Meteor.userId();
+    // const retour = apiCommunecter.callRCRestUserToken(userIdTarget, 'POST', 'chat.postMessage', params);
+    const retour = apiCommunecter.callRCrest('POST', 'chat.postMessage', params);
+    // console.log(retour);
+    return retour;
+  }
+};
+
 
 const dataUriToBuffer = (uri) => {
   if (!/^data:/i.test(uri)) {
@@ -160,8 +235,8 @@ const callPixelUploadSaveRest = (token, folder, ownerId, input, dataURI, name, d
       contentType: 'image/jpeg',
     },
   };
-  if (params){
-    if (params['parentId']){
+  if (params) {
+    if (params['parentId']) {
       formData['parentId'] = params['parentId'];
     }
     if (params['parentType']) {

@@ -39,13 +39,9 @@
      {{#if settingOceco.organizationAction}}
      <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
     {{/if}}
-    {{#if equals settingOceco.memberAuto false}}
-    {{#if scope.isAdmin}}
     <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
       href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
-        class="icon fa fa-bell"></i></a>
-    {{/if}}
-    {{/if}}
+        class="icon fa fa-bell"></i> Notifications</a>
      <a class="tab-item {{#if equals selectview 'scopeProjectsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'projectsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsTemplate"><i class="icon fa fa-lightbulb-o"></i> Projets</a>
     </div>
   </div>
@@ -56,7 +52,10 @@
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
     {{#if settingOceco.projectAction}}
      <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
-    {{/if}}
+    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
+      href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
+        class="icon fa fa-bell"></i> Notifications</a>
+     {{/if}}
      <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i> Evénements</a>
     </div>
   </div>
@@ -65,7 +64,10 @@
   <div class="item tabs tabs-icon-top">
     <div class="tabs tabs-striped">
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
-    <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
+    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
+      href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
+        class="icon fa fa-bell"></i> Notifications</a>
+     <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
     </div>
   </div>
     {{> Template.dynamic template=selectview data=scope}}
@@ -259,6 +261,9 @@
 
     {{> Template.dynamic template=scopeBoutonNotificationsTemplate data=this}}
 
+    {{#if equals settingOceco.memberAuto false}}
+    {{#if equals scopeVar 'organizations'}}
+    {{#if scope.isAdmin}}
     {{#if listMembersToBeValidated}}
     <div class="item item-divider homestead">
       {{__ "Waiting for a response"}}
@@ -282,6 +287,17 @@
     </div>
     {{/each}}
     {{/transition}}
+    {{/if}}
+    {{/if}}
+    {{/if}}
+    {{/if}}
+
+    {{#if listNotifications}}
+    <div class="item item-divider homestead">
+      <i class="icon fa fa-bell"></i> {{__ "notifications"}} <span
+        class="badge badge-dark">{{countListNotifications}}</span>
+    </div>
+    {{> notificationsList notifications=listNotifications}}
     {{/if}}
 
   </div>
@@ -369,7 +385,17 @@
         {{#each item in listActionsCreator selectsubview 'todo' search}}
 
         {{> itemInputAction action=item}}
+        {{else}}
+
+        <div class="item button-bar bar-stable">
+          <a href="{{pathFor 'actionsAdd' _id=scopeId scope=scopeVar}}" class="button button-stable"><i
+              class="fa fa-plus"></i> Créer l'action à partir de votre recherche ?</a>
+        </div>
+
         {{/each}}
+
+        
+
     {{else if equals selectsubview 'depenses'}}
         {{#each item in listActionsCreator selectsubview 'todo' search}}
 

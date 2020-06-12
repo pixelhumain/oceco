@@ -9,6 +9,11 @@ import { Organizations } from './organizations.js';
 import { Projects } from './projects.js';
 import { Rooms } from './rooms.js';
 
+import { nameToCollection, notifyDisplay } from './helpers.js';
+
+
+
+
 export const ActivityStream = new Mongo.Collection('activityStream', { idGeneration: 'MONGO' });
 
 ActivityStream.api = {
@@ -272,15 +277,26 @@ ActivityStream.api = {
     notificationObj.targetRoom.name = roomOne.name;
     return notificationObj;
   },
+  isNotificationChat(organizationOne) {
+    if (organizationOne && organizationOne.oceco && organizationOne.oceco.notificationChat && organizationOne.oceco.notificationChat === true) {
+      // notification chat ok
+      return true;
+    }
+    return false;
+  },
   add({ target, object, author, mention }, verb, type = 'isMember', idUser = null) {
     let notificationObj = {};
     notificationObj.type = 'oceco';
     notificationObj.verb = verb;
 
     let targetObj = target;
+    let notificationChat = false;
+
 
     if (object && object.type === 'actions' && object.parentType === 'organizations') {
       const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
+
+      notificationChat = ActivityStream.api.isNotificationChat(organizationOne);
 
       if (!targetObj) {
         // target
@@ -312,6 +328,8 @@ ActivityStream.api = {
 
       const project = `links.projects.${projectOne._id._str}`;
       const organizationOne = Organizations.findOne({ [project]: { $exists: 1 } });
+
+      notificationChat = ActivityStream.api.isNotificationChat(organizationOne);
 
       if (!targetObj) {
         // target
@@ -345,6 +363,8 @@ ActivityStream.api = {
       const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
       const project = `links.projects.${projectOne._id._str}`;
       const organizationOne = Organizations.findOne({ [project]: { $exists: 1 } });
+
+      notificationChat = ActivityStream.api.isNotificationChat(organizationOne);
 
       if (!targetObj) {
         // target
@@ -725,9 +745,46 @@ ActivityStream.api = {
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);
       }
+      if (notificationObj.notify) {
+        if (notificationChat === true && type === 'isAdmin') {
+          // mais en fr direct
+          const text = notifyDisplay(notificationObj.notify, 'fr');
+          // sous quel user je l'envoie ?
+          ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text);
+        }
+      }
     }
   },
 };
+
+if (Meteor.isServer) {
+  import { apiCommunecter } from './server/api.js';
+
+  ActivityStream.api.sendRC = (userId, parentType, parentId, msg) => {
+    const collectionScope = nameToCollection(parentType);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(parentId), 'tools.chat': { $exists: true }, slug: { $exists: true }
+    });
+
+    /*
+    version simple avec un chat par element en utilisant le slug
+    mais si ça change coté communecter il faudra adapter
+
+    oceco.notificationChat
+    */
+
+    /*
+    il faut que l'user ce soit deja connecter au chat une fois pour ecrire à ça place
+    */
+
+    if (scopeOne) {
+      const params = {};
+      params.text = msg;
+      const retour = apiCommunecter.callRCPostMessage(scopeOne.slug, params, userId);
+      return retour;
+    }
+  };
+}
 
 ActivityStream.helpers({
   authorId () {

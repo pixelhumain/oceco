@@ -894,6 +894,9 @@
   "agenda": {
 "label": "agenda display"
   },
+  "notificationChat": {
+   "label": "notification chat"
+  },
   "costum": {
     "projects": {
       "form": {

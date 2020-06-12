@@ -450,6 +450,10 @@ Events.helpers({
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return ActivityStream.api.isUnseen(bothUserId, this._id._str);
   },
+  countListNotifications(userId) {
+    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
+    return this.listNotifications(bothUserId).count();
+  },
   listNotificationsAsk (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return ActivityStream.api.isUnseenAsk(bothUserId, this._id._str);

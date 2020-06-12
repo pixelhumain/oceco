@@ -20,7 +20,7 @@ import { nameToCollection } from '../../../api/helpers.js';
 // submanager
 import { newsListSubs } from '../../../api/client/subsmanager.js';
 
-import { pageSession } from '../../../api/client/reactive.js';
+import { pageSession, searchAction } from '../../../api/client/reactive.js';
 
 import './actions.html';
 
@@ -123,6 +123,11 @@ Template.actionsAdd.onCreated(function () {
   });
 });
 
+Template.actionsFields.onRendered(function () {
+  const template = Template.instance();
+  template.find('input[name=name]').focus();
+});
+
 Template.actionsEdit.onCreated(function () {
   const template = Template.instance();
   template.ready = new ReactiveVar();
@@ -159,6 +164,9 @@ Template.actionsAdd.helpers({
       }
       console.log(actionEdit);
     }
+    if (searchAction.get('actionName')) {
+      actionEdit.name = searchAction.get('actionName');
+    }
     return actionEdit;
   },
   error () {
@@ -166,6 +174,15 @@ Template.actionsAdd.helpers({
   },
   dataReady() {
     return Template.instance().ready.get();
+  },
+});
+
+Template.actionsAdd.events({
+  // Pressing Ctrl+Enter should submit the form
+  'keydown form'(event, instance) {
+    if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
+      instance.find('button[type=submit]').click();
+    }
   },
 });
 

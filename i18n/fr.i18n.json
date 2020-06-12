@@ -891,6 +891,9 @@
       "agenda": {
         "label": "Activer agenda évenement"
       },
+      "notificationChat": {
+        "label": "Notification chat"
+      },
       "costum": {
         "projects": {
           "form": {
