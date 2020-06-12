@@ -746,7 +746,7 @@ Organizations.helpers({
   },
   listNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    return ActivityStream.api.isUnseen(bothUserId, this._id._str);
+    return ActivityStream.api.isUnread(bothUserId, this._id._str);
   },
   countListNotifications (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

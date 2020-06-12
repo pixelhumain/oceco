@@ -80,6 +80,7 @@ ActivityStream.api = {
     if (bothScopeId) {
       query.verb = { $nin: ['ask'] };
       query['target.id'] = bothScopeId;
+      query[`notify.id.${bothUserId}.isUnread`] = true;
     } else {
       query[`notify.id.${bothUserId}.isUnread`] = true;
     }

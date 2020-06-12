@@ -359,6 +359,10 @@ Events.helpers({
     const organizerEvent = this.organizerEvent();
 
     if (bothUserId && this.parent) {
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!!((this.links && this.links.attendees && this.links.attendees[bothUserId] && this.links.attendees[bothUserId].isAdmin && this.isIsInviting('attendees', bothUserId)))) {
+        return true;
+      }
       if (this.parent[bothUserId] && this.parent[bothUserId].type === 'citoyens') {
         return true;
       }

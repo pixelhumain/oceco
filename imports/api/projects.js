@@ -325,16 +325,24 @@ Projects.helpers({
     const organizerProject = this.organizerProject();
 
     if (bothUserId && this.parent) {
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!!((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.links.contributors[bothUserId].isAdmin && this.isToBeValidated(bothUserId) && this.isAdminPending(bothUserId) && this.isIsInviting('contributors', bothUserId)))) {
+        return true;
+      }
       if (this.parent[bothUserId] && this.parent[bothUserId].type === 'citoyens') {
         return true;
       }
       return isAdminArray(organizerProject, citoyen);
     }
-    return !!((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.links.contributors[bothUserId].isAdmin && this.isToBeValidated(bothUserId) && this.isIsInviting('contributors', bothUserId)));
+    return !!((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.links.contributors[bothUserId].isAdmin && this.isToBeValidated(bothUserId) && this.isAdminPending(bothUserId) && this.isIsInviting('contributors', bothUserId)));
   },
   isToBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return !((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.links.contributors[bothUserId].toBeValidated));
+  },
+  isAdminPending(userId) {
+    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
+    return !((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.links.contributors[bothUserId].isAdminPending));
   },
   toBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
