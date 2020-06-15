@@ -280,6 +280,18 @@ Actions.helpers({
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     return !!((this.links && this.links.contributors && this.links.contributors[bothUserId] && this.isToBeValidated(bothUserId) && this.isIsInviting('contributors', bothUserId)));
   },
+  userIsValidated(userId) {
+    if (this.finishedBy && this.finishedBy[userId] && this.finishedBy[userId] === 'validated') {
+      return true;
+    }
+    return false;
+  },
+  userTovalidate(userId) {
+    if (this.finishedBy && this.finishedBy[userId] && this.finishedBy[userId] === 'toModerate') {
+      return true;
+    }
+    return false;
+  },
   listContributors (search) {
     if (this.links && this.links.contributors) {
       const query = queryLink(this.links.contributors, search);

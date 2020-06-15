@@ -103,6 +103,25 @@ Template.buttonsActions.events({
   },
 });
 
+Template.detailViewActions.events({
+  'click .admin-validation-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('ValidateAction', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (err) => {
+        if (err) {
+          alert(err);
+        }
+      });
+    }
+  },
+});
+
 Template.actionsAdd.onCreated(function () {
   const template = Template.instance();
   template.ready = new ReactiveVar();

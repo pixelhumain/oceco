@@ -110,13 +110,21 @@
     </div>
 
     {{#each contributor in listContributors}}
-    <div class="item {{#if contributor.profilThumbImageUrl}}item-avatar{{/if}}">
+    <div class="item item-button-right {{#if contributor.profilThumbImageUrl}}item-avatar{{/if}}">
       {{#if contributor.profilThumbImageUrl}}
       {{> imgDoc profilThumbImageUrl=contributor.profilThumbImageUrl resized="80x80"}}
       {{/if}}
       <h2>
         <a href="{{pathFor 'detailList' _id=contributor._id._str scope='citoyens'}}" class="dark">{{contributor.name}}</a>
       </h2>
+      {{#if ../../isAdmin}}
+      {{#if userTovalidate contributor._id._str}}
+      <button class="button button-positive admin-validation-js" usrId="{{contributor._id._str}}"
+        actionId="{{_id._str}}">Valider</button>
+        {{else if userIsValidated contributor._id._str}}
+        <button class="button button-clear button-balanced"><i class="icon fa fa-check"></i></button>
+      {{/if}}
+      {{/if}}
     </div>
     {{else}}
     <div class="item">
