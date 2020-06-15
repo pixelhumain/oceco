@@ -57,28 +57,23 @@
       {{> imgDoc imageDoc=imageDoc resized="340x340"}}
       {{/if}}
       {{/if}}
-
-      {{#if equals scopeVar 'citoyens'}}
-      {{#transition in="slideInDown" out="slideOutUp"}}
-      <p class="right-top animated in">
-        {{#if modified}}<i class="icon ion-android-alarm-clock"></i> {{__ "modified"}} : {{livestamp modified}}<br>{{/if}}
-      </p>
-      {{/transition}}
-      {{else}}
-      {{#transition in="slideInDown" out="slideOutUp"}}
-
-      <p class="right-top animated in">
-        {{#if startDate}}
-        {{#if startDate}}<i class="icon ion-android-alarm-clock"></i> {{__ "start"}} : {{livestamp startDate}} <br>{{/if}}
-        {{#if endDate}}<i class="icon ion-android-alarm-clock"></i> {{__ "end"}} : {{livestamp endDate}} <br>{{/if}}
-        {{#if endDate}}<i class="icon ion-android-time"></i> {{__ "duration"}} : {{diffInText startDate endDate}}<br>{{/if}}
-        {{/if}}
-        {{#if modified}}<i class="icon ion-android-alarm-clock"></i> {{__ "modified"}} : {{livestamp modified}}<br>{{/if}}
-      </p>
-      {{/transition}}
-      {{/if}}
-
     </div>
+
+    {{#if equals scopeVar 'citoyens'}}
+    
+    {{else}}
+    <div class="item item-text-wrap">
+    {{#transition in="slideInDown" out="slideOutUp"}}
+    <div class="dark animated in">
+      {{#if startDate}}
+      {{#if startDate}}<div class="row row-center"><div class="col-33"><i class="icon ion-android-alarm-clock"></i> {{__ "start"}} :</div><div class="col">{{formatStartDate}}<p>({{livestamp startDate}})</p></div></div>{{/if}}
+      {{#if endDate}}<div class="row row-center"><div class="col-33"><i class="icon ion-android-alarm-clock"></i> {{__ "end"}} :</div><div class="col">{{formatEndDate}}<p>({{livestamp endDate}})</p></div></div>{{/if}}
+      {{#if endDate}}<div class="row row-center"><div class="col-33"><i class="icon ion-android-time"></i> {{__ "duration"}} :</div><div class="col">{{diffInText startDate endDate}}</div></div>{{/if}}
+      {{/if}}
+    </div>
+    {{/transition}}
+    </div>
+    {{/if}}
 
     <div class="item item-text-wrap">
       {{#transition in="slideInDown" out="slideOutUp"}}

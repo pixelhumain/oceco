@@ -134,10 +134,10 @@
 </template>
 
 <template name="Directory_item_projects">
-    <div class="item item-avatar item-button-right">
+    <div class="item item-avatar item-content item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
-        <a href="{{pathFor 'eventsAdd' _id=item._id._str scope='events'}}" class="button button-positive"><i
+        <a href="{{pathFor 'eventsAdd' _id=item._id._str scope='projects'}}" class="button button-positive"><i
                 class="icon fa fa-plus"></i></a>
     </div>
 </template>
@@ -160,7 +160,7 @@
 </template>
 
 <template name="Directory_item_projects_events">
-    <div class="item item-avatar item-button-right">
+    <div class="item item-avatar item-content item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
         <a href="{{pathFor 'actionsAdd' _id=item._id._str scope='events'}}"
@@ -196,7 +196,7 @@
 </template>
 
 <template name="Directory_item_projects_events_action">
-    <div class="item">
+    <div class="item item-content">
         <h2><a href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}" class="dark">{{item.name}}</a></h2>
     </div>
 </template>

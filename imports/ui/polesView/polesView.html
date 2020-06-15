@@ -42,6 +42,27 @@
 
 <template name="projectList2">
 
+    {{#if settingOceco.pole}}
+
+<div class="item item-stable item-avatar item-content item-button-right">
+    {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+
+    <a href="{{pathFor 'actionsList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{project.name}}</h2>
+    </a>
+
+    {{#if scroll }}
+    <button class="button button-dark button-see-event-js"> <i class="icon ion-ios-arrow-up"></i></button>
+
+    {{else}}
+
+    <button class="button button-dark button-see-event-js"> <i class="icon ion-ios-arrow-down"></i></button>
+
+    {{/if}}
+</div>
+
+    
+    {{else}}
 {{#if projectGlobalCount project._id}}
   <div class="item item-stable item-avatar item-content item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
@@ -62,6 +83,7 @@
     {{/if}}
   </div>
 {{/if}}
+{{/if}}
 
   {{#if scroll }}
 
@@ -77,6 +99,12 @@
   {{#each event in projectEvents project._id}}
   {{>eventsList2 item=event}}
   {{/each}}
+  {{else}}
+{{#if settingOceco.pole}}
+<div class="item item-stable">
+    Pas d'évènement à venir
+</div>
+{{/if}}
   {{/if}}
 
   {{/if}}

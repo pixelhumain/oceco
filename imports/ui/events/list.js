@@ -579,7 +579,7 @@ Template.eventsFields.onRendered(function() {
         const handleOrganizer = self.subscribe('directoryListOrganizations', 'citoyens', Meteor.userId());
         self.readyOrganizer.set(handleOrganizer.ready());
       } else if (organizerType === 'projects') {
-        const handleOrganizer = self.subscribe('directoryListProjects', 'citoyens', Meteor.userId());
+        const handleOrganizer = self.subscribe('directoryListProjects', 'organizations', Session.get('orgaCibleId'));
         self.readyOrganizer.set(handleOrganizer.ready());
       } else if (organizerType === 'citoyens') {
         const handleOrganizer = self.subscribe('citoyen');

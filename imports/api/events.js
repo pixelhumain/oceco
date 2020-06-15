@@ -469,6 +469,12 @@ Events.helpers({
     const start = moment(this.startDate).toDate();
     return moment(start).isBefore(); // True
   },
+  formatStartDate() {
+    return moment(this.startDate).format('DD/MM/YYYY HH:mm');
+  },
+  formatEndDate() {
+    return moment(this.endDate).format('DD/MM/YYYY HH:mm');
+  },
   typeValue () {
     const eventTypes = Lists.findOne({ name: 'eventTypes' });
     return this.type && eventTypes && eventTypes.list && eventTypes.list[this.type];
