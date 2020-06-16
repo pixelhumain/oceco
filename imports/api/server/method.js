@@ -3414,7 +3414,31 @@ export const actionsType = new ValidatedMethod({
 
     if (type === 'actions' && value === 'done') {
       countActionScope(parentType, parentId, 'done');
+      // notifications : action terminé
+
+    } else if (type === 'actions' && value === 'disabled') {
+      countActionScope(parentType, parentId, 'done');
+      // notifications : action annulé
+      // notifier les personnes qui devrait participer à l'action comme quoi elle est annulé
+      // notif
+      const actionOne = Actions.findOne({
+        _id: new Mongo.ObjectID(id),
+      });
+
+      // au participant
+      // au admin
+      
+      const notif = {};
+      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+      // author
+      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+      // object
+      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+      ActivityStream.api.add(notif, 'actionDisabled', 'isActionMembers');
+      ActivityStream.api.add(notif, 'actionDisabled', 'isAdmin');
     }
+
     return retour;
   },
 });

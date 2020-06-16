@@ -122,7 +122,7 @@
   "community":"Community",
   "favorites":"Favorites",
   "search":"Search",
-  "searchPlaceholder":"Search by name, #tag...",
+  "searchPlaceholder":"Search by name ...",
   "redirect":"redirect",
   "connect":"connect",
   "yes":"yes",
@@ -310,7 +310,8 @@
 "start_of_the_action_what_in_where": "start of the action __what__ in __where__",
 "end_of_the_action_what_in_where":"end of the action __what__ in __where__",
 "a_possible_expense_what_has_been_added_on_where":"a possible expense __what__ has been added on __where__",
-"who_spent_credit_on_what_from_where": "__who__ spent credit on __what__ from __where__"
+"who_spent_credit_on_what_from_where": "__who__ spent credit on __what__ from __where__",
+"who_to_cancel_the_action_what_in_where": "__who__ to cancel the action __what__ in __where__"
     }
   },
   "on the program of":"on the program of :",

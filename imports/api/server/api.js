@@ -94,8 +94,12 @@ apiCommunecter.callRCRestUserToken = (userId, method, action, post) => {
         return responsePost.data;
       } 
     } catch (error) {
-      console.log(error.response.data.error);
-      throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+      // console.log(error.response.data.error);
+      if (error && error.response && error.response.data && error.response.data.error) {
+        throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+      } else {
+        throw new Meteor.Error('error_server', 'error server RC');
+      }
     }
 
   }
@@ -118,8 +122,13 @@ apiCommunecter.callRCrest = (method, action, post) => {
       return responsePost.data;
     }
   } catch (error) {
-    console.log(error.response.data.error);
-    throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+    // console.log(error.response.data.error);
+    if (error && error.response && error.response.data && error.response.data.error) {
+      throw new Meteor.Error(error.response.data.errorType, error.response.data.error);
+    } else {
+      throw new Meteor.Error('error_server', 'error server RC');
+    }
+    
   }
 };
 

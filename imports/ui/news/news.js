@@ -338,6 +338,9 @@ Template.scopeNotificationsTemplate.events({
 Template.scopeProjectsTemplate.onCreated(function() {
   this.ready = new ReactiveVar();
 
+  pageSession.set('sortProjects', null);
+  pageSession.set('searchProjects', null);
+
   this.autorun(function() {
     pageSession.set('scopeId', Router.current().params._id);
     pageSession.set('scope', Router.current().params.scope);
@@ -349,9 +352,22 @@ Template.scopeProjectsTemplate.onCreated(function() {
   }.bind(this));
 });
 
+Template.scopeProjectsTemplate.events({
+  'keyup #search, change #search'(event) {
+    if (event.currentTarget.value.length > 2) {
+      pageSession.set('searchProjects', event.currentTarget.value);
+    } else {
+      pageSession.set('searchProjects', null);
+    }
+  },
+});
+
 Template.scopeProjectsTemplate.helpers({
   scopeBoutonProjectsTemplate () {
     return `boutonProjects${Router.current().params.scope}`;
+  },
+  searchProjects() {
+    return pageSession.get('searchProjects');
   },
   dataReady() {
     return Template.instance().ready.get();

@@ -91,14 +91,29 @@ Template.detailActions.helpers({
   },
 }); */
 
-Template.buttonsActions.events({
-  'click .action-action-js' (event) {
+Template.buttonActionItem.onCreated(function () {
+  this.state = new ReactiveDict();
+  this.state.setDefault({
+    call: false,
+  });
+});
+
+Template.buttonActionItem.helpers({
+  isCall() {
+    return Template.instance().state.get('call');
+  },
+});
+
+Template.buttonActionItem.events({
+  'click .action-action-js'(event, instance) {
     event.preventDefault();
+    instance.state.set('call', true);
     const action = $(event.currentTarget).data('action');
     Meteor.call('actionsType', { parentType: pageSession.get('scope'), parentId: pageSession.get('scopeId'), type: 'actions', id: pageSession.get('actionId'), name: 'status', value: action }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });
       }
+      instance.state.set('call', false);
     });
   },
 });

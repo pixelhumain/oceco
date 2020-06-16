@@ -755,8 +755,37 @@ ActivityStream.api = {
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
+        } else if (verb === 'actionDisabled') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} to cancel the action {what} in {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            } else if (type === 'isActionMembers') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} to cancel the action {what} in {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            }
+          }
         }
       }
+     
       // console.log(notificationObj);
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);

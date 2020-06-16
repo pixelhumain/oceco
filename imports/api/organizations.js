@@ -544,19 +544,20 @@ Organizations.helpers({
       return members && _.size(members);} */
     return this.listMembersOrganizations(search, selectorga) && this.listMembersOrganizations(search, selectorga).count();
   },
-  listProjectsCreator () {
+  listProjectsCreator(search) {
     if (this.links && this.links.projects) {
-      const projectIds = arrayLinkParent(this.links.projects, 'projects');
+      /* const projectIds = arrayLinkParent(this.links.projects, 'projects');
       const query = {};
       query._id = {
         $in: projectIds,
-      };
+      }; */
+      const query = queryLink(this.links.projects, search);
       // queryOptions.fields.parentId = 1;
       return Projects.find(query, queryOptions);
     }
   },
-  countProjectsCreator () {
-    return this.listProjectsCreator() && this.listProjectsCreator().count();
+  countProjectsCreator(search) {
+    return this.listProjectsCreator(search) && this.listProjectsCreator(search).count();
   },
   listPoiCreator () {
     const query = {};

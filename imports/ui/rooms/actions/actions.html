@@ -148,32 +148,37 @@
 {{/with}}
 </template>
 
+<template name="buttonActionItem">
+<button class="button {{class}} {{#if isCall}}disabled{{/if}}" data-action="{{action}}">
+  {{#if isCall}}
+  <i class="icon fa fa-refresh fa-spin"></i> {{texte}}
+  {{else}}
+  <i class="{{icon}}"></i> {{texte}}
+  {{/if}}
+</button>
+</template>
+
 <template name="buttonsActions">
 {{#if equals status 'todo'}}
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
-  
   <a href="{{pathFor 'actionsAssign' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="ion-ios-people"></i> Assigner</a>
-  <button class="button button-small action-action-js" data-action="done"><i class="fa fa-trash"></i> {{__ "dda.actions.buttons.close"}}</button>
+  {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
+  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-trash" class="button-small action-action-js"}}
 </div>
 {{else if isCreator}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
-  <button class="button button-small action-action-js" data-action="done"><i class="fa fa-trash"></i> {{__ "dda.actions.buttons.close"}}</button>
+  {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
+  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-trash" class="button-small action-action-js"}}
 </div>
 {{/if}}
 {{else if equals status 'disabled'}}
 {{#if isAdmin}}
-<div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
-  <button class="button button-small action-action-js" data-action="done"><i class="fa fa-trash"></i> {{__ "dda.actions.buttons.close my action"}}</button>
-</div>
+
 {{else if isCreator}}
-<div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
-  <button class="button button-small action-action-js" data-action="done"><i class="fa fa-trash"></i> {{__ "dda.actions.buttons.close"}}</button>
-</div>
+
 {{/if}}
 {{else if equals status 'done'}}
 {{#if isAdmin}}

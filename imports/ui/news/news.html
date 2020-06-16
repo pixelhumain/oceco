@@ -318,8 +318,13 @@
     </div>
     {{> Template.dynamic template=scopeBoutonProjectsTemplate data=this}}
 
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input id="search" type="text" placeholder="{{__ "searchPlaceholder"}}" value="{{searchProjects}}">
+      </label>
+
 {{#transition in="zoomIn" out="bounceOut"}}
-{{#each item in listProjectsCreator}}
+{{#each item in listProjectsCreator searchProjects}}
 {{> scopeItemList item=item scope="projects"}}
 {{else}}
 
