@@ -1,5 +1,13 @@
-# co-mobile
-communecter mobile application
+# oceco
+
+oceco fonctionne avec communecter et permet de publier des actions
+
+# activer oceco sur une organisations
+il faut une config minimum dans une entités "organizations" dans communecter pour activer oceco sur l'application
+
+```json
+
+```
 
 ## dev - commande pour lancer localement
 
@@ -24,16 +32,6 @@ MONGO_URL='xxx' MONGO_OPLOG_URL='xxx UNIVERSE_I18N_LOCALES=all meteor run --sett
 
 ```js
 {
-  "galaxy.meteor.com": {
-     "env": {
-  "ROOT_URL": "",
-  "MONGO_URL":"",
-  "MONGO_OPLOG_URL":"",
-  "METEOR_CORDOVA_COMPAT_VERSION_ANDROID": "",
-  "METEOR_CORDOVA_COMPAT_VERSION_IOS": "",
-  "UNIVERSE_I18N_LOCALES": "all"
-     }
-   },
 "coenv": "prod",
 "environment": "production",
 "pushapiKey":"",
