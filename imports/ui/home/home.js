@@ -29,20 +29,6 @@ Template.homeView.helpers({
       _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
     });
   },
-  allTags() {
-    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
-    if (!orgaOne) {
-      return null;
-    }
-
-    const arrayAll = orgaOne.actionsAll().map(action => action.tags);
-    const mergeDedupe = (arr) => {
-      return [...new Set([].concat(...arr))];
-    };
-    const arrayAllMerge = mergeDedupe(arrayAll);
-    console.log('output', arrayAllMerge);
-    return arrayAllMerge;
-  },
   RaffineriePoles() {
     if (Session.get('settingOceco').pole === true) {
       const id = new Mongo.ObjectID(Session.get('orgaCibleId'));
@@ -95,16 +81,49 @@ Template.searchActions.helpers({
   search() {
     return searchAction.get('search');
   },
+  searchTag() {
+    return searchAction.get('searchTag');
+  },
+  allTags() {
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
+    if (!orgaOne) {
+      return null;
+    }
+      
+    const arrayAll = orgaOne.actionsAll().map(action => action.tags).filter(Boolean);
+    const mergeDedupe = (arr) => {
+      return [...new Set([].concat(...arr))];
+    };
+    const arrayAllMerge = mergeDedupe(arrayAll);
+    return arrayAllMerge;
+  },
 });
 
 Template.searchActions.events({
+  'click .searchtag-js'(event) {
+    event.preventDefault();
+    if (this) {
+      searchAction.set('search', `#${this}`);
+    } else {
+      searchAction.set('search', null);
+    }
+  },
   'keyup #search, change #search': _.throttle((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
+
+      if (event.currentTarget.value.charAt(0) === '#') {
+        searchAction.set('searchTag', event.currentTarget.value);
+      } else {
+        searchAction.set('searchTag', null);
+      }
+
       searchAction.set('search', event.currentTarget.value);
       searchAction.set('actionName', event.currentTarget.value);
     } else {
       searchAction.set('search', null);
+      searchAction.set('searchTag', null);
+      searchAction.set('actionName', null);
     }
   }, 500),
   // Pressing Ctrl+Enter should submit action

@@ -55,20 +55,6 @@ Template.polesView.helpers({
     const poleProjectsCursor = Projects.find({ $and: [{ tags: poleName }, { _id: { $in: projectsId } }] });
     return poleProjectsCursor;
   },
-  allTags() {
-    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
-    if (!orgaOne) {
-      return null;
-    }
-
-    const arrayAll = orgaOne.actionsAll().map(action => action.tags);
-    const mergeDedupe = (arr) => {
-      return [...new Set([].concat(...arr))];
-    }
-    const arrayAllMerge = mergeDedupe(arrayAll);
-    console.log('output', arrayAllMerge);
-    return arrayAllMerge;
-  },
   dataReady() {
     return Template.instance().ready.get();
   },

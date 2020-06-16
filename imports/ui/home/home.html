@@ -55,7 +55,7 @@
 
     {{else}}
 
-    {{>searchActions}}
+    
     {{>projectsView}}
 
     {{/if}}
@@ -92,10 +92,18 @@
         <i class="icon ion-search placeholder-icon"></i>
         <input id="search" type="text" placeholder="Chercher une action par nom, #tag, :projet..." value="{{search}}">
     </label>
+    {{#if searchTag}}
+    {{#each allTags}}
+    <div class="item item-icon-left positive searchtag-js">
+    <i class="icon fa fa-tag"></i> {{this}}
+    </div>
+    {{/each}}
+    {{/if}}
 </template>
 
 <template name='projectsView'>
     {{#if dataReady}}
+    {{>searchActions}}
     <div class="list">
         {{>organizationList}}
       {{#each project in poleProjects2}}
