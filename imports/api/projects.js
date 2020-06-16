@@ -320,7 +320,6 @@ Projects.helpers({
   },
   isAdmin (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-
     const citoyen = Citoyens.findOne({ _id: new Mongo.ObjectID(bothUserId) });
     const organizerProject = this.organizerProject();
 

@@ -25,6 +25,9 @@ export const searchQuery = (query, search) => {
   if (search) {
     if (search && search.charAt(0) === '#' && search.length > 1) {
       query.tags = { $regex: search.substr(1), $options: 'i' };
+    } else if (search && search.charAt(0) === ':' && search.length > 1) {
+    // search projet donc pas de recherche dans actions
+      query.name = { $regex: search.substr(1), $options: 'i' };
     } else {
       query.name = { $regex: search, $options: 'i' };
     }

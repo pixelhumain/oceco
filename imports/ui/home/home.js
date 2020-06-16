@@ -14,6 +14,7 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 
 import { searchAction } from '../../api/client/reactive.js';
+import { searchQuery } from '../../api/helpers.js';
 
 window.Organizations = Organizations;
 window.Projects = Projects;
@@ -76,8 +77,14 @@ Template.projectsView.onCreated(function () {
 
 Template.projectsView.helpers({
   poleProjects2() {
+    const search = searchAction.get('search');
     const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
-    return Projects.find({ [queryProjectId]: { $exists: 1 } });
+    const query = {};
+    query[queryProjectId] = { $exists: 1 };
+    if (search && search.charAt(0) === ':' && search.length > 1) {
+      query.name = { $regex: search.substr(1), $options: 'i' };
+    }
+    return Projects.find(query);
   },
   dataReady() {
     return Template.instance().ready.get();
