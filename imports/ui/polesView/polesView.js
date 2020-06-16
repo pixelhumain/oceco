@@ -85,25 +85,30 @@ Template.eventsList2.onCreated(function () {
 
 Template.projectList2.helpers({
   projectEvents(projectObjectId) {
+    const query = {};
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId });
+    query[`organizer.${projectId}`] = { $exists: true };
+    return Events.find(query);
   },
   projectGlobalCount(projectObjectId) {
     const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
 
     let query = {};
+    const organizerExist = `organizer.${projectId}`;
     query.parentId = projectId;
     query.status = 'todo';
     if (search) {
       query = searchQuery(query, search);
     }
 
-    return Events.find({ organizerId: projectId }).count() > 0 || Actions.find(query).count() > 0;
+    return Events.find({ [organizerExist]: { $exists: true } }).count() > 0 || Actions.find(query).count() > 0;
   },
   projectEventsCount(projectObjectId) {
+    const query = {};
     const projectId = projectObjectId.valueOf();
-    return Events.find({ organizerId: projectId }).count();
+    query[`organizer.${projectId}`] = { $exists: true };
+    return Events.find(query).count();
   },
   projectActionsCount(projectObjectId) {
     const search = searchAction.get('search');

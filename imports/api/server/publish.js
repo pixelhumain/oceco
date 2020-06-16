@@ -3328,20 +3328,28 @@ Meteor.publish('poles.events', function (raffId, poleName) {
   }
 
   if (poleProjects) {
-    const poleProjectsId = [];
-    poleProjects.forEach((element) => {
+    /// const poleProjectsId = [];
+    /* poleProjects.forEach((element) => {
       poleProjectsId.push(element._id._str);
+    }); */
+
+    const query = {};
+    const inputDate = new Date();
+    query.endDate = { $gte: inputDate };
+    query.$or = [];
+    poleProjects.forEach((element) => {
+      const queryCo = {};
+      queryCo[`organizer.${element._id._str}`] = { $exists: true };
+      query.$or.push(queryCo);
     });
 
-    const inputDate = new Date();
-    const query = {};
-    query.organizerId = { $in: poleProjectsId };
-    query.endDate = { $gte: inputDate };
+    // query.organizerId = { $in: poleProjectsId };
+    
     const options = {};
     options.sort = {
       startDate: 1,
     };
-    return Events.find(query);
+    return Events.find(query, options);
   }
 });
 

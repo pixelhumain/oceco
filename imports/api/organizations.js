@@ -717,8 +717,16 @@ Organizations.helpers({
       poleProjectsId.push(element._id._str);
     });
 
+    const queryEventsArray = {};
+    queryEventsArray.$or = [];
+    poleProjects.forEach((element) => {
+      const queryCo = {};
+      queryCo[`organizer.${element._id._str}`] = { $exists: true };
+      queryEventsArray.$or.push(queryCo);
+    });
+
     const eventsArrayId = [];
-    Events.find({ organizerId: { $in: poleProjectsId } }).forEach(function (event) { eventsArrayId.push(event._id._str); });
+    Events.find(queryEventsArray).forEach(function (event) { eventsArrayId.push(event._id._str); });
 
     //faire un ou si date pas remplie
     const query = {};
