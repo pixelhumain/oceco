@@ -388,11 +388,12 @@
 
         {{> itemInputAction action=item}}
         {{else}}
-
+        {{#if isAdmin}}
         <div class="item button-bar bar-stable">
           <a href="{{pathFor 'actionsAdd' _id=scopeId scope=scopeVar}}" class="button button-stable"><i
               class="fa fa-plus"></i> Créer l'action à partir de votre recherche ?</a>
         </div>
+        {{/if}}
 
         {{/each}}
 

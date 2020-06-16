@@ -115,13 +115,10 @@ Template.searchActions.events({
       // soit rediriger vers le form action avce le name préremplie
       if (event.currentTarget.value.length > 0) {
         if (Router.current().route.getName() === 'actionsList') {
-          console.log(Router.current().params._id);
-          console.log(Router.current().params.scope);
-          searchAction.set('actionName', event.currentTarget.value);
-          Router.go('actionsAdd', { _id: Router.current().params._id, scope: Router.current().params.scope });
-
-          
-
+          if (Template.currentData().isAdmin()) {
+            searchAction.set('actionName', event.currentTarget.value);
+            Router.go('actionsAdd', { _id: Router.current().params._id, scope: Router.current().params.scope });
+          }
         }
       }
     }
