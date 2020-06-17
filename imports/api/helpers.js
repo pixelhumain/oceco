@@ -24,7 +24,8 @@ export const arrayAllLink = (links) => {
 export const searchQuery = (query, search) => {
   if (search) {
     if (search && search.charAt(0) === '#' && search.length > 1) {
-      query.tags = { $regex: search.substr(1), $options: 'i' };
+
+      query.tags = { $regex: search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
     } else if (search && search.charAt(0) === '?') {
       // filtrer avec ? sur les actions
       // pas de contributors : ?nc
@@ -46,9 +47,9 @@ export const searchQuery = (query, search) => {
       }
     } else if (search && search.charAt(0) === ':' && search.length > 1) {
     // search projet donc pas de recherche dans actions
-      query.name = { $regex: search.substr(1), $options: 'i' };
-    } else {
-      query.name = { $regex: search, $options: 'i' };
+      query.name = { $regex: `.*${search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*`, $options: 'i' };
+    } else if (search && search.length > 1) {
+      query.name = { $regex: `.*${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*`, $options: 'i' };
     }
   }
   return query;

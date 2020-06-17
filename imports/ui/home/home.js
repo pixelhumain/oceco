@@ -69,7 +69,7 @@ Template.projectsView.helpers({
     const query = {};
     query[queryProjectId] = { $exists: 1 };
     if (search && search.charAt(0) === ':' && search.length > 1) {
-      query.name = { $regex: search.substr(1), $options: 'i' };
+      query.name = { $regex: `.*${search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*`, $options: 'i' };
     }
     return Projects.find(query);
   },
