@@ -195,10 +195,14 @@
 </template>
 
 <template name="itemInputAction">
-    <div class="item item-text-wrap item-button-right">
+    <div class="item item-text-wrap {{#if action.avatarOneUserAction}}item-avatar{{/if}} {{#if action.contributorsPlusOne}}item-icon-left{{/if}} item-button-right">
+        {{#if action.avatarOneUserAction}}
+        {{> imgDoc profilThumbImageUrl=action.avatarOneUserAction}}
+        {{/if}}
+        {{#if action.contributorsPlusOne}}<i class="icon fa fa-group positive"></i>{{/if}}
         <h2>
             {{#if action.commentCount}}
-            <i class="icon fa fa-comment balanced"></i> 
+            <i class="fa fa-comment balanced"></i> 
             {{/if}}
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
             class="dark">{{action.name}}</a></h2>

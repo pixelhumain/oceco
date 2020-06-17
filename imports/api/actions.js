@@ -10,7 +10,7 @@ import { Tracker } from 'meteor/tracker';
 import { baseSchema } from './schema.js';
 import { Citoyens } from './citoyens.js';
 import { Comments } from './comments.js';
-import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper } from './helpers.js';
+import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper, arrayLinkProperNoObject } from './helpers.js';
 
 export const Actions = new Mongo.Collection('actions', { idGeneration: 'MONGO' });
 
@@ -289,6 +289,26 @@ Actions.helpers({
   userTovalidate(userId) {
     if (this.finishedBy && this.finishedBy[userId] && this.finishedBy[userId] === 'toModerate') {
       return true;
+    }
+    return false;
+  },
+  avatarOneUserAction() {
+    // si une action à un participant min et max et qu'un user à pris la tache
+    // avoir son avatar sur l'action
+    if (this.max === 1 && this.links && this.links.contributors) {
+      const query = queryLink(this.links.contributors);
+      const citoyenOne = Citoyens.findOne(query);
+      if (citoyenOne && citoyenOne.profilThumbImageUrl) {
+        return citoyenOne.profilThumbImageUrl;
+      }
+      return false;
+    }
+    return false;
+  },
+  contributorsPlusOne() {
+    if (this.links && this.links.contributors) {
+      const arrayContributors = arrayLinkProperNoObject(this.links.contributors);
+      return arrayContributors && arrayContributors.length > 1;
     }
     return false;
   },

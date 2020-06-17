@@ -54,8 +54,9 @@ Template.projectsView.onCreated(function () {
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     const handle = this.subscribe('all.actions2', Session.get('orgaCibleId'));
+    const handleAvatar = this.subscribe('all.avatarOne', Session.get('orgaCibleId'));
     const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'));
-    if (handle.ready() && handleEvents.ready()) {
+    if (handle.ready() && handleEvents.ready() && handleAvatar.ready()) {
       this.ready.set(handle.ready());
     }
   }.bind(this));
@@ -84,6 +85,9 @@ Template.searchActions.helpers({
   searchTag() {
     return searchAction.get('searchTag');
   },
+  searchHelp() {
+    return searchAction.get('searchHelp');
+  },
   allTags() {
     const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
     if (!orgaOne) {
@@ -108,6 +112,16 @@ Template.searchActions.events({
       searchAction.set('search', null);
     }
   },
+  'click .searchfilter-js'(event, instance) {
+    event.preventDefault();
+    const filter = $(event.currentTarget).data('action');
+    if (filter) {
+      searchAction.set('search', filter);
+      searchAction.set('searchHelp', null);
+    } else {
+      searchAction.set('search', null);
+    }
+  },
   'keyup #search, change #search': _.throttle((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
@@ -118,11 +132,18 @@ Template.searchActions.events({
         searchAction.set('searchTag', null);
       }
 
+      if (event.currentTarget.value.length === 1 && event.currentTarget.value.charAt(0) === '?') {
+        searchAction.set('searchHelp', true);
+      } else {
+        searchAction.set('searchHelp', null);
+      }
+
       searchAction.set('search', event.currentTarget.value);
       searchAction.set('actionName', event.currentTarget.value);
     } else {
       searchAction.set('search', null);
       searchAction.set('searchTag', null);
+      searchAction.set('searchHelp', null);
       searchAction.set('actionName', null);
     }
   }, 500),

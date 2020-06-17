@@ -93,11 +93,28 @@
         <input id="search" type="text" placeholder="Chercher une action par nom, #tag, :projet..." value="{{search}}">
     </label>
     {{#if searchTag}}
+    <div class="item item-divider">
+        Filtrer par tags
+    </div>
     {{#each allTags}}
-    <div class="item item-icon-left positive searchtag-js">
+    <div class="item item-icon-left item-positive searchtag-js">
     <i class="icon fa fa-tag"></i> {{this}}
     </div>
     {{/each}}
+    {{/if}}
+    {{#if searchHelp}}
+    <div class="item item-divider">
+        Filtrer les actions
+    </div>
+    <a class="item item-dark item-icon-left searchfilter-js" data-action="?c">
+        <i class="icon fa fa-filter"></i> avec contributeurs : <code>?c</code>
+    </a>
+    <a class="item item-dark item-icon-left searchfilter-js" data-action="?nc">
+        <i class="icon fa fa-filter"></i> sans contributeurs : <code>?nc</code>
+    </a>
+    <a class="item item-dark item-icon-left searchfilter-js" data-action="?me">
+        <i class="icon fa fa-filter"></i> ou je suis contributeurs : <code>?me</code>
+    </a>
     {{/if}}
 </template>
 

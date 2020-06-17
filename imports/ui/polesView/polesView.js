@@ -121,6 +121,9 @@ Template.projectList2.helpers({
     return Actions.find(query);
   },
   scroll() {
+    if (searchAction.get('search')) {
+      return true;
+    }
     return Template.instance().scroll.get();
   },
 });

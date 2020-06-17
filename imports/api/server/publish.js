@@ -31,7 +31,7 @@ import { Proposals } from '../proposals.js';
 import { Gamesmobile, Playersmobile } from '../gamemobile.js';
 import { Highlight } from '../highlight.js';
 
-import { nameToCollection, arrayLinkParentNoObject, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
+import { nameToCollection, arrayLinkProperNoObject, arrayLinkParentNoObject, arrayChildrenParent, queryOrPrivateScope } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -3072,6 +3072,31 @@ Meteor.publish('poles.actions2', function(raffId, poleName) {
   return eventActions;
 });
 
+Meteor.publish('all.avatarOne', function (raffId) {
+  check(raffId, String);
+  if (!this.userId) {
+    return null;
+  }
+
+  const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(raffId) });
+  if (!orgaOne) {
+    return null;
+  }
+  const allActions = orgaOne.actionsAll();
+  const allIdsCitoyens = allActions.map((k) => {
+    if (k.avatarOneUserAction()) {
+      const arrayContributors = arrayLinkProperNoObject(k.links.contributors);
+      return arrayContributors[0];
+    }
+  }).filter(Boolean);
+  const mergeDedupe = (arr) => {
+    return [...new Set([].concat(...arr))];
+  };
+  const arrayAllMerge = mergeDedupe(allIdsCitoyens);
+  const arrayAllMergeMongoId = arrayAllMerge.map(k => new Mongo.ObjectID(k));
+  return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { profilThumbImageUrl: 1 } });
+});
+
 Meteor.publish('all.actions2', function (raffId) {
   check(raffId, String);
   if (!this.userId) {
@@ -3084,6 +3109,7 @@ Meteor.publish('all.actions2', function (raffId) {
   }
   return orgaOne.actionsAll();
 });
+
 
 Meteor.publish('member.profile', function(memberId) {
   check(memberId, String);

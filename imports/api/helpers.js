@@ -25,6 +25,25 @@ export const searchQuery = (query, search) => {
   if (search) {
     if (search && search.charAt(0) === '#' && search.length > 1) {
       query.tags = { $regex: search.substr(1), $options: 'i' };
+    } else if (search && search.charAt(0) === '?') {
+      // filtrer avec ? sur les actions
+      // pas de contributors : ?nc
+      // avec contributors : ?c
+      switch (search.substr(1)) {
+        // avec contributors
+        case 'c':
+          query['links.contributors'] = { $exists: true };
+          break;
+        // pas de contributors
+        case 'nc':
+          query['links.contributors'] = { $exists: false };
+          break;
+        case 'me':
+          query[`links.contributors.${Meteor.userId()}`] = { $exists: true };
+          break;
+        default:
+          // console.log(`Sorry, we are out of ${search.substr(1)}.`);
+      }
     } else if (search && search.charAt(0) === ':' && search.length > 1) {
     // search projet donc pas de recherche dans actions
       query.name = { $regex: search.substr(1), $options: 'i' };
