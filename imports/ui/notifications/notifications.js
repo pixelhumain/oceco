@@ -38,11 +38,21 @@ Template.notificationsListSwip.onRendered(function () {
 
 Template.notificationsListSwip.events({
   'slip:beforeswipe .list .no-swipe'(event) {
+    // console.log('slip:beforeswipe');
     event.preventDefault();
   },
   'slip:afterswipe .list .item'(event) {
     // console.log('slip:afterswipe');
     event.preventDefault();
+  },
+  'slip:animateswipe .list .item'(event) {
+    // console.log('slip:animateswipe');
+    // console.log(event.detail);
+    if (event.detail.x > 150) {
+      event.target.parentNode.removeChild(event.target);
+      Meteor.call('markRead', this._id._str);
+    }
+    // event.preventDefault();
   },
   'slip:swipe .list .item'(event) {
     // console.log('slip:swipe');
@@ -52,7 +62,7 @@ Template.notificationsListSwip.events({
     Meteor.call('markRead', this._id._str);
   },
   'slip:beforewait .list .item'() {
-    // console.log('slip:beforewait');
+     // console.log('slip:beforewait');
   },
 });
 

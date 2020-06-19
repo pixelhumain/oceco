@@ -71,11 +71,12 @@ Meteor.startup(function() {
             query.userId = value;
             const lang = Meteor.users.findOne({ _id: value }, { fields: { 'profile.language': 1 } });
             const text = lang && lang.profile.language ? notifyDisplay(notification.notify, lang.profile.language) : notifyDisplay(notification.notify, 'en');
+            const textTarget = `${text} - ${notification.target.name}`;
             const payload = JSON.parse(JSON.stringify(notification));
             const badge = ActivityStream.api.queryUnseen(value).count();
             // console.log({ value, badge });
             // console.log(payload);
-            pushUser(title, text, payload, query, badge);
+            pushUser(title, textTarget, payload, query, badge);
           }, title, notification);
         }
       }
