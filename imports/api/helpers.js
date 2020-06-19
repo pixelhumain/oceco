@@ -518,7 +518,6 @@ export const queryOrPrivateScopeLinks = (scope, scopeId) => {
     queryOceco.oceco = { $exists: true };
     queryAnd.$and.push(queryOceco);
     queryAnd.$and.push(query);
-    console.log(queryAnd);
     return queryAnd;
   }
   return query;
