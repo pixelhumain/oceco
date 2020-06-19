@@ -134,9 +134,9 @@ Meteor.startup(function () {
       var initNotifystart = ActivityStream.find(query, options).observe({
         added(notification) {
           if (!initNotifystart) return;
-
+          const textTarget = `${notifyDisplay(notification.notify)} - ${notification.target.name}`;
           const options = {
-            body: notifyDisplay(notification.notify),
+            body: textTarget,
             icon: '/icon.png',
             data: notification,
           };
