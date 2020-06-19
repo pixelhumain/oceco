@@ -560,7 +560,7 @@ Meteor.methods({
         if (userC) {
           // eslint-disable-next-line no-unused-vars
           const arrayIds = Object.keys(orgaOne.links.projects)
-            .filter(k => !(userC.links && userC.links.projects && userC.links.projects[k] && userC.links.projects[k].isAdmin))
+            .filter(k => !(userC.links && userC.links.projects && userC.links.projects[k] && userC.links.projects[k].isAdmin && !userC.links.projects[k].isInviting))
             // eslint-disable-next-line array-callback-return
             .map((k) => {
               // console.log(k);
