@@ -28,7 +28,18 @@
   {{#ionContent class="scroll-bg"}}
 
   {{#if equals scope.scopeVar 'citoyens'}}
+  {{#if scope.isMe}}
+  <div class="item tabs tabs-icon-left">
+    <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}"
+      href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i
+        class="icon fa fa-home"></i></a>
+    <a class="tab-item {{#if equals selectview 'scopeOrganizationsTemplate'}}tab-item-active{{/if}}"
+      href="{{pathFor 'organizationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeOrganizationsTemplate"><i
+        class="icon fa fa-users"></i></a>
+  </div>
+  {{/if}}
     {{> Template.dynamic template=selectview data=scope}}
+
   {{else if equals scope.scopeVar 'organizations'}}
   <div class="item tabs tabs-icon-top">
     <div class="tabs tabs-striped">
@@ -308,7 +319,7 @@
 <template name="scopeOrganizationsTemplate">
   <div class="list">
     <div class="item item-divider">
-      <i class="icon fa fa-users"></i>  {{__ "organizations"}} {{name}} <span class="badge badge-dark">{{countOrganizationsCreator}}</span>
+      <i class="icon fa fa-users"></i>  {{__ "organizations"}} <span class="badge badge-dark">{{countOrganizationsCreator}}</span>
     </div>
     {{> Template.dynamic template=scopeBoutonOrganizationsTemplate data=this}}
 

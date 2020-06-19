@@ -511,6 +511,16 @@ export const queryOrPrivateScopeLinks = (scope, scopeId) => {
   queryOrPrivateIsInviting[`links.${scope}.${Meteor.userId()}`] = { $exists: true };
   queryOrPrivateIsInviting[`links.${scope}.${Meteor.userId()}.isInviting`] = { $exists: true };
   query.$or.push(queryOrPrivateIsInviting);
+  if (scope === 'members') {
+    const queryAnd = {};
+    queryAnd.$and = [];
+    const queryOceco = {};
+    queryOceco.oceco = { $exists: true };
+    queryAnd.$and.push(queryOceco);
+    queryAnd.$and.push(query);
+    console.log(queryAnd);
+    return queryAnd;
+  }
   return query;
 };
 

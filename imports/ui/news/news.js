@@ -100,6 +100,9 @@ Template.newsList.onCreated(function() {
 
 
   this.autorun(function() {
+    if (Router.current().params.scope === 'organizations') {
+      Session.setPersistent('orgaCibleId', Router.current().params._id);
+    }
     const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
     this.readyScopeDetail.set(handle.ready());
   }.bind(this));
@@ -349,7 +352,7 @@ Template.scopeProjectsTemplate.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = this.subscribe('directorylistProjectsRaf', 'organizations', Session.get('orgaCibleId'));
+    const handle = this.subscribe('directoryListProjects', Router.current().params.scope, Router.current().params._id);
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -451,7 +454,7 @@ Template.scopeOrganizationsTemplate.onCreated(function() {
   });
 
   this.autorun(function() {
-    const handle = newsListSubs.subscribe('directoryListOrganizations', Router.current().params.scope, Router.current().params._id);
+    const handle = this.subscribe('directoryListOrganizations', Router.current().params.scope, Router.current().params._id);
     this.ready.set(handle.ready());
   }.bind(this));
 });

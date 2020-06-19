@@ -527,7 +527,7 @@ Citoyens.helpers({
   },
   listProjectsCreator () {
     const query = queryOrPrivateScopeLinks('contributors', this._id._str);
-    return Projects.find(query, queryOptions);
+    return Projects.find(query);
   },
   countProjectsCreator () {
     return this.listProjectsCreator() && this.listProjectsCreator().count();
@@ -555,7 +555,7 @@ Citoyens.helpers({
   },
   listOrganizationsCreator () {
     const query = queryOrPrivateScopeLinks('members', this._id._str);
-    return Organizations.find(query, queryOptions);
+    return Organizations.find(query);
   },
   countOrganizationsCreator () {
     return this.listOrganizationsCreator() && this.listOrganizationsCreator().count();
