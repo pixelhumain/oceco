@@ -157,9 +157,47 @@ Template.actionsAdd.onCreated(function () {
   });
 });
 
+Template.actionsFields.onDestroyed(function () {
+  // this.$("input[name^='tags.']").atwho('destroy');
+});
+
 Template.actionsFields.onRendered(function () {
   const template = Template.instance();
   template.find('input[name=name]').focus();
+
+  const self = this;
+  // #tags
+  /* pageSession.set('queryTag', false);
+  pageSession.set('tags', false);
+  self.$("input[name^='tags.']").atwho({
+    at: '#',
+  }).on('matched.atwho', function (event, flag, query) {
+    // console.log(event, `matched ${flag} and the result is ${query}`);
+    if (flag === '#' && query) {
+      // console.log(pageSession.get('queryTag'));
+      if (pageSession.get('queryTag') !== query) {
+        pageSession.set('queryTag', query);
+        Meteor.call('searchTagautocomplete', query, function (error, result) {
+          if (!error) {
+            // console.log(result);
+            self.$("input[name^='tags.']").atwho('load', '#', result).atwho('run');
+          }
+        });
+      }
+    }
+  }).on('inserted.atwho', function (event, $li) {
+    // console.log(JSON.stringify($li.data('item-data')));
+    if ($li.data('item-data')['atwho-at'] === '#') {
+      const tag = $li.data('item-data').name;
+      if (pageSession.get('tags')) {
+        const arrayTags = pageSession.get('tags');
+        arrayTags.push(tag);
+        pageSession.set('tags', arrayTags);
+      } else {
+        pageSession.set('tags', [tag]);
+      }
+    }
+  }); */
 });
 
 Template.actionsEdit.onCreated(function () {

@@ -137,9 +137,28 @@ export const queryLink = (array, search, selectorga) => {
   return query;
 };
 
+export const arrayLinkIsAdmin = (array) => {
+  const arrayIds = Object.keys(array)
+    .filter(k => array[k].isAdmin && !array[k].toBeValidated && !array[k].isAdminPending && !array[k].isInviting)
+    .map(k => new Mongo.ObjectID(k));
+  return arrayIds;
+};
+
+export const queryLinkIsAdmin = (array, search) => {
+  const arrayIds = arrayLinkIsAdmin(array);
+  let query = {};
+  query._id = { $in: arrayIds };
+  if (Meteor.isClient) {
+    if (search) {
+      query = searchQuery(query, search);
+    }
+  }
+  return query;
+};
+
 export const arrayLinkToBeValidated = (array) => {
   const arrayIds = Object.keys(array)
-    .filter(k => array[k].toBeValidated === true || array[k].isAdmin === true)
+    .filter(k => array[k].toBeValidated === true || array[k].isAdminPending === true)
     .map(k => new Mongo.ObjectID(k));
   /* const arrayIds = _.filter(_.map(array, (arrayLink, key) => {
     if (arrayLink.toBeValidated === true) {

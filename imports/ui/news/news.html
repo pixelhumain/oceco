@@ -258,9 +258,7 @@
 
     {{> Template.dynamic template=scopeBoutonNotificationsTemplate data=this}}
 
-    {{#if equals settingOceco.memberAuto false}}
-    {{#if equals scopeVar 'organizations'}}
-    {{#if scope.isAdmin}}
+    {{#if isAdmin}}
     {{#if listMembersToBeValidated}}
     <div class="item item-divider homestead">
       {{__ "Waiting for a response"}}
@@ -271,10 +269,18 @@
       {{> imgDoc profilThumbImageUrl=profilThumbImageUrl }}
       <p><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a>
         {{#if equals ../scopeVar 'organizations'}}
+        {{#if ../isAdminPending _id._str}}
         {{__ "wants to become a member of the organization"}}
+        {{else}}
+        {{__ "wants to become a admin of the organization"}}
+        {{/if}}
         {{/if}}
         {{#if equals ../scopeVar 'projects'}}
+        {{#if ../isAdminPending _id._str}}
         {{__ "wants to become a contributor to the project"}}
+        {{else}}
+        {{__ "wants to become a admin to the project"}}
+        {{/if}}
         {{/if}}
       </p>
     </div>
@@ -286,8 +292,7 @@
     {{/transition}}
     {{/if}}
     {{/if}}
-    {{/if}}
-    {{/if}}
+
 
     {{#if listNotifications}}
     <div class="item item-divider homestead">

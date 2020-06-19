@@ -19,7 +19,7 @@ import { ActivityStream } from '../activitystream.js';
 import { Citoyens, BlockCitoyensRest, SchemasCitoyensRest, SchemasInvitationsRest, SchemasFollowRest, SchemasInviteAttendeesEventRest } from '../citoyens.js';
 import { News, SchemasNewsRest, SchemasNewsRestBase } from '../news.js';
 import { Cities } from '../cities.js';
-import { Lists } from '../lists.js';
+import { Tags } from '../lists.js';
 import { Events, SchemasEventsRest, BlockEventsRest } from '../events.js';
 import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../organizations.js';
 import { Projects, SchemasProjectsRest, BlockProjectsRest } from '../projects.js';
@@ -557,10 +557,10 @@ Meteor.methods({
     // admin
     if (orgaOne && orgaOne.isAdmin()) {
       if (orgaOne.links && orgaOne.links.projects) {
-        if (userC && userC.links && userC.links.projects) {
+        if (userC) {
           // eslint-disable-next-line no-unused-vars
           const arrayIds = Object.keys(orgaOne.links.projects)
-            .filter(k => !(userC.links.projects[k] && userC.links.projects[k].isAdmin))
+            .filter(k => !(userC.links && userC.links.projects && userC.links.projects[k] && userC.links.projects[k].isAdmin))
             // eslint-disable-next-line array-callback-return
             .map((k) => {
               // console.log(k);
@@ -1129,6 +1129,7 @@ Meteor.methods({
     doc.childId = childId;
     doc.childType = childType;
     doc.linkOption = linkOption;
+    console.log(doc);
     const retour = apiCommunecter.postPixel('co2/link', 'validate', doc);
     return retour;
   },
@@ -1319,9 +1320,8 @@ Meteor.methods({
     } else {
       options.limit = 50;
     }
-
-    // List.find({$or : [{name: {$regex:  regex, $options: "i"}},{'postalCodes.postalCode': {$regex:  regex}}]}, options).fetch();
-    return Lists.findOne({ name: 'tags' }).list;
+    const tagsArray = Tags.find({ tag: { $regex: query, $options: 'i' } }, options).fetch();
+    return tagsArray.map(tag => ({ name: tag.tag }));
   },
   searchMemberautocomplete (search) {
     check(search, Object);
@@ -3196,7 +3196,10 @@ export const assignMemberActionRooms = new ValidatedMethod({
   run({ id, memberId, startDate, endDate }) {
 
     const actionObjectId = new Mongo.ObjectID(id);
-    const parentObjectId = new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
+    const actionOne = Actions.findOne({ _id: actionObjectId });
+    const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
+    const parentType = actionOne.parentType;
+    const collection = nameToCollection(parentType);
     const orgOne = Organizations.findOne({ _id: parentObjectId });
     let orgId;
     if (orgOne) {
@@ -3246,13 +3249,10 @@ export const assignMemberActionRooms = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
     // verifier si admin
-    if (!Organizations.findOne({ _id: new Mongo.ObjectID(orgId) }).isAdmin()) {
+    if (!collection.findOne({ _id: parentObjectId }).isAdmin()) {
       throw new Meteor.Error('not-authorized');
     }
-    // verifier si admin
-    if (!Organizations.findOne({ _id: new Mongo.ObjectID(orgId) }).isAdmin()) {
-      throw new Meteor.Error('not-authorized');
-    }
+
     // verifier si member existe
     if (!Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) })) {
       throw new Meteor.Error('not-authorized');

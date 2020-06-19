@@ -3,6 +3,8 @@ import { Mongo } from 'meteor/mongo';
 
 export const Lists = new Mongo.Collection('lists', { idGeneration: 'MONGO' });
 
+export const Tags = new Mongo.Collection('tags', { idGeneration: 'MONGO' });
+
 if (Meteor.isServer) {
 // Index
   Lists.rawCollection().createIndex(

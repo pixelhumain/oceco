@@ -138,6 +138,8 @@
   "Waiting for a response":"Waiting for a response",
   "wants to become a member of the organization":"wants to become a member of the organization",
   "wants to become a contributor to the project":"wants to become a contributor to the project",
+  "wants to become a admin of the organization": "wants to become a admin of the organization",
+  "wants to become a admin to the project": "wants to become a admin to the project",
   "share":"share",
   "share content with your network":"share content with your network",
   "Photo":"Photo",

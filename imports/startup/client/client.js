@@ -439,15 +439,28 @@ Meteor.startup(function () {
 
   Template.registerHelper('isAdminRaf', () => {
     // console.log(Session.get('orgaCibleId'));
+    /*
+    pouvoir verifier si user admin > orga
+    ou si user admin < d'un projet d'orga
+    */
     if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
-      const RaffId = Session.get('orgaCibleId');
-      const orgaOne = Organizations.findOne({
-        _id: new Mongo.ObjectID(RaffId),
-      });
-      return orgaOne && orgaOne.isAdmin();
+      if (Session.get(`isAdmin${Session.get('orgaCibleId')}`)) {
+        return Session.get(`isAdmin${Session.get('orgaCibleId')}`);
+      }
     }
     return false;
   });
+
+  Template.registerHelper('isAdminOrga', () => {
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+      if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
+        return true;
+      }
+    }
+    return false;
+  });
+
+  
 
   Template.registerHelper('orgaCibleId', () => Session.get('orgaCibleId'));
 

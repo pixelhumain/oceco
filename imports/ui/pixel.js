@@ -95,6 +95,29 @@ Template.layout.onCreated(function() {
           Session.setPersistent('settingOceco', orgaOne.oceco);
           this.ready.set(handleScopeDetail.ready());
         }
+        if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+        if (orgaOne && orgaOne.isAdmin()) {
+          Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
+          Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, true);
+        } else {
+          const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+          if (orgaOne.links && orgaOne.links.projects && userC && userC.links && userC.links.projects) {
+              // eslint-disable-next-line no-unused-vars
+              const arrayIds = Object.keys(orgaOne.links.projects)
+                .filter(k => userC.links.projects[k] && userC.links.projects[k].isAdmin && !userC.links.projects[k].toBeValidated && !userC.links.projects[k].isAdminPending && !userC.links.projects[k].isInviting)
+                // eslint-disable-next-line array-callback-return
+                .map((k) => {
+                  // console.log(k);
+                  return k;
+                });
+              console.log(arrayIds);
+              const isAdmin = arrayIds && arrayIds.length > 0 ? arrayIds : false;
+              Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
+            Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, false);
+          }
+        }
+      }
+
 
         
       }

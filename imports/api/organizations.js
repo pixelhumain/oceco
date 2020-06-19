@@ -1,4 +1,6 @@
+/* eslint-disable meteor/no-session */
 /* eslint-disable consistent-return */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
@@ -21,7 +23,7 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, queryLink, queryLinkType, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { searchQuery, queryLink, queryLinkType, queryLinkIsAdmin, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
@@ -336,6 +338,7 @@ Organizations.helpers({
   listMembersToBeValidated () {
     if (this.links && this.links.members) {
       const query = queryLinkToBeValidated(this.links.members);
+      // console.log(query);
       return Citoyens.find(query, queryOptions);
     }
     return false;
@@ -544,6 +547,16 @@ Organizations.helpers({
       return members && _.size(members);} */
     return this.listMembersOrganizations(search, selectorga) && this.listMembersOrganizations(search, selectorga).count();
   },
+  listProjectsCreatorAdmin(search) {
+    if (this.links && this.links.projects) {
+      const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+      const query = queryLinkIsAdmin(userC.links.projects, search);
+      return Projects.find(query, queryOptions);
+    }
+  },
+  countProjectsCreatorAdmin(search) {
+    return this.listProjectsCreatorAdmin(search) && this.listProjectsCreatorAdmin(search).count();
+  },
   listProjectsCreator(search) {
     if (this.links && this.links.projects) {
       /* const projectIds = arrayLinkParent(this.links.projects, 'projects');
@@ -607,6 +620,34 @@ Organizations.helpers({
       return Events.find(query, options);
     }
   },
+  listProjectsEventsCreatorAdmin(querySearch) {
+    if (this.links && this.links.projects) {
+      const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
+      const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+      const query = querySearch || {};
+      query.$or = [];
+      projectIds.forEach((id) => {
+        const queryCo = {};
+        if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
+          queryCo[`organizer.${id}`] = { $exists: true };
+          query.$or.push(queryCo);
+        }
+      });
+      // queryOptions.fields.parentId = 1;
+      const inputDate = new Date();
+      // query.startDate = { $lte: inputDate };
+      query.endDate = { $gte: inputDate };
+      const options = {};
+      options.sort = {
+        startDate: 1,
+      };
+      return Events.find(query, options);
+    }
+  },
+  countProjectsEventsCreatorAdmin() {
+    // return this.links && this.links.events && _.size(this.links.events);
+    return this.listProjectsEventsCreatorAdmin() && this.listProjectsEventsCreatorAdmin().count();
+  },
   /*
   WARNING j'ai du créer listProjectsEventsCreator1M pour rajouter un delai de visibiliter 15 jours
   des actions lier au evenement pour pouvoir valider apres la fin
@@ -614,12 +655,15 @@ Organizations.helpers({
   listProjectsEventsCreator1M(querySearch) {
     if (this.links && this.links.projects) {
       const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
+      const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
       const query = querySearch || {};
       query.$or = [];
       projectIds.forEach((id) => {
         const queryCo = {};
-        queryCo[`organizer.${id}`] = { $exists: true };
-        query.$or.push(queryCo);
+        if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
+          queryCo[`organizer.${id}`] = { $exists: true };
+          query.$or.push(queryCo);
+        }
       });
       // queryOptions.fields.parentId = 1;
       // const inputDate = new Date();
@@ -638,33 +682,56 @@ Organizations.helpers({
     return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
   },
   listProjectsEventsActionsCreator(status = 'todo', limit) {
+    const query = {};
     const listEvents = this.listProjectsEventsCreator1M();
-    const listProjects = this.listProjects();
-    if (listEvents || listProjects || this._id._str) {
+
+    if (Meteor.isClient) {
+      if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
+        const listProjects = this.listProjects();
+
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds, this._id._str];
+
+        query.parentId = {
+          $in: mergeArray,
+        };
+      } else {
+        const listProjects = this.listProjectsCreatorAdmin();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds];
+
+        query.parentId = {
+          $in: mergeArray,
+        };
+      }
+    } else {
+      const listProjects = this.listProjects();
       const eventIds = listEvents.map(event => event._id._str);
       const projectIds = listProjects.map(project => project._id._str);
       const mergeArray = [...eventIds, ...projectIds, this._id._str];
-      const query = {};
       query.parentId = {
         $in: mergeArray,
       };
-      if (status === 'todo') {
-        query.status = 'todo';
-      } else if (status === 'done') {
-        query.status = 'done';
-      }   
-
-      const options = {};
-      options.sort = {
-        created: -1,
-      };
-
-      if (limit) {
-        options.limit = limit;
-      }
-      // console.log(query);
-      return Actions.find(query, options);
     }
+
+    if (status === 'todo') {
+      query.status = 'todo';
+    } else if (status === 'done') {
+      query.status = 'done';
+    }
+
+    const options = {};
+    options.sort = {
+      created: -1,
+    };
+
+    if (limit) {
+      options.limit = limit;
+    }
+
+    return Actions.find(query, options);
   },
   countProjectsEventsActionsCreator() {
     // return this.links && this.links.events && _.size(this.links.events);

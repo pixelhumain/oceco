@@ -319,6 +319,7 @@ Projects.helpers({
     return this.links && this.links[scope] && this.links[scope][scopeId];
   },
   isAdmin (userId) {
+    console.log('isAdmin project');
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     const citoyen = Citoyens.findOne({ _id: new Mongo.ObjectID(bothUserId) });
     const organizerProject = this.organizerProject();
@@ -354,7 +355,9 @@ Projects.helpers({
   listMembersToBeValidated () {
     if (this.links && this.links.contributors) {
       const query = queryLinkToBeValidated(this.links.contributors);
-      return Citoyens.find(query, queryOptions);
+      if (Citoyens.find(query, queryOptions).count() > 0) {
+        return Citoyens.find(query, queryOptions);
+      }
     }
     return false;
   },

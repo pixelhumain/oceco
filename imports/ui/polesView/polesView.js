@@ -79,7 +79,9 @@ Template.projectList2.helpers({
   projectGlobalCount(projectObjectId) {
     const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
-
+    if (search && search.charAt(0) === ':' && search.length > 1) {
+      return true;
+    }
     let query = {};
     const organizerExist = `organizer.${projectId}`;
     query.parentId = projectId;

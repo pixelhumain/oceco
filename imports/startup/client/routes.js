@@ -628,9 +628,10 @@ const ensurePixelSignin = function () {
 const ensurePixelIsAdmin = function() {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
     const RaffId = Session.get('orgaCibleId');
+    const isAdmin = Session.get(`isAdmin${Session.get('orgaCibleId')}`);
     console.log(RaffId);
-    const IsAdmin = Meteor.user().profile.pixelhumain.links && Meteor.user().profile.pixelhumain.links.memberOf && Meteor.user().profile.pixelhumain.links.memberOf[RaffId] && Meteor.user().profile.pixelhumain.links.memberOf[RaffId].isAdmin;
-    if (IsAdmin === true) {
+    // console.log(isAdmin);
+    if (isAdmin === true) {
       this.next();
     }
   } else {

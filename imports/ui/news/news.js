@@ -304,12 +304,14 @@ Template.scopeNotificationsTemplate.helpers({
 });
 
 Template.scopeNotificationsTemplate.events({
-  'click .validateYes'(event) {
+  'click .validateYes'(event, instance) {
     event.preventDefault();
     const scopeId = pageSession.get('scopeId');
     const scope = pageSession.get('scope');
     // console.log(`${scopeId},${scope},${this._id._str},${this.scopeVar()}`);
-    Meteor.call('validateEntity', scopeId, scope, this._id._str, this.scopeVar(), 'toBeValidated', function(err) {
+
+    const linkOption = instance.data.isAdminPending(this._id._str) ? 'toBeValidated' : 'isAdminPending';
+    Meteor.call('validateEntity', scopeId, scope, this._id._str, this.scopeVar(), linkOption, function(err) {
       if (err) {
         if (err.reason) {
           IonPopup.alert({ template: i18n.__(err.reason) });
