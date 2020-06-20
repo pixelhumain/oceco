@@ -39,7 +39,7 @@ import { Gamesmobile, Playersmobile, Questsmobile } from '../gamemobile.js';
 import { apiCommunecter } from './api.js';
 
 // helpers
-import { encodeString, nameToCollection, arrayLinkToModerate } from '../helpers.js';
+import { encodeString, nameToCollection, arrayLinkToModerate, matchTags } from '../helpers.js';
 
 global.Events = Events;
 global.Organizations = Organizations;
@@ -2707,12 +2707,14 @@ export const insertAction = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
 
+    let orgaId;
     // doit tester si oceco ou pas
     if (doc.parentType === 'organizations') {
       // test organizations > verifie oceco exists
       if (!scopeOne.oceco) {
         throw new Meteor.Error('not-authorized organizations oceco');
       }
+      orgaId = scopeOne._id._str;
     } else if (doc.parentType === 'projects') {
       // projects > organizations > verifie oceco exists
       const project = `links.projects.${scopeOne._id._str}`;
@@ -2720,6 +2722,7 @@ export const insertAction = new ValidatedMethod({
       if (!organizationOne) {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
+      orgaId = organizationOne._id._str;
     } else if (doc.parentType === 'events') {
       // events > projects > organizations > verifie oceco exists
       const event = `links.events.${scopeOne._id._str}`;
@@ -2730,6 +2733,7 @@ export const insertAction = new ValidatedMethod({
         if (!organizationOne) {
           throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
         }
+        orgaId = organizationOne._id._str;
       } else {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
@@ -2790,7 +2794,8 @@ export const insertAction = new ValidatedMethod({
       }
     }
 
-    const docRetour = doc;
+
+    let docRetour = doc;
 
     if (doc.startDate) {
       docRetour.startDate = moment(doc.startDate).format('YYYY-MM-DDTHH:mm:ssZ');
@@ -2799,6 +2804,13 @@ export const insertAction = new ValidatedMethod({
       docRetour.endDate = moment(doc.endDate).format('YYYY-MM-DDTHH:mm:ssZ');
     }
 
+    if (doc.tagsText) {
+      docRetour = matchTags(docRetour);
+      if (docRetour.tags && docRetour.tags.length > 0) {
+        Organizations.update({ _id: new Mongo.ObjectID(orgaId) }, { $addToSet: { 'oceco.tags': { $each: docRetour.tags } } });
+      }
+      delete docRetour.tagsText;
+    }
 
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
@@ -2853,6 +2865,47 @@ export const updateAction = new ValidatedMethod({
     SchemasActionsRest.clean(modifier);
     SchemasActionsRest.validate(modifier, { modifier: true });
 
+    const collectionScope = nameToCollection(modifier.$set.parentType);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(modifier.$set.parentId),
+    });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    let orgaId;
+    // doit tester si oceco ou pas
+    if (modifier.$set.parentType === 'organizations') {
+      // test organizations > verifie oceco exists
+      if (!scopeOne.oceco) {
+        throw new Meteor.Error('not-authorized organizations oceco');
+      }
+      orgaId = scopeOne._id._str;
+    } else if (modifier.$set.parentType === 'projects') {
+      // projects > organizations > verifie oceco exists
+      const project = `links.projects.${scopeOne._id._str}`;
+      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+      if (!organizationOne) {
+        throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+      }
+      orgaId = organizationOne._id._str;
+    } else if (modifier.$set.parentType === 'events') {
+      // events > projects > organizations > verifie oceco exists
+      const event = `links.events.${scopeOne._id._str}`;
+      const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
+      if (projectOne) {
+        const project = `links.projects.${projectOne._id._str}`;
+        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+        if (!organizationOne) {
+          throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+        }
+        orgaId = organizationOne._id._str;
+      } else {
+        throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
+      }
+    }
+
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -2888,11 +2941,27 @@ export const updateAction = new ValidatedMethod({
     if (modifier.$set.participants) {
       docRetour.participants = modifier.$set.participants;
     }
+
+    console.log(modifier);
+    console.log(docRetour);
+    if (modifier.$set.tagsText) {
+        docRetour = matchTags(docRetour);
+        if (docRetour.tags && docRetour.tags.length > 0) {
+          Organizations.update({ _id: new Mongo.ObjectID(orgaId) }, { $addToSet: { 'oceco.tags': { $each: docRetour.tags } } });
+        }
+        delete docRetour.tagsText;
+    }
+    if (modifier.$unset.tagsText === '') {
+      docRetour.tags = '';
+      delete docRetour.tagsText;
+    }
+
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.id = _id;
+    console.log(docRetour);
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },

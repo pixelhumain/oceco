@@ -819,6 +819,11 @@ export const matchTags = (doc, tags) => {
       matches.push(match[1]);
     }
   }
+  if (doc.tagsText) {
+    while ((match = regex.exec(doc.tagsText))) {
+      matches.push(match[1]);
+    }
+  }
 
   if (tags) {
     // const arrayTags = _.reject(tags, value => matches[value] === null, matches);

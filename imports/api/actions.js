@@ -33,6 +33,10 @@ export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'desc
   tracker: Tracker,
 });
 SchemasActionsRest.extend({
+  tagsText: {
+    type: String,
+    optional: true,
+  },
   participants: {
     type: Array,
     optional: true,

@@ -1,5 +1,6 @@
+/* eslint-disable meteor/no-session */
 /* eslint-disable consistent-return */
-/* global AutoForm */
+/* global AutoForm Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -143,7 +144,6 @@ Template.actionsAdd.onCreated(function () {
   pageSession.set('error', false);
 
   this.autorun(function() {
-    console.log(Router.current().params._id);
     pageSession.set('scopeId', Router.current().params._id);
     pageSession.set('scope', Router.current().params.scope);
     // pageSession.set('roomId', Router.current().params.roomId);
@@ -158,7 +158,7 @@ Template.actionsAdd.onCreated(function () {
 });
 
 Template.actionsFields.onDestroyed(function () {
-  // this.$("input[name^='tags.']").atwho('destroy');
+  this.$("input[name='tagsText']").atwho('destroy');
 });
 
 Template.actionsFields.onRendered(function () {
@@ -167,24 +167,13 @@ Template.actionsFields.onRendered(function () {
 
   const self = this;
   // #tags
-  /* pageSession.set('queryTag', false);
+  const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
+  pageSession.set('queryTag', false);
   pageSession.set('tags', false);
-  self.$("input[name^='tags.']").atwho({
+  self.$("input[name='tagsText']").atwho({
     at: '#',
-  }).on('matched.atwho', function (event, flag, query) {
-    // console.log(event, `matched ${flag} and the result is ${query}`);
-    if (flag === '#' && query) {
-      // console.log(pageSession.get('queryTag'));
-      if (pageSession.get('queryTag') !== query) {
-        pageSession.set('queryTag', query);
-        Meteor.call('searchTagautocomplete', query, function (error, result) {
-          if (!error) {
-            // console.log(result);
-            self.$("input[name^='tags.']").atwho('load', '#', result).atwho('run');
-          }
-        });
-      }
-    }
+    data: orgaOne && orgaOne.oceco && orgaOne.oceco.tags ? orgaOne.oceco.tags : [],
+    limit: orgaOne && orgaOne.oceco && orgaOne.oceco.tags && orgaOne.oceco.tags.length > 0 ? orgaOne.oceco.tags.length : 0,
   }).on('inserted.atwho', function (event, $li) {
     // console.log(JSON.stringify($li.data('item-data')));
     if ($li.data('item-data')['atwho-at'] === '#') {
@@ -197,7 +186,7 @@ Template.actionsFields.onRendered(function () {
         pageSession.set('tags', [tag]);
       }
     }
-  }); */
+  });
 });
 
 Template.actionsEdit.onCreated(function () {
@@ -273,7 +262,9 @@ Template.actionsEdit.helpers({
       actionEdit.endDate = action.momentEndDate();
     }
     actionEdit.description = action.description;
-    actionEdit.tags = action.tags;
+    if (action.tags && action.tags.length > 0) {
+      actionEdit.tagsText = action.tags.map(tag => `#${tag}`).join(' ');
+    }
     actionEdit.urls = action.urls;
     actionEdit.min = action.min;
     actionEdit.max = action.max;
