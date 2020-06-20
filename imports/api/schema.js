@@ -264,6 +264,14 @@ export const SchemasOcecoObj = new SimpleSchema({
     type: String,
     optional: true,
   },
+  tags: {
+    type: Array,
+    optional: true,
+  },
+  'tags.$': {
+    type: String,
+    optional: true,
+  },
 });
 
 export const SchemasOceco = new SimpleSchema({

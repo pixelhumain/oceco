@@ -653,7 +653,6 @@ Template.ocecoEdit.helpers({
     const oceco = {};
     oceco._id = organization._id._str;
     oceco.oceco = organization.oceco;
-    console.log(oceco);
     return oceco;
   },
   error() {
