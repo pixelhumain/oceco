@@ -4,19 +4,7 @@
   {{/contentFor}}
 
   {{#contentFor "headerButtonLeft"}}
-  {{#if scope.listScope}}
-  {{#if scopeMe}}
-  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
-  {{#if isAndroid}}
-    {{> ionIcon icon='android-more-vertical'}}
-  {{else}}
-    {{> ionIcon icon='navicon'}}
-  {{/if}}
-  </button>
-  {{else}}
   {{>ionNavBackButton}}
-  {{/if}}
-  {{/if}}
   {{/contentFor}}
 
   {{#contentFor "headerButtonRight"}}

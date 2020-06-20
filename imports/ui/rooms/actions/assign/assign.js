@@ -30,7 +30,7 @@ Template.assignMembers.onCreated(function () {
 
   self.autorun(function() {
     const handle = Meteor.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
-    const handleMember = Meteor.subscribe('listMembers', Session.get('orgaCibleId'));
+    const handleMember = Meteor.subscribe('listMembersActions', Session.get('orgaCibleId'), Router.current().params.actionId);
     self.ready.set(handle.ready() && handleMember.ready());
   });
 });

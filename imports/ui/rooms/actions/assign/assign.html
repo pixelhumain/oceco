@@ -23,11 +23,11 @@
         <input id="search" type="text" placeholder="Chercher un membre..." value="{{search}}">
       </label>
       {{#transition in="zoomIn" out="bounceOut"}}
-      {{#each organizations.listMembers search}}
+      {{#each organizations.listMembersActions actions._id._str search}}
       <div class="item item-avatar item-button-right animated out">
         {{> imgDoc}}
         <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
-        {{#if actions.isContributors _id._str}}
+        {{#if assign}}
         <button class="button button-positive unassignmember-js">
           <i class="icon fa fa-unlink"></i>
         </button>

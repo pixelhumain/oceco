@@ -2412,26 +2412,29 @@ Meteor.publishComposite('listMembers', function(scopeId) {
         find(organisation) {
           return organisation.listMembers();
         },
-        children: [
-          {
-            find(citoyen) {
-              return Meteor.users.find({
-                _id: citoyen._id._str,
-              }, {
-                fields: {
-                  'status.online': 1,
-                },
-              });
-            },
-          }, /* ,
-          {
-            find(citoyen) {
-              return citoyen.documents();
-            },
-          }, */
-        ],
       },
     ] };
+});
+
+Meteor.publishComposite('listMembersActions', function (scopeId, actionId) {
+  check(scopeId, String);
+  check(actionId, String);
+
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      return Organizations.find({ _id: new Mongo.ObjectID(scopeId) });
+    },
+    children: [
+      {
+        find(organisation) {
+          return organisation.listMembersActions(actionId);
+        },
+      },
+    ]
+  };
 });
 
 Meteor.publishComposite('listMembersToBeValidated', function(scope, scopeId) {

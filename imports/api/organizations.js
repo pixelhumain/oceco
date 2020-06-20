@@ -523,7 +523,35 @@ Organizations.helpers({
   listMembers (search) {
     if (this.links && this.links.members) {
       const query = queryLinkType(this.links.members, search, 'citoyens');
-      return Citoyens.find(query, queryOptions);
+      const options = {};
+      options.sort = {};
+      options.sort.name = 1;
+      options.fields = {};
+      options.fields[`links.memberOf.${this._id._str}`] = 1;
+      options.fields.name = 1;
+      options.fields.profilThumbImageUrl = 1;
+      return Citoyens.find(query, options);
+    }
+    return false;
+  },
+  listMembersActions(actionId, search) {
+    if (this.links && this.links.members) {
+      const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+      const query = queryLinkType(this.links.members, search, 'citoyens');
+      const options = {};
+      options.transform = (item) => {
+        item.assign = actionOne && actionOne.isContributors(item._id._str) ? 1 : 0;
+        return item;
+      };
+      options.sort = {};
+      options.sort.assign = -1;
+      options.sort.name = 1;
+      options.fields = {};
+      options.fields[`links.memberOf.${this._id._str}`] = 1;
+      options.fields.name = 1;
+      options.fields.assign = 1;
+      options.fields.profilThumbImageUrl = 1;
+      return Citoyens.find(query, options);
     }
     return false;
   },
