@@ -68,12 +68,11 @@
     </a>
 
     {{#if scroll }}
-      <button class="button button-dark button-see-event-js"> <i
+      <button class="button button-dark button-see-event-js"> <span class="positive padding-right">{{projectActionsCount project._id}}</span> <i
           class="icon ion-ios-arrow-up"></i></button>
 
     {{else}}
-
-      <button class="button button-dark button-see-event-js"> <i
+      <button class="button button-dark button-see-event-js"> <span class="positive padding-right">{{projectActionsCount project._id}}</span> <i
           class="icon ion-ios-arrow-down"></i></button>
 
     {{/if}}
