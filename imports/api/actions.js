@@ -290,6 +290,12 @@ Actions.helpers({
     }
     return false;
   },
+  userIsNoValidated(userId) {
+    if (this.finishedBy && this.finishedBy[userId] && this.finishedBy[userId] === 'novalidated') {
+      return true;
+    }
+    return false;
+  },
   userTovalidate(userId) {
     if (this.finishedBy && this.finishedBy[userId] && this.finishedBy[userId] === 'toModerate') {
       return true;

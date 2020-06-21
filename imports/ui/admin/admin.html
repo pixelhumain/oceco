@@ -60,7 +60,7 @@
 
         {{#if equals selectview 'aValider'}}
         <div class="item item-divider">A valider</div>
-        <div class="item item-text-wrap">Liste des actions à valider par bénévole</div>
+        <div class="item item-text-wrap">Liste des actions à valider</div>
 
         {{> Template.dynamic template="listProjectsAValiderRaf" data=scope}}
  
@@ -105,8 +105,13 @@
                {{#each user in userTovalidate action.finishedBy}}
                <div class="item item-button-right">
                    <h2>{{user.name}}</h2>
-                   <button class="button button-positive admin-validation-js" usrId="{{user._id._str}}"
-                       actionId="{{action._id._str}}">Valider</button>
+                   <div class="multi-buttons">
+                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}" actionId="{{action._id._str}}"><i
+                            class="icon fa fa-check balanced"></i> </button>
+                    <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
+                        actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+                   </div>
+                   
                </div>
 
                {{/each}}

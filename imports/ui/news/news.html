@@ -339,7 +339,15 @@
 </template>
 
 <template name="scopeEventsTemplate">
-  {{> boutonCardprojects}}
+  {{#if isContributors}}
+  {{#if isAdmin}}
+  <div class="button-bar bar-positive">
+  <a href="{{pathFor 'eventsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un
+    événement</a>
+  </div>
+  {{/if}}
+  {{/if}}
+
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-calendar"></i>  {{__ "events"}} {{name}} <span class="badge badge-dark">{{countEventsCreator}}</span>
@@ -781,7 +789,30 @@
       {{/if}}
     </div>
 
+    {{#if isInviting 'members' currentUser._id}}
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+      {{#with InvitingUser 'members' currentUser._id}}
+      <div class="item item-text-wrap animated out">
+        <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+          {{#if isAdmin}}
+          {{__ "invited you to become an administrator"}}
+          {{else}}
+          {{__ "invited you"}}
+          {{/if}}
+        </p>
+      </div>
+      {{/with}}
+      <div class="button-bar bar-clear">
+        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+      </div>
+    </div>
+    {{/transition}}
+    {{/if}}
+
 </template>
+
 
 <template name="boutonNewsorganizations">
     <div class="button-bar bar-positive">
@@ -795,12 +826,53 @@
 
 <template name="boutonCardprojects">
     <div class="button-bar bar-positive">
-      {{#if isContributors}}
+      {{#if toBeValidated}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
+      {{#if isInviting 'contributors' currentUser._id}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else if equals isAdminPending false}}
+      <button class="button button-small disabled">
+        <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
+      </button>
+      {{else}}
       {{#if isAdmin}}
-      <a href="{{pathFor 'eventsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un événement</a>
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      {{else}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
+      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
       {{/if}}
       {{/if}}
+      {{/if}}
+
+      
     </div>
+
+    {{#if isInviting 'contributors' currentUser._id}}
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+      {{#with InvitingUser 'contributors' currentUser._id}}
+      <div class="item item-text-wrap animated out">
+        <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+          {{#if isAdmin}}
+          {{__ "invited you to become an administrator"}}
+          {{else}}
+          {{__ "invited you"}} titleOn=""
+          {{/if}}
+        </p>
+      </div>
+      {{/with}}
+      <div class="button-bar bar-clear">
+        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+      </div>
+    </div>
+    {{/transition}}
+    {{/if}}
 
 </template>
 
@@ -862,6 +934,7 @@
 </template>
 
 <template name="listCardprojects">
+{{> boutonCardprojects}}
 {{> listCard}}
 </template>
 

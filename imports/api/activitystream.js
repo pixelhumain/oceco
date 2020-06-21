@@ -629,6 +629,26 @@ ActivityStream.api = {
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
+        } else if (verb === 'noValidate') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              // isAdmin
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} no validated the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-remove';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            }
+          }
         } else if (verb === 'add') {
           if (object.type === 'actions') {
             if (type === 'isAdmin') {

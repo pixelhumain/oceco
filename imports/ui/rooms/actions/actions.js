@@ -131,7 +131,23 @@ Template.detailViewActions.events({
         orgId: Session.get('orgaCibleId'),
       }, (err) => {
         if (err) {
-          alert(err);
+          IonPopup.alert({ template: i18n.__(err.reason) });
+        }
+      });
+    }
+  },
+  'click .admin-no-validation-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('noValidateAction', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (err) => {
+        if (err) {
+          IonPopup.alert({ template: i18n.__(err.reason) });
         }
       });
     }
@@ -158,14 +174,20 @@ Template.actionsAdd.onCreated(function () {
 });
 
 Template.actionsFields.onDestroyed(function () {
-  this.$("input[name='tagsText']").atwho('destroy');
+  const self = this;
+  self.$("input[name='tagsText']").atwho('destroy');
 });
 
 Template.actionsFields.onRendered(function () {
+  const self = this;
   const template = Template.instance();
   template.find('input[name=name]').focus();
 
-  const self = this;
+  // mobile predictive desactived
+  self.$("input[name='tagsText']").on('focus', function () {
+    this.type = 'text';
+  });
+
   // #tags
   const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
   pageSession.set('queryTag', false);

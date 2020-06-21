@@ -309,6 +309,7 @@
           "who_leave_the_action_what_from_where": "__who__ ne participe plus à l'action __what__ de __where__",
           "who_finished_the_action_what_from_where": "__who__ a terminé l'action __what__ de __where__",
           "who_validated_the_action_what_from_where": "__who__ (admin) a validé l'action __what__ de __where__",
+          "who_no_validated_the_action_what_from_where": "__who__ (admin) n'a pas validé l'action __what__ de __where__",
           "start_of_the_action_what_in_where": "début de l'action __what__ de __where__",
           "end_of_the_action_what_in_where": "fin de l'action __what__ in __where__",
           "a_possible_expense_what_has_been_added_on_where": "une dépense possible __what__ a été ajoutée sur __where__",

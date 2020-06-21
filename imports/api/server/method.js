@@ -776,7 +776,66 @@ Meteor.methods({
 
     return true;
   },
+  'noValidateAction'({ actId, usrId, orgId }) {
+    new SimpleSchema({
+      actId: { type: String }, usrId: { type: String },
+    }).validate({ actId, usrId });
 
+
+    // je valide pas un user dans etat je le met
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(actId) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+    const collection = nameToCollection(action.parentType);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const actionId = new Mongo.ObjectID(actId);
+    // const userNeed = new Mongo.ObjectID(usrId);
+    const parent = `finishedBy.${usrId}`;
+
+    // récuperation du credit que l'on peut ganer pour une action
+    // const credit = Actions.findOne({ _id: actionId }) && Actions.findOne({ _id: actionId }).credits && !typeOfNaN(Actions.findOne({ _id: actionId }).credits) ? parseInt(Actions.findOne({ _id: actionId }).credits) : 0;
+
+    // const userActions = `userWallet.${orgId}.userActions.${actId}`;
+    // const userCredits = `userWallet.${orgId}.userCredits`;
+
+    // changement d'etat de l'user sur l'action
+    Actions.update({ _id: actionId }, { $set: { [parent]: 'novalidated' } });
+
+    // est ce utile de loguer l'action avce credit sur l'user une valider ou non valider pas trop scallable
+    // voir pur le novalidate si elle présente ou pas
+    // Citoyens.update({ _id: userNeed }, { $set: { [userActions]: credit } });
+
+    // verifier si tout les users sont valider
+    const actionOne = Actions.findOne({ _id: actionId });
+    if (actionOne.finishedBy && actionOne.countContributors() === Object.keys(actionOne.finishedBy).map(id => id).length && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
+      Actions.update({ _id: actionId }, { $set: { status: 'done' } });
+      countActionScope(actionOne.parentType, actionOne.parentId, 'done');
+    }
+    //
+
+    // notification
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
+    
+    ActivityStream.api.add(notif, 'noValidate', 'isUser', usrId);
+
+    return true;
+  },
   userup (geo) {
     check(geo, { longitude: Number, latitude: Number });
     if (!this.userId) {
@@ -1010,6 +1069,7 @@ Meteor.methods({
     const doc = {};
     doc.parentId = connectId;
     doc.childType = 'citoyens';
+    doc.connectType = connectType;
     if (connectType === 'admin' && childId) {
       check(childId, String);
       const collection = nameToCollection(parentType);
@@ -1029,7 +1089,7 @@ Meteor.methods({
       doc.connectType = 'contributor';
     }
 
-    doc.childId = (typeof childId !== 'undefined') ? childId : this.userId;
+    doc.childId = (typeof childId !== 'undefined' && childId !== null) ? childId : this.userId;
     doc.parentType = parentType;
     const retour = apiCommunecter.postPixel('co2/link', 'connect', doc);
 

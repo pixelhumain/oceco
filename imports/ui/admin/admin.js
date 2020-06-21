@@ -1,10 +1,11 @@
 /* eslint-disable meteor/no-session */
-/* global Session */
+/* global Session IonPopup */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
 //import { Counts } from 'meteor/tmeasday:publish-counts';
+import i18n from 'meteor/universe:i18n';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
@@ -149,7 +150,23 @@ Template.listProjectsAValiderRaf.events({
         orgId: Session.get('orgaCibleId'),
       }, (err) => {
         if (err) {
-          alert(err);
+          IonPopup.alert({ template: i18n.__(err.reason) });
+        }
+      });
+    }
+  },
+  'click .admin-no-validation-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('noValidateAction', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (err) => {
+        if (err) {
+          IonPopup.alert({ template: i18n.__(err.reason) });
         }
       });
     }

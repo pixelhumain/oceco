@@ -69,11 +69,11 @@ Template.Bouton_card.events({
         IonPopup.alert({ template: i18n.__(error.reason) });
       } else {
         instance.state.set('call', false);
-        if (this.scope === 'events') {
+        /* if (this.scope === 'events') {
           Router.go('listAttendees', { _id: this.id, scope: this.scope }, { replaceState: true });
         } else {
           Router.go('directory', { _id: this.id, scope: this.scope }, { replaceState: true });
-        }
+        } */
       }
     });
   },
@@ -82,7 +82,7 @@ Template.Bouton_card.events({
     const self = this;
     instance.state.set('call', true);
     IonPopup.confirm({ title: i18n.__('Disconnect'),
-      template: i18n.__('Want to remove the link between the entity'),
+      template: i18n.__('Want to remove the link between you and the entity'),
       onOk() {
         Meteor.call('disconnectEntity', self.id, self.scope, null, this.childId, this.childType, (error) => {
           if (error) {
@@ -90,11 +90,11 @@ Template.Bouton_card.events({
             IonPopup.alert({ template: i18n.__(error.reason) });
           } else {
             instance.state.set('call', false);
-            if (self.scope === 'events') {
+            /* if (self.scope === 'events') {
               Router.go('listAttendees', { _id: self.id, scope: self.scope }, { replaceState: true });
             } else {
               Router.go('directory', { _id: self.id, scope: self.scope }, { replaceState: true });
-            }
+            } */
           }
         });
       },

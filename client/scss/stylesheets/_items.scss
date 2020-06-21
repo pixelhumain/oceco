@@ -449,6 +449,7 @@ button.item.item-button-right {
 .item-button-right > .button,
 .item-button-right .item-content > .button,
 .item-button-right > .buttons,
+.item-button-right > .multi-buttons,
 .item-button-right .item-content > .buttons {
   @include display-flex();
   @include align-items(center);
@@ -469,11 +470,12 @@ button.item.item-button-right {
 
   > .button {
     margin: 0px 2px;
-    min-width: $item-icon-font-size + ($button-border-width * 2);
+    //min-width: $item-icon-font-size + ($button-border-width * 8);
     min-height: $item-icon-font-size + ($button-border-width * 2);
     font-size: $item-button-font-size;
     line-height: $item-button-line-height;
   }
+  
 }
 
 

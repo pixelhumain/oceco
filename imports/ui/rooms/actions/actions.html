@@ -119,10 +119,18 @@
       </h2>
       {{#if ../../isAdmin}}
       {{#if userTovalidate contributor._id._str}}
-      <button class="button button-positive admin-validation-js" usrId="{{contributor._id._str}}"
-        actionId="{{_id._str}}">Valider</button>
+
+          <div class="multi-buttons">
+            <button class="button button-stable admin-validation-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i
+                class="icon fa fa-check balanced"></i> </button>
+            <button class="button button-stable admin-no-validation-js" usrId="{{contributor._id._str}}"
+              actionId="{{_id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+          </div>
+        
         {{else if userIsValidated contributor._id._str}}
-        <button class="button button-clear button-balanced"><i class="icon fa fa-check"></i></button>
+        <button class="button button-clear button-balanced" disabled><i class="icon fa fa-check"></i></button>
+        {{else if userIsNoValidated contributor._id._str}}
+        <button class="button button-clear button-positive" disabled><i class="icon fa fa-remove"></i></button>
       {{/if}}
       {{/if}}
     </div>
@@ -303,7 +311,7 @@
 {{> afQuickField name='description' rows=8}}
 {{> afQuickField name='startDate' type="datetime-local"}}
 {{> afQuickField name='endDate' type="datetime-local"}}
-{{> afQuickField name='tagsText' autocomplete="off"}}
+{{> afQuickField name='tagsText' type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
 {{> afQuickField name='urls'}}
 {{> afQuickField name='max'}}
 {{> afQuickField name='min'}}

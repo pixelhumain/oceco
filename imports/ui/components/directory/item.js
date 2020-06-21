@@ -86,11 +86,11 @@ Template.Directory_item.events({
         IonPopup.alert({ template: i18n.__(error.reason) });
       } else {
         instance.state.set('call', false);
-        if (this.scope === 'events') {
+        /* if (this.scope === 'events') {
           Router.go('listAttendees', { _id: this.id, scope: this.scope }, { replaceState: true });
         } else {
           Router.go('directory', { _id: this.id, scope: this.scope }, { replaceState: true });
-        }
+        } */
       }
     });
   },
