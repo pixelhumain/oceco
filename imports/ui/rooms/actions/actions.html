@@ -311,7 +311,11 @@
 {{> afQuickField name='description' rows=8}}
 {{> afQuickField name='startDate' type="datetime-local"}}
 {{> afQuickField name='endDate' type="datetime-local"}}
+{{#if isCordova}}
 {{> afQuickField name='tagsText' type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
+{{else}}
+{{> afQuickField name='tagsText' type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
+{{/if}}
 {{> afQuickField name='urls'}}
 {{> afQuickField name='max'}}
 {{> afQuickField name='min'}}

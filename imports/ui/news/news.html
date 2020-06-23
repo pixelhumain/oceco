@@ -396,7 +396,7 @@
     {{/if}}
     {{>searchActions}}
     {{#if equals selectsubview 'aFaire'}}
-        {{#each item in listActionsCreator selectsubview 'todo' search}}
+        {{#each item in listActionsCreator selectsubview 'todo' search searchSort}}
 
         {{> itemInputAction action=item}}
         {{else}}
@@ -412,7 +412,7 @@
         
 
     {{else if equals selectsubview 'depenses'}}
-        {{#each item in listActionsCreator selectsubview 'todo' search}}
+        {{#each item in listActionsCreator selectsubview 'todo' search searchSort}}
 
         {{> itemInputAction action=item}}
         {{/each}}

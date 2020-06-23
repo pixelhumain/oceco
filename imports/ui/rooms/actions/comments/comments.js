@@ -32,18 +32,16 @@ const pageSession = new ReactiveDict('pageActionsComments');
 Template.actionsDetailComments.onCreated(function () {
   const template = Template.instance();
   template.ready = new ReactiveVar();
-  template.scope = Router.current().params.scope;
-  template._id = Router.current().params._id;
-  template.roomId = Router.current().params.roomId;
-  template.actionId = Router.current().params.actionId;
+
   this.autorun(function() {
+    template.scope = Router.current().params.scope;
+    template._id = Router.current().params._id;
+    template.roomId = Router.current().params.roomId;
+    template.actionId = Router.current().params.actionId;
     pageSession.set('scopeId', template._id);
     pageSession.set('scope', template.scope);
     pageSession.set('roomId', template.roomId);
     pageSession.set('actionId', template.actionId);
-  });
-
-  this.autorun(function() {
     if (template.scope && template._id && template.roomId && template.actionId) {
       // const handle = singleSubs.subscribe('detailActions', template.scope, template._id, template.roomId, template.actionId);
       const handle = Meteor.subscribe('actionsDetailComments', template.scope, template._id, template.roomId, template.actionId);

@@ -23,7 +23,7 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, queryLink, queryLinkType, queryLinkIsAdmin, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { searchQuery, searchQuerySort, queryLink, queryLinkType, queryLinkIsAdmin, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
@@ -475,7 +475,7 @@ Organizations.helpers({
   room () {
     return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
-  listActionsCreator(type = 'all', status = 'todo', search) {
+  listActionsCreator(type = 'all', status = 'todo', search, searchSort) {
     const query = {};
     const inputDate = new Date();
 
@@ -512,9 +512,19 @@ Organizations.helpers({
     query.$or.push(querytwo);
 
     const options = {};
-    options.sort = {
-      startDate: 1,
-    };
+    if (Meteor.isClient) {
+      if (searchSort) {
+        const arraySort = searchQuerySort('actions', searchSort);
+        if (arraySort) {
+          options.sort = arraySort;
+        }
+      }
+    } else {
+      options.sort = {
+        startDate: 1,
+      };
+    }
+
     return Actions.find(query, options);
   },
   countActionsCreator(type = 'all', status = 'todo', search) {
@@ -593,7 +603,7 @@ Organizations.helpers({
         $in: projectIds,
       }; */
       const query = queryLink(this.links.projects, search);
-      // queryOptions.fields.parentId = 1;
+      queryOptions.fields.modified = 1;
       return Projects.find(query, queryOptions);
     }
   },

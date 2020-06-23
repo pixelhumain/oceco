@@ -17,7 +17,7 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 
 import { searchAction } from '../../api/client/reactive.js';
-import { searchQuery } from '../../api/helpers.js';
+import { searchQuery, searchQuerySort } from '../../api/helpers.js';
 
 import './polesView.html';
 
@@ -74,7 +74,17 @@ Template.projectList2.helpers({
     const query = {};
     const projectId = projectObjectId.valueOf();
     query[`organizer.${projectId}`] = { $exists: true };
-    return Events.find(query);
+
+    const options = {};
+    const searchSort = searchAction.get('searchSort');
+    if (searchSort) {
+      const arraySort = searchQuerySort('events', searchSort);
+      if (arraySort) {
+        options.sort = arraySort;
+      }
+    }
+
+    return Events.find(query, options);
   },
   projectGlobalCount(projectObjectId) {
     const search = searchAction.get('search');
@@ -120,7 +130,17 @@ Template.projectList2.helpers({
     if (search) {
       query = searchQuery(query, search);
     }
-    return Actions.find(query);
+
+    const options = {};
+    const searchSort = searchAction.get('searchSort');
+    if (searchSort) {
+      const arraySort = searchQuerySort('actions', searchSort);
+      if (arraySort) {
+        options.sort = arraySort;
+      }
+    }
+
+    return Actions.find(query, options);
   },
   scroll() {
     if (searchAction.get('search')) {
@@ -151,7 +171,16 @@ Template.organizationList.helpers({
       query = searchQuery(query, search);
     }
 
-    return Actions.find(query);
+    const options = {};
+    const searchSort = searchAction.get('searchSort');
+    if (searchSort) {
+      const arraySort = searchQuerySort('actions', searchSort);
+      if (arraySort) {
+        options.sort = arraySort;
+      }
+    }
+
+    return Actions.find(query, options);
   },
 });
 
@@ -188,7 +217,17 @@ Template.eventsList2.helpers({
     if (search) {
       query = searchQuery(query, search);
     }
-    return Actions.find(query);
+
+    const options = {};
+    const searchSort = searchAction.get('searchSort');
+    if (searchSort) {
+      const arraySort = searchQuerySort('actions', searchSort);
+      if (arraySort) {
+        options.sort = arraySort;
+      }
+    }
+
+    return Actions.find(query, options);
   },
   eventActionCount(eventId) {
     const userAddedAction = `links.contributors.${Meteor.userId()}`;

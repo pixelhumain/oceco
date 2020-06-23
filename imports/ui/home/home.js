@@ -14,13 +14,13 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 
 import { searchAction } from '../../api/client/reactive.js';
-import { searchQuery } from '../../api/helpers.js';
+import { searchQuery, compareValues, searchQuerySort, searchQuerySortActived } from '../../api/helpers.js';
 
 window.Organizations = Organizations;
 window.Projects = Projects;
 
 Template.homeView.onCreated(function () {
-  searchAction.set('search', null);
+  // searchAction.set('search', null);
 });
 
 Template.homeView.helpers({
@@ -65,13 +65,23 @@ Template.projectsView.onCreated(function () {
 Template.projectsView.helpers({
   poleProjects2() {
     const search = searchAction.get('search');
+    const searchSort = searchAction.get('searchSort');
+    
     const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
     const query = {};
+    const options = {};
     query[queryProjectId] = { $exists: 1 };
     if (search && search.charAt(0) === ':' && search.length > 1) {
       query.name = { $regex: `.*${search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*`, $options: 'i' };
     }
-    return Projects.find(query);
+    if (searchSort) {
+      const arraySort = searchQuerySort('projects', searchSort);
+      if (arraySort) {
+        // options.sort = { ...arraySort };
+        options.sort = arraySort;
+      }
+    }
+    return Projects.find(query, options);
   },
   dataReady() {
     return Template.instance().ready.get();
@@ -88,18 +98,26 @@ Template.searchActions.helpers({
   searchHelp() {
     return searchAction.get('searchHelp');
   },
+  sortActived() {
+    if (searchAction.get('searchSort')) {
+      return searchQuerySortActived(searchAction.get('searchSort'));
+    }
+    return false;
+  },
   allTags() {
     const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
     if (!orgaOne) {
       return null;
     }
-      
+    const searchTag = searchAction.get('searchTag');
+    console.log(searchTag);
     const arrayAll = orgaOne.actionsAll().map(action => action.tags).filter(Boolean);
     const mergeDedupe = (arr) => {
       return [...new Set([].concat(...arr))];
     };
     const arrayAllMerge = mergeDedupe(arrayAll);
-    return arrayAllMerge;
+
+    return searchTag && searchTag.length > 1 ? arrayAllMerge.filter(item => item.includes(searchTag.substr(1))) : arrayAllMerge;
   },
 });
 
@@ -161,6 +179,85 @@ Template.searchActions.events({
           }
         }
       }
+    }
+  },
+});
+
+Template.searchSort.helpers({
+  isHome() {
+    return Router.current().route.getName() !== 'actionsList';
+  },
+  searchSort() {
+    if (searchAction.get('searchSort')) {
+      return searchAction.get('searchSort');
+    }
+    const sortDefault = {
+      projects: [
+        { label: 'nom', type: 'projects', field: 'name', existField: true, checked: false, fieldDesc: false },
+        { label: 'date d\'activités', type: 'projects', field: 'modified', existField: true, checked: false, fieldDesc: false },
+      ],
+      events: [
+        { label: 'nom', type: 'events', field: 'name', existField: true, checked: false, fieldDesc: false },
+        { label: 'date d\'activités', type: 'events', field: 'modified', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de début', type: 'events', field: 'startDate', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de fin', type: 'events', field: 'endDate', existField: true, checked: false, fieldDesc: false },
+      ],
+      actions: [
+        { label: 'nom', type: 'actions', field: 'name', existField: true, checked: false, fieldDesc: false },
+        { label: 'date d\'activités', type: 'actions', field: 'modified', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de création', type: 'actions', field: 'created', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de début', type: 'actions', field: 'startDate', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de fin', type: 'actions', field: 'endDate', existField: true, checked: false, fieldDesc: false },
+        { label: 'contributeur', type: 'actions', field: 'links.contributors', existField: true, checked: false, fieldDesc: false },
+        { label: 'commentaire', type: 'actions', field: 'commentCount', existField: true, checked: false, fieldDesc: false },
+        { label: 'crédits', type: 'actions', field: 'credits', existField: true, checked: false, fieldDesc: false },
+      ],
+    };
+    searchAction.set('searchSort', sortDefault);
+    return searchAction.get('searchSort');
+  },
+  orderType(type) {
+    if (type) {
+      const sort = searchAction.get('searchSort');
+      return sort && sort[type] ? [...sort[type]].filter(item => item.checked === true).sort(compareValues('order')) : [];
+    }
+  },
+});
+
+Template.searchSortItemToggle.events({
+  'click .sort-checked-js'(event, instance) {
+    const self = this;
+    if (this.type) {
+      const sort = searchAction.get('searchSort');
+      const arrayOrder = sort[this.type].filter(item => item.checked === true);
+      const countOrder = arrayOrder && arrayOrder.length > 0 ? arrayOrder.length : 0;
+      sort[this.type] = sort[this.type].map((item) => {
+        if (item.field === self.field) {
+          item.checked = event.currentTarget.checked;
+          if (event.currentTarget.checked) {
+            item.order = countOrder + 1;
+          } else {
+            delete item.order;
+          }
+          return item;
+        }
+        return item;
+      });
+      searchAction.set('searchSort', sort);
+    }
+  },
+  'click .sort-desc-js'(event, instance) {
+    const self = this;
+    if (this.type) {
+      const sort = searchAction.get('searchSort');
+      sort[this.type] = sort[this.type].map((item) => {
+        if (item.field === self.field) {
+          item.fieldDesc = event.currentTarget.checked;
+          return item;
+        }
+        return item;
+      });
+      searchAction.set('searchSort', sort);
     }
   },
 });

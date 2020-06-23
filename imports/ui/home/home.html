@@ -91,6 +91,7 @@
     <label class="item item-input">
         <i class="icon ion-search placeholder-icon"></i>
         <input id="search" type="text" placeholder="Chercher une action par nom, #tag, :projet..." value="{{search}}">
+        <button class="button button-clear {{#if sortActived}}button-positive{{/if}}" data-ion-modal="searchSort"><i class="icon fa fa-sort-alpha-asc"></i></button>
     </label>
     {{#if searchTag}}
     <div class="item item-divider">
@@ -115,8 +116,83 @@
     <a class="item item-dark item-icon-left searchfilter-js" data-action="?me">
         <i class="icon fa fa-filter"></i> ou je suis contributeurs : <code>?me</code>
     </a>
+    <a class="item item-dark item-icon-left searchfilter-js" data-action="#">
+        <i class="icon fa fa-filter"></i> par tags : <code>#</code>
+    </a>
+    <a class="item item-dark item-icon-left searchfilter-js" data-action=":">
+        <i class="icon fa fa-filter"></i> par projets : <code>:</code>
+    </a>
     {{/if}}
 </template>
+
+<template name="searchSortItemToggle">
+    <div class="item item-toggle">
+        {{label}}
+        <label class="toggle toggle-balanced">
+            <input id="{{type}}.{{field}}" class="sort-checked-js" type="checkbox" checked="{{#if checked}}checked{{/if}}">
+            <div class="track">
+                <div class="handle"></div>
+            </div>
+        </label>
+    </div>
+    {{#if checked}}
+    <div class="item item-checkbox item-text-wrap">
+        <label class="checkbox">
+            {{#if fieldDesc}}
+            <input type="checkbox" class="sort-desc-js" value="true" id="{{type}}.{{field}}.checkbox" name="{{type}}.{{field}}.checkbox" checked="checked">
+            {{else}}
+            <input type="checkbox" class="sort-desc-js" value="false" id="{{type}}.{{field}}.checkbox" name="{{type}}.{{field}}.checkbox">
+            {{/if}}
+        </label>
+        trie descendant
+    </div>
+    {{/if}}
+</template>
+
+<template name="sorttest">
+
+</template>
+
+<template name="searchSort">
+    {{#ionModal customTemplate=true}}
+    <div class="bar bar-header bar-dark">
+        <button data-dismiss="modal" type="button" class="button button-clear">{{__ "Reset"}}</button>
+        <h2 class="title">Trier</h2>
+    </div>
+    <div class="content has-header overflow-scroll">
+        <div class="list">
+            {{#if isHome}}
+            {{#if settingOceco.projectAction}}
+            <div class="item item-divider">
+                Trier les projets par : {{#each orderType 'projects'}}{{label}} {{/each}}
+            </div>
+            {{#each searchSort.projects}}
+            {{> searchSortItemToggle label=label type=type field=field checked=checked fieldDesc=fieldDesc}}
+            {{/each}}
+            {{/if}}
+            
+            {{#if settingOceco.eventAction}}
+            <div class="item item-divider">
+                Trier les évènement par : {{#each orderType 'events'}}{{label}} {{/each}}
+            </div>
+            {{#each searchSort.events}}
+            {{> searchSortItemToggle label=label type=type field=field checked=checked fieldDesc=fieldDesc}}
+            {{/each}}
+            {{/if}}
+            {{/if}}
+
+            <div class="item item-divider">
+                Trier les actions par : {{#each orderType 'actions'}}{{label}} {{/each}}
+            </div>
+            {{#each searchSort.actions}}
+            {{> searchSortItemToggle label=label type=type field=field checked=checked fieldDesc=fieldDesc}}
+            {{/each}}
+
+        </div>
+    </div>
+    {{/ionModal}}
+</template>
+
 
 <template name='projectsView'>
     {{#if dataReady}}

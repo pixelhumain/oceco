@@ -24,7 +24,7 @@ import { Actions } from './actions.js';
 import { News } from './news.js';
 import { Documents } from './documents.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkIsInviting, queryLinkAttendees, arrayLinkAttendees, queryOptions } from './helpers.js';
+import { searchQuery, searchQuerySort, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkIsInviting, queryLinkAttendees, arrayLinkAttendees, queryOptions } from './helpers.js';
 
 export const Events = new Mongo.Collection('events', { idGeneration: 'MONGO' });
 
@@ -577,7 +577,7 @@ Events.helpers({
   room () {
     return Rooms.findOne({ parentId: this._id._str });
   },
-  listActionsCreator(type = 'all', status = 'todo', search) {
+  listActionsCreator(type = 'all', status = 'todo', search, searchSort) {
     const query = {};
     const inputDate = new Date();
 
@@ -614,9 +614,19 @@ Events.helpers({
     query.$or.push(querytwo);
 
     const options = {};
-    options.sort = {
-      startDate: 1,
-    };
+    if (Meteor.isClient) {
+      if (searchSort) {
+        const arraySort = searchQuerySort('actions', searchSort);
+        if (arraySort) {
+          options.sort = arraySort;
+        }
+      }
+    } else {
+      options.sort = {
+        startDate: 1,
+      };
+    }
+
     return Actions.find(query, options);
   },
   countActionsCreator(type = 'all', status = 'todo', search) {

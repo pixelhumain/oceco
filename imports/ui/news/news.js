@@ -403,6 +403,9 @@ Template.scopeActionsTemplate.helpers({
   search() {
     return searchAction.get('search');
   },
+  searchSort() {
+    return searchAction.get('searchSort');
+  },
   scopeVar() {
     return pageSession.get('scope');
   },

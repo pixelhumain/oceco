@@ -178,15 +178,32 @@ Template.actionsFields.onDestroyed(function () {
   self.$("input[name='tagsText']").atwho('destroy');
 });
 
+Template.actionsFields.helpers({
+  isCordova() {
+    return Meteor.isCordova;
+  },
+});
+
 Template.actionsFields.onRendered(function () {
   const self = this;
   const template = Template.instance();
   template.find('input[name=name]').focus();
 
+  if (Meteor.isCordova) {
   // mobile predictive desactived
-  self.$("input[name='tagsText']").on('focus', function () {
-    this.type = 'text';
-  });
+    self.$("input[name='tagsText']").on('focus', function () {
+      this.type = 'text';
+      if (!this.value) {
+        this.value = '#';
+      }
+    });
+  } else {
+    self.$("input[name='tagsText']").on('focus', function () {
+      if (!this.value) {
+        this.value = '#';
+      }
+    });
+  }
 
   // #tags
   const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });

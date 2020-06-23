@@ -16,6 +16,28 @@ export const nameToCollection = (name) => {
 
 export const encodeString = str => encodeURIComponent(str).replace(/\*/g, '%2A');
 
+export const compareValues = (key, order = 'asc') => function innerSort(a, b) {
+  if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)) {
+    // property doesn't exist on either object
+    return 0;
+  }
+
+  const varA = (typeof a[key] === 'string')
+    ? a[key].toUpperCase() : a[key];
+  const varB = (typeof b[key] === 'string')
+    ? b[key].toUpperCase() : b[key];
+
+  let comparison = 0;
+  if (varA > varB) {
+    comparison = 1;
+  } else if (varA < varB) {
+    comparison = -1;
+  }
+  return (
+    (order === 'desc') ? (comparison * -1) : comparison
+  );
+};
+
 export const arrayAllLink = (links) => {
   const arrayIdsRetour = _.union(_.flatten(_.map(links, array => _.map(array, (a, k) => k))));
   return arrayIdsRetour;
@@ -53,6 +75,37 @@ export const searchQuery = (query, search) => {
     }
   }
   return query;
+};
+
+export const searchQuerySort = (type, sort) => {
+  if (sort && sort[type] && sort[type].length > 0) {
+    const arrayChecked = [...sort[type]].filter(item => item.checked === true).sort(compareValues('order'));
+    if (arrayChecked && arrayChecked.length > 0) {
+      // je suis dans le bonne ordre
+      // il y a les champs
+      const arraySort = arrayChecked.map((item) => {
+        // const order = item.fieldDesc ? -1 : 1;
+        const order = item.fieldDesc ? 'desc' : 'asc';
+        // si field et le même que dans la requete
+        if (item.existField) {
+          return [item.field, order];
+          // return { [item.field]: order };
+        } else {
+          if (item.field === 'withContributor') {
+            // 
+          }
+        }
+      });
+      return arraySort;
+  }
+}
+  return false;
+};
+
+export const searchQuerySortActived = (sort) => {
+  const arrayActived = Object.keys(sort)
+    .filter(k => [...sort[k]].filter(item => item.checked === true).length > 0);
+  return arrayActived.length > 0;
 };
 
 export const selectorgaQuery = (query, selectorga) => {
