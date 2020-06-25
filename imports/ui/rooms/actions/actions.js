@@ -189,6 +189,15 @@ Template.actionsFields.helpers({
   },
 });
 
+Template.actionsFields.events({
+  // Pressing Enter should submit the form
+  'keydown input[name*="urls"]'(event, instance) {
+    if (event.keyCode === 13) {
+      instance.find('.autoform-add-item').click();
+    }
+  },
+});
+
 Template.actionsFields.onRendered(function () {
   const self = this;
   const template = Template.instance();
@@ -332,6 +341,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
     method(error) {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
+        searchAction.set('search', null);
         Router.go('actionsList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },

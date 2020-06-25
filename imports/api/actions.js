@@ -60,7 +60,14 @@ SchemasActionsRest.extend({
   },
   credits: {
     type: Number,
-    optional: false,
+    defaultValue: 1,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return 1;
+    },
+    optional: true,
   },
   max: {
     type: Number,
