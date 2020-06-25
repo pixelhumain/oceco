@@ -55,10 +55,10 @@ Meteor.startup(function () {
   } else if (Meteor.isCordova) {
     PushNotification.createChannel(
       function () {
-        console.log('Channel Created!');
+        // console.log('Channel Created!');
       },
       function () {
-        console.log('Channel not created :(');
+        // console.log('Channel not created :(');
       }, {
         id: 'PushPluginChannel',
         description: 'Channel Name Shown To Users',

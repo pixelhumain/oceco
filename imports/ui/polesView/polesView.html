@@ -51,9 +51,9 @@
     </a>
 
     {{#if scroll }}
-    <button class="button button-dark button-see-event-js"> <i class="icon ion-ios-arrow-up"></i></button>
+    <button class="button button-dark button-see-event-js"> <span class="padding-right">{{projectEventsCount project._id}}</span> <i class="icon ion-ios-arrow-up"></i></button>
     {{else}}
-    <button class="button button-dark button-see-event-js"> <i class="icon ion-ios-arrow-down"></i></button>
+    <button class="button button-dark button-see-event-js"> <span class="padding-right">{{projectEventsCount project._id}}</span> <i class="icon ion-ios-arrow-down"></i></button>
     {{/if}}
 </div>
 

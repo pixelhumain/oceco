@@ -1254,6 +1254,7 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
       } else {
         query._id = new Mongo.ObjectID(scopeId);
       }
+      // console.log(query);
       return collection.find(query, options);
     },
     children: [{

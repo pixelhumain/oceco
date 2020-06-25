@@ -306,11 +306,11 @@ Template.buttonSubscribeAction.events({
 
     if (!this.startDate && event.target && event.target.startDate && event.target.startDate.value) {
       action.startDate = moment(event.target.startDate.value).format('YYYY-MM-DDTHH:mm:ssZ');
-      console.log(action.startDate);
+      // console.log(action.startDate);
     }
     if (!this.endDate && event.target && event.target.endDate && event.target.endDate.value) {
       action.endDate = moment(event.target.endDate.value).format('YYYY-MM-DDTHH:mm:ssZ');
-      console.log(action.endDate);
+      // console.log(action.endDate);
     }
 
 

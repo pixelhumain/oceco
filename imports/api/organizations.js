@@ -703,6 +703,9 @@ Organizations.helpers({
           query.$or.push(queryCo);
         }
       });
+      if (query.$or.length === 0) {
+        delete query.$or;
+      }
       // queryOptions.fields.parentId = 1;
       // const inputDate = new Date();
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();

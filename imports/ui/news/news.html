@@ -52,6 +52,9 @@
       href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
         class="icon fa fa-bell"></i> Notifications</a>
      {{/if}}
+
+    <a class="tab-item {{#if equals selectview 'scopeProjectsContributorsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'contributorsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsContributorsTemplate"><i class="icon fa fa-users"></i> Contributeurs</a>
+    
      <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i> Evénements</a>
     </div>
   </div>
@@ -390,8 +393,24 @@
     </div>
     {{#if settingOceco.spendView}}
     <div class="item tabs">
-        <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">Programmés</a>
-        <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés</a>
+
+      {{#if settingOceco.listingElementActions}}
+      {{#if settingOceco.listingElementActions.tabProgrammes}}
+      <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">{{settingOceco.listingElementActions.tabProgrammes}} <span class="positive">({{countActionsCreator 'aFaire' 'todo' ''}})</span></a>
+      {{else}}
+      <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">Programmés <span class="positive">({{countActionsCreator 'aFaire' 'todo' ''}})</span></a>
+      {{/if}}
+      {{#if settingOceco.listingElementActions.tabDepenses}}
+      <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">{{settingOceco.listingElementActions.tabDepenses}} <span class="positive">({{countActionsCreator 'depenses' 'todo' ''}})</span></a>
+      {{else}}
+      <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés <span class="positive">({{countActionsCreator 'depenses' 'todo' ''}})</span></a>
+      {{/if}}
+      {{else}}
+      <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">Programmés <span class="positive">({{countActionsCreator 'aFaire' 'todo' ''}})</span></a>
+      <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés <span class="positive">({{countActionsCreator 'depenses' 'todo' ''}})</span></a>
+      {{/if}}
+        
+        
     </div>
     {{/if}}
     {{>searchActions}}
@@ -422,7 +441,23 @@
   </div>
 </template>
 
+<template name="scopeProjectsContributorsTemplate">
 
+  <div class="list">
+    <div class="item item-divider">
+      <i class="icon ion-ios-people"></i> {{__ "contributors"}} <span
+        class="badge badge-dark">{{countContributors}}</span>
+    </div>
+    {{#transition in="zoomIn" out="bounceOut"}}
+    {{#each listContributors}}
+    <div class="item item-avatar item-button-right animated out">
+      {{> imgDoc}}
+      <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
+    </div>
+    {{/each}}
+    {{/transition}}
+  </div>
+</template>
 
 
 <template name="scopeGamesTemplate">

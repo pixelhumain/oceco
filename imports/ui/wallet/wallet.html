@@ -172,7 +172,7 @@
     </div>
     <div class="row row-center padding-bottom">
         <div class="col-90 col-center">
-            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content">{{action.name}}</a>
+            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content item-text-wrap">{{action.name}}</a>
         </div>
         <div class="col-10">
             {{#if displayDesc}}
@@ -211,7 +211,7 @@
 </template>
 
 <template name='whalletInputInWaitingAction'>
-<a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item">{{action.name}}
+<a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-badge-right">{{action.name}}
     <div class="badge badge-{{badgeColorTest}}">{{action.credits}} {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}</div>
 </a>
 </template>

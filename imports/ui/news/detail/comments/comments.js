@@ -270,7 +270,7 @@ Template.commentsEdit.helpers({
   comment () {
     const comment = Comments.findOne({ _id: new Mongo.ObjectID(Router.current().params.commentId) });
     if (comment && comment.mentions) {
-      console.log(comment.mentions);
+      // console.log(comment.mentions);
       pageSession.set('mentions', comment.mentions);
     }
     comment._id = comment._id._str;

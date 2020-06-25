@@ -24,11 +24,6 @@
         {{> imgDoc}}
         <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
         {{#if isFollowsContributors _id._str}}
-        {{#if onlineContributors}}
-        <span class="badge badge-balanced">{{__ "online"}}</span>
-        {{else}}
-
-        {{/if}}
         <button class="button button-positive unfollowperson-link">
           <i class="icon fa fa-unlink"></i>
         </button>

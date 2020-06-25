@@ -87,6 +87,8 @@ Template.newsList.onCreated(function() {
     } else if (Router.current().route.getName() === 'actionsListDepense') {
       pageSession.set('selectview', 'scopeActionsTemplate');
       pageSession.set('selectsubview', 'depenses');
+    } else if (Router.current().route.getName() === 'contributorsList') {
+      pageSession.set('selectview', 'scopeProjectsContributorsTemplate');
     } else if (Router.current().route.getName() === 'roomsList') {
       pageSession.set('selectview', 'scopeRoomsTemplate');
     } else if (Router.current().route.getName() === 'gamesList') {
@@ -378,6 +380,28 @@ Template.scopeProjectsTemplate.helpers({
     return Template.instance().ready.get();
   },
 });
+
+Template.scopeProjectsContributorsTemplate.onCreated(function () {
+  this.ready = new ReactiveVar();
+
+  this.autorun(function () {
+    pageSession.set('scopeId', Router.current().params._id);
+    pageSession.set('scope', Router.current().params.scope);
+  });
+
+  this.autorun(function () {
+    const handle = this.subscribe('listContributors', Router.current().params._id);
+    this.ready.set(handle.ready());
+  }.bind(this));
+});
+
+Template.scopeProjectsContributorsTemplate.helpers({
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+
 
 Template.scopeActionsTemplate.onCreated(function () {
   this.ready = new ReactiveVar();

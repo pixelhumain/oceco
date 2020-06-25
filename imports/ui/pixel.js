@@ -110,7 +110,7 @@ Template.layout.onCreated(function() {
                   // console.log(k);
                   return k;
                 });
-              console.log(arrayIds);
+              // console.log(arrayIds);
               const isAdmin = arrayIds && arrayIds.length > 0 ? arrayIds : false;
               Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
             Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, false);

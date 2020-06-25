@@ -200,6 +200,18 @@ export const SchemasOcecoObj = new SimpleSchema({
     type: String,
     optional: true,
   },
+  listingElementActions: {
+    type: Object,
+    optional: true,
+  },
+  'listingElementActions.tabProgrammes': {
+    type: String,
+    optional: true,
+  },
+  'listingElementActions.tabDepenses': {
+    type: String,
+    optional: true,
+  },
   wallet: {
     type: Object,
     optional: true,

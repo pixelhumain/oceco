@@ -33,8 +33,8 @@ Meteor.startup(() => {
     Helpers.setLanguage(language);
     i18n.setLocale(language);
     i18n.isLoaded(language);
-    console.log(i18n.getLocale());
-    console.log(i18n.getLanguages());
+    // console.log(i18n.getLocale());
+    // console.log(i18n.getLanguages());
   });
   // template helpers
   Template.registerHelper('langChoix', () => Helpers.language());

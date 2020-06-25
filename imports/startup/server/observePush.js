@@ -84,7 +84,7 @@ Meteor.startup(function() {
     // eslint-disable-next-line no-unused-vars
     changed(notification, oldNotification) {
       if (!initNotifystart) return;
-      console.log(JSON.stringify(notification));
+      // console.log(JSON.stringify(notification));
     },
   },
   );

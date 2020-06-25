@@ -1189,7 +1189,7 @@ Meteor.methods({
     doc.childId = childId;
     doc.childType = childType;
     doc.linkOption = linkOption;
-    console.log(doc);
+    //console.log(doc);
     const retour = apiCommunecter.postPixel('co2/link', 'validate', doc);
     return retour;
   },
@@ -1898,8 +1898,8 @@ indexMax:20 */
       insertNew.media.countImages = '1';
       insertNew.media.images = [doc.id.$id];
       const newsIdRetour = Meteor.call('insertNew', insertNew);
-      console.log('retour newsIdRetour');
-      console.log(newsIdRetour);
+      // console.log('retour newsIdRetour');
+      // console.log(newsIdRetour);
       if (newsIdRetour) {
         return { photoret: doc.id.$id, newsId: newsIdRetour.data.id.$id };
       }
@@ -3002,8 +3002,8 @@ export const updateAction = new ValidatedMethod({
       docRetour.participants = modifier.$set.participants;
     }
 
-    console.log(modifier);
-    console.log(docRetour);
+    // console.log(modifier);
+    // console.log(docRetour);
     if (modifier.$set.tagsText) {
         docRetour = matchTags(docRetour);
         if (docRetour.tags && docRetour.tags.length > 0) {
@@ -3021,7 +3021,7 @@ export const updateAction = new ValidatedMethod({
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.id = _id;
-    console.log(docRetour);
+    // console.log(docRetour);
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },

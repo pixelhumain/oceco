@@ -647,6 +647,9 @@
       "tags":{
         "label": "tags"
       },
+      "tagsText": {
+        "label": "tags"
+      },
       "urls":{
         "label": "Free information / urls"
       }
@@ -933,6 +936,15 @@
     },
     "textInfo": {
       "label": "Texte : Info"
+    }
+  },
+  "listingElementActions": {
+    "label": "Element > Listing actions",
+    "tabProgrammes": {
+      "label": "Texte tab programmés"
+    },
+    "tabDepenses": {
+      "label": "Texte tab dépenses"
     }
   },
    "wallet": {

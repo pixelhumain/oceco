@@ -8,7 +8,7 @@ Tracker.autorun(() => {
   if (Meteor.userId() && Meteor.user()) {
     if (Session.get('orgaCibleId')) {
       Meteor.call('testConnectAdmin', { id: Session.get('orgaCibleId') });
-      console.log(`testConnectAdmin ${Session.get('orgaCibleId')}`);
+      // console.log(`testConnectAdmin ${Session.get('orgaCibleId')}`);
     }
   }
 });
@@ -44,36 +44,6 @@ Router.map(function() {
       // Router.go('/');
     },
   });
-
-  /* this.route('dashboard', {
-    path: '/',
-    template: 'dashboard',
-    loadingTemplate: 'loading',
-  }); */
-
-  /* this.route('detailListHome', {
-    before () {
-      if (Meteor.userId()) {
-        // this.redirect('actusList', { scope: 'citoyens', _id: Meteor.userId() });
-      }
-      this.next();
-    },
-    template: 'dashboard',
-    path: '/',
-    loadingTemplate: 'loading',
-  });
-
-  this.route('dashboard', {
-    path: '/dashboardhome',
-    template: 'dashboard',
-    loadingTemplate: 'loading',
-  });
-
-  this.route('dashboardRedirect', {
-    path: '/dashboard',
-    template: 'dashboard',
-    loadingTemplate: 'loading',
-  }); */
 
   this.route('about', {
     path: '/about',
@@ -291,6 +261,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('contributorsList', {
+    template: 'newsList',
+    path: '/:scope/contributors/:_id',
+    loadingTemplate: 'loading',
+  });
+  
   this.route('eventsList', {
     template: 'newsList',
     path: '/:scope/events/:_id',
@@ -609,7 +585,7 @@ Router.map(function() {
 });
 
 const ensurePixelSwitch = function () {
-  console.log(Session.get('orgaCibleId'));
+  // console.log(Session.get('orgaCibleId'));
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
     this.next();
   } else {
@@ -629,7 +605,7 @@ const ensurePixelIsAdmin = function() {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
     const RaffId = Session.get('orgaCibleId');
     const isAdmin = Session.get(`isAdmin${Session.get('orgaCibleId')}`);
-    console.log(RaffId);
+    // console.log(RaffId);
     // console.log(isAdmin);
     if (isAdmin === true) {
       this.next();

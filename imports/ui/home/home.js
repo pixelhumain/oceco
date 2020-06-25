@@ -90,6 +90,12 @@ Template.projectsView.helpers({
 
 Template.searchActions.helpers({
   search() {
+    const search = searchAction.get('search');
+    if (Router.current().route.getName() === 'actionsList') {
+      if (search && search.charAt(0) === ':') {
+        searchAction.set('search', null);
+      }
+    }
     return searchAction.get('search');
   },
   searchTag() {
@@ -100,6 +106,11 @@ Template.searchActions.helpers({
   },
   sortActived() {
     if (searchAction.get('searchSort')) {
+      if (Router.current().route.getName() === 'actionsList') {
+        const actionArray = searchAction.get('searchSort');
+        const searchPick = { actions: [...actionArray.actions] };
+        return searchQuerySortActived(searchPick);
+      }
       return searchQuerySortActived(searchAction.get('searchSort'));
     }
     return false;
@@ -110,7 +121,6 @@ Template.searchActions.helpers({
       return null;
     }
     const searchTag = searchAction.get('searchTag');
-    console.log(searchTag);
     const arrayAll = orgaOne.actionsAll().map(action => action.tags).filter(Boolean);
     const mergeDedupe = (arr) => {
       return [...new Set([].concat(...arr))];
@@ -195,6 +205,8 @@ Template.searchSort.helpers({
       projects: [
         { label: 'nom', type: 'projects', field: 'name', existField: true, checked: false, fieldDesc: false },
         { label: 'date d\'activités', type: 'projects', field: 'modified', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de début', type: 'projects', field: 'startDate', existField: true, checked: false, fieldDesc: false },
+        { label: 'date de fin', type: 'projects', field: 'endDate', existField: true, checked: false, fieldDesc: false },
       ],
       events: [
         { label: 'nom', type: 'events', field: 'name', existField: true, checked: false, fieldDesc: false },

@@ -152,6 +152,11 @@ Template.detailViewActions.events({
       });
     }
   },
+  'click .search-tags-list-js'(event) {
+    event.preventDefault();
+    searchAction.set('search', `#${this}`);
+    Router.go('home');
+  },
 });
 
 Template.actionsAdd.onCreated(function () {
@@ -191,6 +196,10 @@ Template.actionsFields.onRendered(function () {
 
   if (Meteor.isCordova) {
   // mobile predictive desactived
+    const tagText = template.find("input[name='tagsText']");
+    if (tagText.value !== '') {
+      tagText.type = 'text';
+    }
     self.$("input[name='tagsText']").on('focus', function () {
       this.type = 'text';
       if (!this.value) {
@@ -262,7 +271,7 @@ Template.actionsAdd.helpers({
           actionEdit.endDate = moment(event.endDate).toDate();
         }
       }
-      console.log(actionEdit);
+      // console.log(actionEdit);
     }
     if (searchAction.get('actionName')) {
       actionEdit.name = searchAction.get('actionName');
@@ -338,7 +347,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       doc.parentType = pageSession.get('scope');
       doc.parentId = pageSession.get('scopeId');
       // doc.idParentRoom = pageSession.get('roomId');
-      console.log(pageSession.get('scopeId'));
+      // console.log(pageSession.get('scopeId'));
       return doc;
     },
     'method-update'(modifier) {

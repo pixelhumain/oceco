@@ -39,7 +39,7 @@ Template.map.onRendered(function () {
           }) }).addTo(map);
 
         marker.on('dragend', function(e) {
-          console.log('dragend');
+          // console.log('dragend');
           pageSession.set('geoPosLatitude', e.target._latlng.lat);
           pageSession.set('geoPosLongitude', e.target._latlng.lng);
         });
