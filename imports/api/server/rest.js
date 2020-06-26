@@ -8,10 +8,70 @@ import { DDPCommon } from 'meteor/ddp-common';
 import { DDP } from 'meteor/ddp';
 import { Mongo } from 'meteor/mongo';
 import bodyParser from 'body-parser';
+import crypto from 'crypto';
 import { Organizations } from '../organizations.js';
 import { Projects } from '../projects.js';
 import { nameToCollection } from '../helpers.js';
 import { SchemasActionsRest } from '../actions.js';
+import { Citoyens } from '../citoyens.js';
+
+function bin2hex(bytesLength) {
+  const bin = crypto.randomBytes(bytesLength);
+  return new Buffer(bin).toString('hex');
+}
+
+const generateToken = function (userId, tokenName) {
+  const citoyenOne = Citoyens.findOne({ _id: new Mongo.ObjectID(userId), 'loginTokens.name': tokenName, 'loginTokens.type': 'personalAccessToken' });
+  if (!citoyenOne) {
+    const token = bin2hex(16);
+    const tokenHash = crypto.createHmac('sha256', userId).update(token).digest("bin");
+    const buf = Buffer.from(tokenHash);
+    const tokenHashBase64 = buf.toString('base64');
+    const loginToken = {};
+    loginToken.createdAt = Math.floor(new Date().getTime() / 1000);
+    loginToken.hashedToken = tokenHashBase64;
+    loginToken.type = 'personalAccessToken';
+    loginToken.name = tokenName;
+    loginToken.lastTokenPart = tokenHashBase64.substr(-6);
+    const modifier = {};
+    modifier.$addToSet = { loginTokens: loginToken };
+    Citoyens.update({ _id: new Mongo.ObjectID(userId) }, modifier);
+    return token;
+  }
+  return false;
+}
+
+const userNotConnected = function (userId, tokenName) {
+  const citoyenOne = Citoyens.findOne({ _id: new Mongo.ObjectID(userId) });
+  const userM = Meteor.users.findOne({ _id: userId });
+
+  if (citoyenOne) {
+    if (userM) {
+      const token = generateToken(userId, tokenName);
+      if (token) {
+        const profile = {};
+        profile.token = token;
+        Meteor.users.update(userId, { $set: { profile } });
+      }
+      // Meteor.users.update(userId, { $set: { emails: [citoyenOne.email] } });
+    } else {
+      Meteor.users.insert({ _id: userId, emails: [citoyenOne.email] });
+      const token = generateToken(userId, tokenName);
+      if (token) {
+        const profile = {};
+        profile.token = token;
+        Meteor.users.update(userId, { $set: { profile } });
+      }
+    }
+
+    /* const stampedToken = Accounts._generateStampedLoginToken();
+    Meteor.users.update(userId,
+      { $push: { 'services.resume.loginTokens': stampedToken } },
+    ); */
+    return true;
+  }
+  return false;
+};
 
 function verifyToken(req, res, next) {
   const token = req.headers['x-access-token'];
@@ -26,7 +86,8 @@ function verifyToken(req, res, next) {
   if (!userId) {
     return res.status(403).json({ auth: false, message: 'No userId provided.' });
   }
-  const userOne = Meteor.users.findOne({ _id: userId });
+  // const userOne = Meteor.users.findOne({ _id: userId });
+  const userOne = userNotConnected(userId, 'comobi');
   if (!userOne) {
     return res.status(403).json({ auth: false, message: 'user not exist' });
   }
@@ -63,7 +124,7 @@ const handleErrorAsJson = function (err, req, res) {
     err.statusCode = statusCode;
   }
 
-  let body = {
+  const body = {
     error: err.error || 'internal-server-error',
     reason: err.reason || 'Internal server error',
     details: err.details,
@@ -72,6 +133,7 @@ const handleErrorAsJson = function (err, req, res) {
 
   return res.status(err.statusCode || 500).json(body);
 };
+
 
 const synchroAdmin = function ({ parentId, parentType }) {
   const collectionScope = nameToCollection(parentType);
@@ -109,6 +171,9 @@ WebApp.connectHandlers.use(Meteor.bindEnvironment(app));
 app.post('/api/action/create', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   // console.log(req.body);
+  /* Todo
+  verifier si user deja connecter ou pas à l'application
+  */
   runAsUser(userId, function () {
     try {
       const actionPost = SchemasActionsRest.clean(req.body);

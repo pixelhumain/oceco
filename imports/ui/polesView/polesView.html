@@ -33,10 +33,24 @@
 
 <template name="organizationList">
 {{#if organizationActionsCount}}
-<div class="item item-stable">Action de l'organisation <span class="badge badge-dark">{{organizationActions.count}}</span></div>
+<div class="item item-stable item-button-right">Action de l'organisation 
+
+{{#if scrollOrga }}
+<button class="button button-dark button-see-orga-js"> <span
+        class="padding-right">{{organizationActions.count}}</span> <i class="icon ion-ios-arrow-up"></i></button>
+
+{{else}}
+<button class="button button-dark button-see-orga-js"> <span
+        class="padding-right">{{organizationActions.count}}</span> <i
+        class="icon ion-ios-arrow-down"></i></button>
+
+{{/if}}
+</div>
+{{#if scrollOrga }}
 {{#each action in organizationActions}}
 {{> itemInputAction action=action}}
 {{/each}}
+{{/if}}
 {{/if}}
 </template>
 
@@ -194,11 +208,14 @@
 </template>
 
 <template name="itemInputAction">
-    <div class="item item-text-wrap {{#if action.avatarOneUserAction}}item-avatar{{/if}} {{#if action.contributorsPlusOne}}item-icon-left{{/if}} item-button-right">
-        {{#if action.avatarOneUserAction}}
+    <div class="item item-text-wrap {{#if action.contributorsPlusOne}}item-icon-left{{else}}{{#if action.avatarOneUserAction}}item-avatar{{/if}}{{/if}}  item-button-right">
+        {{#if action.contributorsPlusOne}}
+        <i class="icon fa fa-group positive"></i>
+        {{else}}
+        {#if action.avatarOneUserAction}}
         {{> imgDoc profilThumbImageUrl=action.avatarOneUserAction}}
         {{/if}}
-        {{#if action.contributorsPlusOne}}<i class="icon fa fa-group positive"></i>{{/if}}
+        {{/if}}
         <h2>
             {{#if action.commentCount}}
             <i class="fa fa-comment balanced"></i> 

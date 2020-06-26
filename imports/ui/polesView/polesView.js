@@ -150,6 +150,10 @@ Template.projectList2.helpers({
   },
 });
 
+Template.organizationList.onCreated(function () {
+  this.scrollOrga = new ReactiveVar(false);
+});
+
 Template.organizationList.helpers({
   organizationActionsCount() {
     const search = searchAction.get('search');
@@ -181,6 +185,21 @@ Template.organizationList.helpers({
     }
 
     return Actions.find(query, options);
+  },
+  scrollOrga() {
+    if (searchAction.get('search')) {
+      return true;
+    }
+    return Template.instance().scrollOrga.get();
+  },
+});
+
+Template.organizationList.events({
+  'click .button-see-orga-js'(event) {
+    event.preventDefault();
+    if (Template.instance().scrollOrga.get()) {
+      Template.instance().scrollOrga.set(false);
+    } else Template.instance().scrollOrga.set(true);
   },
 });
 
