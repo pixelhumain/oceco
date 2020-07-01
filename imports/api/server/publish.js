@@ -2031,7 +2031,7 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
   check(roomId, String);
   check(actionId, String);
   check(scope, Match.Where(function(name) {
-    return _.contains(['projects', 'organizations', 'events'], name);
+    return _.contains(['projects', 'organizations', 'events', 'citoyens'], name);
   }));
   const collection = nameToCollection(scope);
   if (!this.userId) {
@@ -2046,7 +2046,7 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
     children: [
       {
         find(scopeD) {
-          if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          if (scope === 'organizations' || scope === 'projects' || scope === 'events' || scope === 'citoyens') {
             // return Rooms.find({ _id: new Mongo.ObjectID(roomId) });
             return scopeD.detailRooms(roomId);
           }
@@ -2054,7 +2054,7 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
         children: [
           {
             find() {
-              if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+              if (scope === 'organizations' || scope === 'projects' || scope === 'events' || scope === 'citoyens') {
                 return Actions.find({ _id: new Mongo.ObjectID(actionId) });
               }
             },
@@ -2090,7 +2090,7 @@ Meteor.publishComposite('actionsDetailComments', function(scope, scopeId, roomId
   check(roomId, String);
   check(actionId, String);
   check(scope, Match.Where(function(name) {
-    return _.contains(['projects', 'organizations', 'events'], name);
+    return _.contains(['projects', 'organizations', 'events', 'citoyens'], name);
   }));
   const collection = nameToCollection(scope);
   if (!this.userId) {
@@ -2105,7 +2105,7 @@ Meteor.publishComposite('actionsDetailComments', function(scope, scopeId, roomId
     children: [
       {
         find(scopeD) {
-          if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+          if (scope === 'organizations' || scope === 'projects' || scope === 'events' || scope === 'citoyens') {
             // return Rooms.find({ _id: new Mongo.ObjectID(roomId) });
             return scopeD.detailRooms(roomId);
           }
@@ -2113,7 +2113,7 @@ Meteor.publishComposite('actionsDetailComments', function(scope, scopeId, roomId
         children: [
           {
             find() {
-              if (scope === 'organizations' || scope === 'projects' || scope === 'events') {
+              if (scope === 'organizations' || scope === 'projects' || scope === 'events' || scope === 'citoyens') {
                 return Actions.find({ _id: new Mongo.ObjectID(actionId) });
               }
             },

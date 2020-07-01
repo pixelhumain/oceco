@@ -201,7 +201,7 @@
 {{#if tags}}
 <p class="padding-top">
     {{#each tags}}
-    <span class="positive padding searchtag-js"><i class="icon fa fa-tag"></i>{{this}}</span>
+    <span class="positive padding searchtag-js"><i class="fa fa-tag"></i>{{this}}</span>
     {{/each}}
 </p>
 {{/if}}
@@ -212,7 +212,7 @@
         {{#if action.contributorsPlusOne}}
         <i class="icon fa fa-group positive"></i>
         {{else}}
-        {#if action.avatarOneUserAction}}
+        {{#if action.avatarOneUserAction}}
         {{> imgDoc profilThumbImageUrl=action.avatarOneUserAction}}
         {{/if}}
         {{/if}}
@@ -237,16 +237,26 @@
 
         <div div class="col ">
             {{#if action.creditPositive}}
+            {{#if equals action.parentType 'citoyens'}}
+            
+            {{else}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-card"> </i></div>
                 <div class="col">Vous gagnerez <strong>{{action.credits}}</strong> crédits</div>
             </div>
+            {{/if}}
+            
+            {{else}}
+            {{#if equals action.parentType 'citoyens'}}
+            
             {{else}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-card"> </i></div>
                 <div class="col">Vous serez prélevé de
                     {{action.creditNegative}} crédits</div>
             </div>
+            {{/if}}
+            
             {{/if}}
             {{#if action.startDate}}
             <div class="row">
@@ -262,24 +272,38 @@
                     {{action.projectDuration}} H</div>
             </div>
             {{/if}}
+            {{#if equals action.parentType 'citoyens'}}
+
+            {{else}}
             <div class="row">
                 <div class="col-10"><i class="ion-man"></i></div>
                 <div class="col">Il y a {{action.actionParticipantsNbr}}
                     participant</div>
             </div>
+            {{/if}}
+            
             {{#if action.min}}
+            {{#if equals action.parentType 'citoyens'}}
+            
+            {{else}}
             <div class="row row-wrap">
                 <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
                 <div class="col item-text-wrap ">Pour un besoin minimum de
                     {{action.min}} participant</div>
             </div>
             {{/if}}
+           
+            {{/if}}
             {{#if action.max}}
+            {{#if equals action.parentType 'citoyens'}}
+            
+            {{else}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
                 <div class="col">Et un maximum de {{action.max}}
                     participant</div>
             </div>
+            {{/if}}
             {{/if}}
             {{#if action.commentCount}}
             <div class="row">
@@ -300,49 +324,70 @@
     <div class="item">
 
         <div div class="col ">
-                {{#if action.creditPositive}}
-                <div class="row">
-                    <div class="col-10"><i class="icon ion-card"> </i></div>
-                    <div class="col">Vous gagnerez <strong>{{action.credits}}</strong> crédits</div>
-                </div>
-                {{else}}
-                <div class="row">
-                    <div class="col-10"><i class="icon ion-card"> </i></div>
-                    <div class="col">Vous serez prélevé de
-                    {{action.creditNegative}} crédits</div>
-                </div>
-                {{/if}}
-                {{#if action.startDate}}
-                <div class="row">
-                    <div class="col-10"> <i class="ion-android-calendar"></i></div>
-                    <div class="col">Début le
+            {{#if equals action.parentType 'citoyens'}}
+
+            {{#if action.startDate}}
+            <div class="row">
+                <div class="col-10"> <i class="ion-android-calendar"></i></div>
+                <div class="col">Début le
                     {{action.projectDay}}</div>
-                </div>
-                {{/if}}
-                <div class="row">
-                    <div class="col-10"><i class="ion-clock"></i></div>
-                    <div class="col">Durée
+            </div>
+            {{/if}}
+            {{#if action.projectDuration}}
+            <div class="row">
+                <div class="col-10"><i class="ion-clock"></i></div>
+                <div class="col">Durée
                     {{action.projectDuration}} H</div>
-                </div>
-                <div class="row">
-                    <div class="col-10"><i class="ion-man"></i></div>
-                    <div class="col">Il y a {{action.actionParticipantsNbr}}
+            </div>
+            {{/if}}
+            
+            {{else}}
+            {{#if action.creditPositive}}
+            <div class="row">
+                <div class="col-10"><i class="icon ion-card"> </i></div>
+                <div class="col">Vous gagnerez <strong>{{action.credits}}</strong> crédits</div>
+            </div>
+            {{else}}
+            <div class="row">
+                <div class="col-10"><i class="icon ion-card"> </i></div>
+                <div class="col">Vous serez prélevé de
+                    {{action.creditNegative}} crédits</div>
+            </div>
+            {{/if}}
+            {{#if action.startDate}}
+            <div class="row">
+                <div class="col-10"> <i class="ion-android-calendar"></i></div>
+                <div class="col">Début le
+                    {{action.projectDay}}</div>
+            </div>
+            {{/if}}
+            <div class="row">
+                <div class="col-10"><i class="ion-clock"></i></div>
+                <div class="col">Durée
+                    {{action.projectDuration}} H</div>
+            </div>
+            <div class="row">
+                <div class="col-10"><i class="ion-man"></i></div>
+                <div class="col">Il y a {{action.actionParticipantsNbr}}
                     participant</div>
-                </div>
-                {{#if action.min}}
-                <div class="row row-wrap">
-                    <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
-                    <div class="col item-text-wrap ">Pour un besoin minimum de
+            </div>
+            {{#if action.min}}
+            <div class="row row-wrap">
+                <div class="col-10"> <i class="icon ion-ios-arrow-down"></i></div>
+                <div class="col item-text-wrap ">Pour un besoin minimum de
                     {{action.min}} participant</div>
-                </div>
-                {{/if}}
-                {{#if action.max}}
-                <div class="row">
-                    <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
-                    <div class="col">Et un maximum de {{action.max}}
+            </div>
+            {{/if}}
+            {{#if action.max}}
+            <div class="row">
+                <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>
+                <div class="col">Et un maximum de {{action.max}}
                     participant</div>
-                </div>
-                {{/if}}
+            </div>
+            {{/if}}
+            {{/if}}
+                
+                
         </div>
     </div>
     {{>buttonSubscribeAction action }}
@@ -460,18 +505,23 @@
 </template>
 
 <template name="actionParticipantNeeded">
+    {{#if equals action.parentType 'citoyens'}}
+    
+    {{else}}
     {{#if action.min}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-man"></i>
         {{action.actionParticipantsNbr}}</div>
-        {{/if}}
-        {{#if action.min}}
+    {{/if}}
+    {{#if action.min}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-down"></i>
         {{action.min}}</div>
-        {{/if}}
-        {{#if action.max}}
+    {{/if}}
+    {{#if action.max}}
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-ios-arrow-up"></i>
         {{action.max}}</div>
-        {{/if}}
+    {{/if}}
+    {{/if}}
+    
 </template>
 
 <template name="actionDate">

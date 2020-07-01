@@ -127,7 +127,7 @@ Template.listProjectsAValiderRaf.helpers({
     return Actions.find({ finishedBy: { $exists: true } });
   },
   numberTovalidate(actions) {
-    return arrayLinkToModerate(actions).length;
+    return actions && arrayLinkToModerate(actions) && arrayLinkToModerate(actions).length ? arrayLinkToModerate(actions).length : 0;
   },
   userTovalidate(actions) {
     const objIdArray = arrayLinkToModerate(actions);

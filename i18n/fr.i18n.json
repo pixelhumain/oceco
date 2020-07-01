@@ -651,6 +651,15 @@
       },
       "urls":{
         "label": "Informations libres / urls"
+      },
+      "max": {
+        "label": "Participant maximum"
+      },
+      "min": {
+        "label": "Participant minimum"
+      },
+      "credits": {
+        "label": "Nombre de crédits"
       }
     },
     "proposalsrest" : {
@@ -913,6 +922,16 @@
           "form": {
             "geo": {
               "label": "Evenement : Activer geo dans le formulaire"
+            }
+          }
+        },
+        "actions": {
+          "form": {
+            "min": {
+              "label": "Action : Activer nb participants mini dans le formulaire"
+            },
+            "max": {
+              "label": "Action  Activer nb participants max dans le formulaire"
             }
           }
         }

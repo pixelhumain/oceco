@@ -176,6 +176,36 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
+  'costum.actions': {
+    type: Object,
+    optional: true,
+  },
+  'costum.actions.form': {
+    type: Object,
+    optional: true,
+  },
+  'costum.actions.form.min': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  'costum.actions.form.max': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
   account: {
     type: Object,
     optional: true,

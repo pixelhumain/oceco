@@ -724,8 +724,10 @@ Meteor.methods({
 
   'ValidateAction'({ actId, usrId, orgId }) {
     new SimpleSchema({
-      actId: { type: String }, usrId: { type: String },
-    }).validate({ actId, usrId });
+      actId: { type: String },
+      usrId: { type: String },
+      orgId: { type: String },
+    }).validate({ actId, usrId, orgId });
 
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
@@ -778,8 +780,10 @@ Meteor.methods({
   },
   'noValidateAction'({ actId, usrId, orgId }) {
     new SimpleSchema({
-      actId: { type: String }, usrId: { type: String },
-    }).validate({ actId, usrId });
+      actId: { type: String },
+      usrId: { type: String },
+      orgId: { type: String },
+    }).validate({ actId, usrId, orgId });
 
 
     // je valide pas un user dans etat je le met
@@ -2754,6 +2758,7 @@ export const insertAction = new ValidatedMethod({
   name: 'insertAction',
   validate: SchemasActionsRest.validator(),
   run(doc) {
+    const docClean = SchemasActionsRest.clean(doc);
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -2769,7 +2774,10 @@ export const insertAction = new ValidatedMethod({
 
     let orgaId;
     // doit tester si oceco ou pas
-    if (doc.parentType === 'organizations') {
+    if (doc.parentType === 'citoyens') {
+      // test citoyens
+      orgaId = false;
+    } else if (doc.parentType === 'organizations') {
       // test organizations > verifie oceco exists
       if (!scopeOne.oceco) {
         throw new Meteor.Error('not-authorized organizations oceco');
@@ -2849,13 +2857,18 @@ export const insertAction = new ValidatedMethod({
         if (!(scopeOne && scopeOne.isAdmin())) {
           throw new Meteor.Error('not-authorized organizations');
         }
+      } else if (doc.parentType === 'citoyens') {
+        // console.log('citoyen is admin');
+        /* if (!(scopeOne && scopeOne.isAdmin())) {
+          throw new Meteor.Error('not-authorized citoyen');
+        } */
       } else {
         throw new Meteor.Error('not-authorized citoyen');
       }
     }
 
 
-    let docRetour = doc;
+    let docRetour = docClean;
 
     if (doc.startDate) {
       docRetour.startDate = moment(doc.startDate).format('YYYY-MM-DDTHH:mm:ssZ');
@@ -2866,7 +2879,7 @@ export const insertAction = new ValidatedMethod({
 
     if (doc.tagsText) {
       docRetour = matchTags(docRetour);
-      if (docRetour.tags && docRetour.tags.length > 0) {
+      if (orgaId && docRetour.tags && docRetour.tags.length > 0) {
         Organizations.update({ _id: new Mongo.ObjectID(orgaId) }, { $addToSet: { 'oceco.tags': { $each: docRetour.tags } } });
       }
       delete docRetour.tagsText;
@@ -2878,31 +2891,34 @@ export const insertAction = new ValidatedMethod({
     docRetour.collection = 'actions';
     docRetour.idParentRoom = room._id._str;
 
-
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
 
     // count
+    if (doc.parentType !== 'citoyens') {
     countActionScope(doc.parentType, doc.parentId, 'todo');
+    }
     //
 
     // notification
     if (retour && retour.data && retour.data.id) {
-      const actionOne = Actions.findOne({
-        _id: new Mongo.ObjectID(retour.data.id),
-      });
+      if (doc.parentType !== 'citoyens') {
+        const actionOne = Actions.findOne({
+          _id: new Mongo.ObjectID(retour.data.id),
+        });
 
-      const notif = {};
-      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
-      // author
-      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
-      // object
-      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
-      if (actionOne.isActionDepense()) {
-        ActivityStream.api.add(notif, 'addSpent', 'isMember');
-        ActivityStream.api.add(notif, 'addSpent', 'isAdmin');
-      } else {
-        ActivityStream.api.add(notif, 'add', 'isMember');
-        ActivityStream.api.add(notif, 'add', 'isAdmin');
+        const notif = {};
+        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+        // author
+        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+        // object
+        notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+        if (actionOne.isActionDepense()) {
+          ActivityStream.api.add(notif, 'addSpent', 'isMember');
+          ActivityStream.api.add(notif, 'addSpent', 'isAdmin');
+        } else {
+          ActivityStream.api.add(notif, 'add', 'isMember');
+          ActivityStream.api.add(notif, 'add', 'isAdmin');
+        }
       }
     }
     return retour;
@@ -2922,12 +2938,12 @@ export const updateAction = new ValidatedMethod({
     },
   }).validator(),
   run({ modifier, _id }) {
-    SchemasActionsRest.clean(modifier);
+    const modifierClean = SchemasActionsRest.clean(modifier.$set);
     SchemasActionsRest.validate(modifier, { modifier: true });
 
-    const collectionScope = nameToCollection(modifier.$set.parentType);
+    const collectionScope = nameToCollection(modifierClean.parentType);
     const scopeOne = collectionScope.findOne({
-      _id: new Mongo.ObjectID(modifier.$set.parentId),
+      _id: new Mongo.ObjectID(modifierClean.parentId),
     });
 
     if (!scopeOne) {
@@ -2936,13 +2952,13 @@ export const updateAction = new ValidatedMethod({
 
     let orgaId;
     // doit tester si oceco ou pas
-    if (modifier.$set.parentType === 'organizations') {
+    if (modifierClean.parentType === 'organizations') {
       // test organizations > verifie oceco exists
       if (!scopeOne.oceco) {
         throw new Meteor.Error('not-authorized organizations oceco');
       }
       orgaId = scopeOne._id._str;
-    } else if (modifier.$set.parentType === 'projects') {
+    } else if (modifierClean.parentType === 'projects') {
       // projects > organizations > verifie oceco exists
       const project = `links.projects.${scopeOne._id._str}`;
       const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
@@ -2950,7 +2966,7 @@ export const updateAction = new ValidatedMethod({
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
       orgaId = organizationOne._id._str;
-    } else if (modifier.$set.parentType === 'events') {
+    } else if (modifierClean.parentType === 'events') {
       // events > projects > organizations > verifie oceco exists
       const event = `links.events.${scopeOne._id._str}`;
       const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
@@ -2972,44 +2988,45 @@ export const updateAction = new ValidatedMethod({
     if (!Actions.findOne({ _id: new Mongo.ObjectID(_id) })) {
       throw new Meteor.Error('not-authorized');
     }
-    const collection = nameToCollection(modifier.$set.parentType);
+    const collection = nameToCollection(modifierClean.parentType);
     // admin ou creator
-    if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
+    if (!(collection.findOne({ _id: new Mongo.ObjectID(modifierClean.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
    
+
     let docRetour = {};
 
     if (modifier.$unset) {
-      docRetour = { ...modifier.$set, ...modifier.$unset };
+      docRetour = { ...modifier.$unset, ...modifierClean };
     } else {
-      docRetour = { ...modifier.$set };
+      docRetour = { ...modifierClean };
     }
 
-    if (modifier.$set.startDate) {
-      docRetour.startDate = moment(modifier.$set.startDate).format();
+    if (modifierClean.startDate) {
+      docRetour.startDate = moment(modifierClean.startDate).format();
     }
-    if (modifier.$set.endDate) {
-      docRetour.endDate = moment(modifier.$set.endDate).format();
+    if (modifierClean.endDate) {
+      docRetour.endDate = moment(modifierClean.endDate).format();
     }
-    if (modifier.$set.min) {
-      docRetour.min = modifier.$set.min;
+    if (modifierClean.min) {
+      docRetour.min = modifierClean.min;
     }
-    if (modifier.$set.max) {
-      docRetour.max = modifier.$set.max;
+    if (modifierClean.max) {
+      docRetour.max = modifierClean.max;
     }
-    if (modifier.$set.participants) {
-      docRetour.participants = modifier.$set.participants;
+    if (modifierClean.participants) {
+      docRetour.participants = modifierClean.participants;
     }
 
     // console.log(modifier);
     // console.log(docRetour);
-    if (modifier.$set.tagsText) {
-        docRetour = matchTags(docRetour);
-        if (docRetour.tags && docRetour.tags.length > 0) {
-          Organizations.update({ _id: new Mongo.ObjectID(orgaId) }, { $addToSet: { 'oceco.tags': { $each: docRetour.tags } } });
-        }
-        delete docRetour.tagsText;
+    if (modifierClean.tagsText) {
+      docRetour = matchTags(docRetour);
+      if (docRetour.tags && docRetour.tags.length > 0) {
+        Organizations.update({ _id: new Mongo.ObjectID(orgaId) }, { $addToSet: { 'oceco.tags': { $each: docRetour.tags } } });
+      }
+      delete docRetour.tagsText;
     }
     if (modifier.$unset.tagsText === '') {
       docRetour.tags = '';
@@ -3185,19 +3202,24 @@ export const assignmeActionRooms = new ValidatedMethod({
   }).validator(),
   run({ id, startDate, endDate }) {
     const actionObjectId = new Mongo.ObjectID(id);
-    const parentObjectId = new Mongo.ObjectID(Actions.findOne({ _id: actionObjectId }).parentId);
+    const actionOne = Actions.findOne({ _id: actionObjectId });
+    const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
     const orgOne = Organizations.findOne({ _id: parentObjectId });
     let orgId;
     if (orgOne) {
       orgId = orgOne._id._str;
     } else {
-      const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
-      const event = eventId ? `links.events.${eventId}` : null;
+      if (actionOne && actionOne.parentType !== 'citoyens') {
+        const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
+        const event = eventId ? `links.events.${eventId}` : null;
 
-      const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
-      const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
+        const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
+        const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
 
-      orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
+        orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
+      } else {
+        orgId = false;
+      }
     }
 
 
@@ -3259,7 +3281,7 @@ export const assignmeActionRooms = new ValidatedMethod({
         throw new Meteor.Error('not-authorized citoyen');
       } */
     }
-    if (!walletIsOk(id)) {
+    if (orgId && !walletIsOk(id)) {
       throw new Meteor.Error('Pas assé de');
     }
     const docRetour = {};
@@ -3292,18 +3314,21 @@ export const assignmeActionRooms = new ValidatedMethod({
     }
 
     // notification
-    const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
-    // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
-    // object
-    notif.object = { id: action._id._str, name: action.name, type: 'actions', parentType: action.parentType, parentId: action.parentId, idParentRoom: action.idParentRoom };
-    if (action.isActionDepense()) {
-      ActivityStream.api.add(notif, 'joinSpent', 'isAdmin');
-    } else {
-      ActivityStream.api.add(notif, 'join', 'isAdmin');
+    if (action.parentType !== 'citoyens') {
+      const notif = {};
+      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+      // author
+      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+      // object
+      notif.object = { id: action._id._str, name: action.name, type: 'actions', parentType: action.parentType, parentId: action.parentId, idParentRoom: action.idParentRoom };
+      if (action.isActionDepense()) {
+        ActivityStream.api.add(notif, 'joinSpent', 'isAdmin');
+      } else {
+        ActivityStream.api.add(notif, 'join', 'isAdmin');
+      }
     }
-
+    
+    
     return retour;
   },
 });
@@ -3510,7 +3535,7 @@ export const deleteAmendement = new ValidatedMethod({
 export const actionsType = new ValidatedMethod({
   name: 'actionsType',
   validate: new SimpleSchema({
-    parentType: { type: String, allowedValues: ['projects', 'organizations', 'events'] },
+    parentType: { type: String, allowedValues: ['projects', 'organizations', 'events', 'citoyens'] },
     parentId: { type: String },
     type: { type: String, allowedValues: ['actions', 'proposals'] },
     id: { type: String },
@@ -3523,12 +3548,17 @@ export const actionsType = new ValidatedMethod({
     }
     const collection = nameToCollection(parentType);
     const collectionType = nameToCollection(type);
+    const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(parentId) });
 
     if (!collectionType.findOne({ _id: new Mongo.ObjectID(id) })) {
       throw new Meteor.Error('not-authorized');
     }
 
-    if (!(collection.findOne({ _id: new Mongo.ObjectID(parentId) }).isAdmin() || collectionType.findOne({ _id: new Mongo.ObjectID(id) }).isCreator())) {
+    if (parentType === 'citoyens') {
+      if (!(scopeOne.isMe())) {
+        throw new Meteor.Error('not-authorized');
+      }
+    } else if (!(scopeOne.isAdmin() || collectionType.findOne({ _id: new Mongo.ObjectID(id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
 
@@ -3542,30 +3572,48 @@ export const actionsType = new ValidatedMethod({
     const retour = apiCommunecter.postPixel('co2/element', 'updatefield', docRetour);
 
     if (type === 'actions' && value === 'done') {
-      countActionScope(parentType, parentId, 'done');
+      if (parentType !== 'citoyens') {
+        countActionScope(parentType, parentId, 'done');
       // notifications : action terminé
+      } else {
+        // si done en citoyens alors terminer/valider auto
+        const actionId = new Mongo.ObjectID(id);
+        const parent = `finishedBy.${Meteor.userId()}`;
+        Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
 
+        // notification
+        const actionOne = Actions.findOne({
+          _id: new Mongo.ObjectID(id),
+        });
+
+        if (actionOne && actionOne.max === 1 && actionOne.min === 1 && !actionOne.endDate) {
+          Actions.update({ _id: actionId }, { $set: { endDate: new Date() } });
+        }
+
+      }
     } else if (type === 'actions' && value === 'disabled') {
-      countActionScope(parentType, parentId, 'done');
-      // notifications : action annulé
-      // notifier les personnes qui devrait participer à l'action comme quoi elle est annulé
-      // notif
-      const actionOne = Actions.findOne({
-        _id: new Mongo.ObjectID(id),
-      });
+      if (parentType !== 'citoyens') {
+        countActionScope(parentType, parentId, 'done');
+        // notifications : action annulé
+        // notifier les personnes qui devrait participer à l'action comme quoi elle est annulé
+        // notif
+        const actionOne = Actions.findOne({
+          _id: new Mongo.ObjectID(id),
+        });
 
-      // au participant
-      // au admin
-      
-      const notif = {};
-      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
-      // author
-      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
-      // object
-      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+        // au participant
+        // au admin
 
-      ActivityStream.api.add(notif, 'actionDisabled', 'isActionMembers');
-      ActivityStream.api.add(notif, 'actionDisabled', 'isAdmin');
+        const notif = {};
+        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+        // author
+        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+        // object
+        notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+        ActivityStream.api.add(notif, 'actionDisabled', 'isActionMembers');
+        ActivityStream.api.add(notif, 'actionDisabled', 'isAdmin');
+      }
     }
 
     return retour;

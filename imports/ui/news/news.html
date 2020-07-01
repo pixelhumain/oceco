@@ -17,19 +17,22 @@
 
   {{#if equals scope.scopeVar 'citoyens'}}
   {{#if scope.isMe}}
-  <div class="item tabs tabs-icon-left">
+  <div class="item tabs tabs-icon-bottom">
     <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}"
       href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i
-        class="icon fa fa-home"></i></a>
+        class="icon fa fa-home"></i> Detail</a>
     <a class="tab-item {{#if equals selectview 'scopeOrganizationsTemplate'}}tab-item-active{{/if}}"
       href="{{pathFor 'organizationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeOrganizationsTemplate"><i
-        class="icon fa fa-users"></i></a>
+        class="icon fa fa-users"></i> Mes Organisations</a>
+        <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}"
+          href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i
+            class="icon fa fa-inbox"></i> Actions Perso</a>
   </div>
   {{/if}}
     {{> Template.dynamic template=selectview data=scope}}
 
   {{else if equals scope.scopeVar 'organizations'}}
-  <div class="item tabs tabs-icon-top">
+  <div class="item tabs tabs-icon-bottom">
     <div class="tabs tabs-striped">
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
      {{#if settingOceco.organizationAction}}
@@ -43,7 +46,7 @@
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'projects'}}
-  <div class="item tabs tabs-icon-top">
+  <div class="item tabs tabs-icon-bottom">
     <div class="tabs tabs-striped">
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
     {{#if settingOceco.projectAction}}
@@ -60,7 +63,7 @@
   </div>
     {{> Template.dynamic template=selectview data=scope}}
   {{else if equals scope.scopeVar 'events'}}
-  <div class="item tabs tabs-icon-top">
+  <div class="item tabs tabs-icon-bottom">
     <div class="tabs tabs-striped">
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
     <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
@@ -420,11 +423,17 @@
         {{> itemInputAction action=item}}
         {{else}}
         {{#if isAdmin}}
+        {{#if search}}
         <div class="item button-bar bar-stable">
           <a href="{{pathFor 'actionsAdd' _id=scopeId scope=scopeVar}}" class="button button-stable"><i
               class="fa fa-plus"></i> Créer l'action à partir de votre recherche ?</a>
         </div>
         {{/if}}
+        {{/if}}
+
+        <div class="item text-center">
+          Pas de résultats
+        </div>
 
         {{/each}}
 
@@ -942,7 +951,12 @@
 </template>
 
 <template name="boutonCardcitoyens">
-
+  {{#if isMe}}
+  <div class="button-bar bar-positive">
+  <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+    action</a>
+  </div>
+  {{/if}}
 </template>
 
 <template name="boutonCardactions">

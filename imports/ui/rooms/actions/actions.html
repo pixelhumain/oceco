@@ -9,6 +9,7 @@
 
   {{#contentFor "headerButtonRight"}}
 
+  
   {{/contentFor}}
 
 {{#if dataReady}}
@@ -150,6 +151,16 @@
         class="badge badge-balanced">{{commentsCount}}</span>
     </a>
   </div>
+  {{else}}
+  {{#if equals parentType 'citoyens'}}
+  <div class="list">
+    <a href="{{pathFor 'actionsDetailComments' _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str}}"
+      class="item">
+      <i class="icon fa fa-comments"></i> {{__ "dda.actions.discussion"}} <span
+        class="badge badge-balanced">{{commentsCount}}</span>
+    </a>
+  </div>
+  {{/if}}
   {{/if}}
 
 {{/with}}
@@ -171,15 +182,20 @@
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  {{#if equals scope 'citoyens'}}
+
+  {{else}}
   <a href="{{pathFor 'actionsAssign' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="ion-ios-people"></i> Assigner</a>
+  {{/if}}
+  
   {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
-  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-trash" class="button-small action-action-js"}}
+  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-thumbs-up" class="button-small action-action-js"}}
 </div>
 {{else if isCreator}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
   {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
-  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-trash" class="button-small action-action-js"}}
+  {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-thumbs-up" class="button-small action-action-js"}}
 </div>
 {{/if}}
 {{else if equals status 'disabled'}}
@@ -246,7 +262,7 @@
       </div>
     </div>
     {{/if}}
-    {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" doc=action singleMethodArgument=true template="ionic" class="padding"}}
+    {{#autoForm id="addAction" schema=SchemasActionsRest type="method" meteormethod="insertAction" doc=action singleMethodArgument=true template="ionic"}}
     {{> actionsFields}}
     <div class="item">
       <div class="button-bar">
@@ -290,7 +306,7 @@
       </div>
     </div>
     {{/if}}
-    {{#autoForm id="editAction" schema=SchemasActionsRest type="method-update" meteormethod="updateAction" doc=action singleMethodArgument=true template="ionic" class="padding"}}
+    {{#autoForm id="editAction" schema=SchemasActionsRest type="method-update" meteormethod="updateAction" doc=action singleMethodArgument=true template="ionic"}}
     {{> actionsFields}}
     <div class="item">
       <div class="button-bar">
@@ -309,16 +325,31 @@
 <template name="actionsFields">
 {{> afQuickField name='name' autofocus=''}}
 {{> afQuickField name='description' rows=8}}
+
+
 {{> afQuickField name='startDate' type="datetime-local"}}
 {{> afQuickField name='endDate' type="datetime-local"}}
+
 {{#if isCordova}}
 {{> afQuickField name='tagsText' type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
 {{else}}
 {{> afQuickField name='tagsText' type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
 {{/if}}
+
 {{> afQuickField name='urls' class="urls-js"}}
+
+{{#if isScopeCitoyens}}
+
+{{else}}
+
+{{#if settingOceco.costum.actions.form.max}}
 {{> afQuickField name='max'}}
+{{/if}}
+{{#if settingOceco.costum.actions.form.min}}
 {{> afQuickField name='min'}}
+{{/if}}
+
 {{> afQuickField name='credits'}}
+{{/if}}
 
 </template>

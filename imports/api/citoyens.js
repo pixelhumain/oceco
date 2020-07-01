@@ -19,8 +19,10 @@ import { Poi } from './poi.js';
 import { Classified } from './classified.js';
 import { Organizations } from './organizations.js';
 import { Documents } from './documents.js';
+import { Rooms } from './rooms.js';
+import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { queryOrPrivateScopeLinksIds, queryOrPrivateScopeLinks, arrayLinkProperNoObject, queryLink, queryOptions, queryLinkInter, nameToCollection } from './helpers.js';
+import { searchQuery, searchQuerySort, queryOrPrivateScopeLinksIds, queryOrPrivateScopeLinks, arrayLinkProperNoObject, queryLink, queryOptions, queryLinkInter, nameToCollection } from './helpers.js';
 
 // Person
 export const Citoyens = new Mongo.Collection('citoyens', { idGeneration: 'MONGO' });
@@ -559,6 +561,81 @@ Citoyens.helpers({
   },
   countOrganizationsCreator () {
     return this.listOrganizationsCreator() && this.listOrganizationsCreator().count();
+  },
+  listActionsCreator(type = 'all', status = 'todo', search, searchSort) {
+    const query = {};
+    const inputDate = new Date();
+
+    let queryone = {};
+    queryone.endDate = { $exists: true, $gte: inputDate };
+    queryone.parentId = { $in: [this._id._str] };
+    queryone.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        queryone = searchQuery(queryone, search);
+      }
+    }
+
+    let querytwo = {};
+    querytwo.endDate = { $exists: false };
+    querytwo.parentId = { $in: [this._id._str] };
+    querytwo.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        querytwo = searchQuery(querytwo, search);
+      }
+    }
+
+    if (type === 'aFaire') {
+      queryone.credits = { $gt: 0 };
+      querytwo.credits = { $gt: 0 };
+    } else if (type === 'depenses') {
+      queryone.credits = { $lt: 0 };
+      querytwo.credits = { $lt: 0 };
+    }
+
+    query.$or = [];
+    query.$or.push(queryone);
+    query.$or.push(querytwo);
+
+    const options = {};
+    if (Meteor.isClient) {
+      if (searchSort) {
+        const arraySort = searchQuerySort('actions', searchSort);
+        if (arraySort) {
+          options.sort = arraySort;
+        }
+      }
+    } else {
+      options.sort = {
+        startDate: 1,
+      };
+    }
+
+    return Actions.find(query, options);
+  },
+  countActionsCreator(type = 'all', status = 'todo', search) {
+    return this.listActionsCreator(type, status, search) && this.listActionsCreator(type, status, search).count();
+  },
+  detailRooms(roomId) {
+    // if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
+    const query = {};
+    if (this.isAdmin()) {
+      query._id = new Mongo.ObjectID(roomId);
+      query.status = 'open';
+    } else {
+      query.$or = [];
+      const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str) ? Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).funcRoles(this.scopeVar(), this._id._str).split(',') : null;
+      if (roles) {
+        query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: true, $in: roles } });
+      }
+      query.$or.push({ _id: new Mongo.ObjectID(roomId), status: 'open', roles: { $exists: false } });
+    }
+    return Rooms.find(query);
+    // }
+  },
+  room() {
+    return Rooms.findOne({ _id: new Mongo.ObjectID(Router.current().params.roomId) });
   },
   listNotifications () {
     return ActivityStream.api.isUnread(this._id._str);

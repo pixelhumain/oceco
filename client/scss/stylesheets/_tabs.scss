@@ -416,6 +416,16 @@ ion-tabs {
   font-size: $tabs-icon-size;
 }
 
+.tabs-icon-bottom.tabs .tab-item .icon {
+    //margin-top: -.1em;
+
+    &:before {
+    font-size: $tabs-icon-size - 8;
+    //line-height: $tabs-height;
+    }
+}
+ 
+
 .tabs-icon-left.tabs .tab-item,
 .tabs-icon-left > .tabs .tab-item,
 .tabs-icon-right.tabs .tab-item,

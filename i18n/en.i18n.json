@@ -652,6 +652,15 @@
       },
       "urls":{
         "label": "Free information / urls"
+      },
+      "max": {
+        "label": "maximum"
+      },
+      "min": {
+        "label": "minimum"
+      },
+      "credits": {
+        "label": "credits"
       }
     },
     "proposalsrest" : {
@@ -916,6 +925,16 @@
       "form": {
         "geo": {
           "label": "Activer geo dans le formulaire"
+        }
+      }
+    },
+    "actions": {
+      "form": {
+        "min": {
+          "label": "Activer nb participants minimum"
+        },
+        "max": {
+          "label": "Activer nb participants maximun"
         }
       }
     }

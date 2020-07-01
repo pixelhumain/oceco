@@ -96,8 +96,9 @@
 
 <template name="listProjectsAValiderRaf">
                {{#each action in listProjectsEventsActionsCreator}}
-               {{#if action.finishedBy}}
-               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-divider">
+
+               {{#if numberTovalidate action.finishedBy}}
+               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-text-wrap item-divider">
                    {{action.name}}
                    <p> {{numberTovalidate action.finishedBy}} à valider</p>
                </a>
@@ -111,10 +112,9 @@
                     <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
                         actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
                    </div>
-                   
                </div>
-
                {{/each}}
+
                {{/if}}
                {{/each}}
 

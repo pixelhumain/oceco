@@ -31,6 +31,14 @@ collection:actions
 
 export const SchemasActionsRest = new SimpleSchema(baseSchema.pick('name', 'description', 'tags', 'tags.$'), {
   tracker: Tracker,
+  clean: {
+    filter: true,
+    autoConvert: true,
+    removeEmptyStrings: true,
+    trimStrings: true,
+    getAutoValues: true,
+    removeNullsFromArrays: true,
+  },
 });
 SchemasActionsRest.extend({
   tagsText: {
@@ -114,7 +122,7 @@ SchemasActionsRest.extend({
   },
   parentType: {
     type: String,
-    allowedValues: ['projects', 'organizations', 'events'],
+    allowedValues: ['projects', 'organizations', 'events', 'citoyens'],
   },
   urls: {
     type: Array,

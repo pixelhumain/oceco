@@ -37,9 +37,6 @@ Template.detailActions.onCreated(function() {
     pageSession.set('scope', Router.current().params.scope);
     pageSession.set('roomId', Router.current().params.roomId);
     pageSession.set('actionId', Router.current().params.actionId);
-  });
-
-  this.autorun(function() {
     const handle = Meteor.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
     this.ready.set(handle.ready());
   }.bind(this));
@@ -56,6 +53,8 @@ Template.detailActions.helpers({
     return Template.instance().ready.get();
   },
 });
+
+
 
 /* Template.detailViewActions.events({
   'click .action-assignme-js' (event) {
@@ -164,19 +163,17 @@ Template.actionsAdd.onCreated(function () {
   template.ready = new ReactiveVar();
   pageSession.set('error', false);
 
-  this.autorun(function() {
+  this.autorun(function () {
     pageSession.set('scopeId', Router.current().params._id);
     pageSession.set('scope', Router.current().params.scope);
-    // pageSession.set('roomId', Router.current().params.roomId);
-  });
-
-  this.autorun(function () {
     const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
     if (handle.ready()) {
       template.ready.set(handle.ready());
     }
   });
 });
+
+
 
 Template.actionsFields.onDestroyed(function () {
   const self = this;
@@ -186,6 +183,9 @@ Template.actionsFields.onDestroyed(function () {
 Template.actionsFields.helpers({
   isCordova() {
     return Meteor.isCordova;
+  },
+  isScopeCitoyens() {
+    return Router.current().params.scope === 'citoyens';
   },
 });
 
@@ -224,26 +224,29 @@ Template.actionsFields.onRendered(function () {
   }
 
   // #tags
-  const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
-  pageSession.set('queryTag', false);
-  pageSession.set('tags', false);
-  self.$("input[name='tagsText']").atwho({
-    at: '#',
-    data: orgaOne && orgaOne.oceco && orgaOne.oceco.tags ? orgaOne.oceco.tags : [],
-    limit: orgaOne && orgaOne.oceco && orgaOne.oceco.tags && orgaOne.oceco.tags.length > 0 ? orgaOne.oceco.tags.length : 0,
-  }).on('inserted.atwho', function (event, $li) {
-    // console.log(JSON.stringify($li.data('item-data')));
-    if ($li.data('item-data')['atwho-at'] === '#') {
-      const tag = $li.data('item-data').name;
-      if (pageSession.get('tags')) {
-        const arrayTags = pageSession.get('tags');
-        arrayTags.push(tag);
-        pageSession.set('tags', arrayTags);
-      } else {
-        pageSession.set('tags', [tag]);
+  if (Router.current().params.scope !== 'citoyens') {
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) });
+    pageSession.set('queryTag', false);
+    pageSession.set('tags', false);
+    self.$("input[name='tagsText']").atwho({
+      at: '#',
+      data: orgaOne && orgaOne.oceco && orgaOne.oceco.tags ? orgaOne.oceco.tags : [],
+      limit: orgaOne && orgaOne.oceco && orgaOne.oceco.tags && orgaOne.oceco.tags.length > 0 ? orgaOne.oceco.tags.length : 0,
+    }).on('inserted.atwho', function (event, $li) {
+      // console.log(JSON.stringify($li.data('item-data')));
+      if ($li.data('item-data')['atwho-at'] === '#') {
+        const tag = $li.data('item-data').name;
+        if (pageSession.get('tags')) {
+          const arrayTags = pageSession.get('tags');
+          arrayTags.push(tag);
+          pageSession.set('tags', arrayTags);
+        } else {
+          pageSession.set('tags', [tag]);
+        }
       }
-    }
-  });
+    });
+  }
+  
 });
 
 Template.actionsEdit.onCreated(function () {
@@ -342,6 +345,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       if (!error) {
         // Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
         searchAction.set('search', null);
+        searchAction.set('actionName', null);
         Router.go('actionsList', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope') }, { replaceState: true });
       }
     },
