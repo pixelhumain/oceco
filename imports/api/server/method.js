@@ -3404,23 +3404,23 @@ export const assignMemberActionRooms = new ValidatedMethod({
     }
     // verifier si admin
     if (!collection.findOne({ _id: parentObjectId }).isAdmin()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('not-authorized-admin');
     }
 
     // verifier si member existe
     if (!Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) })) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('not-exist-member-id');
     }
 
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
     const action = Actions.findOne({ _id: new Mongo.ObjectID(id), status: 'todo' });
     if (!action) {
-      throw new Meteor.Error('not-authorized action');
+      throw new Meteor.Error('not-authorized-action');
     } else {
       const room = Rooms.findOne({ _id: new Mongo.ObjectID(action.idParentRoom) });
       if (!room) {
-        throw new Meteor.Error('not-authorized room');
+        throw new Meteor.Error('not-authorized-room');
       }/* else if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(room.parentType, room.parentId)) {
         if (room.roles && room.roles.length > 0) {
           const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(room.parentType, room.parentId).split(',') : null;
@@ -3436,7 +3436,7 @@ export const assignMemberActionRooms = new ValidatedMethod({
       } */
     }
     if (!walletIsOk(id)) {
-      throw new Meteor.Error('Pas assé de');
+      throw new Meteor.Error('wallet-no-ok');
     }
     
     // invitationScope(parentId, parentType, connectType, childType, childEmail, childName, childId)

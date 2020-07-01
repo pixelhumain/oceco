@@ -9,6 +9,7 @@ import { DDP } from 'meteor/ddp';
 import { Mongo } from 'meteor/mongo';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
+import SimpleSchema from 'simpl-schema';
 import { Organizations } from '../organizations.js';
 import { Projects } from '../projects.js';
 import { nameToCollection } from '../helpers.js';
@@ -185,6 +186,7 @@ app.post('/api/action/create', verifyToken, function (req, res) {
       const valid = {
         status: true,
         msg: 'action created',
+        id: retourCall.data.id,
       };
       res.status(200).json(valid);
     } catch (e) {
@@ -195,3 +197,31 @@ app.post('/api/action/create', verifyToken, function (req, res) {
   //
 });
 
+app.post('/api/action/assign', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+
+      new SimpleSchema({
+        id: { type: String },
+        memberId: { type: String },
+        parentId: { type: String },
+        parentType: { type: String },
+      }).validate(req.body);
+
+      const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
+
+      const retourCall = Meteor.call('assignMemberActionRooms', { id: req.body.id, memberId: req.body.memberId });
+      // console.log(retourCall);
+      const valid = {
+        status: true,
+        msg: 'member assign',
+      };
+      res.status(200).json(valid);
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
