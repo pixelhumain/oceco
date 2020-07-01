@@ -187,7 +187,9 @@
     </div>
     <div class="item item-text-wrap">Gestion des actions</div>
 
+    
     {{> Directory_list_projects_events_action list=(listProjectsEventsActionsCreator 'all' limit)  scope="actions"}}
+    
 
     {{#if dataReady}}
     {{#if isLimit countActions}}

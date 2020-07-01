@@ -671,6 +671,9 @@ Organizations.helpers({
           query.$or.push(queryCo);
         }
       });
+      if (query.$or.length === 0) {
+        delete query.$or;
+      }
       // queryOptions.fields.parentId = 1;
       const inputDate = new Date();
       // query.startDate = { $lte: inputDate };
@@ -686,6 +689,9 @@ Organizations.helpers({
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsCreatorAdmin() && this.listProjectsEventsCreatorAdmin().count();
   },
+
+
+
   /*
   WARNING j'ai du créer listProjectsEventsCreator1M pour rajouter un delai de visibiliter 15 jours
   des actions lier au evenement pour pouvoir valider apres la fin
@@ -696,6 +702,8 @@ Organizations.helpers({
       const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
       const query = querySearch || {};
       query.$or = [];
+      
+
       projectIds.forEach((id) => {
         const queryCo = {};
         if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
@@ -706,14 +714,16 @@ Organizations.helpers({
       if (query.$or.length === 0) {
         delete query.$or;
       }
+      
       // queryOptions.fields.parentId = 1;
       // const inputDate = new Date();
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
+
       const options = {};
       options.sort = {
-        startDate: 1,
+        startDate: -1,
       };
       return Events.find(query, options);
     }
@@ -748,13 +758,24 @@ Organizations.helpers({
         };
       }
     } else {
-      const listProjects = this.listProjects();
-      const eventIds = listEvents.map(event => event._id._str);
-      const projectIds = listProjects.map(project => project._id._str);
-      const mergeArray = [...eventIds, ...projectIds, this._id._str];
-      query.parentId = {
-        $in: mergeArray,
-      };
+      if (this.isAdmin()) {
+        const listProjects = this.listProjects();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds, this._id._str];
+        query.parentId = {
+          $in: mergeArray,
+        };
+      } else {
+        const listProjects = this.listProjectsCreatorAdmin();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds];
+        query.parentId = {
+          $in: mergeArray,
+        };
+      }
+
     }
 
     if (status === 'todo') {
@@ -771,7 +792,6 @@ Organizations.helpers({
     if (limit) {
       options.limit = limit;
     }
-
     return Actions.find(query, options);
   },
   countProjectsEventsActionsCreator() {
@@ -843,6 +863,45 @@ Organizations.helpers({
     query.$or = [];
     query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
     query.$or.push({ endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
+
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+
+    return Actions.find(query);
+  },
+  actionsUserAll(userId) {
+    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
+
+    const queryProjectId = `parent.${this._id._str}`;
+    const poleProjects = Projects.find({ [queryProjectId]: { $exists: 1 } }).fetch();
+    const poleProjectsId = [];
+    poleProjects.forEach((element) => {
+      poleProjectsId.push(element._id._str);
+    });
+
+    const queryEventsArray = {};
+    queryEventsArray.$or = [];
+    poleProjects.forEach((element) => {
+      const queryCo = {};
+      queryCo[`organizer.${element._id._str}`] = { $exists: true };
+      queryEventsArray.$or.push(queryCo);
+    });
+
+    const eventsArrayId = [];
+    Events.find(queryEventsArray).forEach(function (event) { eventsArrayId.push(event._id._str); });
+
+    //faire un ou si date pas remplie
+    const query = {};
+    const inputDate = new Date();
+    //query.endDate = { $gte: inputDate };
+    const linkUserID = `links.contributors.${bothUserId}`;
+    query.$or = [];
+    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
+    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
+    query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [bothUserId] }, status: 'todo' });
+    query.$or.push({ endDate: { $exists: false }, parentId: { $in: [bothUserId] }, status: 'todo' });
 
     const options = {};
     options.sort = {

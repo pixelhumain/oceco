@@ -563,12 +563,14 @@ Citoyens.helpers({
     return this.listOrganizationsCreator() && this.listOrganizationsCreator().count();
   },
   listActionsCreator(type = 'all', status = 'todo', search, searchSort) {
+    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     const query = {};
     const inputDate = new Date();
+    const linkUserID = `links.contributors.${bothUserId}`;
 
     let queryone = {};
     queryone.endDate = { $exists: true, $gte: inputDate };
-    queryone.parentId = { $in: [this._id._str] };
+    queryone[linkUserID] = { $exists: true };
     queryone.status = status;
     if (Meteor.isClient) {
       if (search) {
@@ -578,7 +580,7 @@ Citoyens.helpers({
 
     let querytwo = {};
     querytwo.endDate = { $exists: false };
-    querytwo.parentId = { $in: [this._id._str] };
+    querytwo[linkUserID] = { $exists: true };
     querytwo.status = status;
     if (Meteor.isClient) {
       if (search) {
@@ -586,17 +588,43 @@ Citoyens.helpers({
       }
     }
 
+    let querythree = {};
+    querythree.endDate = { $exists: false };
+    querythree.parentId = { $in: [this._id._str] };
+    querythree.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        querythree = searchQuery(querythree, search);
+      }
+    }
+
+    let queryfour = {};
+    queryfour.endDate = { $exists: true, $gte: inputDate };
+    queryfour.parentId = { $in: [this._id._str] };
+    queryfour.status = status;
+    if (Meteor.isClient) {
+      if (search) {
+        queryfour = searchQuery(queryfour, search);
+      }
+    }
+
     if (type === 'aFaire') {
       queryone.credits = { $gt: 0 };
       querytwo.credits = { $gt: 0 };
+      querythree.credits = { $gt: 0 };
+      queryfour.credits = { $gt: 0 };
     } else if (type === 'depenses') {
       queryone.credits = { $lt: 0 };
       querytwo.credits = { $lt: 0 };
+      querythree.credits = { $lt: 0 };
+      queryfour.credits = { $lt: 0 };
     }
 
     query.$or = [];
     query.$or.push(queryone);
     query.$or.push(querytwo);
+    query.$or.push(querythree);
+    query.$or.push(queryfour);
 
     const options = {};
     if (Meteor.isClient) {
@@ -611,6 +639,8 @@ Citoyens.helpers({
         startDate: 1,
       };
     }
+
+    console.log(query);
 
     return Actions.find(query, options);
   },

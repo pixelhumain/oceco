@@ -1203,6 +1203,13 @@ Meteor.publishComposite('directoryActionsAll', function (scope, scopeId, etat, l
           }
         },
       },
+      {
+        find(scopeD) {
+          if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
+            return scopeD.listProjectsEventsCreator1M();
+          }
+        },
+      },
     ],
   };
 });
@@ -1294,7 +1301,10 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
     {
       find(scopeD) {
         if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-          return scopeD.listProjects();
+          if (scopeD.isAdmin()) {
+            return scopeD.listProjects();
+          }
+          return scopeD.listProjectsCreatorAdmin();
         }
       },
       children:
@@ -3103,6 +3113,7 @@ Meteor.publish('all.avatarOne', function (raffId) {
 
 Meteor.publish('all.actions2', function (raffId) {
   check(raffId, String);
+
   if (!this.userId) {
     return null;
   }
@@ -3114,6 +3125,46 @@ Meteor.publish('all.actions2', function (raffId) {
   return orgaOne.actionsAll();
 });
 
+Meteor.publishComposite('all.user.actions2', function (scope, scopeId) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['citoyens'], name);
+  }));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      if (scope === 'citoyens') {
+        options.fields = { pwd: 0 };
+      }
+      return collection.find({ _id: new Mongo.ObjectID(scopeId) }, options);
+    },
+    children: [
+      {
+        find() {
+          return Lists.find({ name: { $in: ['organisationTypes'] } });
+        },
+      },
+      {
+        find(scopeD) {
+          if (scope === 'citoyens') {
+            return scopeD.listOrganizationsCreator();
+          }
+        },
+        children: [{
+          find(orgaOne) {
+            return orgaOne.actionsUserAll(scopeId);
+          },
+        }],
+      },
+    ]
+  };
+});
 
 Meteor.publish('member.profile', function(memberId) {
   check(memberId, String);

@@ -111,8 +111,8 @@ Template.layout.onCreated(function() {
                   return k;
                 });
               // console.log(arrayIds);
-              const isAdmin = arrayIds && arrayIds.length > 0 ? arrayIds : false;
-              Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
+              const isAdmin = !!(arrayIds && arrayIds.length > 0);
+            Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, isAdmin);
             Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, false);
           }
         }

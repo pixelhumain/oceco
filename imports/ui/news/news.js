@@ -400,20 +400,18 @@ Template.scopeProjectsContributorsTemplate.helpers({
     return Template.instance().ready.get();
   },
 });
-
-
-
 Template.scopeActionsTemplate.onCreated(function () {
   this.ready = new ReactiveVar();
-
   this.autorun(function () {
     pageSession.set('scopeId', Router.current().params._id);
-    pageSession.set('scope', Router.current().params.scope);
-  });
-
-  this.autorun(function () {
-    const handle = this.subscribe('directoryListActions', Router.current().params.scope, Router.current().params._id, 'todo');
-    this.ready.set(handle.ready());
+    pageSession.set('scope', Router.current().params.scope);  
+    if (Router.current().params.scope === 'citoyens') {
+      const handle = this.subscribe('all.user.actions2', Router.current().params.scope, Router.current().params._id);
+      this.ready.set(handle.ready());
+    } else {
+      const handle = this.subscribe('directoryListActions', Router.current().params.scope, Router.current().params._id, 'todo');
+      this.ready.set(handle.ready());
+    }
   }.bind(this));
 });
 

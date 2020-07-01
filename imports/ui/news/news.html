@@ -394,9 +394,10 @@
       <i class="icon fa fa-calendar"></i> {{__ "actions"}}<span
         class="badge badge-dark">{{countActionsCreator selectsubview 'todo' search}}</span>
     </div>
+
+    {{#if nequals scopeVar 'citoyens'}}
     {{#if settingOceco.spendView}}
     <div class="item tabs">
-
       {{#if settingOceco.listingElementActions}}
       {{#if settingOceco.listingElementActions.tabProgrammes}}
       <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">{{settingOceco.listingElementActions.tabProgrammes}} <span class="positive">({{countActionsCreator 'aFaire' 'todo' ''}})</span></a>
@@ -412,15 +413,19 @@
       <a class="tab-item {{#if equals selectsubview 'aFaire'}}tab-item-active{{/if}} change-selectsubview-js" id="aFaire">Programmés <span class="positive">({{countActionsCreator 'aFaire' 'todo' ''}})</span></a>
       <a class="tab-item {{#if equals selectsubview 'depenses'}}tab-item-active{{/if}} change-selectsubview-js" id="depenses">Dépensés <span class="positive">({{countActionsCreator 'depenses' 'todo' ''}})</span></a>
       {{/if}}
-        
-        
     </div>
     {{/if}}
+    {{/if}}
+
     {{>searchActions}}
     {{#if equals selectsubview 'aFaire'}}
+
+    
+    
         {{#each item in listActionsCreator selectsubview 'todo' search searchSort}}
 
         {{> itemInputAction action=item}}
+
         {{else}}
         {{#if isAdmin}}
         {{#if search}}
@@ -436,6 +441,7 @@
         </div>
 
         {{/each}}
+
 
         
 
