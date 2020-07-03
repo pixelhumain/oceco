@@ -435,6 +435,12 @@ Meteor.startup(function () {
     }
   });
 
+  Template.registerHelper('htmlToText', (html) => {
+    if (html) {
+      return html.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
+    }
+  });
+
   Template.registerHelper('isConnected', () => Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain);
 
   Template.registerHelper('isAdminRaf', () => {

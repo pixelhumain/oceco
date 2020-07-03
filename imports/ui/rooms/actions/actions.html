@@ -34,7 +34,7 @@
     {{> buttonsActions _id=parentId scope=parentType roomId=idParentRoom actionId=_id._str status=status isCreator=isCreator isAdmin=../../isAdmin}}
 
     <div class="item item-divider item-text-wrap">
-    <h2><a href="{{pathFor 'detailList' _id=../../_id._str scope=../../scopeVar}}" class="positive">{{../../name}}</a> : {{name}}</h2>
+    <h2><a href="{{pathFor 'detailList' _id=../../_id._str scope=../../scopeVar}}" class="positive">{{htmlToText ../../name}}</a> : {{name}}</h2>
     </div>
     <div class="item {{#if creatorProfile.profilThumbImageUrl}}item-avatar{{/if}}">
       {{#if creatorProfile.profilThumbImageUrl}}
@@ -324,7 +324,7 @@
 
 <template name="actionsFields">
 {{> afQuickField name='name' autofocus=''}}
-{{> afQuickField name='description' rows=8}}
+{{> afQuickField name='description' label-type='stacked' rows=8}}
 
 
 {{> afQuickField name='startDate' type="datetime-local"}}

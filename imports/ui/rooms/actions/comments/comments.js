@@ -191,6 +191,20 @@ Template.commentsActionsAdd.helpers({
   },
 });
 
+Template.commentsActionsAdd.events({
+  // Pressing Ctrl+Enter should submit the form
+  'keydown form'(event, instance) {
+    if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
+      instance.find('button[type=submit]').click();
+    }
+  },
+  'keyup/focus textarea[name="text"]'(event, instance) {
+    const element = instance.find('textarea[name="text"]');
+    // element.style.height = '5px';
+    element.style.height = `${element.scrollHeight}px`;
+  },
+});
+
 Template.commentsActionsEdit.onCreated(function () {
   const self = this;
   self.ready = new ReactiveVar();
@@ -285,6 +299,20 @@ Template.commentsActionsEdit.helpers({
   },
   dataReady() {
     return Template.instance().ready.get();
+  },
+});
+
+Template.commentsActionsEdit.events({
+  // Pressing Ctrl+Enter should submit the form
+  'keydown form'(event, instance) {
+    if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
+      instance.find('button[type=submit]').click();
+    }
+  },
+  'keyup/focus textarea[name="text"]'(event, instance) {
+    const element = instance.find('textarea[name="text"]');
+    // element.style.height = '5px';
+    element.style.height = `${element.scrollHeight}px`;
   },
 });
 

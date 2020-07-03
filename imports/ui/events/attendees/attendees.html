@@ -28,17 +28,16 @@
 <template name="listAttendees_search">
   <label class="item item-input">
     <i class="icon ion-search placeholder-icon"></i>
-    <input id="search" type="text" placeholder="{{__ "Search..."}}" value="{{search}}">
+    <input id="search" type="text" placeholder="{{__ "Search"}}..." value="{{search}}">
   </label>
 </template>
 
 <template name="listAttendees_button_bar">
   <div class="button-bar button-positive">
-    {{> Button_toggle condition=(equals view 'all') classOff="button button-small button-dark all" classOn="button button-small button-dark all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
-
-    {{> Button_toggle condition=(equals view 'citoyens') classOff="button button-small button-person citoyens" classOn="button button-small button-person citoyens activated" iconOff="icon fa fa-user" iconOn="icon fa fa-user positive"}}
-    {{> Button_toggle condition=(equals view 'organizations') classOff="button button-small button-organization organizations" classOn="button button-small button-organization organizations activated" iconOff="icon fa fa-users" iconOn="icon fa fa-users positive"}}
-    {{> Button_toggle condition=(equals view 'invite') classOff="button button-small button-invite invite" classOn="button button-small button-invite invite activated" iconOff="icon fa fa-send" iconOn="icon fa fa-send positive"}}
+    {{> Button_toggle condition=(equals view 'all') classOff="button button-small all" classOn="button button-small all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
+    {{> Button_toggle condition=(equals view 'citoyens') classOff="button button-small citoyens" classOn="button button-small citoyens activated" iconOff="icon fa fa-user" iconOn="icon fa fa-user positive"}}
+    {{> Button_toggle condition=(equals view 'organizations') classOff="button button-small organizations" classOn="button button-small organizations activated" iconOff="icon fa fa-users" iconOn="icon fa fa-users positive"}}
+    {{> Button_toggle condition=(equals view 'invite') classOff="button button-small button-invite invite" classOn="button button-small invite activated" iconOff="icon fa fa-send" iconOn="icon fa fa-send positive"}}
 
   </div>
 </template>
@@ -70,7 +69,7 @@
       <div class="item item-divider">
         <i class="icon fa fa-user"></i> {{__ "persons"}} <span class="badge badge-dark">{{countAttendeesValidate search}}</span>
       </div>
-      {{> Directory_list list=(listAttendeesValidate search) isConnect="isFollowersMe" person=true scope="citoyens" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=isAdmin}}
+      {{> Directory_list list=(listAttendeesValidate search) isConnect="isFollowersMe" person=true scope="citoyens" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
   {{/if}}
 </template>
 
@@ -79,7 +78,7 @@
       <div class="item item-divider">
         <i class="icon fa fa-users"></i> {{__ "organizations"}} <span class="badge badge-dark">{{countAttendeesOrgaValidate search}}</span>
       </div>
-      {{> Directory_list list=(listAttendeesOrgaValidate search) isConnect="isMembers" person=false scope="organizations" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=isAdmin}}
+      {{> Directory_list list=(listAttendeesOrgaValidate search) isConnect="isMembers" person=false scope="organizations" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
   {{/if}}
 </template>
 

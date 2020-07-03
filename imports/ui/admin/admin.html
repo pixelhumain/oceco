@@ -147,7 +147,7 @@
 <template name="Directory_item_projects">
     <div class="item item-avatar item-content item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
-        <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+        <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{htmlToText item.name}}</a></h2>
         <a href="{{pathFor 'eventsAdd' _id=item._id._str scope='projects'}}" class="button button-positive"><i
                 class="icon fa fa-plus"></i></a>
     </div>
@@ -188,7 +188,7 @@
     <div class="item item-text-wrap">Gestion des actions</div>
 
     
-    {{> Directory_list_projects_events_action list=(listProjectsEventsActionsCreator 'all' limit)  scope="actions"}}
+    {{> Directory_list_projects_events_action list=(listProjectsEventsActionsCreatorAdmin 'all' limit)  scope="actions"}}
     
 
     {{#if dataReady}}

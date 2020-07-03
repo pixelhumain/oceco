@@ -7,7 +7,7 @@
       {{else}}
       {{> imgDoc imageDoc=imageDoc resized="50x50"}}
       {{/if}}
-      <h2 class="homestead">{{name}}</h2>
+      <h2 class="homestead">{{htmlToText name}}</h2>
 
       {{#if equals scopeVar 'events'}}
       {{> scopeCreator organizer=organizerEvent creator=creatorProfile }}

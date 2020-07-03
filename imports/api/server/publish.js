@@ -1142,7 +1142,7 @@ Meteor.publish('directoryActionsAllCounter', function (scope, scopeId) {
     return null;
   }
   const collection = nameToCollection(scope);
-  return new Counter(`countActionsAll.${scopeId}`, collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listProjectsEventsActionsCreator('all'));
+  return new Counter(`countActionsAll.${scopeId}`, collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listProjectsEventsActionsCreatorAdmin('all'));
 });
 
 Meteor.publishComposite('directoryActionsAll', function (scope, scopeId, etat, limit) {
@@ -1199,14 +1199,14 @@ Meteor.publishComposite('directoryActionsAll', function (scope, scopeId, etat, l
       {
         find(scopeD) {
           if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-            return scopeD.listProjectsEventsActionsCreator('all', limit);
+            return scopeD.listProjectsEventsActionsCreatorAdmin('all', limit);
           }
         },
       },
       {
         find(scopeD) {
           if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-            return scopeD.listProjectsEventsCreator1M();
+            return scopeD.listProjectsEventsCreatorAdmin1M();
           }
         },
       },

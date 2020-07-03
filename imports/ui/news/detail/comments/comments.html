@@ -145,7 +145,7 @@
       </div>
       {{/if}}
   {{#autoForm id="addComment" schema=SchemasCommentsRest type="method" meteormethod="insertComment" template="ionic" class=""}}
-  {{> afQuickField name='text' label-type='placeholder' rows=2 type="textarea" class="atwho-inputor"}}
+  {{> afQuickField name='text' label-type='placeholder' rows=3 type="textarea" class="atwho-inputor"}}
   <div class="item">
     <div class="button-bar">
       <button type="submit" class="button button-dark">{{__ "publish"}}</button>
@@ -180,7 +180,7 @@
       </div>
     {{/if}}
     {{#autoForm id="editComment" schema=SchemasCommentsEditRest type="method-update" meteormethod="updateComment" doc=comment template="ionic" class="padding"}}
-    {{> afQuickField name='text' label-type='placeholder' rows=2 type="textarea" class="atwho-inputor"}}
+    {{> afQuickField name='text' label-type='placeholder' rows=3 type="textarea" class="atwho-inputor"}}
     <div class="item">
       <div class="button-bar">
         <button type="submit" class="button button-dark">{{__ "edit"}}</button>

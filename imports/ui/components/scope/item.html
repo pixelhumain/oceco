@@ -4,7 +4,7 @@
   {{#if profilThumbImageUrl}}
     <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
   {{/if}}
-  <h2>{{name}}</h2>
+  <h2>{{htmlToText name}}</h2>
   {{#if ../count}}
   <span class="badge {{#if isStart}}badge-balanced{{else}}badge-dark{{/if}}"><i class="icon ion-person"></i> {{../count}}</span>
   {{/if}}

@@ -622,3 +622,4 @@ Router.onBeforeAction(ensurePixelSwitch, { except: ['login', 'signin', 'switch',
 Router.routes.login.options.progress = false;
 Router.routes.signin.options.progress = false;
 Router.routes.listEvents.options.progress = false;
+Router.routes.home.options.progress = false;

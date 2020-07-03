@@ -703,13 +703,12 @@ Organizations.helpers({
       const query = querySearch || {};
       query.$or = [];
       
-
       projectIds.forEach((id) => {
         const queryCo = {};
-        if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
+        // if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
           queryCo[`organizer.${id}`] = { $exists: true };
           query.$or.push(queryCo);
-        }
+        // }
       });
       if (query.$or.length === 0) {
         delete query.$or;
@@ -725,12 +724,46 @@ Organizations.helpers({
       options.sort = {
         startDate: -1,
       };
+      // console.log(query);
       return Events.find(query, options);
     }
   },
   countProjectsEventsCreator() {
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsCreator() && this.listProjectsEventsCreator().count();
+  },
+
+  listProjectsEventsCreatorAdmin1M(querySearch) {
+    if (this.links && this.links.projects) {
+      const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
+      const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+      const query = querySearch || {};
+      query.$or = [];
+
+      projectIds.forEach((id) => {
+        const queryCo = {};
+        if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
+        queryCo[`organizer.${id}`] = { $exists: true };
+        query.$or.push(queryCo);
+        }
+      });
+      if (query.$or.length === 0) {
+        delete query.$or;
+      }
+
+      // queryOptions.fields.parentId = 1;
+      // const inputDate = new Date();
+      const inputDate = moment(new Date()).subtract(15, 'day').toDate();
+      // query.startDate = { $lte: inputDate };
+      query.endDate = { $gte: inputDate };
+
+      const options = {};
+      options.sort = {
+        startDate: -1,
+      };
+      // console.log(query);
+      return Events.find(query, options);
+    }
   },
   listProjectsEventsActionsCreator(status = 'todo', limit) {
     const query = {};
@@ -797,6 +830,72 @@ Organizations.helpers({
   countProjectsEventsActionsCreator() {
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsActionsCreator() && this.listProjectsEventsActionsCreator().count();
+  },
+  listProjectsEventsActionsCreatorAdmin(status = 'todo', limit) {
+    const query = {};
+    const listEvents = this.listProjectsEventsCreatorAdmin1M();
+
+    if (Meteor.isClient) {
+      if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
+        const listProjects = this.listProjects();
+
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds, this._id._str];
+
+        query.parentId = {
+          $in: mergeArray,
+        };
+      } else {
+        const listProjects = this.listProjectsCreatorAdmin();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds];
+
+        query.parentId = {
+          $in: mergeArray,
+        };
+      }
+    } else {
+      if (this.isAdmin()) {
+        const listProjects = this.listProjects();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds, this._id._str];
+        query.parentId = {
+          $in: mergeArray,
+        };
+      } else {
+        const listProjects = this.listProjectsCreatorAdmin();
+        const eventIds = listEvents.map(event => event._id._str);
+        const projectIds = listProjects.map(project => project._id._str);
+        const mergeArray = [...eventIds, ...projectIds];
+        query.parentId = {
+          $in: mergeArray,
+        };
+      }
+
+    }
+
+    if (status === 'todo') {
+      query.status = 'todo';
+    } else if (status === 'done') {
+      query.status = 'done';
+    }
+
+    const options = {};
+    options.sort = {
+      created: -1,
+    };
+
+    if (limit) {
+      options.limit = limit;
+    }
+    return Actions.find(query, options);
+  },
+  countProjectsEventsActionsCreatorAdmin() {
+    // return this.links && this.links.events && _.size(this.links.events);
+    return this.listProjectsEventsActionsCreatorAdmin() && this.listProjectsEventsActionsCreatorAdmin().count();
   },
   actionsInWaiting() {
     const finished = `finishedBy.${Meteor.userId()}`;
