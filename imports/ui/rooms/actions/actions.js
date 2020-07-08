@@ -151,6 +151,38 @@ Template.detailViewActions.events({
       });
     }
   },
+  'click .admin-finish-action-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('finishActionAdmin', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (error) => {
+        if (error) {
+          IonPopup.alert({ template: i18n.__(error.reason) });
+        }
+      });
+    }
+  },
+  'click .admin-sortir-action-js'(event) {
+    event.preventDefault();
+    const memberId = $(event.currentTarget).attr('usrId');
+    const id = $(event.currentTarget).attr('actionId');
+    if (memberId && id) {
+      Meteor.call('exitAction', {
+        id,
+        memberId,
+        orgId: Session.get('orgaCibleId'),
+      }, (error) => {
+        if (error) {
+          IonPopup.alert({ template: i18n.__(error.reason) });
+        }
+      });
+    }
+  },
   'click .search-tags-list-js'(event) {
     event.preventDefault();
     searchAction.set('search', `#${this}`);

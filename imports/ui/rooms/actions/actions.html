@@ -132,6 +132,11 @@
         <button class="button button-clear button-balanced" disabled><i class="icon fa fa-check"></i></button>
         {{else if userIsNoValidated contributor._id._str}}
         <button class="button button-clear button-positive" disabled><i class="icon fa fa-remove"></i></button>
+        {{else}}
+        <div class="multi-buttons">
+          <button class="button button-stable admin-sortir-action-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i class="fa fa-user-times positive"></i></button>
+          <button class="button button-stable admin-finish-action-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i class="fa fa-user-check balanced"></i> </button>
+        </div>
       {{/if}}
       {{/if}}
     </div>

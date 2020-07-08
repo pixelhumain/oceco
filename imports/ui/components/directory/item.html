@@ -46,7 +46,11 @@
     </button>
     {{else}}
 
- 
+    {{#if equals person true}}
+    
+    {{else}}
+    {{> Button_toggle id=item._id._str scope=scope isCall=isCall condition=(isConnectFunc isConnect) classOff="button-dark connectscope-link-js" classOn="button-positive disconnectscope-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink"}}
+    {{/if}}
 
     {{/if}}
     {{/if}}

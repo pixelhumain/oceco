@@ -634,6 +634,59 @@ Meteor.methods({
 
     return true;
   },
+  'finishActionAdmin'({ actId, usrId, orgId }) {
+    new SimpleSchema({
+      actId: { type: String },
+      usrId: { type: String },
+      orgId: { type: String },
+    }).validate({ actId, usrId, orgId });
+
+
+    // je valide pas un user dans etat je le met
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (!Organizations.findOne({
+      _id: new Mongo.ObjectID(orgId),
+    })) {
+      throw new Meteor.Error('not-orga');
+    }
+
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(actId) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+    const collection = nameToCollection(action.parentType);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const actionId = new Mongo.ObjectID(actId);
+    const parent = `finishedBy.${usrId}`;
+    Actions.update({ _id: actionId }, { $set: { [parent]: 'toModerate' } });
+
+    // notification
+    const actionOne = Actions.findOne({
+      _id: actionId,
+    });
+
+    if (actionOne && actionOne.max === 1 && actionOne.min === 1 && !actionOne.endDate) {
+      Actions.update({ _id: actionId }, { $set: { endDate: new Date() } });
+    }
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    ActivityStream.api.add(notif, 'finish', 'isAdmin');
+
+    return true;
+  },
   'exitAction'({
     id, orgId, memberId,
   }) {
@@ -655,27 +708,23 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    if (!Actions.findOne({
-      _id: new Mongo.ObjectID(id),
-    })) {
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
+
+    if (!action) {
       throw new Meteor.Error('not-action');
     }
+
     if (!Organizations.findOne({
       _id: new Mongo.ObjectID(orgId),
     })) {
       throw new Meteor.Error('not-orga');
     }
-    
 
     if (memberId) {
       // verifier admin
-      Actions.findOne({
-        _id: new Mongo.ObjectID(id),
-      });
+      const collection = nameToCollection(action.parentType);
 
-      if (!Organizations.findOne({
-        _id: new Mongo.ObjectID(orgId),
-      }).isAdmin()) {
+      if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
         throw new Meteor.Error('not-admin');
       }
     }
@@ -706,7 +755,7 @@ Meteor.methods({
     notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
-    
+
     if (memberId) {
       // mention
       const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) });
@@ -716,12 +765,9 @@ Meteor.methods({
     } else {
       ActivityStream.api.add(notif, 'leave', 'isAdmin');
     }
-    
 
     return true;
   },
-
-
   'ValidateAction'({ actId, usrId, orgId }) {
     new SimpleSchema({
       actId: { type: String },
