@@ -97,3 +97,4 @@ aldeed:schema-deny
 aldeed:autoform
 cultofcoders:persistent-session
 ostrio:cron-jobs
+server-render

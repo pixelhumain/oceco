@@ -4,7 +4,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
-//import { Counts } from 'meteor/tmeasday:publish-counts';
 import i18n from 'meteor/universe:i18n';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
@@ -133,6 +132,9 @@ Template.listProjectsAValiderRaf.helpers({
     const objIdArray = arrayLinkToModerate(actions);
     return Citoyens.find({ _id: { $in: objIdArray } });
   },
+  isValidatedContributor(actions) {
+    return actions && actions.countContributors() > 0;
+  },
   dataReady() {
     return Template.instance().ready.get();
   },
@@ -171,6 +173,38 @@ Template.listProjectsAValiderRaf.events({
       });
     }
   },
+  'click .admin-finish-action-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('finishActionAdmin', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (error) => {
+        if (error) {
+          IonPopup.alert({ template: i18n.__(error.reason) });
+        }
+      });
+    }
+  },
+  'click .admin-sortir-action-js'(event) {
+    event.preventDefault();
+    const memberId = $(event.currentTarget).attr('usrId');
+    const id = $(event.currentTarget).attr('actionId');
+    if (memberId && id) {
+      Meteor.call('exitAction', {
+        id,
+        memberId,
+        orgId: Session.get('orgaCibleId'),
+      }, (error) => {
+        if (error) {
+          IonPopup.alert({ template: i18n.__(error.reason) });
+        }
+      });
+    }
+  },
 });
 
 Template.listProjectsRaf.onCreated(function () {
@@ -199,10 +233,7 @@ Template.listProjectsEventsRaf.onCreated(function () {
   this.autorun(function () {
     pageSession.set('scopeId', Session.get('orgaCibleId'));
     pageSession.set('scope', 'organizations');
-  });
-
-  this.autorun(function () {
-    const handle = this.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
+    const handle = this.subscribe('directoryProjectsListEventsAdmin', 'organizations', Session.get('orgaCibleId'));
     this.ready.set(handle.ready());
   }.bind(this));
 });
@@ -272,7 +303,8 @@ Template.listProjectsEventsActionsRaf.helpers({
 });
 
 Template.listProjectsEventsActionsRaf.events({
-  'click .give-me-more'() {
+  'click .give-me-more'(event) {
+    event.preventDefault();
     const newLimit = pageSession.get('limit') + pageSession.get('incremente');
     pageSession.set('limit', newLimit);
   },

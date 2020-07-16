@@ -309,7 +309,17 @@ ActivityStream.api = {
     let notificationChat = false;
 
 
-    if (object && object.type === 'actions' && object.parentType === 'organizations') {
+    if (object && object.type === 'logusercredit' && object.parentType === 'organizations') {
+      const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
+
+      notificationChat = ActivityStream.api.isNotificationChat(organizationOne);
+
+      if (!targetObj) {
+        // target
+        targetObj = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
+      }
+
+    } else if (object && object.type === 'actions' && object.parentType === 'organizations') {
       const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
 
       notificationChat = ActivityStream.api.isNotificationChat(organizationOne);
@@ -607,6 +617,28 @@ ActivityStream.api = {
               // isMember
             } else if (type === 'isUser') {
               // isUser
+            }
+          }
+
+          
+        } else if (verb === 'logusercredit') {
+          if (object.type === 'logusercredit') {
+            if (type === 'isAdmin') {
+              // isAdmin
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} to update your credits {what}';
+              notificationObj.notify.icon = 'fa-user-shield';
+              // notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{what}'] = [object.credits];
+              // notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
           }
         } else if (verb === 'validate') {

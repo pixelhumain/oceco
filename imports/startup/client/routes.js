@@ -452,6 +452,19 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('listMembersDetailCitoyens', {
+    template: 'listMembersDetailCitoyens',
+    path: '/organizations/members/:_id/citoyens/:citoyenId',
+    loadingTemplate: 'loading',
+  });
+
+  // /organizations/members/555eba56c655675cdd65bf19/citoyens/55ee8d59e41d756612558516
+  this.route('logUserActionsAdd', {
+    template: 'logUserActionsAdd',
+    path: '/organizations/members/:_id/citoyens/:citoyenId/addlog',
+    loadingTemplate: 'loading',
+  });
+
   this.route('listContributors', {
     template: 'listContributors',
     path: '/projects/contributors/:_id',
@@ -616,7 +629,7 @@ const ensurePixelIsAdmin = function() {
 };
 
 Router.onBeforeAction(ensurePixelSignin, { except: ['login', 'signin'] });
-Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction'] });
+Router.onBeforeAction(ensurePixelIsAdmin, { only: ['adminDashboard', 'newAction', 'listMembers'] });
 Router.onBeforeAction(ensurePixelSwitch, { except: ['login', 'signin', 'switch', 'switchRedirect'] });
 
 Router.routes.login.options.progress = false;

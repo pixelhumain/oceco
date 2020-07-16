@@ -205,7 +205,9 @@
 {{/if}}
 {{else if equals status 'disabled'}}
 {{#if isAdmin}}
-
+<div class="button-bar bar-positive">
+{{> buttonActionItem action="todo" texte="Réouvrir" icon="fa fa-door-open" class="button-small action-action-js"}}
+</div>
 {{else if isCreator}}
 
 {{/if}}
@@ -213,7 +215,9 @@
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+{{> buttonActionItem action="todo" texte="Réouvrir" icon="fa fa-door-open" class="button-small action-action-js"}}
 </div>
+
 {{else if isCreator}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>

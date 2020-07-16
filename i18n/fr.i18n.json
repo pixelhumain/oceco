@@ -314,7 +314,8 @@
           "end_of_the_action_what_in_where": "fin de l'action __what__ in __where__",
           "a_possible_expense_what_has_been_added_on_where": "une dépense possible __what__ a été ajoutée sur __where__",
           "who_spent_credit_on_what_from_where": "__who__ a dépensé du crédit : __what__ à __where__",
-          "who_to_cancel_the_action_what_in_where": "__who__ a annuler l'action __what__ dans __where__"
+          "who_to_cancel_the_action_what_in_where": "__who__ a annuler l'action __what__ dans __where__",
+          "who_to_update_your_credits_what": "__who__ à mise à jour vos crédits __what__"
         }
   },
   "on the program of":"au programme de:",
@@ -566,6 +567,14 @@
     }
   },
   "schemas":{
+    "loguseractionsrest": {
+      "credits": {
+        "label": "Credits"
+      },
+      "commentaire": {
+        "label": "Commentaires"
+      }
+    },
     "invitations":{
       "childName":{
           "label": "Nom",

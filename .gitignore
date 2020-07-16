@@ -10,7 +10,10 @@ config.push.json
 electron-settings.json
 electron-settings-prod.json
 cordova.facebook.json
-private/*
+private/ios*
+private/aps.cer
+private/AuthKey*
+private/oceco-a60b5-firebase-adminsdk-rfgzm-f8a214638f.json
 .desktop-installer/
 .desktop-package/
 public/i18n/

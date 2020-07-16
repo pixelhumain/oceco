@@ -14,34 +14,133 @@
 {{#if dataReady}}
   {{#ionView}}
   {{#ionContent}}
-  <div class="padding">
     <div class="list">
       <div class="item item-divider">
         <i class="icon ion-ios-people"></i> {{__ "members"}} <span class="badge badge-dark">{{organizations.countMembers}}</span>
       </div>
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input id="search" type="text" placeholder="Chercher un membre..." value="{{search}}">
+      </label>
       {{#transition in="zoomIn" out="bounceOut"}}
-      {{#each organizations.listMembers}}
-      <div class="item item-avatar item-button-right animated out">
+      {{#each organizations.listMembers search}}
+      <div class="item item-avatar animated out">
         {{> imgDoc}}
-        <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
-        {{#if isFollowsMembers _id._str}}
-        <button class="button button-positive unfollowperson-link">
-          <i class="icon fa fa-unlink"></i>
-        </button>
+        <h2><a href="{{pathFor 'listMembersDetailCitoyens' _id=organizations._id._str citoyenId=this._id._str}}" class="dark">{{name}}</a> {{#if this.userCredit}}<span class="badge badge-balanced">{{this.userCredit}} {{#if settingOceco.account}}
+        {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}
         {{else}}
-        <button class="button button-positive followperson-link">
-          <i class="icon ion-person-add"></i>
-        </button>
-        {{/if}}
+        R
+        {{/if}}</span>{{/if}}</h2>
       </div>
       {{/each}}
       {{/transition}}
     </div>
-  </div>
-
   {{/ionContent}}
   {{/ionView}}
   {{else}}
 {{> loading}}
 {{/if}}
 </template>
+
+<template name="listMembersDetailCitoyens">
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">Historiques</h1>
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#ionView}}
+  {{#ionContent}}
+    <div class="list">
+      <div class="item item-divider">
+        <i class="icon ion-ios-people"></i> {{citoyen.name}}<span
+          class="badge badge-dark">{{countActions}}</span>
+      </div>
+      {{#if isAdminOrga}}
+      <div class="item button-bar bar-positive">
+        <a href="{{pathFor 'logUserActionsAdd' _id=organizations._id._str citoyenId=citoyen._id._str}}" class="button button-positive"><i
+            class="icon fa fa-plus"></i> Ajout ligne crédit</a>
+      </div>
+      {{/if}}
+
+      {{#transition in="zoomIn" out="bounceOut"}}
+      {{#each logUserActions}}
+      <div class="item item-badge-right item-text-wrap animated out">
+        
+        <h2>
+          {{#if action}}
+          <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="dark">{{action.name}}</a>
+          {{else}}
+          <i class="fa fa-user-shield"></i> {{commentaire}}
+          {{/if}}
+          <span class="badge badge-{{badgeColorTest}}">{{credits}} {{#if settingOceco.account}}
+            {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}
+            {{else}}
+            R
+            {{/if}}</span></h2>
+            <p><i class="ion-android-calendar"></i> {{formatCreatedDate}}</p>
+      </div>
+      {{/each}}
+      {{/transition}}
+    </div>
+
+    {{#if dataReady}}
+    {{#if isLimit countActions}}
+    <div class="padding">
+      <button id="showMoreResults" class="button button-block button-dark give-me-more">
+        {{__ "more"}}...
+      </button>
+    </div>
+    {{/if}}
+    {{/if}}
+
+  {{/ionContent}}
+  {{/ionView}}
+</template>
+
+<template name="logUserActionsAdd">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">Ajout ligne crédit</h1>
+  {{/contentFor}}
+
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      Ajout ligne crédit
+    </div>
+    {{#if error}}
+    <div class="card">
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#autoForm id="addLogUserActions" schema=SchemasLogUserActionsRest type="method" meteormethod="insertLogUserActions" singleMethodArgument=true template="ionic"}}
+    {{> afQuickField name='credits'}}
+    {{> afQuickField name='commentaire' label-type='stacked' rows=8}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "create"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+</template>
+

@@ -391,7 +391,7 @@ Actions.helpers({
   },
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
-    return this.listContributors(search) && this.listContributors(search).count();
+    return this.listContributors(search) && this.listContributors(search).count() ? this.listContributors(search).count() : 0;
   },
   isToBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

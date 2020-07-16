@@ -266,6 +266,18 @@ Template.notificationsList.events({
           }
         }
       }
+    } else if (this.verb === 'logusercredit') {
+      if (this.target.type === 'organizations') {
+        if (this.target.id) {
+          if (this.notify.objectType === 'logusercredit') {
+            const arrayIdUser = Object.keys(this.notify.id);
+            Session.setPersistent('orgaCibleId', this.target.id);
+            if (this.notify.id) {
+              Router.go('listMembersDetailCitoyens', { _id: this.target.id, citoyenId: arrayIdUser[0] });
+            }
+          }
+        }
+      }
     } else if (this.verb === 'validate') {
       if (this.target.type === 'organizations') {
         if (this.target.id) {

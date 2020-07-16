@@ -55,6 +55,9 @@
                     id="events">Evenements</a>
                 <a class="tab-item {{#if equals selectview 'actions'}}tab-item-active{{/if}} change-selectview-js"
                     id="actions">Actions</a>
+                {{#if isAdminOrga}}
+                <a href="{{pathFor 'listMembers' _id=scope._id._str}}" class="tab-item">Membres</a>
+                {{/if}}
             </div>
         </div>
 
@@ -96,26 +99,81 @@
 
 <template name="listProjectsAValiderRaf">
                {{#each action in listProjectsEventsActionsCreator}}
+               {{#if equals action.parentType 'events'}}
+            {{#if isValidatedContributor action}}
 
-               {{#if numberTovalidate action.finishedBy}}
-               <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="item item-text-wrap item-divider">
-                   {{action.name}}
-                   <p> {{numberTovalidate action.finishedBy}} à valider</p>
-               </a>
-
-               {{#each user in userTovalidate action.finishedBy}}
-               <div class="item item-button-right">
-                   <h2>{{user.name}}</h2>
-                   <div class="multi-buttons">
-                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}" actionId="{{action._id._str}}"><i
-                            class="icon fa fa-check balanced"></i> </button>
+            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
+                class="item item-text-wrap item-divider">
+                {{action.name}}
+                <p> {{numberTovalidate action.finishedBy}}/{{action.countContributors}} à valider {{action.countContributors}}
+                    participant(s)</p>
+            </a>
+            
+            {{#if numberTovalidate action.finishedBy}}
+            
+            {{#each user in userTovalidate action.finishedBy}}
+            <div class="item item-button-right">
+                <h2>{{user.name}}</h2>
+                <div class="multi-buttons">
+                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}"
+                        actionId="{{action._id._str}}"><i class="icon fa fa-check balanced"></i> </button>
                     <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
                         actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
-                   </div>
-               </div>
-               {{/each}}
+                </div>
+            </div>
+            {{/each}}
+            
+            {{/if}}
+            
+            {{#each contributor in action.listContributors}}
+            
+            {{#if action.userTovalidate contributor._id._str}}
+            
+            {{else if action.userIsValidated contributor._id._str}}
+            
+            {{else if action.userIsNoValidated contributor._id._str}}
+            
+            {{else}}
+            <div class="item item-button-right">
+                <h2>{{contributor.name}}</h2>
+                <div class="multi-buttons">
+                    <button class="button button-stable admin-sortir-action-js" usrId="{{contributor._id._str}}"
+                        actionId="{{action._id._str}}"><i class="fa fa-user-times positive"></i></button>
+                    <button class="button button-stable admin-finish-action-js" usrId="{{contributor._id._str}}"
+                        actionId="{{action._id._str}}"><i class="fa fa-user-check balanced"></i> </button>
+                </div>
+            </div>
+            
+            {{/if}}
+            
+            {{/each}}
+            {{/if}}
+
+               {{else}}
+            {{#if numberTovalidate action.finishedBy}}
+            <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
+                class="item item-text-wrap item-divider">
+                {{action.name}}
+                <p> {{numberTovalidate action.finishedBy}}/{{action.countContributors}} à valider {{action.countContributors}}
+                    participant(s)</p>
+            </a>
+            
+            {{#each user in userTovalidate action.finishedBy}}
+            <div class="item item-button-right">
+                <h2>{{user.name}}</h2>
+                <div class="multi-buttons">
+                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}"
+                        actionId="{{action._id._str}}"><i class="icon fa fa-check balanced"></i> </button>
+                    <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
+                        actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+                </div>
+            </div>
+            {{/each}}
+            
+            {{/if}}
 
                {{/if}}
+               
                {{/each}}
 
 </template>
@@ -156,11 +214,11 @@
 <template name="listProjectsEventsRaf">
         <div class="item item-divider">
             <i class="icon fa fa-calendar"></i> {{__ "events"}} <span
-                class="badge badge-dark">{{countProjectsEventsCreatorAdmin}}</span>
+                class="badge badge-dark">{{countProjectsEventsCreatorAdmin1M}}</span>
         </div>
         <div class="item item-text-wrap">Gestion des évenements</div>
 
-        {{> Directory_list_projects_events list=listProjectsEventsCreatorAdmin scope="events"}}
+        {{> Directory_list_projects_events list=listProjectsEventsCreatorAdmin1M scope="events"}}
 
 </template>
 
@@ -174,9 +232,12 @@
     <div class="item item-avatar item-content item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+        {{#if item.isNotEndDate}}
         <a href="{{pathFor 'actionsAdd' _id=item._id._str scope='events'}}"
             class="button button-positive"><i
                 class="icon fa fa-plus"></i></a>
+        {{/if}}
+
     </div>
 </template>
 

@@ -24,6 +24,7 @@ import { Lists } from '../lists.js';
 import { Thing } from '../thing.js';
 // DDA
 import { Actions } from '../actions.js';
+import { LogUserActions } from '../loguseractions.js';
 import { Resolutions } from '../resolutions.js';
 import { Rooms } from '../rooms.js';
 import { Proposals } from '../proposals.js';
@@ -1132,6 +1133,75 @@ Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId)
   };
 });
 
+Meteor.publishComposite('directoryProjectsListEventsAdmin', function (scope, scopeId) {
+  check(scopeId, String);
+  check(scope, String);
+  check(scope, Match.Where(function (name) {
+    return _.contains(['organizations'], name);
+  }));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      // options['_disableOplog'] = true;
+      if (scope === 'citoyens') {
+        options.fields = {
+          pwd: 0,
+        };
+      }
+      if (scope === 'events') {
+        // Counts.publish(this, `countSous.${scopeId}`, Events.find({parentId:scopeId}), { noReady: true });
+      }
+      let query = {};
+      if (_.contains(['organizations'], scope)) {
+        query.$or = [];
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': false,
+        });
+        query.$or.push({
+          _id: new Mongo.ObjectID(scopeId),
+          'preferences.private': {
+            $exists: false,
+          },
+        });
+
+        if (scope === 'projects') {
+          query = queryOrPrivateScope(query, 'contributors', scopeId, this.userId);
+        } else if (scope === 'organizations') {
+          query = queryOrPrivateScope(query, 'members', scopeId, this.userId);
+        } else if (scope === 'events') {
+          query = queryOrPrivateScope(query, 'attendees', scopeId, this.userId);
+        }
+      } else {
+        query._id = new Mongo.ObjectID(scopeId);
+      }
+      return collection.find(query, options);
+    },
+    children: [{
+      find() {
+        return Lists.find({
+          name: {
+            $in: ['eventTypes'],
+          },
+        });
+      },
+    },
+    {
+      find(scopeD) {
+        if (scope === 'organizations') {
+          return scopeD.listProjectsEventsCreatorAdmin1M();
+        }
+      },
+      children: arrayChildrenParent('events', ['citoyens', 'organizations', 'projects', 'events']),
+    },
+    ],
+  };
+});
+
 Meteor.publish('directoryActionsAllCounter', function (scope, scopeId) {
   check(scopeId, String);
   check(scope, String);
@@ -1284,10 +1354,26 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
           {
             find(scopeD) {
               const query = {};
-              query.parentId = scopeD._id._str;
+              const inputDate = new Date();
+
+              const queryone = {};
+              queryone.endDate = { $exists: true, $lte: inputDate };
               if (etat) {
-                query.status = etat;
+                queryone.status = etat;
               }
+              queryone.parentId = { $in: [scopeD._id._str] };
+
+              const querytwo = {};
+              if (etat) {
+                querytwo.status = etat;
+              }
+              querytwo.endDate = { $exists: false };
+              querytwo.parentId = { $in: [scopeD._id._str] };
+
+              query.$or = [];
+              query.$or.push(queryone);
+              query.$or.push(querytwo);
+
               return Actions.find(query);
             },
             children: [{
@@ -1410,6 +1496,65 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
           return scopeD.listActionsCreator('all', etat);
         }
       },
+    },
+    ],
+  };
+});
+
+
+Meteor.publish('historiqueUserActionsAllCounter', function (scopeId, citoyenId) {
+  check(scopeId, String);
+  check(citoyenId, String);
+
+  if (!this.userId) {
+    return null;
+  }
+
+  return new Counter(`historiqueUsercountActionsAll.${scopeId}.${citoyenId}`, LogUserActions.find({ organizationId: scopeId, userId: citoyenId }));
+});
+
+Meteor.publishComposite('listMembersDetailHistorique', function (organizationId, citoyenId, limit) {
+  check(organizationId, String);
+  check(citoyenId, String);
+  check(limit, Number);
+
+  if (!this.userId) {
+    return null;
+  }
+
+  const collectionOne = Organizations.findOne({ _id: new Mongo.ObjectID(organizationId) });
+
+  if (!collectionOne.isAdmin()) {
+    return null;
+  }
+  return {
+    find() {
+      const options = {};
+      options.fields = {
+        pwd: 0,
+      };
+      options.fields = {
+        name: 1,
+        _id: 1,
+      };
+
+      const query = {};
+      query._id = new Mongo.ObjectID(citoyenId);
+      return Citoyens.find(query, options);
+    },
+    children: [{
+      find(scopeD) {
+        const options = {};
+        options.limit = limit || 10;
+        options.sort = { createdAt: -1 };
+        return LogUserActions.find({ organizationId, userId: citoyenId }, options);
+      },
+      children: [{
+        find(log) {
+          return Actions.find({ _id: new Mongo.ObjectID(log.actionId) }, { sort: { createdAt: -1 } });
+        },
+      },
+      ],
     },
     ],
   };

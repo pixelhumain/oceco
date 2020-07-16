@@ -1,7 +1,3 @@
-<head>
-  <title>OCECO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-</head>
 
 <template name="camera-page">
   {{> camera}}
@@ -146,11 +142,14 @@
 </template>
 
 <template name="account">
-  <div class="item item-icon-left">
+  <a href="{{pathFor 'listMembersDetailCitoyens' _id=orgaCibleId citoyenId=currentUser._id}}" class="item item-icon-left"
+    data-ion-menu-close><i class="icon ion-card positive"></i>
     {{#if settingOceco.account}}
-    <i class="icon ion-card positive"></i> {{#if settingOceco.account.textVotreCreditTemps}}{{settingOceco.account.textVotreCreditTemps}}{{else}}Votre crédit temps{{/if}} <span class="badge badge-positive">{{userCredit}} {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}</span>
+      {{#if settingOceco.account.textVotreCreditTemps}}{{settingOceco.account.textVotreCreditTemps}}{{else}}Votre crédit
+      temps{{/if}} <span class="badge badge-positive">{{userCredit}}
+        {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}</span>
     {{else}}
     <i class="icon ion-card positive"></i> Votre crédit temps <span class="badge badge-positive">{{userCredit}} R</span>
     {{/if}}
-  </div>
+    </a>
 </template>

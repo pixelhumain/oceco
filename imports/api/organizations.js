@@ -539,6 +539,7 @@ Organizations.helpers({
       options.fields = {};
       options.fields[`links.memberOf.${this._id._str}`] = 1;
       options.fields.name = 1;
+      options.fields[`userWallet.${this._id._str}.userCredits`] = 1;
       options.fields.profilThumbImageUrl = 1;
       return Citoyens.find(query, options);
     }
@@ -764,6 +765,10 @@ Organizations.helpers({
       // console.log(query);
       return Events.find(query, options);
     }
+  },
+  countProjectsEventsCreatorAdmin1M() {
+    // return this.links && this.links.events && _.size(this.links.events);
+    return this.listProjectsEventsCreatorAdmin1M() && this.listProjectsEventsCreatorAdmin1M().count();
   },
   listProjectsEventsActionsCreator(status = 'todo', limit) {
     const query = {};

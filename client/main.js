@@ -1,3 +1,5 @@
+import '../imports/infra/serviceWorkerInit.js';
+
 import '../imports/startup/client';
 
 import '../imports/ui/global/global.js';

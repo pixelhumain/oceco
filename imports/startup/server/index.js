@@ -5,3 +5,5 @@ import './startup.js';
 import './observePush.js';
 import '../../api/server/syncedcron.js';
 import '../../api/server/rest.js';
+import '../../infra/rest.js';
+import '../../infra/meta-tags.js';

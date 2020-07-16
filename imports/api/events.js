@@ -290,6 +290,80 @@ if (Meteor.isClient) {
   window.Citoyens = Citoyens;
 }
 
+
+if (Meteor.isClient) {
+  import { Chronos } from './client/chronos.js';
+
+  Events.helpers({
+
+    isStartDate() {
+      if (this.startDate) {
+        const start = moment(this.startDate).toDate();
+        return Chronos.moment(start).isBefore(); // True
+      } else {
+        return false;
+      }
+    },
+    isNotStartDate() {
+      if (this.startDate) {
+        const start = moment(this.startDate).toDate();
+        return Chronos.moment().isBefore(start); // True
+      } else {
+        return false;
+      }
+    },
+    isEndDate() {
+      if (this.endDate) {
+        const end = moment(this.endDate).toDate();
+        return Chronos.moment(end).isBefore(); // True
+      } else {
+        return false;
+      }
+    },
+    isNotEndDate() {
+      if (this.endDate) {
+        const end = moment(this.endDate).toDate();
+        return Chronos.moment().isBefore(end); // True
+      } else {
+        return false;
+      }
+    },
+    timeSpentStart() {
+      if (this.startDate) {
+        return Chronos.moment(this.startDate).fromNow();
+      } else {
+        return false;
+      }
+    },
+    timeSpentEnd() {
+      if (this.endDate) {
+        return Chronos.moment(this.endDate).fromNow();
+      } else {
+        return false;
+      }
+    },
+  });
+} else {
+  Events.helpers({
+    isEndDate() {
+      if (this.endDate) {
+        const end = moment(this.endDate).toDate();
+        return moment(end).isBefore(); // True
+      } else {
+        return false;
+      }
+    },
+    isNotEndDate() {
+      if (this.endDate) {
+        const end = moment(this.endDate).toDate();
+        return moment().isBefore(end); // True
+      } else {
+        return false;
+      }
+    },
+  });
+}
+
 Events.helpers({
   isVisibleFields () {
     /* if(this.isMe()){
@@ -582,9 +656,13 @@ Events.helpers({
     const inputDate = new Date();
 
     let queryone = {};
-    queryone.endDate = { $exists: true, $gte: inputDate };
+    // si admin
+    if (!this.isAdmin()) {
+      queryone.endDate = { $exists: true, $gte: inputDate };
+      queryone.status = status;
+    }
     queryone.parentId = { $in: [this._id._str] };
-    queryone.status = status;
+    
     if (Meteor.isClient) {
       if (search) {
         queryone = searchQuery(queryone, search);
@@ -592,9 +670,12 @@ Events.helpers({
     }
 
     let querytwo = {};
+    if (!this.isAdmin()) {
+      querytwo.status = status;
+    }
     querytwo.endDate = { $exists: false };
     querytwo.parentId = { $in: [this._id._str] };
-    querytwo.status = status;
+    
     if (Meteor.isClient) {
       if (search) {
         querytwo = searchQuery(querytwo, search);

@@ -29,6 +29,7 @@ import { Comments, SchemasCommentsRest, SchemasCommentsEditRest } from '../comme
 import { SchemasShareRest, SchemasRolesRest } from '../schema.js';
 // DDA
 import { Actions, SchemasActionsRest } from '../actions.js';
+import { LogUserActions, SchemasLogUserActionsRest } from '../loguseractions.js';
 import { Resolutions } from '../resolutions.js';
 import { Rooms, SchemasRoomsRest } from '../rooms.js';
 import { Proposals, SchemasProposalsRest, BlockProposalsRest } from '../proposals.js';
@@ -801,7 +802,22 @@ Meteor.methods({
       Citoyens.update({ _id: userNeed }, { $set: { [userCredits]: 0 } });
     }
     Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
-    Citoyens.update({ _id: userNeed }, { $set: { [userActions]: credit } });
+
+    // log user action credit
+    const logInsert = {};
+    logInsert.userId = usrId;
+    logInsert.organizationId = orgId;
+    logInsert.actionId = actId;
+    if (credit) {
+      logInsert.credits = credit;
+      logInsert.createdAt = moment().format();
+      LogUserActions.insert(logInsert);
+    }
+
+    // Citoyens.update({ _id: userNeed }, { $set: { [userActions]: credit } });
+
+    //
+
     Citoyens.update({ _id: userNeed }, { $inc: { [userCredits]: credit } });
 
     // verifier si tout les users sont valider
@@ -3291,7 +3307,7 @@ export const assignmeActionRooms = new ValidatedMethod({
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
         
-        Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
+        // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
         return true;
       }
@@ -3437,7 +3453,7 @@ export const assignMemberActionRooms = new ValidatedMethod({
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
 
-        Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
+        // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
         return true;
       }
@@ -3586,7 +3602,7 @@ export const actionsType = new ValidatedMethod({
     type: { type: String, allowedValues: ['actions', 'proposals'] },
     id: { type: String },
     name: { type: String, allowedValues: ['status'] },
-    value: { type: String, allowedValues: ['done', 'disabled', 'amendable', 'tovote'] },
+    value: { type: String, allowedValues: ['done', 'disabled', 'amendable', 'tovote', 'todo'] },
   }).validator(),
   run({ parentType, parentId, type, id, name, value }) {
     if (!this.userId) {
@@ -3741,6 +3757,58 @@ export const questValidateGeo = new ValidatedMethod({
     }
     const retour = Playersmobile.update({ _id: player._id }, modifier);
     Questsmobile.update({ _id: new Mongo.ObjectID(questId) }, { $inc: { numberPlayerValidate: 1 } });
+    return retour;
+  },
+});
+
+export const insertLogUserActions = new ValidatedMethod({
+  name: 'insertLogUserActions',
+  validate: new SimpleSchema({
+    userId: { type: String },
+    organizationId: { type: String },
+    commentaire: { type: String },
+    credits: { type: SimpleSchema.Integer },
+  }).validator(),
+  run(doc) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const query = {};
+    query._id = new Mongo.ObjectID(doc.organizationId);
+    const orgaOne = Organizations.findOne(query);
+    if (!orgaOne) {
+      throw new Meteor.Error('not-orga', 'not-orga');
+    }
+    if (!orgaOne.isAdmin()) {
+      throw new Meteor.Error('not-orga-admin', 'not-orga-admin');
+    }
+
+    const logInsert = {};
+    logInsert.userId = doc.userId;
+    logInsert.organizationId = doc.organizationId;
+    logInsert.commentaire = doc.commentaire;
+    logInsert.credits = doc.credits;
+    logInsert.createdAt = moment().format();
+    const retour = LogUserActions.insert(logInsert);
+
+    const userNeed = new Mongo.ObjectID(doc.userId);
+    const userCredits = `userWallet.${doc.organizationId}.userCredits`;
+    Citoyens.update({ _id: userNeed }, { $inc: { [userCredits]: doc.credits } });
+
+    // notification
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: orgaOne._id._str, name: orgaOne.name, type: 'logusercredit', parentType: 'organizations', parentId: doc.organizationId, commentaire: doc.commentaire, credits: doc.credits };
+    // mention
+    const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(doc.userId) });
+    notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens' };
+
+    ActivityStream.api.add(notif, 'logusercredit', 'isUser', doc.userId);
+
     return retour;
   },
 });
