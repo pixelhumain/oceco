@@ -1,5 +1,6 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable meteor/no-session */
-/* global Session IonPopup */
+/* global Session IonPopup IonModal */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -140,7 +141,16 @@ Template.listProjectsAValiderRaf.helpers({
   },
 });
 
-Template.listProjectsAValiderRaf.events({
+Template.adminButton.events({
+  'click .admin-creditsdistributed-js'(event, instance) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      const parentDataContext = { usrId, actionId, action: this.action, user: this.user, organization: this.organization };
+      IonModal.open('creditsDistributed', parentDataContext);
+    }
+  },
   'click .admin-validation-js'(event) {
     event.preventDefault();
     const usrId = $(event.currentTarget).attr('usrId');
@@ -203,6 +213,97 @@ Template.listProjectsAValiderRaf.events({
           IonPopup.alert({ template: i18n.__(error.reason) });
         }
       });
+    }
+  },
+});
+
+Template.creditsDistributed.onCreated(function () {
+  const template = Template.instance();
+  pageSession.set('credits', null);
+  this.autorun(function () {
+    pageSession.set('citoyenId', template.data.user._id._str);
+    pageSession.set('actionId', template.data.action._id._str);
+    if (template.data.action.options && template.data.action.options.creditSharePorteur) {
+      pageSession.set('actionCredits', template.data.action.creditPartage());
+    } else {
+      pageSession.set('actionCredits', template.data.action.credits);
+    }
+  });
+});
+
+Template.creditsDistributed.helpers({
+  diffCredits() {
+    if (pageSession.get('credits')) {
+      if (this.action.options && this.action.options.creditSharePorteur) {
+        return pageSession.get('credits') !== this.action.creditPartage();
+      }
+      return pageSession.get('credits') !== this.action.credits;
+    }
+    return false;
+  },
+  changeCredits() {
+    return pageSession.get('credits');
+  },
+});
+
+Template.creditsDistributed.events({
+  'keyup input[name="credits"]'(event, instance) {
+    event.preventDefault();
+    if (instance.$(event.currentTarget).val()) {
+      pageSession.set('credits', parseInt(instance.$(event.currentTarget).val()));
+    } else {
+      if (instance.data.action.options && instance.data.action.options.creditSharePorteur) {
+        pageSession.set('credits', instance.data.action.creditPartage());
+      } else {
+        pageSession.set('credits', instance.data.action.credits);
+      }
+    }
+  },
+  'click .admin-validation-js'(event) {
+    event.preventDefault();
+    const usrId = $(event.currentTarget).attr('usrId');
+    const actionId = $(event.currentTarget).attr('actionId');
+    if (usrId && actionId) {
+      Meteor.call('ValidateAction', {
+        actId: actionId,
+        usrId,
+        orgId: Session.get('orgaCibleId'),
+      }, (err) => {
+        if (err) {
+          IonPopup.alert({ template: i18n.__(err.reason) });
+        }
+      });
+    }
+  },
+});
+
+AutoForm.addHooks(['validateUserActions'], {
+  after: {
+    method(error) {
+      if (!error) {
+        IonModal.close();
+      }
+    },
+  },
+  before: {
+    method(doc) {
+      doc.organizationId = Session.get('orgaCibleId');
+      doc.userId = pageSession.get('citoyenId');
+      doc.actionId = pageSession.get('actionId');
+      if (doc.credits !== pageSession.get('actionCredits')){
+        
+      } else {
+        doc.commentaire = 'nocomment';
+      }
+
+      return doc;
+    },
+  },
+  onError(error) {
+    if (error.errorType && error.errorType === 'Meteor.Error') {
+      if (error && error.error === 'error_call') {
+        pageSession.set('error', error.reason.replace(': ', ''));
+      }
     }
   },
 });

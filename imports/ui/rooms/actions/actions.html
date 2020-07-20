@@ -122,10 +122,8 @@
       {{#if userTovalidate contributor._id._str}}
 
           <div class="multi-buttons">
-            <button class="button button-stable admin-validation-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i
-                class="icon fa fa-check balanced"></i> </button>
-            <button class="button button-stable admin-no-validation-js" usrId="{{contributor._id._str}}"
-              actionId="{{_id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+            {{> adminButton class="button-stable admin-creditsdistributed-js" icon="icon fa fa-check balanced" user=contributor action=this}}
+            {{> adminButton class="button-stable admin-no-validation-js" icon="icon fa fa-remove positive" user=contributor action=this}}
           </div>
         
         {{else if userIsValidated contributor._id._str}}
@@ -134,8 +132,8 @@
         <button class="button button-clear button-positive" disabled><i class="icon fa fa-remove"></i></button>
         {{else}}
         <div class="multi-buttons">
-          <button class="button button-stable admin-sortir-action-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i class="fa fa-user-times positive"></i></button>
-          <button class="button button-stable admin-finish-action-js" usrId="{{contributor._id._str}}" actionId="{{_id._str}}"><i class="fa fa-user-check balanced"></i> </button>
+          {{> adminButton class="button-stable admin-sortir-action-js" icon="fa fa-user-times positive" user=contributor action=this}}
+          {{> adminButton class="button-stable admin-finish-action-js" icon="fa fa-user-check balanced" user=contributor action=this}}
         </div>
       {{/if}}
       {{/if}}
@@ -331,34 +329,94 @@
   {{/if}}
 </template>
 
-<template name="actionsFields">
-{{> afQuickField name='name' autofocus=''}}
-{{> afQuickField name='description' label-type='stacked' rows=8}}
 
+
+
+
+<template name="actionsFields">
+{{> afQuickField name='name' label-type='placeholder' autofocus=''}}
+{{> afQuickField name='description' label-type='placeholder' rows=8}}
+
+{{#if isCordova}}
+{{> afQuickField name='tagsText' label-type='placeholder' icon="fa fa-hashtag positive" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
+{{else}}
+{{> afQuickField name='tagsText' label-type='placeholder' icon="fa fa-hashtag positive" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
+{{/if}}
+
+{{#if isScopeCitoyens}}
+
+{{#scrollBlock activeSearch=false}}
+
+<div class="item item-text-wrap item-divider">
+  <i class="fa fa-calendar-alt"></i> Date de début et de fin
+</div>
 
 {{> afQuickField name='startDate' type="datetime-local"}}
 {{> afQuickField name='endDate' type="datetime-local"}}
-
-{{#if isCordova}}
-{{> afQuickField name='tagsText' type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
-{{else}}
-{{> afQuickField name='tagsText' type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"}}
+{{#if isStartDate}}
+{{> afQuickField name='options.possibleStartActionBeforeStartDate'}}
 {{/if}}
 
 {{> afQuickField name='urls' class="urls-js"}}
 
-{{#if isScopeCitoyens}}
+{{/scrollBlock}}
 
 {{else}}
 
-{{#if settingOceco.costum.actions.form.max}}
-{{> afQuickField name='max'}}
-{{/if}}
-{{#if settingOceco.costum.actions.form.min}}
-{{> afQuickField name='min'}}
+{{#scrollBlock activeSearch=false}}
+
+<div class="item item-text-wrap item-divider">
+  <i class="fa fa-calendar-alt"></i> Date de début et de fin
+</div>
+
+{{> afQuickField name='startDate' type="datetime-local"}}
+{{> afQuickField name='endDate' type="datetime-local"}}
+{{#if isStartDate}}
+{{> afQuickField name='options.possibleStartActionBeforeStartDate'}}
 {{/if}}
 
+{{> afQuickField name='urls' class="urls-js"}}
+
+{{#unless isCreditAddPorteur}}
+{{#if isMinMax}}
+<div class="item item-text-wrap item-divider">
+  <i class="fa fa-users"></i> Nombre de participants
+  <p>minimum et maximun</p>
+</div>
+
+{{#if settingOceco.costum.actions.form.min}}
+{{> afQuickField name='min' label-type='placeholder' icon="fa fa-greater-than-equal positive"}}
+{{/if}}
+
+{{#if settingOceco.costum.actions.form.max}}
+{{> afQuickField name='max' label-type='placeholder' icon="fa fa-less-than-equal positive"}}
+{{/if}}
+
+{{#if isPossiblecreditSharePorteur}}
+{{> afQuickField name='options.creditSharePorteur'}}
+{{/if}}
+
+{{/if}}
+
+{{/unless}}
+
+<div class="item item-text-wrap item-divider">
+  <i class="fa fa-coins"></i> Nombre de crédits
+  <p>qui peuvent être gagner ou dépenser</p>
+</div>
+
+{{#unless isDepense}}
+{{> afQuickField name='options.creditAddPorteur'}}
+{{/unless}}
+
+{{#unless isCreditAddPorteur}}
 {{> afQuickField name='credits'}}
+{{else}}
+
+{{/unless}}
+
+{{/scrollBlock}}
+
 {{/if}}
 
 </template>

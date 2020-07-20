@@ -642,10 +642,12 @@
     },
     "actionsrest" : {
       "name":{
-        "label": "name"
+        "label": "name",
+        "placeholder": "name"
       },
       "description":{
-        "label": "description"
+        "label": "description",
+        "placeholder": "description"
       },
       "startDate":{
         "label": "start date"
@@ -657,19 +659,33 @@
         "label": "tags"
       },
       "tagsText": {
-        "label": "tags"
+        "label": "tags",
+        "placeholder": "Tags use #"
       },
       "urls":{
         "label": "Free information / urls"
       },
       "max": {
-        "label": "maximum"
+        "label": "maximum",
+        "placeholder": "maximum"
       },
       "min": {
-        "label": "minimum"
+        "label": "minimum",
+        "placeholder": "minimum"
       },
       "credits": {
         "label": "credits"
+      },
+      "options": {
+        "creditSharePorteur": {
+          "label": "share credits among participants"
+        },
+        "possibleStartActionBeforeStartDate": {
+          "label": "Possibility to start the action before the start date"
+        },
+        "creditAddPorteur": {
+          "label": "Credits can be added by the participant (if only one participant)"
+        }
       }
     },
     "proposalsrest" : {

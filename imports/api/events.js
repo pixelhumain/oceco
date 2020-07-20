@@ -683,16 +683,34 @@ Events.helpers({
     }
 
     if (type === 'aFaire') {
-      queryone.credits = { $gt: 0 };
-      querytwo.credits = { $gt: 0 };
+      queryone.$or = [
+        { credits: { $gt: 0 } }, { 'options.creditAddPorteur': { $exists: true } },
+      ];
+      querytwo.$or = [
+        { credits: { $gt: 0 } }, { 'options.creditAddPorteur': { $exists: true } },
+      ];
+      // queryone.credits = { $gt: 0 };
+      // querytwo.credits = { $gt: 0 };
     } else if (type === 'depenses') {
       queryone.credits = { $lt: 0 };
       querytwo.credits = { $lt: 0 };
     }
 
+    const queryoneAnd = {};
+    queryoneAnd.$and = [];
+    Object.keys(queryone).forEach((key) => {
+      queryoneAnd.$and.push({ [key]: queryone[key] });
+    });
+
+    const querytwoAnd = {};
+    querytwoAnd.$and = [];
+    Object.keys(querytwo).forEach((key) => {
+      querytwoAnd.$and.push({ [key]: querytwo[key] });
+    });
+
     query.$or = [];
-    query.$or.push(queryone);
-    query.$or.push(querytwo);
+    query.$or.push(queryoneAnd);
+    query.$or.push(querytwoAnd);
 
     const options = {};
     if (Meteor.isClient) {

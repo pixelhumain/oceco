@@ -38,6 +38,34 @@ export const SchemasLogUserActionsRest = new SimpleSchema({
   },
 });
 
+export const SchemasValidateUserActionsRest = new SimpleSchema({
+  userId: {
+    type: String,
+  },
+  organizationId: {
+    type: String,
+  },
+  actionId: {
+    type: String,
+  },
+  credits: {
+    type: SimpleSchema.Integer,
+  },
+  commentaire: {
+    type: String,
+  },
+}, {
+  tracker: Tracker,
+  clean: {
+    filter: true,
+    autoConvert: true,
+    removeEmptyStrings: true,
+    trimStrings: true,
+    getAutoValues: true,
+    removeNullsFromArrays: true,
+  },
+});
+
 LogUserActions.helpers({
   action() {
     return Actions.findOne({ _id: new Mongo.ObjectID(this.actionId) });

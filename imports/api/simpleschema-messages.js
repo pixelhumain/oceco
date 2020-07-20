@@ -14,6 +14,8 @@ SimpleSchema.setDefaultMessages({
       maxNumberExclusive: 'Ce champ doit être inferieur à {{max}}',
       minDate: 'La date doit est posterieure au {{min}}',
       maxDate: 'La date doit est anterieure au {{max}}',
+      maxDateStart: 'La date doit être antérieure à la date de fin',
+      minDateEnd: 'La date doit être posterieure à la date de début ',
       badDate: 'Cette date est invalide',
       minCount: 'Vous devez saisir plus de {{minCount}} valeurs',
       maxCount: 'Vous devez saisir moins de {{maxCount}} valeurs',

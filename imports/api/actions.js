@@ -98,8 +98,10 @@ SchemasActionsRest.extend({
       }
       const startDate = moment(this.value).toDate();
       const endDate = moment(this.field('endDate').value).toDate();
-      if (moment(endDate).isBefore(startDate)) {
-        return 'maxDateStart';
+      if (!this.field('options.possibleStartActionBeforeStartDate').value){
+        if (moment(endDate).isBefore(startDate)) {
+          return 'maxDateStart';
+        }
       }
     },
   },
@@ -107,14 +109,21 @@ SchemasActionsRest.extend({
     type: Date,
     optional: true,
     custom() {
-      if (this.field('startDate').value && !this.isSet && (!this.operator || (this.value === null || this.value === ''))) {
-        return 'required';
+      if (this.field('startDate').value && this.field('options.possibleStartActionBeforeStartDate').value) {
+
+      } else {
+        if (this.field('startDate').value && !this.isSet && (!this.operator || (this.value === null || this.value === ''))) {
+          return 'required';
+        }
       }
-      const startDate = moment(this.field('startDate').value).toDate();
-      const endDate = moment(this.value).toDate();
-      if (moment(endDate).isBefore(startDate)) {
-        return 'minDateEnd';
+      if (this.value) {
+        const startDate = moment(this.field('startDate').value).toDate();
+        const endDate = moment(this.value).toDate();
+        if (moment(endDate).isBefore(startDate)) {
+          return 'minDateEnd';
+        }
       }
+      
     },
   },
   parentId: {
@@ -132,6 +141,43 @@ SchemasActionsRest.extend({
     type: String,
   },
 
+  options: {
+    type: Object,
+    optional: true,
+  },
+  'options.creditAddPorteur': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
+  'options.creditSharePorteur': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: false,
+  },
+  'options.possibleStartActionBeforeStartDate': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
 });
 
 /* export const SchemasActionsRest = new SimpleSchema([baseSchema.pick('name', 'description', 'tags', 'tags.$'), {
@@ -357,7 +403,13 @@ Actions.helpers({
     return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
   },
   isAFaire() {
-    return this.credits > 0;
+    return this.credits > 0 || (this.options && this.options.creditAddPorteur);
+  },
+  isCreditAddPorteur() {
+    return !this.credits && this.options && this.options.creditAddPorteur;
+  },
+  isPossibleStartActionBeforeStartDate() {
+    return this.options && this.options.possibleStartActionBeforeStartDate;
   },
   isNotMax() {
     return this.max ? (this.max > this.countContributors()) : true;
@@ -373,6 +425,11 @@ Actions.helpers({
     const endDate = moment(this.endDate);
     return Math.round(endDate.diff(startDate, 'minutes') / 60);
   },
+  actionStartFromEnd() {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+    return startDate.from(endDate, true);
+  },
   actionParticipantsNbr() {
     if (this.links) {
       const numberParticipant = arrayLinkProper(this.links.contributors).length;
@@ -381,7 +438,7 @@ Actions.helpers({
     return 'aucun';
   },
   creditPositive() {
-    if (this.credits >= 0) {
+    if (this.credits >= 0 || this.isCreditAddPorteur()) {
       return true;
     }
     return false;
@@ -392,6 +449,14 @@ Actions.helpers({
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
     return this.listContributors(search) && this.listContributors(search).count() ? this.listContributors(search).count() : 0;
+  },
+  creditPartage() {
+    if (this.options && this.options.creditSharePorteur) {
+      if (this.countContributors() > 0) {
+        return Math.round(this.credits / this.countContributors());
+      }
+    }
+    return this.credits;
   },
   isToBeValidated (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();

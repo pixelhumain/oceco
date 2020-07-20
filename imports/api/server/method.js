@@ -2953,16 +2953,38 @@ export const insertAction = new ValidatedMethod({
     docRetour.collection = 'actions';
     docRetour.idParentRoom = room._id._str;
 
+    const docUpdate = { ...docRetour.options };
+    if (docRetour.options) {
+      if (docRetour.options.creditAddPorteur) {
+        // credit ajouté par le participant
+        delete docRetour.credits;
+        delete docRetour.options.creditAddPorteur;
+      }
+      if (docRetour.options.creditSharePorteur) {
+        delete docRetour.options.creditSharePorteur;
+      }
+      if (docRetour.options.possibleStartActionBeforeStartDate) {
+        delete docRetour.options.possibleStartActionBeforeStartDate;
+      }
+      delete docRetour.options;
+    }
+
+
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
 
     // count
     if (doc.parentType !== 'citoyens') {
-    countActionScope(doc.parentType, doc.parentId, 'todo');
+      countActionScope(doc.parentType, doc.parentId, 'todo');
     }
     //
 
     // notification
     if (retour && retour.data && retour.data.id) {
+
+      if (docUpdate) {
+        Actions.update({ _id: new Mongo.ObjectID(retour.data.id) }, { $set: { options: docUpdate } });
+      }
+
       if (doc.parentType !== 'citoyens') {
         const actionOne = Actions.findOne({
           _id: new Mongo.ObjectID(retour.data.id),
@@ -3002,7 +3024,6 @@ export const updateAction = new ValidatedMethod({
   run({ modifier, _id }) {
     const modifierClean = SchemasActionsRest.clean(modifier.$set);
     SchemasActionsRest.validate(modifier, { modifier: true });
-
     const collectionScope = nameToCollection(modifierClean.parentType);
     const scopeOne = collectionScope.findOne({
       _id: new Mongo.ObjectID(modifierClean.parentId),
@@ -3095,12 +3116,24 @@ export const updateAction = new ValidatedMethod({
       delete docRetour.tagsText;
     }
 
+    Actions.update({ _id: new Mongo.ObjectID(_id) }, { $set: { 'options.creditAddPorteur': docRetour['options.creditAddPorteur'], 'options.creditSharePorteur': docRetour['options.creditSharePorteur'], 'options.possibleStartActionBeforeStartDate': docRetour['options.possibleStartActionBeforeStartDate'] } });
+
+    if (docRetour['options.creditAddPorteur']) {
+      // credit ajouté par le participant
+      delete docRetour.credits;
+      delete docRetour['options.creditAddPorteur'];
+    } else {
+      delete docRetour['options.creditAddPorteur'];
+    }
+    delete docRetour['options.creditSharePorteur'];
+    delete docRetour['options.possibleStartActionBeforeStartDate'];
+
+
     docRetour.status = 'todo';
     docRetour.idUserAuthor = this.userId;
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.id = _id;
-    // console.log(docRetour);
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },
@@ -3261,8 +3294,11 @@ export const assignmeActionRooms = new ValidatedMethod({
     endDate: {
       type: String,
       optional: true },
+    credits: {
+      type: Number,
+      optional: true },
   }).validator(),
-  run({ id, startDate, endDate }) {
+  run({ id, startDate, endDate, credits }) {
     const actionObjectId = new Mongo.ObjectID(id);
     const actionOne = Actions.findOne({ _id: actionObjectId });
     const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
@@ -3359,6 +3395,12 @@ export const assignmeActionRooms = new ValidatedMethod({
       }
     }
 
+    if (action.startDate && action.isPossibleStartActionBeforeStartDate()) {
+      if (startDate) {
+        Actions.update({ _id: actionObjectId }, { $set: { startDate: new Date(startDate), noStartDate: true } });
+      }
+    }
+
     if (!action.endDate) {
       if (endDate) {
         Actions.update({ _id: actionObjectId }, { $set: { endDate: new Date(endDate), noEndDate: true } });
@@ -3372,7 +3414,11 @@ export const assignmeActionRooms = new ValidatedMethod({
       Actions.update({ _id: actionObjectId }, { $set: { max: 1 } });
     }
     if (!action.credits) {
-      Actions.update({ _id: actionObjectId }, { $set: { credits: 0 } });
+      if (credits && action.options && action.options.creditAddPorteur) {
+        Actions.update({ _id: actionObjectId }, { $set: { credits } });
+      } else {
+        Actions.update({ _id: actionObjectId }, { $set: { credits: 0 } });
+      }
     }
 
     // notification
@@ -3813,3 +3859,87 @@ export const insertLogUserActions = new ValidatedMethod({
   },
 });
 
+export const validateUserActions = new ValidatedMethod({
+  name: 'validateUserActions',
+  validate: new SimpleSchema({
+    userId: { type: String },
+    actionId: { type: String },
+    organizationId: { type: String },
+    commentaire: { type: String },
+    credits: { type: SimpleSchema.Integer, min: 1 },
+  }).validator(),
+  run(doc) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(doc.actionId) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+    const collection = nameToCollection(action.parentType);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const actionId = new Mongo.ObjectID(doc.actionId);
+    const userNeed = new Mongo.ObjectID(doc.userId);
+    const parent = `finishedBy.${doc.userId}`;
+    let credit;
+    if (doc.credits){
+      credit = doc.credits;
+    } else{
+      credit = Actions.findOne({ _id: actionId }) && Actions.findOne({ _id: actionId }).credits && !typeOfNaN(Actions.findOne({ _id: actionId }).credits) ? parseInt(Actions.findOne({ _id: actionId }).credits) : 0;
+    }
+    
+    // const credit = parseInt(Actions.findOne({ _id: actionId }).credits);
+    const userActions = `userWallet.${doc.organizationId}.userActions.${doc.actionId}`;
+    const userCredits = `userWallet.${doc.organizationId}.userCredits`;
+    if (!Citoyens.findOne({ _id: userNeed, [userCredits]: { $exists: 1 } })) {
+      Citoyens.update({ _id: userNeed }, { $set: { [userCredits]: 0 } });
+    }
+    Actions.update({ _id: actionId }, { $set: { [parent]: 'validated' } });
+
+    // log user action credit
+    const logInsert = {};
+    logInsert.userId = doc.userId;
+    logInsert.organizationId = doc.organizationId;
+    logInsert.actionId = doc.actionId;
+    if (doc.commentaire !== 'nocomment'){
+      logInsert.commentaire = doc.commentaire;
+    }
+    if (credit) {
+      logInsert.credits = credit;
+      logInsert.createdAt = moment().format();
+      LogUserActions.insert(logInsert);
+    }
+
+    // Citoyens.update({ _id: userNeed }, { $set: { [userActions]: credit } });
+
+    //
+
+    Citoyens.update({ _id: userNeed }, { $inc: { [userCredits]: credit } });
+
+    // verifier si tout les users sont valider
+    const actionOne = Actions.findOne({ _id: actionId });
+    if (actionOne.finishedBy && actionOne.countContributors() === Object.keys(actionOne.finishedBy).map(id => id).length && arrayLinkToModerate(actionOne.finishedBy).length === 0) {
+      Actions.update({ _id: actionId }, { $set: { status: 'done' } });
+      countActionScope(actionOne.parentType, actionOne.parentId, 'done');
+    }
+    //
+
+    // notification
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+    // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
+    ActivityStream.api.add(notif, 'validate', 'isUser', doc.userId);
+
+    return true;
+  },
+});

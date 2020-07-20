@@ -1524,9 +1524,12 @@ Meteor.publishComposite('listMembersDetailHistorique', function (organizationId,
 
   const collectionOne = Organizations.findOne({ _id: new Mongo.ObjectID(organizationId) });
 
-  if (!collectionOne.isAdmin()) {
+  if (citoyenId === this.userId) {
+    //
+  } else if (!collectionOne.isAdmin()) {
     return null;
   }
+
   return {
     find() {
       const options = {};

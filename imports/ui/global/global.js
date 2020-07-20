@@ -3,11 +3,13 @@ import { Template } from 'meteor/templating';
 import i18n from 'meteor/universe:i18n';
 import { Router } from 'meteor/iron:router';
 import { IonPopup } from 'meteor/meteoric:ionic';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 import position from '../../api/client/position.js';
 
 // collections
 import { Citoyens } from '../../api/citoyens.js';
+import { searchAction } from '../../api/client/reactive.js';
 
 import './global.html';
 
@@ -53,5 +55,27 @@ Template.cityTitle.onCreated(function () {
 Template.cityTitle.helpers({
   city () {
     return position.getCity();
+  },
+});
+
+Template.scrollBlock.onCreated(function () {
+  this.scroll = new ReactiveVar(false);
+});
+
+Template.scrollBlock.helpers({
+  scroll(activeSearch) {
+    if (searchAction.get('search') && activeSearch) {
+      return true;
+    }
+    return Template.instance().scroll.get();
+  },
+});
+
+Template.scrollBlock.events({
+  'click .button-see-scroll-js'(event) {
+    event.preventDefault();
+    if (Template.instance().scroll.get()) {
+      Template.instance().scroll.set(false);
+    } else Template.instance().scroll.set(true);
   },
 });

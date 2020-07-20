@@ -35,7 +35,7 @@ import { SchemasCommentsRest, SchemasCommentsEditRest } from '../../api/comments
 import { SchemasRoomsRest } from '../../api/rooms.js';
 import { SchemasProposalsRest, BlockProposalsRest } from '../../api/proposals.js';
 import { SchemasActionsRest } from '../../api/actions.js';
-import { SchemasLogUserActionsRest } from '../../api/loguseractions.js';
+import { SchemasLogUserActionsRest, SchemasValidateUserActionsRest } from '../../api/loguseractions.js';
 
 import { SchemasShareRest, SchemasRolesRest } from '../../api/schema.js';
 
@@ -281,6 +281,7 @@ Meteor.startup(function () {
     SchemasOrganizationsRest.i18n('schemas.organizationsrest');
     SchemasOrganizationsOcecoRest.i18n('schemas.organizationsocecorest');
     SchemasLogUserActionsRest.i18n('schemas.loguseractionsrest');
+    SchemasValidateUserActionsRest.i18n('schemas.loguseractionsrest');
     SchemasPoiRest.i18n('schemas.poirest');
     SchemasEventsRest.i18n('schemas.eventsrest');
     SchemasProjectsRest.i18n('schemas.projectsrest');
@@ -528,4 +529,6 @@ Meteor.startup(function () {
   Template.registerHelper('BlockProposalsRest', BlockProposalsRest);
   Template.registerHelper('SchemasActionsRest', SchemasActionsRest);
   Template.registerHelper('SchemasLogUserActionsRest', SchemasLogUserActionsRest);
+  Template.registerHelper('SchemasValidateUserActionsRest', SchemasValidateUserActionsRest);
+  
 });

@@ -15,3 +15,31 @@
 
 </template>
 
+
+<template name="scrollBlock">
+    <div class="item item-{{#if itemColor}}{{itemColor}}{{else}}stable{{/if}} {{#if avatar}}item-avatar{{/if}} {{itemClass}} item-button-right">
+        {{#if avatar}}
+        {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+        {{#if href}}
+        <a href="{{href}}" class="dark">
+            <h2 class="dark">{{#if title}}{{htmlToText title}}{{else}}Options{{/if}}</h2>
+        </a>
+        {{else}}
+            <h2 class="dark">{{#if title}}{{htmlToText title}}{{else}}Options{{/if}}</h2>
+        {{/if}}
+        {{else}}
+        {{#if title}}{{title}}{{else}}Options{{/if}}
+        {{/if}}
+        {{#if scroll activeSearch}}
+        <button class="button button-dark button-see-scroll-js">{{#if count}}<span class="padding-right">{{count}}</span> {{/if}}<i
+                class="icon {{#if iconUp}}{{iconUp}}{{else}}ion-ios-arrow-up{{/if}}"></i></button>
+        {{else}}
+        <button class="button button-dark button-see-scroll-js">{{#if count}}<span class="padding-right">{{count}}</span> {{/if}}<i
+                class="icon {{#if iconDown}}{{iconDown}}{{else}}ion-ios-arrow-down{{/if}}"></i></button>
+        {{/if}}
+    </div>
+    {{#if scroll activeSearch}}
+    {{> Template.contentBlock}}
+    {{/if}}
+</template>
+

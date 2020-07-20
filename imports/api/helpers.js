@@ -105,11 +105,18 @@ for (let i = 0; i < diacriticsApplyMap.default.length; i++) {
 export const applyDiacritics = (str, which) => {
   which = which || 'default';
   const changes = diacriticsApplyMap[which];
-  for (let i = 0; i < changes.length; i++) {
-    str = str.replace(changes[i].letters, changes[i].base);
+  const lettres = str.split('');
+  let newStr = '';
+  for (let f = 0; f < lettres.length; f++) {
+    for (let i = 0; i < diacriticsApplyMap.default.length; i++) {
+      const strReplace = lettres[f].replace(changes[i].letters, changes[i].base);
+      if (strReplace !== lettres[f]) {
+        newStr += strReplace;
+      }
+    }
   }
-  return str;
-}
+  return newStr;
+};
 
 export const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 

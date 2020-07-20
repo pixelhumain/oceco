@@ -97,6 +97,12 @@
 
 </template>
 
+<template name="adminButton">
+<button class="button {{class}}" usrId="{{user._id._str}}"
+    actionId="{{action._id._str}}"><i class="{{icon}}"></i> </button>
+</template>
+
+
 <template name="listProjectsAValiderRaf">
                {{#each action in listProjectsEventsActionsCreator}}
                {{#if equals action.parentType 'events'}}
@@ -115,10 +121,8 @@
             <div class="item item-button-right">
                 <h2>{{user.name}}</h2>
                 <div class="multi-buttons">
-                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}"
-                        actionId="{{action._id._str}}"><i class="icon fa fa-check balanced"></i> </button>
-                    <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
-                        actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+                    {{> adminButton class="button-stable admin-creditsdistributed-js" icon="icon fa fa-check balanced" organization=this user=user action=action}}
+                    {{> adminButton class="button-stable admin-no-validation-js" icon="icon fa fa-remove positive" organization=this user=user action=action}}
                 </div>
             </div>
             {{/each}}
@@ -137,10 +141,8 @@
             <div class="item item-button-right">
                 <h2>{{contributor.name}}</h2>
                 <div class="multi-buttons">
-                    <button class="button button-stable admin-sortir-action-js" usrId="{{contributor._id._str}}"
-                        actionId="{{action._id._str}}"><i class="fa fa-user-times positive"></i></button>
-                    <button class="button button-stable admin-finish-action-js" usrId="{{contributor._id._str}}"
-                        actionId="{{action._id._str}}"><i class="fa fa-user-check balanced"></i> </button>
+                    {{> adminButton class="button-stable admin-sortir-action-js" icon="fa fa-user-times positive" organization=this user=user action=action}}
+                    {{> adminButton class="button-stable admin-finish-action-js" icon="fa fa-user-check balanced" organization=this user=user action=action}}
                 </div>
             </div>
             
@@ -162,10 +164,8 @@
             <div class="item item-button-right">
                 <h2>{{user.name}}</h2>
                 <div class="multi-buttons">
-                    <button class="button button-stable admin-validation-js" usrId="{{user._id._str}}"
-                        actionId="{{action._id._str}}"><i class="icon fa fa-check balanced"></i> </button>
-                    <button class="button button-stable admin-no-validation-js" usrId="{{user._id._str}}"
-                        actionId="{{action._id._str}}"><i class="icon fa fa-remove positive"></i> </button>
+                    {{> adminButton class="button-stable admin-creditsdistributed-js" icon="icon fa fa-check balanced" organization=this user=user action=action}}
+                    {{> adminButton class="button-stable admin-no-validation-js" icon="icon fa fa-remove positive" organization=this user=user action=action}}
                 </div>
             </div>
             {{/each}}
@@ -176,6 +176,70 @@
                
                {{/each}}
 
+</template>
+
+<template name="creditsDistributed">
+    {{#ionModal customTemplate=true}}
+    <div class="bar bar-header bar-dark">
+        <h2 class="title">Validation</h2>
+        <button data-dismiss="modal" class="button button-icon"><i class="icon ion-ios-close-empty"></i></button>
+    </div>
+    <div class="content has-header overflow-scroll">
+        <div class="list">
+            <div class="item item-text-wrap item-divider">
+                Validation de l'action <spans class="positive">{{action.name}}</spans>
+            </div>
+            <div class="item item-text-wrap">
+                Cette action à durée <spans class="positive">{{action.actionStartFromEnd}}</spans>
+            </div>
+            {{#autoForm id="validateUserActions" schema=SchemasValidateUserActionsRest type="method" meteormethod="validateUserActions" singleMethodArgument=true template="ionic"}}
+            
+                {{#if action.options.creditSharePorteur}}
+                <div class="item item-text-wrap item-divider">
+                <strong>Action crédit partagé</strong> : il y a <spans class="positive">{{action.countContributors}}</spans> participant(s) à cette action chaque participant
+                peut gagner <spans class="positive">{{action.creditPartage}}</spans> crédits sur {{action.credits}} crédits (nombre arrondi à l'entier le plus proche)
+                </div>
+                <div class="item item-text-wrap item-divider">
+                <spans class="positive">{{user.name}}</spans> gagnera
+                {{#if diffCredits}}
+                <spans class="positive">{{changeCredits}}</spans> crédits pour cette action au lieu de <spans class="positive">
+                    {{action.creditPartage}}</spans>
+                {{else}}
+                <spans class="positive">{{action.creditPartage}}</spans> crédits pour cette action
+                {{/if}}
+                </div>
+                {{> afQuickField name='credits' min="1" step="1" value=action.creditPartage}}
+                {{else}}
+                <div class="item item-text-wrap item-divider">
+                <spans class="positive">{{user.name}}</spans> gagnera
+                {{#if diffCredits}}
+                <spans class="positive">{{changeCredits}}</spans> crédits pour cette action au lieu de <spans class="positive">
+                    {{action.credits}}</spans>
+                {{else}}
+                <spans class="positive">{{action.credits}}</spans> crédits {{#if action.options.creditAddPorteur}}<spans
+                    class="positive">qu'il a proposé</spans>{{/if}} pour cette action
+                {{/if}}
+                </div>
+                {{> afQuickField name='credits' min="1" step="1" value=action.credits}}
+                {{/if}}
+                
+
+            
+            {{#if diffCredits}}
+            <div class="item item-text-wrap item-divider">
+                Indiquer la raison pour laquelle le nombre de crédits donnés à <spans class="positive">{{user.name}}</spans> ne correspond pas à ceux de l'action
+            </div>
+            {{> afQuickField name='commentaire' label-type='stacked' rows=8}}
+            {{/if}}
+            <div class="item">
+                <div class="button-bar">
+                    <button type="submit" class="button button-dark">Valider</button>
+                </div>
+            </div>
+            {{/autoForm}}
+        </div>
+    </div>
+    {{/ionModal}}
 </template>
 
 <template name="listProjectsRaf">

@@ -331,6 +331,14 @@ Template.buttonSubscribeAction.events({
       action.endDate = moment(event.target.endDate.value).format('YYYY-MM-DDTHH:mm:ssZ');
       // console.log(action.endDate);
     }
+    if (this.isCreditAddPorteur() && event.target && event.target.credits && event.target.credits.value) {
+      action.credits = parseInt(event.target.credits.value);
+      // console.log(action.credits);
+    }
+    if (this.isPossibleStartActionBeforeStartDate() && event.target && event.target.startAction && event.target.startAction.checked) {
+      action.startDate = moment().format('YYYY-MM-DDTHH:mm:ssZ');
+      // console.log(action.credits);
+    }
 
 
     Meteor.call('assignmeActionRooms', action, (error) => {

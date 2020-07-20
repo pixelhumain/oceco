@@ -33,24 +33,11 @@
 
 <template name="organizationList">
 {{#if organizationActionsCount}}
-<div class="item item-stable item-button-right">Action de l'organisation 
-
-{{#if scrollOrga }}
-<button class="button button-dark button-see-orga-js"> <span
-        class="padding-right">{{organizationActions.count}}</span> <i class="icon ion-ios-arrow-up"></i></button>
-
-{{else}}
-<button class="button button-dark button-see-orga-js"> <span
-        class="padding-right">{{organizationActions.count}}</span> <i
-        class="icon ion-ios-arrow-down"></i></button>
-
-{{/if}}
-</div>
-{{#if scrollOrga }}
+{{#scrollBlock title="Action de l'organisation" count=organizationActions.count activeSearch=true}}
 {{#each action in organizationActions}}
 {{> itemInputAction action=action}}
 {{/each}}
-{{/if}}
+{{/scrollBlock}}
 {{/if}}
 </template>
 
@@ -240,10 +227,12 @@
             {{#if equals action.parentType 'citoyens'}}
             
             {{else}}
+            {{#if action.credits}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-card"> </i></div>
                 <div class="col">Vous gagnerez <strong>{{action.credits}}</strong> crédits</div>
             </div>
+            {{/if}}
             {{/if}}
             
             {{else}}
@@ -269,7 +258,7 @@
             <div class="row">
                 <div class="col-10"><i class="ion-clock"></i></div>
                 <div class="col">Durée
-                    {{action.projectDuration}} H</div>
+                    {{action.actionStartFromEnd}}</div>
             </div>
             {{/if}}
             {{#if equals action.parentType 'citoyens'}}
@@ -333,20 +322,22 @@
                     {{action.projectDay}}</div>
             </div>
             {{/if}}
-            {{#if action.projectDuration}}
+            {{#if action.actionStartFromEnd}}
             <div class="row">
                 <div class="col-10"><i class="ion-clock"></i></div>
                 <div class="col">Durée
-                    {{action.projectDuration}} H</div>
+                    {{action.actionStartFromEnd}} H</div>
             </div>
             {{/if}}
 
             {{else}}
             {{#if action.creditPositive}}
+            {{#if action.credits}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-card"> </i></div>
                 <div class="col">Vous gagnerez <strong>{{action.credits}}</strong> crédits</div>
             </div>
+            {{/if}}
             {{else}}
             <div class="row">
                 <div class="col-10"><i class="icon ion-card"> </i></div>
@@ -364,7 +355,7 @@
             <div class="row">
                 <div class="col-10"><i class="ion-clock"></i></div>
                 <div class="col">Durée
-                    {{action.projectDuration}} H</div>
+                    {{action.actionStartFromEnd}}</div>
             </div>
             <div class="row">
                 <div class="col-10"><i class="ion-man"></i></div>
@@ -437,6 +428,12 @@
         <span class="input-label">Date de fin</span>
         <input type="datetime-local" name="endDate">
     </label>
+    {{#if isCreditAddPorteur}}
+    <label for="" class="item item-input">
+        <span class="input-label">Crédits</span>
+        <input type="number" name="credits" value="1">
+    </label>
+    {{/if}}
     <button class="button button-block button-positive {{#if isCall}}disabled{{/if}}">
         {{#if isCall}}
         <i class="icon fa fa-refresh fa-spin"></i>
@@ -448,18 +445,64 @@
         </div>
         
     {{else}}
-    <div class="button-bar bar-positive padding-top">
-    <button class="button action-assignme-js {{#if isCall}}disabled{{/if}}">
-        {{#if isCall}}
-        <i class="icon fa fa-refresh fa-spin"></i>
-        {{else}}
-        <i class="fa fa-handshake-o"></i>
-        {{/if}}
-        {{__ "dda.actions.wantparticipateaction"}}</button>
-        </div>
-    {{/unless}}
 
+    {{#if isCreditAddPorteur}}
+    <div class="padding-top">
+        <form class="form-assignme-js">
+            {{#if isPossibleStartActionBeforeStartDate}}
+            <div class="item item-checkbox item-text-wrap">
+                <label class="checkbox">
+                    <input type="checkbox" name="startAction">
+                </label>
+                Démarrer l'action maintenant
+            </div>
+            {{/if}}
+            <label for="" class="item item-input">
+                <span class="input-label">Crédits</span>
+                <input type="number" name="credits" value="1">
+            </label>
+            <button class="button button-block button-positive {{#if isCall}}disabled{{/if}}">
+                {{#if isCall}}
+                <i class="icon fa fa-refresh fa-spin"></i>
+                {{else}}
+                <i class="fa fa-handshake-o"></i>
+                {{/if}}
+                {{__ "dda.actions.wantparticipateaction"}}</button>
+        </form>
+    </div>
+    {{else}}
+    {{#if isPossibleStartActionBeforeStartDate}}
+    <div class="padding-top">
+        <form class="form-assignme-js">
+            <div class="item item-checkbox item-text-wrap">
+                <label class="checkbox">
+                    <input type="checkbox" name="startAction">
+                </label>
+                Démarrer l'action maintenant
+            </div>
+            <button class="button button-block button-positive {{#if isCall}}disabled{{/if}}">
+                {{#if isCall}}
+                <i class="icon fa fa-refresh fa-spin"></i>
+                {{else}}
+                <i class="fa fa-handshake-o"></i>
+                {{/if}}
+                {{__ "dda.actions.wantparticipateaction"}}</button>
+        </form>
+    </div>
+    {{else}}
+    <div class="button-bar bar-positive padding-top">
+        <button class="button action-assignme-js {{#if isCall}}disabled{{/if}}">
+            {{#if isCall}}
+            <i class="icon fa fa-refresh fa-spin"></i>
+            {{else}}
+            <i class="fa fa-handshake-o"></i>
+            {{/if}}
+            {{__ "dda.actions.wantparticipateaction"}}</button>
+    </div>
+    {{/if}}
     
+    {{/if}}
+    {{/unless}}
 
 {{else}}
 <div class="item col col-center text-center">
@@ -494,7 +537,7 @@
 
 <template name="actionDuration">
     <div class="col text-center col-center borderMenuItem stable-border"><i class="ion-clock"></i>
-        {{action.projectDuration}}H </div>
+        {{action.projectDuration}}H</div>
     <div class="col text-center col-center borderMenuItem stable-border"><i class="icon ion-card"></i>
         {{action.credits}}
         {{#if settingOceco.account}}

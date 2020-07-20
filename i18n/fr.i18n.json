@@ -640,11 +640,13 @@
       }
     },
     "actionsrest" : {
-      "name":{
-        "label": "Nom"
+      "name": {
+        "label": "nom",
+        "placeholder": "nom de votre action"
       },
-      "description":{
-        "label": "Description"
+      "description": {
+        "label": "description",
+        "placeholder": "description de votre action (option)"
       },
       "startDate":{
         "label": "Date de début"
@@ -656,19 +658,33 @@
         "label": "Mots clés"
       },
       "tagsText": {
-        "label": "tags"
+        "label": "Tags",
+        "placeholder": "Tags utiliser #"
       },
       "urls":{
         "label": "Informations libres / urls"
       },
       "max": {
-        "label": "Participant maximum"
+        "label": "Participant maximum",
+        "placeholder": "Participants maximum"
       },
       "min": {
-        "label": "Participant minimum"
+        "label": "Participant minimum",
+        "placeholder": "Participants minimum"
       },
       "credits": {
         "label": "Nombre de crédits"
+      },
+      "options": {
+        "creditSharePorteur": {
+          "label": "Partager les crédits entre les participants (minimum 1 crédits par participants)"
+        },
+        "possibleStartActionBeforeStartDate": {
+          "label": "Possibilité de démarrer l'action avant la date de début"
+        },
+        "creditAddPorteur": {
+          "label": "Crédits ajoutés par le participant (si un seul participant)"
+        }
       }
     },
     "proposalsrest" : {

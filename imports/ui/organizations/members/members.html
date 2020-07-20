@@ -76,6 +76,9 @@
         <h2>
           {{#if action}}
           <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="dark">{{action.name}}</a>
+          {{#if commentaire}}
+          <i class="fa fa-user-shield"></i> {{commentaire}}
+          {{/if}}
           {{else}}
           <i class="fa fa-user-shield"></i> {{commentaire}}
           {{/if}}

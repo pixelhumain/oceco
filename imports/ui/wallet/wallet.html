@@ -58,16 +58,9 @@
         <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
         {{/if}}
 
-        {{#if settingOceco.wallet.valides}}
-        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">{{settingOceco.wallet.valides.textBouton}}</a>
-        {{else}}
-        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
-        {{/if}}
-
         {{else}}
         <a class="tab-item {{#if equals selectview 'aFaire'}}tab-item-active{{/if}} change-selectview-js" id="aFaire">Coup de main</a>
         <a class="tab-item {{#if equals selectview 'enAttente'}}tab-item-active{{/if}} change-selectview-js" id="enAttente">En attente</a>
-        <a class="tab-item {{#if equals selectview 'valides'}}tab-item-active{{/if}} change-selectview-js" id="valides">Validés</a>
         {{/if}}
 
 

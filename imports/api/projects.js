@@ -552,6 +552,33 @@ Projects.helpers({
     const query = {};
     const inputDate = new Date();
 
+    /* {
+      "$or": [
+        {
+          "$and": [
+            { "endDate": { "$exists": true, "$gte": "2020-07-20T07:41:09.093Z" } },
+            { "parentId": { "$in": ["5bd2bcfb40bb4e4509f7eabe"] } },
+            { "status": "todo" },
+            {
+              "$or": [
+                { "credits": { "$gt": 0 } }, { "options.creditAddPorteur": { "$exists": true } }
+              ]
+            }]
+        },
+        {
+          "$and": [
+            { "endDate": { "$exists": false } },
+            { "parentId": { "$in": ["5bd2bcfb40bb4e4509f7eabe"] } },
+            { "status": "todo" },
+            {
+              "$or": [
+                { "credits": { "$gt": 0 } }, { "options.creditAddPorteur": { "$exists": true } }
+              ]
+            }]
+        }
+      ]
+    } */
+
     let queryone = {};
     queryone.endDate = { $exists: true, $gte: inputDate };
     queryone.parentId = { $in: [this._id._str] };
@@ -573,18 +600,36 @@ Projects.helpers({
       }
     }
 
-
     if (type === 'aFaire') {
-      queryone.credits = { $gt: 0 };
-      querytwo.credits = { $gt: 0 };
+      queryone.$or = [
+        { credits: { $gt: 0 } }, { 'options.creditAddPorteur': { $exists: true } },
+      ];
+      querytwo.$or = [
+        { credits: { $gt: 0 } }, { 'options.creditAddPorteur': { $exists: true } },
+      ];
+      // queryone.credits = { $gt: 0 };
+      // querytwo.credits = { $gt: 0 };
     } else if (type === 'depenses') {
       queryone.credits = { $lt: 0 };
       querytwo.credits = { $lt: 0 };
     }
 
+    const queryoneAnd = {};
+    queryoneAnd.$and = [];
+    Object.keys(queryone).forEach((key) => {
+      queryoneAnd.$and.push({ [key]: queryone[key] });
+    });
+
+    const querytwoAnd = {};
+    querytwoAnd.$and = [];
+    Object.keys(querytwo).forEach((key) => {
+      querytwoAnd.$and.push({ [key]: querytwo[key] });
+    });
+
+
     query.$or = [];
-    query.$or.push(queryone);
-    query.$or.push(querytwo);
+    query.$or.push(queryoneAnd);
+    query.$or.push(querytwoAnd);
 
     const options = {};
     if (Meteor.isClient) {
@@ -599,6 +644,7 @@ Projects.helpers({
         startDate: 1,
       };
     }
+
     return Actions.find(query, options);
   },
   countActionsCreator(type = 'all', status = 'todo', search) {

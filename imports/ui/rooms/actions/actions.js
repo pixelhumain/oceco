@@ -54,43 +54,6 @@ Template.detailActions.helpers({
   },
 });
 
-
-
-/* Template.detailViewActions.events({
-  'click .action-assignme-js' (event) {
-    event.preventDefault();
-    Meteor.call('assignmeActionRooms', { id: pageSession.get('actionId') }, (error) => {
-      if (error) {
-        IonPopup.alert({ template: i18n.__(error.reason) });
-      }
-    });
-  },
-  'click .action-depenseme-js' (event) {
-    event.preventDefault();
-    const self = this;
-    IonPopup.confirm({
-      title: 'Depenser',
-      template: 'Voulez vous depenser vos credits ?',
-      onOk() {
-        Meteor.call('assignmeActionRooms', {
-          id: pageSession.get('actionId'),
-        }, (error) => {
-          if (error) {
-            IonPopup.alert({
-              template: i18n.__(error.reason),
-            });
-          }
-        });
-      },
-      onCancel() {
-
-      },
-      cancelText: i18n.__('no'),
-      okText: i18n.__('yes'),
-    });
-  },
-}); */
-
 Template.buttonActionItem.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -119,7 +82,7 @@ Template.buttonActionItem.events({
 });
 
 Template.detailViewActions.events({
-  'click .admin-validation-js'(event) {
+  /* 'click .admin-validation-js'(event) {
     event.preventDefault();
     const usrId = $(event.currentTarget).attr('usrId');
     const actionId = $(event.currentTarget).attr('actionId');
@@ -182,7 +145,7 @@ Template.detailViewActions.events({
         }
       });
     }
-  },
+  }, */
   'click .search-tags-list-js'(event) {
     event.preventDefault();
     searchAction.set('search', `#${this}`);
@@ -194,6 +157,15 @@ Template.actionsAdd.onCreated(function () {
   const template = Template.instance();
   template.ready = new ReactiveVar();
   pageSession.set('error', false);
+  pageSession.set('options.creditAddPorteur', null);
+  pageSession.set('options.creditSharePorteur', null);
+  pageSession.set('min', null);
+  pageSession.set('max', null);
+  pageSession.set('isPossiblecreditSharePorteur', null);
+  pageSession.set('isCredits', null);
+  pageSession.set('credits', null);
+  pageSession.set('isStartDate', null);
+  pageSession.set('isDepense', null);
 
   this.autorun(function () {
     pageSession.set('scopeId', Router.current().params._id);
@@ -204,8 +176,6 @@ Template.actionsAdd.onCreated(function () {
     }
   });
 });
-
-
 
 Template.actionsFields.onDestroyed(function () {
   const self = this;
@@ -219,6 +189,36 @@ Template.actionsFields.helpers({
   isScopeCitoyens() {
     return Router.current().params.scope === 'citoyens';
   },
+  isMinMax() {
+    if (Session.get('settingOceco')) {
+      const settingOceco = Session.get('settingOceco');
+      return settingOceco && settingOceco.costum && settingOceco.costum.actions && settingOceco.costum.actions.form && (settingOceco.costum.actions.form.max || settingOceco.costum.actions.form.min);
+    }
+  },
+  isCreditAddPorteur() {
+    return pageSession.get('options.creditAddPorteur');
+  },
+  isPossiblecreditSharePorteur() {
+    return pageSession.get('isPossiblecreditSharePorteur');
+  },
+  isCreditSharePorteur() {
+    return pageSession.get('options.creditSharePorteur');
+  },
+  isMin() {
+    return pageSession.get('min');
+  },
+  isMax() {
+    return pageSession.get('max');
+  },
+  isCredits() {
+    return pageSession.get('isCredits');
+  },
+  isStartDate() {
+    return pageSession.get('isStartDate');
+  },
+  isDepense() {
+    return pageSession.get('isDepense');
+  },
 });
 
 Template.actionsFields.events({
@@ -226,6 +226,86 @@ Template.actionsFields.events({
   'keydown input[name*="urls"]'(event, instance) {
     if (event.keyCode === 13) {
       instance.find('.autoform-add-item').click();
+    }
+  },
+  'click input[name="options.creditAddPorteur"]'(event, instance) {
+    pageSession.set('options.creditAddPorteur', event.currentTarget.checked);
+    pageSession.set('isPossiblecreditSharePorteur', false);
+    pageSession.set('min', 1);
+    pageSession.set('max', 1);
+    pageSession.set('credits', 1);
+  },
+  'click input[name="options.creditSharePorteur"]'(event, instance) {
+    pageSession.set('options.creditSharePorteur', event.currentTarget.checked);
+    const credits = pageSession.get('credits');
+    const max = pageSession.get('max');
+    if (credits && max && credits < max) {
+      instance.$('input[name="credits"]').val(parseInt(max));
+      pageSession.set('credits', parseInt(max));
+    } else if (!credits && max) {
+      instance.$('input[name="credits"]').val(parseInt(max));
+      pageSession.set('credits', parseInt(max));
+    }
+  },
+  'keyup input[name="min"]'(event, instance) {
+    if (!pageSession.get('isDepense')) {
+      if ((event.currentTarget.value && event.currentTarget.value > 1) || (pageSession.get('max') && pageSession.get('max') > 1)) {
+        pageSession.set('isPossiblecreditSharePorteur', true);
+      } else {
+        pageSession.set('isPossiblecreditSharePorteur', false);
+      }
+    } else {
+      pageSession.set('isPossiblecreditSharePorteur', false);
+    }
+
+    pageSession.set('min', parseInt(event.currentTarget.value));
+  },
+  'keyup input[name="max"]'(event, instance) {
+    if (!pageSession.get('isDepense')) {
+      if ((event.currentTarget.value && event.currentTarget.value > 1) || (pageSession.get('min') && pageSession.get('min') > 1)) {
+        pageSession.set('isPossiblecreditSharePorteur', true);
+      } else {
+        pageSession.set('isPossiblecreditSharePorteur', false);
+      }
+    } else {
+      pageSession.set('isPossiblecreditSharePorteur', false);
+    }
+    
+    pageSession.set('max', parseInt(event.currentTarget.value));
+  },
+  'keyup input[name="credits"]'(event, instance) {
+
+    if (event.currentTarget && event.currentTarget.value && event.currentTarget.value > 0) {
+      pageSession.set('isCredits', true);
+      pageSession.set('credits', parseInt(event.currentTarget.value));
+      pageSession.set('isDepense', false);
+    } else if (event.currentTarget && event.currentTarget.value && event.currentTarget.value < 0) {
+      console.log('depense');
+      pageSession.set('isCredits', true);
+      pageSession.set('credits', parseInt(event.currentTarget.value));
+      pageSession.set('isDepense', true);
+      const creditSharePorteur = instance.find('input[name="options.creditSharePorteur"]');
+      if (creditSharePorteur) {
+        creditSharePorteur.checked = false;
+      }
+    } else {
+      pageSession.set('isCredits', false);
+      pageSession.set('credits', parseInt(event.currentTarget.value));
+      pageSession.set('isDepense', false);
+    }
+    const max = pageSession.get('max');
+    if (event.currentTarget && event.currentTarget.value && event.currentTarget.value < max) {
+      const creditSharePorteur = instance.find('input[name="options.creditSharePorteur"]');
+      if (creditSharePorteur) {
+        creditSharePorteur.checked = false;
+      }
+    }
+  },
+  'keyup/change input[name="startDate"]'(event, instance) {
+    if (event.currentTarget.value) {
+      pageSession.set('isStartDate', true);
+    } else {
+      pageSession.set('isStartDate', false);
     }
   },
 });
@@ -285,6 +365,15 @@ Template.actionsEdit.onCreated(function () {
   const template = Template.instance();
   template.ready = new ReactiveVar();
   pageSession.set('error', false);
+  pageSession.set('options.creditAddPorteur', null);
+  pageSession.set('options.creditSharePorteur', null);
+  pageSession.set('min', null);
+  pageSession.set('max', null);
+  pageSession.set('isPossiblecreditSharePorteur', null);
+  pageSession.set('isCredits', null);
+  pageSession.set('credits', null);
+  pageSession.set('isStartDate', null);
+  pageSession.set('isDepense', null);
 
   this.autorun(function() {
     pageSession.set('scopeId', Router.current().params._id);
@@ -349,6 +438,7 @@ Template.actionsEdit.helpers({
     actionEdit.endDate = action.endDate;
     if (action.startDate) {
       actionEdit.startDate = action.momentStartDate();
+      pageSession.set('isStartDate', true);
     }
     if (action.endDate) {
       actionEdit.endDate = action.momentEndDate();
@@ -361,6 +451,38 @@ Template.actionsEdit.helpers({
     actionEdit.min = action.min;
     actionEdit.max = action.max;
     actionEdit.credits = action.credits;
+    actionEdit.options = action.options;
+
+    if (action.options) {
+      if (action.options.creditAddPorteur) {
+        pageSession.set('options.creditAddPorteur', true);
+        pageSession.set('isPossiblecreditSharePorteur', false);
+      }
+      if (action.options.creditSharePorteur) {
+        pageSession.set('options.creditSharePorteur', true);
+        pageSession.set('isPossiblecreditSharePorteur', true);
+      }
+    }
+
+    if (action.min) {
+      pageSession.set('min', action.min);
+    }
+    if (action.max) {
+      pageSession.set('max', action.max);
+    }
+
+    if (action.startDate) {
+      actionEdit.startDate = action.momentStartDate();
+    }
+
+    if (action.credits && action.credits > 0) {
+      pageSession.set('isCredits', true);
+      pageSession.set('credits', action.credits);
+    } else {
+      pageSession.set('isCredits', false);
+      pageSession.set('credits', action.credits);
+    }
+
     return actionEdit;
   },
   error () {
@@ -394,13 +516,13 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       doc.parentId = pageSession.get('scopeId');
       // doc.idParentRoom = pageSession.get('roomId');
       // console.log(pageSession.get('scopeId'));
+      console.log(doc);
       return doc;
     },
     'method-update'(modifier) {
       modifier.$set.parentType = pageSession.get('scope');
       modifier.$set.parentId = pageSession.get('scopeId');
       // modifier.$set.idParentRoom = pageSession.get('roomId');
-
       return modifier;
     },
   },
