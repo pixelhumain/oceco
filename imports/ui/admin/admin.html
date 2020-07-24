@@ -57,6 +57,12 @@
                     id="actions">Actions</a>
                 {{#if isAdminOrga}}
                 <a href="{{pathFor 'listMembers' _id=scope._id._str}}" class="tab-item">Membres</a>
+                {{else}}
+                {{#if settingOceco.membersAdminProjectAdmin}}
+                {{#if isAdminRaf}}
+                <a href="{{pathFor 'listMembers' _id=scope._id._str}}" class="tab-item">Membres</a>
+                {{/if}}
+                {{/if}}
                 {{/if}}
             </div>
         </div>

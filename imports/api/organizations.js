@@ -23,7 +23,7 @@ import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, searchQuerySort, queryLink, queryLinkType, queryLinkIsAdmin, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { searchQuery, searchQuerySort, queryLink, queryLinkType, queryLinkIsAdmin, arrayLinkParent, arrayLinkParentNoObject, queryLinkToBeValidated, queryOptions, applyDiacritics } from './helpers.js';
 
 export const Organizations = new Mongo.Collection('organizations', { idGeneration: 'MONGO' });
 
@@ -993,7 +993,7 @@ Organizations.helpers({
 
     return Actions.find(query);
   },
-  actionsUserAll(userId) {
+  actionsUserAll(userId, etat, search) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
 
     const queryProjectId = `parent.${this._id._str}`;
@@ -1019,11 +1019,28 @@ Organizations.helpers({
     const inputDate = new Date();
     //query.endDate = { $gte: inputDate };
     const linkUserID = `links.contributors.${bothUserId}`;
+
+    const fields = {};
+    if (search) {
+      // regex qui marche coté serveur parcontre seulement sur un mot
+      const searchApplyDiacritics = applyDiacritics(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'regex');
+      const pattern = new RegExp(`.*${searchApplyDiacritics.replace(/\\/g, '\\\\')}.*`, 'i');
+      fields.name = { $regex: pattern };
+    }
+
+    const finishedObj = {};
+    const finished = `finishedBy.${bothUserId}`;
+    if (etat === 'aFaire') {
+      finishedObj[finished] = { $exists: false };
+    } else if (etat === 'enAttente') {
+      finishedObj[finished] = 'toModerate';
+    }
+
     query.$or = [];
-    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
-    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
-    query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [bothUserId] }, status: 'todo' });
-    query.$or.push({ endDate: { $exists: false }, parentId: { $in: [bothUserId] }, status: 'todo' });
+    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo', ...fields, ...finishedObj });
+    query.$or.push({ [linkUserID]: { $exists: true }, endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo', ...fields, ...finishedObj });
+    query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [bothUserId] }, status: 'todo', ...fields, ...finishedObj });
+    query.$or.push({ endDate: { $exists: false }, parentId: { $in: [bothUserId] }, status: 'todo', ...fields, ...finishedObj });
 
     const options = {};
     options.sort = {

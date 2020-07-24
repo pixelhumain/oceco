@@ -105,6 +105,7 @@
 
     {{/if}}
 
+  {{#if nequals parentType 'citoyens'}}
   <div class="list padding">
     <div class="item item-divider">
     <i class="fa fa-group"></i> {{__ "dda.actions.theytakeaction"}}
@@ -145,6 +146,7 @@
     {{/each}}
 
   </div>
+  {{/if}}
 
   {{#if settingOceco.commentsAction}}
   <div class="list">
@@ -185,9 +187,7 @@
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
   <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
-  {{#if equals scope 'citoyens'}}
-
-  {{else}}
+  {{#if nequals scope 'citoyens'}}
   <a href="{{pathFor 'actionsAssign' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="ion-ios-people"></i> Assigner</a>
   {{/if}}
   

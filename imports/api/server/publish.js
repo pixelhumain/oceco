@@ -1524,10 +1524,31 @@ Meteor.publishComposite('listMembersDetailHistorique', function (organizationId,
 
   const collectionOne = Organizations.findOne({ _id: new Mongo.ObjectID(organizationId) });
 
+  let isAdminProject = false;
+  const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+  if (collectionOne.links && collectionOne.links.projects && userC && userC.links && userC.links.projects) {
+    // eslint-disable-next-line no-unused-vars
+    const arrayIds = Object.keys(collectionOne.links.projects)
+      .filter(k => userC.links.projects[k] && userC.links.projects[k].isAdmin && !userC.links.projects[k].toBeValidated && !userC.links.projects[k].isAdminPending && !userC.links.projects[k].isInviting)
+      // eslint-disable-next-line array-callback-return
+      .map((k) => {
+        // console.log(k);
+        return k;
+      });
+    // console.log(arrayIds);
+    isAdminProject = !!(arrayIds && arrayIds.length > 0);
+  }
+
   if (citoyenId === this.userId) {
     //
   } else if (!collectionOne.isAdmin()) {
-    return null;
+    if (collectionOne && collectionOne.oceco && collectionOne.oceco.membersAdminProjectAdmin) {
+      if (!isAdminProject) {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   return {

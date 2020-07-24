@@ -600,26 +600,20 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    if (!Actions.findOne({ _id: new Mongo.ObjectID(id) })) {
+    const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(id) });
+    if (!actionOne) {
       throw new Meteor.Error('not-action');
     }
-    // admin ou creator
-    // if (!(collection.findOne({ _id: new Mongo.ObjectID(modifier.$set.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
-    //   throw new Meteor.Error('not-authorized');
-    // }
 
-    // const docRetour = {}
-    // docRetour.id = _id;
-    // docRetour.participants = this.userId
-    // docRetour.participants.states = "finish"
+    if (!actionOne.isContributors()) {
+      throw new Meteor.Error('is-not-contributor');
+    }
+
     const actionId = new Mongo.ObjectID(id);
     const parent = `finishedBy.${Meteor.userId()}`;
     Actions.update({ _id: actionId }, { $set: { [parent]: 'toModerate' } });
 
     // notification
-    const actionOne = Actions.findOne({
-      _id: new Mongo.ObjectID(id),
-    });
 
     if (actionOne && actionOne.max === 1 && actionOne.min === 1 && !actionOne.endDate) {
       Actions.update({ _id: actionId }, { $set: { endDate: new Date() } });
@@ -2969,7 +2963,6 @@ export const insertAction = new ValidatedMethod({
       delete docRetour.options;
     }
 
-
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
 
     // count
@@ -3823,11 +3816,33 @@ export const insertLogUserActions = new ValidatedMethod({
     const query = {};
     query._id = new Mongo.ObjectID(doc.organizationId);
     const orgaOne = Organizations.findOne(query);
+
+    let isAdminProject = false;
+    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+    if (orgaOne.links && orgaOne.links.projects && userC && userC.links && userC.links.projects) {
+      // eslint-disable-next-line no-unused-vars
+      const arrayIds = Object.keys(orgaOne.links.projects)
+        .filter(k => userC.links.projects[k] && userC.links.projects[k].isAdmin && !userC.links.projects[k].toBeValidated && !userC.links.projects[k].isAdminPending && !userC.links.projects[k].isInviting)
+        // eslint-disable-next-line array-callback-return
+        .map((k) => {
+          // console.log(k);
+          return k;
+        });
+      // console.log(arrayIds);
+      isAdminProject = !!(arrayIds && arrayIds.length > 0);
+    }
+
     if (!orgaOne) {
       throw new Meteor.Error('not-orga', 'not-orga');
     }
     if (!orgaOne.isAdmin()) {
-      throw new Meteor.Error('not-orga-admin', 'not-orga-admin');
+      if (orgaOne && orgaOne.oceco && orgaOne.oceco.membersAdminProjectAdmin) {
+        if (!isAdminProject) {
+          throw new Meteor.Error('not-orga-admin', 'not-orga-admin');
+        }
+      } else {
+        throw new Meteor.Error('not-orga-admin', 'not-orga-admin');
+      }
     }
 
     const logInsert = {};

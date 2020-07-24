@@ -67,6 +67,15 @@
         <a href="{{pathFor 'logUserActionsAdd' _id=organizations._id._str citoyenId=citoyen._id._str}}" class="button button-positive"><i
             class="icon fa fa-plus"></i> Ajout ligne crédit</a>
       </div>
+      {{else}}
+      {{#if settingOceco.membersAdminProjectAdmin}}
+      {{#if isAdminRaf}}
+      <div class="item button-bar bar-positive">
+        <a href="{{pathFor 'logUserActionsAdd' _id=organizations._id._str citoyenId=citoyen._id._str}}"
+          class="button button-positive"><i class="icon fa fa-plus"></i> Ajout ligne crédit</a>
+      </div>
+      {{/if}}
+      {{/if}}
       {{/if}}
 
       {{#transition in="zoomIn" out="bounceOut"}}

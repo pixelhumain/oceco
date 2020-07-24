@@ -935,6 +935,9 @@
       "notificationChat": {
         "label": "Notification chat"
       },
+      "membersAdminProjectAdmin": {
+        "label": "Accès à la gestion de crédits des membres au admin de projets"
+      },
       "costum": {
         "projects": {
           "form": {

@@ -143,7 +143,7 @@ const synchroAdmin = function ({ parentId, parentType }) {
   });
 
   if (scopeOne) {
-    if (parentType === 'organizatOrganizationsions') {
+    if (parentType === 'organizations') {
       const testConnectAdminRetour = Meteor.call('testConnectAdmin', { id: scopeOne._id._str });
       return testConnectAdminRetour;
     } else if (parentType === 'projects') {
@@ -217,6 +217,200 @@ app.post('/api/action/assign', verifyToken, function (req, res) {
         status: true,
         msg: 'member assign',
       };
+      res.status(200).json(valid);
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.post('/api/action/finishMe', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+
+      new SimpleSchema({
+        id: { type: String },
+      }).validate(req.body);
+
+      const retourCall = Meteor.call('finishAction', { id: req.body.id });
+      // console.log(retourCall);
+      const valid = {
+        status: true,
+        msg: 'action finish',
+      };
+      res.status(200).json(valid);
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.post('/api/action/listElement', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+
+      new SimpleSchema({
+        parentId: { type: String },
+        parentType: { type: String },
+      }).validate(req.body);
+
+      const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
+
+      const collection = nameToCollection(req.body.parentType);
+      const query = {};
+      query._id = new Mongo.ObjectID(req.body.parentId);
+      const scope = collection.findOne(query);
+      if (scope) {
+        const actions = scope.listActionsCreator('all', 'todo').fetch();
+        // console.log(actions);
+        const valid = {
+          status: true,
+          actions,
+          msg: 'action element list',
+        };
+        res.status(200).json(valid);
+      } else {
+        const valid = {
+          status: false,
+          msg: 'no element',
+        };
+        res.status(200).json(valid);
+      }
+
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.get('/api/action/listMe', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+      // const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
+
+      const query = {};
+      query._id = new Mongo.ObjectID(userId);
+      const scope = Citoyens.findOne(query);
+      if (scope) {
+        const actions = [];
+        const listOrga = scope.listOrganizationsCreator();
+        listOrga.forEach((orgaOne) => {
+          const actionOrga = orgaOne.actionsUserAll(userId, 'aFaire').fetch();
+          actions.push(...actionOrga);
+        });
+
+        // console.log(actions);
+        const valid = {
+          status: true,
+          actions,
+          msg: 'action user list',
+        };
+        res.status(200).json(valid);
+      } else {
+        const valid = {
+          status: false,
+          msg: 'no user',
+        };
+        res.status(200).json(valid);
+      }
+
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.post('/api/action/listMe', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+
+      new SimpleSchema({
+        search: { type: String }
+      }).validate(req.body);
+
+      const query = {};
+      query._id = new Mongo.ObjectID(userId);
+      const scope = Citoyens.findOne(query);
+      if (scope) {
+        const actions = [];
+        const listOrga = scope.listOrganizationsCreator();
+        listOrga.forEach((orgaOne) => {
+          const actionOrga = orgaOne.actionsUserAll(userId, 'aFaire', req.body.search).fetch();
+          actions.push(...actionOrga);
+        });
+
+        // console.log(actions);
+        const valid = {
+          status: true,
+          actions,
+          msg: 'action user list',
+        };
+        res.status(200).json(valid);
+      } else {
+        const valid = {
+          status: false,
+          msg: 'no user',
+        };
+        res.status(200).json(valid);
+      }
+
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.post('/api/generatetokenchat', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+
+      new SimpleSchema({
+        username: { type: String },
+        tokenName: { type: String },
+      }).validate(req.body);
+
+      const citoyenOne = Citoyens.findOne({ username: req.body.username });
+      let valid;
+      if (citoyenOne) {
+        const token = generateToken(citoyenOne._id._str, req.body.tokenName);
+        if (token) {
+          valid = {
+            _id: citoyenOne._id._str,
+            username: citoyenOne.username,
+            name: citoyenOne.name,
+            email: citoyenOne.email,
+            token,
+            status: true,
+            msg: `generate token chat: ${req.body.username}`,
+          };
+        } else {
+          valid = {
+            status: false,
+            msg: `not token: ${req.body.username}`,
+          };
+        }
+      } else {
+        valid = {
+          status: false,
+          msg: `not user : ${req.body.username}`,
+        };
+      }
+      // console.log(valid);
       res.status(200).json(valid);
     } catch (e) {
       // console.log(e);

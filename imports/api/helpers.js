@@ -108,10 +108,14 @@ export const applyDiacritics = (str, which) => {
   const lettres = str.split('');
   let newStr = '';
   for (let f = 0; f < lettres.length; f++) {
-    for (let i = 0; i < diacriticsApplyMap.default.length; i++) {
-      const strReplace = lettres[f].replace(changes[i].letters, changes[i].base);
-      if (strReplace !== lettres[f]) {
-        newStr += strReplace;
+    if (lettres[f] === ' ') {
+      newStr += lettres[f];
+    } else {
+      for (let i = 0; i < diacriticsApplyMap.default.length; i++) {
+        const strReplace = lettres[f].replace(changes[i].letters, changes[i].base);
+        if (strReplace !== lettres[f]) {
+          newStr += strReplace;
+        }
       }
     }
   }
