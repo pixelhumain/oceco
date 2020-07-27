@@ -920,13 +920,44 @@ Organizations.helpers({
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listProjectsEventsActionsCreatorAdmin() && this.listProjectsEventsActionsCreatorAdmin().count();
   },
-  actionsInWaiting() {
+  actionsInWaiting(search, searchSort) {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
     const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+
+    let raffProjectsArray;
+    if (search && search.charAt(0) === ':' && search.length > 1) {
+      raffProjectsArray = this.listProjects(search).map(project => project._id._str);
+    } else {
+      raffProjectsArray = this.listProjects().map(project => project._id._str);
+    }
+    
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
-    return Actions.find({ [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: mergeArray }, status: 'todo' });
+
+    let query = { [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: mergeArray }, status: 'todo' };
+    if (Meteor.isClient) {
+      if (search && search.charAt(0) !== ':') {
+      if (search) {
+        query = searchQuery(query, search);
+      }
+    }
+    }
+
+    const options = {};
+    if (Meteor.isClient) {
+      if (searchSort) {
+        const arraySort = searchQuerySort('actions', searchSort);
+        if (arraySort) {
+          options.sort = arraySort;
+        }
+      }
+    } else {
+      options.sort = {
+        startDate: 1,
+      };
+    }
+
+    return Actions.find(query, options);
   },
   actionsToValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;

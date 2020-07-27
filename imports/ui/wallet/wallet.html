@@ -68,9 +68,11 @@
         
     </div>
     </div>
+
+    
     
     {{#if equals selectview 'aFaire'}}
-
+    {{>searchActions}}
         {{#if settingOceco.wallet}}
         {{#if settingOceco.wallet.coupDeMain}}
         <div class="item item-divider">{{settingOceco.wallet.coupDeMain.textTitre}}</div>
@@ -86,7 +88,7 @@
         {{/if}}
 
 
-        {{#each action in scope.actionsInWaiting}}
+        {{#each action in (scope.actionsInWaiting search searchSort)}}
         {{> whalletInputAction action=action}}
         {{/each}}
         
@@ -166,6 +168,10 @@
     <div class="row row-center padding-bottom">
         <div class="col-90 col-center">
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content item-text-wrap">{{action.name}}</a>
+            {{#if action.parentScope}}
+                <a href="{{pathFor 'actionsList' _id=action.parentId scope=action.parentType}}"
+                    class="subdued positive item-content item-text-wrap">{{action.parentScope.name}}</a>
+            {{/if}}
         </div>
         <div class="col-10">
             {{#if displayDesc}}
@@ -176,6 +182,7 @@
         </div>
     </div>
    
+    
     {{#if displayDesc}}
     <div div class="col ">        
         <div class="item item-text-wrap">{{action.description}}
@@ -194,6 +201,12 @@
             <div class="row">
                 <div class="col-10"><i class="icon ion-ios-arrow-up"></i></div>Et un maximum de {{action.max}} participant
             </div>
+            {{#if action.parentScope}}
+            <div class="row">
+                <div class="col-10"></div>
+                <a href="{{pathFor 'actionsList' _id=action.parentId scope=action.parentType}}" class="subdued dark item-content item-text-wrap">{{action.parentScope.name}}</a>
+            </div>
+            {{/if}}
         </div>
     </div>
     {{/if}}

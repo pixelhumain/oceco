@@ -14,6 +14,8 @@ import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions.js';
 import { Rooms } from '../../api/rooms.js';
 
+import { searchAction } from '../../api/client/reactive.js';
+
 
 import './wallet.html';
 
@@ -84,6 +86,12 @@ Template.wallet.helpers({
     return Organizations.findOne({
       _id: new Mongo.ObjectID(Session.get('orgaCibleId')),
     });
+  },
+  search() {
+    return searchAction.get('search');
+  },
+  searchSort() {
+    return searchAction.get('searchSort');
   },
   dataReady() {
     return Template.instance().ready.get();

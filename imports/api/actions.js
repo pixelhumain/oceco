@@ -8,9 +8,12 @@ import { Tracker } from 'meteor/tracker';
 
 // schemas
 import { baseSchema } from './schema.js';
+import { Events } from './events.js';
+import { Projects } from './projects.js';
+import { Organizations } from './organizations.js';
 import { Citoyens } from './citoyens.js';
 import { Comments } from './comments.js';
-import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper, arrayLinkProperNoObject } from './helpers.js';
+import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper, arrayLinkProperNoObject, nameToCollection } from './helpers.js';
 
 export const Actions = new Mongo.Collection('actions', { idGeneration: 'MONGO' });
 
@@ -320,6 +323,11 @@ Actions.helpers({
   },
   listScope () {
     return 'listActions';
+  },
+  parentScope() {
+    const collection = nameToCollection(this.parentType);
+    const parentOne = collection.findOne({ _id: new Mongo.ObjectID(this.parentId) });
+    return parentOne;
   },
   creatorProfile () {
     return Citoyens.findOne({

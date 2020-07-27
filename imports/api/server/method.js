@@ -3069,7 +3069,6 @@ export const updateAction = new ValidatedMethod({
     if (!(collection.findOne({ _id: new Mongo.ObjectID(modifierClean.parentId) }).isAdmin() || Actions.findOne({ _id: new Mongo.ObjectID(_id) }).isCreator())) {
       throw new Meteor.Error('not-authorized');
     }
-   
 
     let docRetour = {};
 
@@ -3108,6 +3107,10 @@ export const updateAction = new ValidatedMethod({
       docRetour.tags = '';
       delete docRetour.tagsText;
     }
+    
+    docRetour['options.creditAddPorteur'] = docRetour['options.creditAddPorteur'] || false;
+    docRetour['options.creditSharePorteur'] = docRetour['options.creditSharePorteur'] || false;
+    docRetour['options.possibleStartActionBeforeStartDate'] = docRetour['options.possibleStartActionBeforeStartDate'] || false;
 
     Actions.update({ _id: new Mongo.ObjectID(_id) }, { $set: { 'options.creditAddPorteur': docRetour['options.creditAddPorteur'], 'options.creditSharePorteur': docRetour['options.creditSharePorteur'], 'options.possibleStartActionBeforeStartDate': docRetour['options.possibleStartActionBeforeStartDate'] } });
 

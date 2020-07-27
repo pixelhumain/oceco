@@ -195,7 +195,7 @@ Template.searchActions.events({
 
 Template.searchSort.helpers({
   isHome() {
-    return Router.current().route.getName() !== 'actionsList';
+    return Router.current().route.getName() === 'home';
   },
   searchSort() {
     if (searchAction.get('searchSort')) {
