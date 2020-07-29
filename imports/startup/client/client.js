@@ -473,6 +473,10 @@ Meteor.startup(function () {
 
   Template.registerHelper('orgaCibleId', () => Session.get('orgaCibleId'));
 
+  Template.registerHelper('absoluteUrl', path => Meteor.absoluteUrl(path));
+
+
+  
   Template.registerHelper('settingOceco', () => Session.get('settingOceco'));
 
   Template.registerHelper('hasPublishedCounter', (name) => {

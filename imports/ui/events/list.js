@@ -1,3 +1,5 @@
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -49,9 +51,18 @@ Template.listEvents.onRendered(function () {
     // defaultView: 'timeGridWeek',
     height: 'parent',
     aspectRatio: 1,
+    customButtons: {
+      ical: {
+        text: 'ical',
+        click () {
+          // Router.go(`/ical/organizations/${Session.get('orgaCibleId')}/events`);
+          IonModal.open('ical');
+        }
+      }
+    },
     header: {
       left: 'title',
-      center: '',
+      center: 'ical',
       right: 'prev,next',
     },
     locales: frLocale,
@@ -221,6 +232,19 @@ Template.listEvents.events({
     } else {
       pageSession.set('searchEvents', null);
     }
+  },
+});
+
+Template.ical.events({
+  'focus input[name="icalurl"]'(event, instance) {
+    event.preventDefault();
+    const element = instance.find('input[name="icalurl"]');
+    element.select();
+  },
+  'click #copyical'(event, instance) {
+    event.preventDefault();
+    const element = instance.find('input[name="icalurl"]');
+    element.select();
   },
 });
 

@@ -1496,6 +1496,19 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
           return scopeD.listActionsCreator('all', etat);
         }
       },
+      children: [{
+        find(action) {
+          if (action.avatarOneUserAction()) {
+            if (action && action.links && action.links.contributors) {
+              const arrayContributors = arrayLinkProperNoObject(action.links.contributors);
+              if (arrayContributors && arrayContributors[0]) {
+                const arrayAllMergeMongoId = arrayContributors.map(k => new Mongo.ObjectID(k));
+                return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { profilThumbImageUrl: 1 } });
+              }
+            }
+          }
+        },
+      }],
     },
     ],
   };
@@ -3328,12 +3341,14 @@ Meteor.publishComposite('all.user.actions2', function (scope, scopeId) {
         children: [{
           find(orgaOne) {
             return orgaOne.actionsUserAll(scopeId);
-          },
+          }
         }],
       },
     ]
   };
 });
+
+
 
 Meteor.publish('member.profile', function(memberId) {
   check(memberId, String);

@@ -10,11 +10,15 @@ import { Mongo } from 'meteor/mongo';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import SimpleSchema from 'simpl-schema';
+
+import ical from 'ical-generator';
+
 import { Organizations } from '../organizations.js';
 import { Projects } from '../projects.js';
 import { nameToCollection } from '../helpers.js';
 import { SchemasActionsRest } from '../actions.js';
 import { Citoyens } from '../citoyens.js';
+import { Events } from '../events.js';
 
 function bin2hex(bytesLength) {
   const bin = crypto.randomBytes(bytesLength);
@@ -337,7 +341,9 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
     try {
 
       new SimpleSchema({
-        search: { type: String }
+        search: { type: String, optional: true },
+        parentId: { type: String, optional: true },
+        parentType: { type: String, optional: true },
       }).validate(req.body);
 
       const query = {};
@@ -346,15 +352,30 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
       if (scope) {
         const actions = [];
         const listOrga = scope.listOrganizationsCreator();
+        const parentId = req.body.parentId || false;
         listOrga.forEach((orgaOne) => {
-          const actionOrga = orgaOne.actionsUserAll(userId, 'aFaire', req.body.search).fetch();
-          actions.push(...actionOrga);
+          if (req.body.search) {
+            const actionOrga = orgaOne.actionsUserAll(userId, 'aFaire', req.body.search).fetch();
+            actions.push(...actionOrga);
+          } else {
+            const actionOrga = orgaOne.actionsUserAll(userId, 'aFaire').fetch();
+            actions.push(...actionOrga);
+          }
         });
+
+        let actionArray;
+        if (parentId) {
+          actionArray = actions.filter((action) => {
+            return action.parentId === parentId;
+          })
+        } else {
+          actionArray = [...actions];
+        }
 
         // console.log(actions);
         const valid = {
           status: true,
-          actions,
+          actions: actionArray,
           msg: 'action user list',
         };
         res.status(200).json(valid);
@@ -418,4 +439,57 @@ app.post('/api/generatetokenchat', verifyToken, function (req, res) {
     }
   });
   //
+});
+
+app.get('/ical/organizations/:id/events', function (req, res) {
+  new SimpleSchema({
+    id: { type: String },
+  }).validate(req.params);
+
+  if (!Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id), oceco: { $exists: true } })) {
+    const valid = {
+      status: false,
+      msg: 'not organizations',
+    };
+    res.status(200).json(valid);
+  }
+
+  const eventParse = [];
+  // events
+  const events = Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id) }).listProjectsEventsCreator();
+  if (events) {
+    events.forEach((event) => {
+      const eventOne = {};
+      // console.log(event);
+      eventOne.id = event._id._str;
+
+      if (event.name) {
+        eventOne.summary = event.name;
+      }
+      if (event.description) {
+        eventOne.description = event.description;
+      }
+      if (event.startDate) {
+        eventOne.start = event.startDate;
+      }
+      if (event.endDate) {
+        eventOne.end = event.endDate;
+      }
+      if (event.timeZone) {
+        eventOne.timezone = event.timeZone;
+      }
+
+      if (event.startDate) {
+        eventParse.push(eventOne);
+      }
+    });
+  }
+
+  const cal = ical({
+    domain: 'oce.co.tools',
+    prodId: '//oce.co.tools//ical-generator//FR',
+    events: [...eventParse],
+  });
+
+  cal.serve(res);
 });

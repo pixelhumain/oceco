@@ -35,6 +35,39 @@
 
 </template>
 
+<template name="ical">
+  {{#ionModal customTemplate=true}}
+  <div class="bar bar-header bar-dark">
+    <h2 class="title">ical</h2>
+    <button data-dismiss="modal" class="button button-icon"><i class="icon ion-ios-close-empty"></i></button>
+  </div>
+  <div class="content has-header overflow-scroll">
+    <div class="list">
+
+      <div class="item item-divider">
+        Lien ical
+      </div>
+
+      <label type="placeholder" for="" placeholderonly="true" class="item item-input">
+        <i class="icon fa fa-calendar-alt positive dark placeholder-icon"></i>
+        <input type="text" placeholder="" name="icalurl" value="{{absoluteUrl}}ical/organizations/{{orgaCibleId}}/events" icon="fa fa-greater-than-equal positive">
+      </label>
+      <div class="item">
+      <button id="copyical" class="button button-block button-positive"><i class="fa fa-file-copy"></i> Copier</button>
+      </div>
+      <div class="item item-divider">
+        Télécharger .ics
+      </div>
+      <div class="item">
+        <a href="{{absoluteUrl}}ical/organizations/{{orgaCibleId}}/events" class="button button-block button-positive" target="_blank"><i class="fa fa-file-download"></i> Télécharger .ics</a>
+      </div>
+
+    </div>
+  </div>
+  {{/ionModal}}
+</template>
+
+
 <template name="eventsAdd">
   {{#contentFor "headerButtonLeft"}}
   {{>ionNavBackButton}}

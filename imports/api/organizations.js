@@ -725,8 +725,8 @@ Organizations.helpers({
       projectIds.forEach((id) => {
         const queryCo = {};
         // if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
-          queryCo[`organizer.${id}`] = { $exists: true };
-          query.$or.push(queryCo);
+        queryCo[`organizer.${id}`] = { $exists: true };
+        query.$or.push(queryCo);
         // }
       });
       if (query.$or.length === 0) {
@@ -762,8 +762,8 @@ Organizations.helpers({
       projectIds.forEach((id) => {
         const queryCo = {};
         if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
-        queryCo[`organizer.${id}`] = { $exists: true };
-        query.$or.push(queryCo);
+          queryCo[`organizer.${id}`] = { $exists: true };
+          query.$or.push(queryCo);
         }
       });
       if (query.$or.length === 0) {
@@ -931,16 +931,16 @@ Organizations.helpers({
     } else {
       raffProjectsArray = this.listProjects().map(project => project._id._str);
     }
-    
+
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
 
     let query = { [UserId]: { $exists: 1 }, [finished]: { $exists: false }, parentId: { $in: mergeArray }, status: 'todo' };
     if (Meteor.isClient) {
       if (search && search.charAt(0) !== ':') {
-      if (search) {
-        query = searchQuery(query, search);
+        if (search) {
+          query = searchQuery(query, search);
+        }
       }
-    }
     }
 
     const options = {};
