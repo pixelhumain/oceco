@@ -13,7 +13,7 @@ import { $ } from 'meteor/jquery';
 import { ActivityStream } from '../api/activitystream.js';
 
 
-import './settings/settings.js';
+// import './settings/settings.js';
 import './notifications/notifications.js';
 
 import './pixel.html';

@@ -523,10 +523,10 @@ Meteor.methods({
 
     const notif = {};
     // author
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(idAuthor) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(idAuthor) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
 
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
 
     // target
     notif.target = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
@@ -620,9 +620,9 @@ Meteor.methods({
     }
 
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
     ActivityStream.api.add(notif, 'finish', 'isAdmin');
@@ -673,9 +673,9 @@ Meteor.methods({
     }
 
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
     ActivityStream.api.add(notif, 'finish', 'isAdmin');
@@ -745,16 +745,16 @@ Meteor.methods({
     }
 
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
 
     if (memberId) {
       // mention
       const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) });
-      notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens' };
+      notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens', username: mentionOne.username };
       ActivityStream.api.add(notif, 'leaveAssign', 'isAdmin');
       ActivityStream.api.add(notif, 'leaveAssign', 'isUser', memberId);
     } else {
@@ -824,9 +824,9 @@ Meteor.methods({
 
     // notification
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
     // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
@@ -885,9 +885,9 @@ Meteor.methods({
 
     // notification
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
     // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');
@@ -1539,19 +1539,19 @@ indexMax:20 */
     }
     const retour = apiCommunecter.postPixel('co2/comment', 'save', doc);
 
-    // notif
-    const actionOne = Actions.findOne({
-      _id: new Mongo.ObjectID(doc.contextId),
-    });
+    if (doc.contextType === 'actions') {
+      // notif
+      const actionOne = Actions.findOne({
+        _id: new Mongo.ObjectID(doc.contextId),
+      });
 
     // au participant
     // au admin
 
-    if (doc.contextType === 'actions') {
       const notif = {};
-      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
       // author
-      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
       // object
       notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
 
@@ -2984,9 +2984,9 @@ export const insertAction = new ValidatedMethod({
         });
 
         const notif = {};
-        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
         // author
-        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
         // object
         notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
         if (actionOne.isActionDepense()) {
@@ -3420,9 +3420,9 @@ export const assignmeActionRooms = new ValidatedMethod({
     // notification
     if (action.parentType !== 'citoyens') {
       const notif = {};
-      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+      const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
       // author
-      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+      notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
       // object
       notif.object = { id: action._id._str, name: action.name, type: 'actions', parentType: action.parentType, parentId: action.parentId, idParentRoom: action.idParentRoom };
       if (action.isActionDepense()) {
@@ -3582,14 +3582,14 @@ export const assignMemberActionRooms = new ValidatedMethod({
 
     // notification
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: action._id._str, name: action.name, type: 'actions', parentType: action.parentType, parentId: action.parentId, idParentRoom: action.idParentRoom };
     // mention
     const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) });
-    notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens' };
+    notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens', username: mentionOne.username };
 
     if (action.isActionDepense()) {
       ActivityStream.api.add(notif, 'joinSpent', 'isAdmin');
@@ -3709,9 +3709,9 @@ export const actionsType = new ValidatedMethod({
         // au admin
 
         const notif = {};
-        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+        const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
         // author
-        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+        notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
         // object
         notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
 
@@ -3862,14 +3862,14 @@ export const insertLogUserActions = new ValidatedMethod({
 
     // notification
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: orgaOne._id._str, name: orgaOne.name, type: 'logusercredit', parentType: 'organizations', parentId: doc.organizationId, commentaire: doc.commentaire, credits: doc.credits };
     // mention
     const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(doc.userId) });
-    notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens' };
+    notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens', username: mentionOne.username };
 
     ActivityStream.api.add(notif, 'logusercredit', 'isUser', doc.userId);
 
@@ -3950,9 +3950,9 @@ export const validateUserActions = new ValidatedMethod({
 
     // notification
     const notif = {};
-    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1 } });
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
     // author
-    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens' };
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
     // object
     notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
     // ActivityStream.api.add(notif, verb, 'isUser', '5e736fd6b6ebaf0d008b4579');

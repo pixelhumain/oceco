@@ -485,6 +485,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isMember') {
@@ -506,9 +507,11 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
               notificationObj.notify.labelArray['{mentions}'] = [mention.name];
+              notificationObj.notify.labelArray['{mentionsusername}'] = [mention.username];
             } else if (type === 'isMember') {
               // isMember
             } else if (type === 'isUser') {
@@ -522,6 +525,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -539,6 +543,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isMember') {
@@ -559,6 +564,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isMember') {
@@ -579,9 +585,11 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
               notificationObj.notify.labelArray['{mentions}'] = [mention.name];
+              notificationObj.notify.labelArray['{mentionsusername}'] = [mention.username];
             } else if (type === 'isMember') {
               // isMember
             } else if (type === 'isUser') {
@@ -595,6 +603,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -611,6 +620,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isMember') {
@@ -637,6 +647,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.credits];
               // notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -657,6 +668,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -677,6 +689,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -694,6 +707,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isMember') {
@@ -707,6 +721,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isUser') {
@@ -728,6 +743,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isUser') {
@@ -791,6 +807,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isActionMembers') {
@@ -803,6 +820,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -819,6 +837,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             } else if (type === 'isActionMembers') {
@@ -831,6 +850,7 @@ ActivityStream.api = {
               // remplacement du pattern
               notificationObj.notify.labelArray = {};
               notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
             }
@@ -845,7 +865,7 @@ ActivityStream.api = {
       if (notificationObj.notify) {
         if (notificationChat === true && type === 'isAdmin') {
           // mais en fr direct
-          const text = notifyDisplay(notificationObj.notify, 'fr');
+          const text = notifyDisplay(notificationObj.notify, 'fr', false, true);
           // sous quel user je l'envoie ?
           ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text);
         }

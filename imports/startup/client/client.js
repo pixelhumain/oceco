@@ -91,7 +91,7 @@ Meteor.startup(function () {
       }
     });
 
-    DeepLink.once('communecter', function(data, url, scheme, path) {
+    DeepLink.once('oceco', function(data, url, scheme, path) {
       /*  console.log('communecter');
       console.log(url);
       console.log(scheme);
@@ -469,14 +469,10 @@ Meteor.startup(function () {
     return false;
   });
 
-  
-
   Template.registerHelper('orgaCibleId', () => Session.get('orgaCibleId'));
 
   Template.registerHelper('absoluteUrl', path => Meteor.absoluteUrl(path));
 
-
-  
   Template.registerHelper('settingOceco', () => Session.get('settingOceco'));
 
   Template.registerHelper('hasPublishedCounter', (name) => {

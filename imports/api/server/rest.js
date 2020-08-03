@@ -15,10 +15,12 @@ import ical from 'ical-generator';
 
 import { Organizations } from '../organizations.js';
 import { Projects } from '../projects.js';
-import { nameToCollection } from '../helpers.js';
-import { SchemasActionsRest } from '../actions.js';
+import { nameToCollection, arrayLinkParent } from '../helpers.js';
+import { SchemasActionsRest, Actions } from '../actions.js';
 import { Citoyens } from '../citoyens.js';
 import { Events } from '../events.js';
+import { preferences } from '../schema.js';
+
 
 function bin2hex(bytesLength) {
   const bin = crypto.randomBytes(bytesLength);
@@ -29,7 +31,7 @@ const generateToken = function (userId, tokenName) {
   const citoyenOne = Citoyens.findOne({ _id: new Mongo.ObjectID(userId), 'loginTokens.name': tokenName, 'loginTokens.type': 'personalAccessToken' });
   if (!citoyenOne) {
     const token = bin2hex(16);
-    const tokenHash = crypto.createHmac('sha256', userId).update(token).digest("bin");
+    const tokenHash = crypto.createHmac('sha256', userId).update(token).digest('bin');
     const buf = Buffer.from(tokenHash);
     const tokenHashBase64 = buf.toString('base64');
     const loginToken = {};
@@ -44,7 +46,7 @@ const generateToken = function (userId, tokenName) {
     return token;
   }
   return false;
-}
+};
 
 const userNotConnected = function (userId, tokenName) {
   const citoyenOne = Citoyens.findOne({ _id: new Mongo.ObjectID(userId) });
@@ -201,11 +203,58 @@ app.post('/api/action/create', verifyToken, function (req, res) {
   //
 });
 
+app.post('/api/action/comment/create', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+      new SimpleSchema({
+        id: { type: String },
+        text: { type: String },
+      }).validate(req.body);
+
+      const actionOne = Actions.findOne({
+        _id: new Mongo.ObjectID(req.body.id),
+      });
+
+      if (!actionOne) {
+        const error = {
+          status: false,
+          msg: 'erreur : l\'action n\'existe pas',
+        };
+        res.status(200).json(error);
+      } else {
+
+        const synchroRetour = synchroAdmin({ parentId: actionOne.parentId, parentType: actionOne.parentType });
+
+
+        const commentPost = {};
+        commentPost.contextId = req.body.id;
+        commentPost.contextType = 'actions';
+        commentPost.text = req.body.text;
+        console.log(commentPost);
+
+
+        const retourCall = Meteor.call('insertComment', commentPost);
+        console.log(retourCall);
+        const valid = {
+          status: true,
+          msg: 'comment created',
+          id: retourCall.data.id,
+        };
+        res.status(200).json(valid);
+      }
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
 app.post('/api/action/assign', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
-
       new SimpleSchema({
         id: { type: String },
         memberId: { type: String },
@@ -234,7 +283,6 @@ app.post('/api/action/finishMe', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
-
       new SimpleSchema({
         id: { type: String },
       }).validate(req.body);
@@ -258,7 +306,6 @@ app.post('/api/action/listElement', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
-
       new SimpleSchema({
         parentId: { type: String },
         parentType: { type: String },
@@ -286,7 +333,6 @@ app.post('/api/action/listElement', verifyToken, function (req, res) {
         };
         res.status(200).json(valid);
       }
-
     } catch (e) {
       // console.log(e);
       handleErrorAsJson(e, req, res);
@@ -297,6 +343,7 @@ app.post('/api/action/listElement', verifyToken, function (req, res) {
 
 app.get('/api/action/listMe', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
+  console.log('ICI');
   runAsUser(userId, function () {
     try {
       // const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
@@ -326,7 +373,6 @@ app.get('/api/action/listMe', verifyToken, function (req, res) {
         };
         res.status(200).json(valid);
       }
-
     } catch (e) {
       // console.log(e);
       handleErrorAsJson(e, req, res);
@@ -339,7 +385,6 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
-
       new SimpleSchema({
         search: { type: String, optional: true },
         parentId: { type: String, optional: true },
@@ -365,9 +410,7 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
 
         let actionArray;
         if (parentId) {
-          actionArray = actions.filter((action) => {
-            return action.parentId === parentId;
-          })
+          actionArray = actions.filter(action => action.parentId === parentId);
         } else {
           actionArray = [...actions];
         }
@@ -386,7 +429,6 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
         };
         res.status(200).json(valid);
       }
-
     } catch (e) {
       // console.log(e);
       handleErrorAsJson(e, req, res);
@@ -399,7 +441,6 @@ app.post('/api/generatetokenchat', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
-
       new SimpleSchema({
         username: { type: String },
         tokenName: { type: String },
@@ -441,6 +482,7 @@ app.post('/api/generatetokenchat', verifyToken, function (req, res) {
   //
 });
 
+// export ical des events de organizations
 app.get('/ical/organizations/:id/events', function (req, res) {
   new SimpleSchema({
     id: { type: String },
@@ -456,33 +498,55 @@ app.get('/ical/organizations/:id/events', function (req, res) {
 
   const eventParse = [];
   // events
-  const events = Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id) }).listProjectsEventsCreator();
-  if (events) {
-    events.forEach((event) => {
-      const eventOne = {};
-      // console.log(event);
-      eventOne.id = event._id._str;
+  const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id) });
 
-      if (event.name) {
-        eventOne.summary = event.name;
-      }
-      if (event.description) {
-        eventOne.description = event.description;
-      }
-      if (event.startDate) {
-        eventOne.start = event.startDate;
-      }
-      if (event.endDate) {
-        eventOne.end = event.endDate;
-      }
-      if (event.timeZone) {
-        eventOne.timezone = event.timeZone;
-      }
+  // verifier si private
+  if (orgaOne.links && orgaOne.links.projects && (preferences.private === false || preferences.private === 'false' || !preferences.private)) {
+    const projectLinkIds = arrayLinkParent(orgaOne.links.projects, 'projects');
+    const projectsList = Projects.findOne({ _id: { $in: projectLinkIds }, 'preferences.private': false });
+    const projectIds = projectsList.map(project => project._id._str);
 
-      if (event.startDate) {
-        eventParse.push(eventOne);
-      }
+    const query = {};
+    query.$or = [];
+    projectIds.forEach((id) => {
+      const queryCo = {};
+      queryCo[`organizer.${id}`] = { $exists: true };
+      query.$or.push(queryCo);
     });
+    const inputDate = new Date();
+    // query.startDate = { $lte: inputDate };
+    query.endDate = { $gte: inputDate };
+    const options = {};
+    options.sort = {
+      startDate: 1,
+    };
+    const events = Events.find(query, options);
+    if (events) {
+      events.forEach((event) => {
+        const eventOne = {};
+        // console.log(event);
+        eventOne.id = event._id._str;
+
+        if (event.name) {
+          eventOne.summary = event.name;
+        }
+        if (event.description) {
+          eventOne.description = event.description;
+        }
+        if (event.startDate) {
+          eventOne.start = event.startDate;
+        }
+        if (event.endDate) {
+          eventOne.end = event.endDate;
+        }
+        if (event.timeZone) {
+          eventOne.timezone = event.timeZone;
+        }
+        if (event.startDate) {
+          eventParse.push(eventOne);
+        }
+      });
+    }
   }
 
   const cal = ical({

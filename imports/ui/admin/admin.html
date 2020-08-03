@@ -299,9 +299,12 @@
 </template>
 
 <template name="Directory_item_projects_events">
-    <div class="item item-avatar item-content item-button-right">
+    <div class="item {{#if item.profilThumbImageUrl}}item-avatar{{/if}} item-content item-button-right">
+        {{#if item.profilThumbImageUrl}}
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
+        {{/if}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{item.name}}</a></h2>
+        <p><span><i class="ion-android-calendar"></i> {{item.formatStartDate}}</span></p>
         {{#if item.isNotEndDate}}
         <a href="{{pathFor 'actionsAdd' _id=item._id._str scope='events'}}"
             class="button button-positive"><i

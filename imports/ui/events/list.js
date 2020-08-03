@@ -1,5 +1,5 @@
 /* eslint-disable meteor/no-session */
-/* global Session */
+/* global Session IonModal */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -19,7 +19,7 @@ import { Organizations } from '../../api/organizations.js';
 import { Events, BlockEventsRest } from '../../api/events.js';
 
 // submanager
-import { listEventsSubs, listsSubs, scopeSubscribe } from '../../api/client/subsmanager.js';
+import { listsSubs } from '../../api/client/subsmanager.js';
 
 // import '../map/map.js';
 import '../components/scope/item.js';
@@ -30,7 +30,7 @@ import '../components/scope/item.js';
 
 import './list.html';
 
-import { pageSession, orgaCible } from '../../api/client/reactive.js';
+import { pageSession } from '../../api/client/reactive.js';
 import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
 
 Template.listEvents.onCreated(function () {
@@ -55,7 +55,6 @@ Template.listEvents.onRendered(function () {
       ical: {
         text: 'ical',
         click () {
-          // Router.go(`/ical/organizations/${Session.get('orgaCibleId')}/events`);
           IonModal.open('ical');
         }
       }
@@ -82,7 +81,7 @@ Template.listEvents.onRendered(function () {
         }
       } */
     },
-    eventClick: function (info) {
+    eventClick (info) {
       info.jsEvent.preventDefault(); // don't let the browser navigate
       if (info.event.url) {
         Router.go(info.event.url);
@@ -245,6 +244,15 @@ Template.ical.events({
     event.preventDefault();
     const element = instance.find('input[name="icalurl"]');
     element.select();
+    navigator.permissions.query({ name: 'clipboard-write' }).then(result => {
+      if (result.state == 'granted' || result.state == 'prompt') {
+        navigator.clipboard.writeText(element.value).then(function () {
+          /* clipboard successfully set */
+        }, function () {
+          /* clipboard write failed */
+        });
+      }
+    });
   },
 });
 

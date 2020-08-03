@@ -14,8 +14,6 @@ import '../imports/ui/images/images.js';
 
 import '../imports/ui/switch/switch.js';
 
-import '../imports/ui/dashboard/dashboard.js';
-
 import '../imports/ui/home/home.js';
 
 import '../imports/ui/polesView/polesView.js';
@@ -95,5 +93,5 @@ import '../imports/ui/invitations/invitations.js'; */
 
 import '../imports/ui/notifications/notifications.js';
 import '../imports/ui/qrcode/qrcode.js';
-import '../imports/ui/settings/settings.js';
+// import '../imports/ui/settings/settings.js';
 

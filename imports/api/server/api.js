@@ -55,7 +55,7 @@ const callPixelMethodRest = (token, method, controller, action, post) => {
 
 apiCommunecter.postPixel = function(controller, action, params) {
   const userC = Meteor.users.findOne({ _id: Meteor.userId() });
-  // console.log(userC);
+  console.log(userC.profile.token);
   // console.log(userC.services.resume.loginTokens[0]);
   
   if (userC && userC.profile && userC.profile.token) {

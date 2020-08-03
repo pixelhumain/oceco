@@ -876,7 +876,7 @@ if (Meteor.isClient) {
   };
 }
 
-export const notifyDisplay = (notify, lang = null, html = false) => {
+export const notifyDisplay = (notify, lang = null, html = false, chat = false) => {
   if (notify) {
     let label = notify.displayName;
     let arrayReplace = {};
@@ -915,6 +915,7 @@ export const notifyDisplay = (notify, lang = null, html = false) => {
         } else if (k === '{mentions}') {
           if (Array.isArray(notify.labelArray[k])) {
             const mentionsString = [];
+            notify.labelArray[k] = chat && notify.labelArray['{mentionsusername}'] ? notify.labelArray['{mentionsusername}'] : notify.labelArray[k];
             notify.labelArray[k].forEach((value) => {
               const labelMentions = value.replace(new RegExp(' ', 'g'), '_');
               const labelMentionsIndex = `activitystream.notification.${labelMentions}`;
@@ -944,6 +945,7 @@ export const notifyDisplay = (notify, lang = null, html = false) => {
           if (Array.isArray(notify.labelArray[k])) {
             let whoNumber;
             const whoString = [];
+            notify.labelArray[k] = chat && notify.labelArray['{whousername}'] ? notify.labelArray['{whousername}'] : notify.labelArray[k];
             notify.labelArray[k].forEach((value) => {
               if (Number.isInteger(value)) {
                 whoNumber = lang ? i18n.__('activitystream.notification.whoNumber', { count: value, _locale: lang }) : i18n.__('activitystream.notification.whoNumber', { count: value });
@@ -966,6 +968,14 @@ export const notifyDisplay = (notify, lang = null, html = false) => {
       if (Meteor.isClient && html) {
         Object.keys(arrayReplace).forEach(function (item) {
           arrayReplace[item] = `<strong>${arrayReplace[item]}</strong>`;
+        });
+      } else if (chat) {
+        Object.keys(arrayReplace).forEach(function (item) {
+          if (item === 'who' || item === 'author' || item === 'mentions') {
+            arrayReplace[item] = `@${arrayReplace[item]}`;
+          } else if (item !== '_locale') {
+            arrayReplace[item] = `*${arrayReplace[item]}*`;
+          }
         });
       }
       // {author} invited {who} to join {where}
