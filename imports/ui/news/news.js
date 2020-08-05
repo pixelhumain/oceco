@@ -20,7 +20,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Mongo } from 'meteor/mongo';
 import { IonPopup, IonModal, IonLoading } from 'meteor/meteoric:ionic';
 
-import '../qrcode/qrcode.js';
+// import '../qrcode/qrcode.js';
 
 // submanager
 import { newsListSubs, filActusSubs } from '../../api/client/subsmanager.js';
@@ -28,8 +28,6 @@ import { newsListSubs, filActusSubs } from '../../api/client/subsmanager.js';
 import { Events } from '../../api/events.js';
 import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
-import { Poi } from '../../api/poi.js';
-import { Classified } from '../../api/classified.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Rooms } from '../../api/rooms.js';
 import { News, SchemasNewsRestBase } from '../../api/news.js';
@@ -48,8 +46,6 @@ import '../components/news/card.js';
 window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
-window.Poi = Poi;
-window.Classified = Classified;
 window.Citoyens = Citoyens;
 window.Rooms = Rooms;
 
@@ -404,7 +400,7 @@ Template.scopeActionsTemplate.onCreated(function () {
   this.ready = new ReactiveVar();
   this.autorun(function () {
     pageSession.set('scopeId', Router.current().params._id);
-    pageSession.set('scope', Router.current().params.scope);  
+    pageSession.set('scope', Router.current().params.scope);
     if (Router.current().params.scope === 'citoyens') {
       const handle = this.subscribe('all.user.actions2', Router.current().params.scope, Router.current().params._id);
       this.ready.set(handle.ready());

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable import/prefer-default-export */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
@@ -10,8 +11,6 @@ import { Projects } from './projects.js';
 import { Rooms } from './rooms.js';
 
 import { nameToCollection, notifyDisplay } from './helpers.js';
-
-
 
 
 export const ActivityStream = new Mongo.Collection('activityStream', { idGeneration: 'MONGO' });
@@ -318,7 +317,6 @@ ActivityStream.api = {
         // target
         targetObj = { id: organizationOne._id._str, name: organizationOne.name, type: 'organizations', links: organizationOne.links };
       }
-
     } else if (object && object.type === 'actions' && object.parentType === 'organizations') {
       const organizationOne = Organizations.findOne({ _id: new Mongo.ObjectID(object.parentId) });
 
@@ -629,8 +627,6 @@ ActivityStream.api = {
               // isUser
             }
           }
-
-          
         } else if (verb === 'logusercredit') {
           if (object.type === 'logusercredit') {
             if (type === 'isAdmin') {
@@ -857,7 +853,7 @@ ActivityStream.api = {
           }
         }
       }
-     
+
       // console.log(notificationObj);
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);
@@ -880,7 +876,7 @@ if (Meteor.isServer) {
   ActivityStream.api.sendRC = (userId, parentType, parentId, msg) => {
     const collectionScope = nameToCollection(parentType);
     const scopeOne = collectionScope.findOne({
-      _id: new Mongo.ObjectID(parentId), 'tools.chat': { $exists: true }, slug: { $exists: true }
+      _id: new Mongo.ObjectID(parentId), 'tools.chat': { $exists: true }, slug: { $exists: true },
     });
 
     /*

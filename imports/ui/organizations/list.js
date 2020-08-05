@@ -15,10 +15,10 @@ import { IonPopup } from 'meteor/meteoric:ionic';
 // collections
 import { Organizations, BlockOrganizationsRest } from '../../api/organizations.js';
 import { Cities } from '../../api/cities.js';
-import { Lists } from '../../api/lists.js';
+// import { Lists } from '../../api/lists.js';
 
 // submanager
-import { listOrganizationsSubs, listsSubs, scopeSubscribe } from '../../api/client/subsmanager.js';
+import { listsSubs } from '../../api/client/subsmanager.js';
 
 import '../map/map.js';
 import '../components/scope/item.js';
@@ -27,74 +27,7 @@ import './list.html';
 
 import { pageSession } from '../../api/client/reactive.js';
 import position from '../../api/client/position.js';
-import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
-
-Template.listOrganizations.onCreated(function () {
-  pageSession.set('sortOrganizations', null);
-  pageSession.set('searchOrganizations', null);
-  pageSession.set('selectorga', null);
-  scopeSubscribe(this, listOrganizationsSubs, 'geo.scope', 'organizations');
-});
-
-
-Template.listOrganizations.helpers({
-  organizations () {
-    const searchOrganizations = pageSession.get('searchOrganizations');
-    const selectorga = pageSession.get('selectorga');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchOrganizations) {
-      query = searchQuery(query, searchOrganizations);
-    }
-    if (selectorga) {
-      query.type = selectorga;
-    }
-    return Organizations.find(query);
-  },
-  countOrganizations () {
-    const searchOrganizations = pageSession.get('searchOrganizations');
-    const selectorga = pageSession.get('selectorga');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchOrganizations) {
-      query = searchQuery(query, searchOrganizations);
-    }
-    if (selectorga) {
-      query.type = selectorga;
-    }
-    return Organizations.find(query).count();
-  },
-  searchOrganizations () {
-    return pageSession.get('searchOrganizations');
-  },
-  dataReady() {
-    return Template.instance().ready.get();
-  },
-  selectorga () {
-    return pageSession.get('selectorga');
-  },
-  listOrganisationTypes () {
-    const listSelect = Lists.findOne({ name: 'organisationTypes' });
-    if (listSelect && listSelect.list) {
-      return _.map(listSelect.list, (value, key) => ({ label: value, value: key }));
-    }
-    return undefined;
-  },
-});
-
-Template.listOrganizations.events({
-  'keyup #search, change #search'(event) {
-    if (event.currentTarget.value.length > 2) {
-      pageSession.set('searchOrganizations', event.currentTarget.value);
-    } else {
-      pageSession.set('searchOrganizations', null);
-    }
-  },
-  'click .selectorga' (event) {
-    event.preventDefault();
-    pageSession.set('selectorga', event.currentTarget.id);
-  },
-});
+import { matchTags } from '../../api/helpers.js';
 
 Template.organizationsAdd.onCreated(function () {
   const template = Template.instance();
@@ -665,12 +598,12 @@ Template.ocecoEdit.helpers({
 
 AutoForm.addHooks(['editOceco'], {
   after: {
-    method(error, result) {
+    method(error) {
       if (!error) {
         Router.go('adminDashboard', {}, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         Router.go('adminDashboard', {}, { replaceState: true });
       }

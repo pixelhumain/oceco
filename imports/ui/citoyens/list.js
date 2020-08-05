@@ -8,63 +8,13 @@ import { Mongo } from 'meteor/mongo';
 // collections
 import { Citoyens, BlockCitoyensRest } from '../../api/citoyens.js';
 
-// submanager
-import { listCitoyensSubs, scopeSubscribe } from '../../api/client/subsmanager.js';
-
 import '../map/map.js';
 import '../components/scope/item.js';
 
 import './list.html';
 
 import { pageSession } from '../../api/client/reactive.js';
-import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
-
-
-Template.listCitoyens.onCreated(function () {
-  pageSession.set('sortCitoyens', null);
-  pageSession.set('searchCitoyens', null);
-  scopeSubscribe(this, listCitoyensSubs, 'geo.scope', 'citoyens');
-});
-
-
-Template.listCitoyens.helpers({
-  citoyens () {
-    const searchCitoyens = pageSession.get('searchCitoyens');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchCitoyens) {
-      query = searchQuery(query, searchCitoyens);
-    }
-    query._id = { $ne: new Mongo.ObjectID(Meteor.userId()) };
-    return Citoyens.find(query);
-  },
-  countCitoyens () {
-    const searchCitoyens = pageSession.get('searchCitoyens');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchCitoyens) {
-      query = searchQuery(query, searchCitoyens);
-    }
-    query._id = { $ne: new Mongo.ObjectID(Meteor.userId()) };
-    return Citoyens.find(query).count();
-  },
-  searchCitoyens () {
-    return pageSession.get('searchCitoyens');
-  },
-  dataReady() {
-    return Template.instance().ready.get();
-  },
-});
-
-Template.listCitoyens.events({
-  'keyup #search, change #search'(event) {
-    if (event.currentTarget.value.length > 2) {
-      pageSession.set('searchCitoyens', event.currentTarget.value);
-    } else {
-      pageSession.set('searchCitoyens', null);
-    }
-  },
-});
+import { matchTags } from '../../api/helpers.js';
 
 
 Template.citoyensEdit.onCreated(function () {
@@ -365,7 +315,7 @@ AutoForm.addHooks(['editBlockCitoyen'], {
       const scope = 'citoyens';
       const block = pageSession.get('block');
       if (modifier && modifier.$set) {
-        console.log(pageSession.get('tags'));
+        // console.log(pageSession.get('tags'));
         modifier.$set = matchTags(modifier.$set, pageSession.get('tags'));
       } else {
         modifier.$set = {};

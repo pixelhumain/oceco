@@ -53,6 +53,7 @@ SchemasProposalsRest.extend({
   amendementDateEnd: {
     type: Date,
     optional: true,
+    // eslint-disable-next-line consistent-return
     custom() {
       if (this.field('amendementActivated').value === true && !this.isSet && (!this.operator || (this.value === null || this.value === ''))) {
         return 'required';
@@ -71,6 +72,7 @@ SchemasProposalsRest.extend({
   },
   voteDateEnd: {
     type: Date,
+    // eslint-disable-next-line consistent-return
     custom() {
       // voteDateEnd plus grand que amendementDateEnd
       if (this.field('amendementActivated').value === true && this.field('amendementDateEnd').value) {
@@ -271,7 +273,7 @@ if (Meteor.isClient) {
 }
 
 Proposals.helpers({
-  isVisibleFields(field) {
+  isVisibleFields() {
     return true;
   },
   isPublicFields(field) {

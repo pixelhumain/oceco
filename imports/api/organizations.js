@@ -19,7 +19,6 @@ import { Citoyens } from './citoyens.js';
 import { Documents } from './documents.js';
 import { Events } from './events.js';
 import { Projects } from './projects.js';
-import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
@@ -450,6 +449,7 @@ Organizations.helpers({
     }
   },
   detailRooms (roomId) {
+    // eslint-disable-next-line no-empty
     if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
 
     }
@@ -467,7 +467,6 @@ Organizations.helpers({
     }
     // console.log(query);
     return Rooms.find(query);
-    
   },
   countRooms (search) {
     return this.listRooms(search) && this.listRooms(search).count();
@@ -629,16 +628,6 @@ Organizations.helpers({
   countProjectsCreator(search) {
     return this.listProjectsCreator(search) && this.listProjectsCreator(search).count();
   },
-  listPoiCreator () {
-    const query = {};
-    query[`parent.${this._id._str}`] = {
-      $exists: true,
-    };
-    return Poi.find(query);
-  },
-  countPoiCreator () {
-    return this.listPoiCreator() && this.listPoiCreator().count();
-  },
   listEventsCreator () {
     if (this.links && this.links.events) {
       const eventsIds = arrayLinkParent(this.links.events, 'events');
@@ -710,7 +699,6 @@ Organizations.helpers({
   },
 
 
-
   /*
   WARNING j'ai du créer listProjectsEventsCreator1M pour rajouter un delai de visibiliter 15 jours
   des actions lier au evenement pour pouvoir valider apres la fin
@@ -718,10 +706,10 @@ Organizations.helpers({
   listProjectsEventsCreator1M(querySearch) {
     if (this.links && this.links.projects) {
       const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
-      const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+      // const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
       const query = querySearch || {};
       query.$or = [];
-      
+
       projectIds.forEach((id) => {
         const queryCo = {};
         // if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
@@ -732,7 +720,7 @@ Organizations.helpers({
       if (query.$or.length === 0) {
         delete query.$or;
       }
-      
+
       // queryOptions.fields.parentId = 1;
       // const inputDate = new Date();
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();
@@ -813,25 +801,22 @@ Organizations.helpers({
           $in: mergeArray,
         };
       }
+    } else if (this.isAdmin()) {
+      const listProjects = this.listProjects();
+      const eventIds = listEvents.map(event => event._id._str);
+      const projectIds = listProjects.map(project => project._id._str);
+      const mergeArray = [...eventIds, ...projectIds, this._id._str];
+      query.parentId = {
+        $in: mergeArray,
+      };
     } else {
-      if (this.isAdmin()) {
-        const listProjects = this.listProjects();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
-        const mergeArray = [...eventIds, ...projectIds, this._id._str];
-        query.parentId = {
-          $in: mergeArray,
-        };
-      } else {
-        const listProjects = this.listProjectsCreatorAdmin();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
-        const mergeArray = [...eventIds, ...projectIds];
-        query.parentId = {
-          $in: mergeArray,
-        };
-      }
-
+      const listProjects = this.listProjectsCreatorAdmin();
+      const eventIds = listEvents.map(event => event._id._str);
+      const projectIds = listProjects.map(project => project._id._str);
+      const mergeArray = [...eventIds, ...projectIds];
+      query.parentId = {
+        $in: mergeArray,
+      };
     }
 
     if (status === 'todo') {
@@ -879,25 +864,22 @@ Organizations.helpers({
           $in: mergeArray,
         };
       }
+    } else if (this.isAdmin()) {
+      const listProjects = this.listProjects();
+      const eventIds = listEvents.map(event => event._id._str);
+      const projectIds = listProjects.map(project => project._id._str);
+      const mergeArray = [...eventIds, ...projectIds, this._id._str];
+      query.parentId = {
+        $in: mergeArray,
+      };
     } else {
-      if (this.isAdmin()) {
-        const listProjects = this.listProjects();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
-        const mergeArray = [...eventIds, ...projectIds, this._id._str];
-        query.parentId = {
-          $in: mergeArray,
-        };
-      } else {
-        const listProjects = this.listProjectsCreatorAdmin();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
-        const mergeArray = [...eventIds, ...projectIds];
-        query.parentId = {
-          $in: mergeArray,
-        };
-      }
-
+      const listProjects = this.listProjectsCreatorAdmin();
+      const eventIds = listEvents.map(event => event._id._str);
+      const projectIds = listProjects.map(project => project._id._str);
+      const mergeArray = [...eventIds, ...projectIds];
+      query.parentId = {
+        $in: mergeArray,
+      };
     }
 
     if (status === 'todo') {
@@ -1009,10 +991,10 @@ Organizations.helpers({
     const eventsArrayId = [];
     Events.find(queryEventsArray).forEach(function (event) { eventsArrayId.push(event._id._str); });
 
-    //faire un ou si date pas remplie
+    // faire un ou si date pas remplie
     const query = {};
     const inputDate = new Date();
-    //query.endDate = { $gte: inputDate };
+    // query.endDate = { $gte: inputDate };
     query.$or = [];
     query.$or.push({ endDate: { $exists: true, $gte: inputDate }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
     query.$or.push({ endDate: { $exists: false }, parentId: { $in: [...eventsArrayId, ...poleProjectsId, this._id._str] }, status: 'todo' });
@@ -1045,10 +1027,10 @@ Organizations.helpers({
     const eventsArrayId = [];
     Events.find(queryEventsArray).forEach(function (event) { eventsArrayId.push(event._id._str); });
 
-    //faire un ou si date pas remplie
+    // faire un ou si date pas remplie
     const query = {};
     const inputDate = new Date();
-    //query.endDate = { $gte: inputDate };
+    // query.endDate = { $gte: inputDate };
     const linkUserID = `links.contributors.${bothUserId}`;
 
     const fields = {};

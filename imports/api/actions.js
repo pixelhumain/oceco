@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
@@ -101,7 +102,7 @@ SchemasActionsRest.extend({
       }
       const startDate = moment(this.value).toDate();
       const endDate = moment(this.field('endDate').value).toDate();
-      if (!this.field('options.possibleStartActionBeforeStartDate').value){
+      if (!this.field('options.possibleStartActionBeforeStartDate').value) {
         if (moment(endDate).isBefore(startDate)) {
           return 'maxDateStart';
         }
@@ -112,12 +113,11 @@ SchemasActionsRest.extend({
     type: Date,
     optional: true,
     custom() {
+      // eslint-disable-next-line no-empty
       if (this.field('startDate').value && this.field('options.possibleStartActionBeforeStartDate').value) {
 
-      } else {
-        if (this.field('startDate').value && !this.isSet && (!this.operator || (this.value === null || this.value === ''))) {
-          return 'required';
-        }
+      } else if (this.field('startDate').value && !this.isSet && (!this.operator || (this.value === null || this.value === ''))) {
+        return 'required';
       }
       if (this.value) {
         const startDate = moment(this.field('startDate').value).toDate();
@@ -126,7 +126,6 @@ SchemasActionsRest.extend({
           return 'minDateEnd';
         }
       }
-      
     },
   },
   parentId: {
@@ -241,47 +240,41 @@ if (Meteor.isClient) {
       if (this.startDate) {
         const start = moment(this.startDate).toDate();
         return Chronos.moment(start).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotStartDate() {
       if (this.startDate) {
         const start = moment(this.startDate).toDate();
         return Chronos.moment().isBefore(start); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isEndDate() {
-      if (this.endDate){
+      if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return Chronos.moment(end).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotEndDate() {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return Chronos.moment().isBefore(end); // True
-      } else {
-        return false;
       }
+      return false;
     },
     timeSpentStart() {
       if (this.startDate) {
         return Chronos.moment(this.startDate).fromNow();
-      } else {
-        return false;
       }
+      return false;
     },
     timeSpentEnd() {
       if (this.endDate) {
         return Chronos.moment(this.endDate).fromNow();
-      } else {
-        return false;
       }
+      return false;
     },
   });
 } else {
@@ -290,17 +283,15 @@ if (Meteor.isClient) {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return moment(end).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotEndDate() {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return moment().isBefore(end); // True
-      } else {
-        return false;
       }
+      return false;
     },
   });
 }

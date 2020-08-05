@@ -3,6 +3,10 @@ import { Mongo } from 'meteor/mongo';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 
+import { Citoyens } from './citoyens.js';
+import { Comments } from './comments.js';
+
+// eslint-disable-next-line import/prefer-default-export
 export const Resolutions = new Mongo.Collection('resolutions', { idGeneration: 'MONGO' });
 
 if (Meteor.isClient) {
@@ -48,7 +52,7 @@ if (Meteor.isClient) {
 }
 
 Resolutions.helpers({
-  isVisibleFields (field) {
+  isVisibleFields () {
     return true;
   },
   isPublicFields (field) {

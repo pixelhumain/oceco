@@ -140,7 +140,7 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
-  
+
   this.route('poiBlockEdit', {
     template: 'poiBlockEdit',
     path: '/poi/:_id/edit/block/:block',
@@ -266,7 +266,7 @@ Router.map(function() {
     path: '/:scope/contributors/:_id',
     loadingTemplate: 'loading',
   });
-  
+
   this.route('eventsList', {
     template: 'newsList',
     path: '/:scope/events/:_id',
@@ -435,7 +435,7 @@ Router.map(function() {
   });
 
   this.route('invitations', {
-    template: 'Page_invitations',
+    template: 'pageInvitations',
     path: '/:scope/invitations/:_id',
     loadingTemplate: 'loading',
   });
@@ -616,7 +616,6 @@ const ensurePixelSignin = function () {
 
 const ensurePixelIsAdmin = function() {
   if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain) {
-    const RaffId = Session.get('orgaCibleId');
     const isAdmin = Session.get(`isAdmin${Session.get('orgaCibleId')}`);
     // console.log(RaffId);
     // console.log(isAdmin);

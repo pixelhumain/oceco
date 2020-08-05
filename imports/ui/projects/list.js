@@ -9,61 +9,14 @@ import { Mongo } from 'meteor/mongo';
 import { Citoyens } from '../../api/citoyens.js';
 import { Projects, BlockProjectsRest } from '../../api/projects.js';
 
-// submanager
-import { listProjectsSubs, scopeSubscribe } from '../../api/client/subsmanager.js';
-
 import '../map/map.js';
 import '../components/scope/item.js';
 
 import './list.html';
 
 import { pageSession } from '../../api/client/reactive.js';
-import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
+import { matchTags } from '../../api/helpers.js';
 
-
-Template.listProjects.onCreated(function () {
-  pageSession.set('sortProjects', null);
-  pageSession.set('searchProjects', null);
-  scopeSubscribe(this, listProjectsSubs, 'geo.scope', 'projects');
-});
-
-
-Template.listProjects.helpers({
-  projects () {
-    const searchProjects = pageSession.get('searchProjects');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchProjects) {
-      query = searchQuery(query, searchProjects);
-    }
-    return Projects.find(query);
-  },
-  countProjects () {
-    const searchProjects = pageSession.get('searchProjects');
-    let query = {};
-    query = queryGeoFilter(query);
-    if (searchProjects) {
-      query = searchQuery(query, searchProjects);
-    }
-    return Projects.find(query).count();
-  },
-  searchProjects () {
-    return pageSession.get('searchProjects');
-  },
-  dataReady() {
-    return Template.instance().ready.get();
-  },
-});
-
-Template.listProjects.events({
-  'keyup #search, change #search'(event) {
-    if (event.currentTarget.value.length > 2) {
-      pageSession.set('searchProjects', event.currentTarget.value);
-    } else {
-      pageSession.set('searchProjects', null);
-    }
-  },
-});
 
 Template.projectsAdd.onCreated(function () {
   pageSession.set('error', false);
@@ -204,7 +157,7 @@ Template.projectsBlockEdit.helpers({
       }
     } else if (Router.current().params.block === 'info') {
       projectEdit.name = project.name;
-      
+
       if (project.properties && project.properties.avancement) {
         projectEdit.avancement = project.properties.avancement;
       }
@@ -406,6 +359,7 @@ AutoForm.addHooks(['addProject', 'editProject'], {
       // console.log(doc);
       doc.parentType = pageSession.get('parentType');
       doc.parentId = pageSession.get('parentId');
+      // eslint-disable-next-line no-param-reassign
       doc = matchTags(doc, pageSession.get('tags'));
       // console.log(doc.tags);
       return doc;

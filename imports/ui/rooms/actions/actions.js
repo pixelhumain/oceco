@@ -4,6 +4,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
 import i18n from 'meteor/universe:i18n';
@@ -17,9 +18,6 @@ import { Organizations } from '../../../api/organizations.js';
 import { Projects } from '../../../api/projects.js';
 
 import { nameToCollection } from '../../../api/helpers.js';
-
-// submanager
-import { newsListSubs } from '../../../api/client/subsmanager.js';
 
 import { pageSession, searchAction } from '../../../api/client/reactive.js';
 
@@ -228,7 +226,7 @@ Template.actionsFields.events({
       instance.find('.autoform-add-item').click();
     }
   },
-  'click input[name="options.creditAddPorteur"]'(event, instance) {
+  'click input[name="options.creditAddPorteur"]'(event) {
     pageSession.set('options.creditAddPorteur', event.currentTarget.checked);
     pageSession.set('isPossiblecreditSharePorteur', false);
     pageSession.set('min', 1);
@@ -247,7 +245,7 @@ Template.actionsFields.events({
       pageSession.set('credits', parseInt(max));
     }
   },
-  'keyup input[name="min"]'(event, instance) {
+  'keyup input[name="min"]'(event) {
     if (!pageSession.get('isDepense')) {
       if ((event.currentTarget.value && event.currentTarget.value > 1) || (pageSession.get('max') && pageSession.get('max') > 1)) {
         pageSession.set('isPossiblecreditSharePorteur', true);
@@ -260,7 +258,7 @@ Template.actionsFields.events({
 
     pageSession.set('min', parseInt(event.currentTarget.value));
   },
-  'keyup input[name="max"]'(event, instance) {
+  'keyup input[name="max"]'(event) {
     if (!pageSession.get('isDepense')) {
       if ((event.currentTarget.value && event.currentTarget.value > 1) || (pageSession.get('min') && pageSession.get('min') > 1)) {
         pageSession.set('isPossiblecreditSharePorteur', true);
@@ -270,11 +268,10 @@ Template.actionsFields.events({
     } else {
       pageSession.set('isPossiblecreditSharePorteur', false);
     }
-    
+
     pageSession.set('max', parseInt(event.currentTarget.value));
   },
   'keyup input[name="credits"]'(event, instance) {
-
     if (event.currentTarget && event.currentTarget.value && event.currentTarget.value > 0) {
       pageSession.set('isCredits', true);
       pageSession.set('credits', parseInt(event.currentTarget.value));
@@ -301,7 +298,7 @@ Template.actionsFields.events({
       }
     }
   },
-  'keyup/change input[name="startDate"]'(event, instance) {
+  'keyup/change input[name="startDate"]'(event) {
     if (event.currentTarget.value) {
       pageSession.set('isStartDate', true);
     } else {
@@ -358,7 +355,6 @@ Template.actionsFields.onRendered(function () {
       }
     });
   }
-  
 });
 
 Template.actionsEdit.onCreated(function () {

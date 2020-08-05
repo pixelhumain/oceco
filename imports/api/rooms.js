@@ -55,7 +55,7 @@ collection:rooms
 id:59ccb9fb40bb4e014f991baf */
 
 Rooms.helpers({
-  isVisibleFields (field) {
+  isVisibleFields () {
     /* if(this.isMe()){
         return true;
       }else{
@@ -288,13 +288,13 @@ Rooms.helpers({
   countActionsStatus (status, search) {
     return this.listActionsStatus(status, search) && this.listActionsStatus(status, search).count();
   },
-  proposal (proposalId) {
+  proposal () {
     return Proposals.findOne({ _id: new Mongo.ObjectID(Router.current().params.proposalId) });
   },
-  action (actionId) {
+  action () {
     return Actions.findOne({ _id: new Mongo.ObjectID(Router.current().params.actionId) });
   },
-  resolution (resolutionId) {
+  resolution () {
     return Resolutions.findOne({ _id: new Mongo.ObjectID(Router.current().params.resolutionId) });
   },
 });

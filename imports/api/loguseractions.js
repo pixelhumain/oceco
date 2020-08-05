@@ -2,6 +2,7 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Actions } from './actions';
 import { Citoyens } from './citoyens.js';

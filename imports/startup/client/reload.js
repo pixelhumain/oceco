@@ -1,8 +1,8 @@
 
+/* global IonPopup device */
 import { Meteor } from 'meteor/meteor';
 import { Reloader } from 'meteor/jamielob:reloader';
 import { Tracker } from 'meteor/tracker';
-import { Template } from 'meteor/templating';
 
 Meteor.startup(() => {
   if (Meteor.isCordova) {
@@ -26,7 +26,6 @@ Meteor.startup(() => {
       // return 'https://itunes.apple.com/FR/app/xxxxxxxx?mt=8';
     }
   }); */
-
 });
 
 if (Meteor.isDevelopment) {

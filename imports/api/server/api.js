@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable import/prefer-default-export */
 import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
 import { request } from 'meteor/froatsnook:request';
@@ -32,7 +34,7 @@ const callPixelRest = (token, method, controller, action, post) => {
 };
 
 const callPixelMethodRest = (token, method, controller, action, post) => {
-  post['json'] = 1;
+  post.json = 1;
   // console.log(post);
   const responsePost = HTTP.call(method, `${Meteor.settings.endpoint}/${controller}/${action}`, {
     headers: {
@@ -55,9 +57,7 @@ const callPixelMethodRest = (token, method, controller, action, post) => {
 
 apiCommunecter.postPixel = function(controller, action, params) {
   const userC = Meteor.users.findOne({ _id: Meteor.userId() });
-  console.log(userC.profile.token);
   // console.log(userC.services.resume.loginTokens[0]);
-  
   if (userC && userC.profile && userC.profile.token) {
     const retour = callPixelRest(userC.profile.token, 'POST', controller, action, params);
     return retour;
@@ -92,7 +92,7 @@ apiCommunecter.callRCRestUserToken = (userId, method, action, post) => {
       // console.log(responsePost);
       if (responsePost && responsePost.data && responsePost.data.success) {
         return responsePost.data;
-      } 
+      }
     } catch (error) {
       // console.log(error.response.data.error);
       if (error && error.response && error.response.data && error.response.data.error) {
@@ -101,9 +101,7 @@ apiCommunecter.callRCRestUserToken = (userId, method, action, post) => {
         throw new Meteor.Error('error_server', 'error server RC');
       }
     }
-
   }
-
 };
 
 apiCommunecter.callRCrest = (method, action, post) => {
@@ -128,7 +126,6 @@ apiCommunecter.callRCrest = (method, action, post) => {
     } else {
       throw new Meteor.Error('error_server', 'error server RC');
     }
-    
   }
 };
 
@@ -245,14 +242,14 @@ const callPixelUploadSaveRest = (token, folder, ownerId, input, dataURI, name, d
     },
   };
   if (params) {
-    if (params['parentId']) {
-      formData['parentId'] = params['parentId'];
+    if (params.parentId) {
+      formData.parentId = params.parentId;
     }
-    if (params['parentType']) {
-      formData['parentType'] = params['parentType'];
+    if (params.parentType) {
+      formData.parentType = params.parentType;
     }
     if (input) {
-      formData['formOrigin'] = input;
+      formData.formOrigin = input;
     }
   }
   const requestWithToken = request.defaults({
@@ -289,7 +286,7 @@ apiCommunecter.postUploadPixel = (folder, ownerId, input, dataBlob, name) => {
 
 apiCommunecter.postUploadSavePixel = (folder, ownerId, input, dataBlob, name, doctype, contentKey, params = null) => {
   const userC = Meteor.users.findOne({
-    _id: Meteor.userId()
+    _id: Meteor.userId(),
   });
   if (userC && userC.profile && userC.profile.token) {
     const retour = callPixelUploadSaveRest(userC.profile.token, folder, ownerId, input, dataBlob, name, doctype, contentKey, params);

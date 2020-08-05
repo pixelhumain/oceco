@@ -1,3 +1,4 @@
+/* global Assets */
 import { Meteor } from 'meteor/meteor';
 import { Push } from 'meteor/raix:push';
 import { Mongo } from 'meteor/mongo';
@@ -5,19 +6,7 @@ import { Accounts } from 'meteor/accounts-base';
 
 // collection
 import { Citoyens } from '../citoyens.js';
-import { apiCommunecter } from './api.js';
-import { Organizations } from '../organizations.js';
-import { Projects } from '../projects.js';
 
-/* const validateEntityByPass = (childId) => {
-  const doc = {};
-  doc.parentId = Meteor.settings.public.orgaCibleId;
-  doc.parentType = 'organizations';
-  doc.childId = childId;
-  doc.childType = 'citoyens';
-  doc.linkOption = 'toBeValidated';
-  const retour = apiCommunecter.postPixel('co2/link', 'validate', doc);
-}; */
 Accounts.onLogin(function(user) {
 // console.log(user.user._id)
   const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(user.user._id) }, { fields: { pwd: 0 } });
@@ -77,14 +66,14 @@ Accounts.onLogin(function(user) {
   }
 });
 
- let serviceAccountJson = JSON.parse(Assets.getText('oceco-a60b5-firebase-adminsdk-rfgzm-f8a214638f.json'));
+const serviceAccountJson = JSON.parse(Assets.getText('oceco-a60b5-firebase-adminsdk-rfgzm-f8a214638f.json'));
 
 
 if (Meteor.isDevelopment) {
   Push.debug = true;
   Push.Configure({
     fcm: {
-      serviceAccountJson: serviceAccountJson
+      serviceAccountJson,
     },
     gcm: {
       apiKey: Meteor.settings.pushapiKey,
@@ -101,7 +90,7 @@ if (Meteor.isDevelopment) {
 } else {
   Push.Configure({
     fcm: {
-      serviceAccountJson: serviceAccountJson
+      serviceAccountJson,
     },
     gcm: {
       apiKey: Meteor.settings.pushapiKey,
@@ -118,7 +107,7 @@ if (Meteor.isDevelopment) {
 
 
 Push.allow({
-  send(userId, notification) {
+  send() {
     return true;
   },
 });

@@ -15,8 +15,6 @@ import { Lists } from './lists.js';
 import { Citoyens } from './citoyens.js';
 import { Organizations } from './organizations.js';
 import { Projects } from './projects.js';
-import { Poi } from './poi.js';
-import { Gamesmobile } from './gamemobile.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 // SimpleSchema.debug = true;
@@ -286,7 +284,6 @@ BlockEventsRest.preferences.extend({
 if (Meteor.isClient) {
   window.Organizations = Organizations;
   window.Projects = Projects;
-  window.Poi = Poi;
   window.Citoyens = Citoyens;
 }
 
@@ -300,47 +297,41 @@ if (Meteor.isClient) {
       if (this.startDate) {
         const start = moment(this.startDate).toDate();
         return Chronos.moment(start).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotStartDate() {
       if (this.startDate) {
         const start = moment(this.startDate).toDate();
         return Chronos.moment().isBefore(start); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isEndDate() {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return Chronos.moment(end).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotEndDate() {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return Chronos.moment().isBefore(end); // True
-      } else {
-        return false;
       }
+      return false;
     },
     timeSpentStart() {
       if (this.startDate) {
         return Chronos.moment(this.startDate).fromNow();
-      } else {
-        return false;
       }
+      return false;
     },
     timeSpentEnd() {
       if (this.endDate) {
         return Chronos.moment(this.endDate).fromNow();
-      } else {
-        return false;
       }
+      return false;
     },
   });
 } else {
@@ -349,17 +340,15 @@ if (Meteor.isClient) {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return moment(end).isBefore(); // True
-      } else {
-        return false;
       }
+      return false;
     },
     isNotEndDate() {
       if (this.endDate) {
         const end = moment(this.endDate).toDate();
         return moment().isBefore(end); // True
-      } else {
-        return false;
       }
+      return false;
     },
   });
 }
@@ -581,16 +570,6 @@ Events.helpers({
       }
     }
   },
-  listPoiCreator () {
-    const query = {};
-    query[`parent.${this._id._str}`] = {
-      $exists: true,
-    };
-    return Poi.find(query);
-  },
-  countPoiCreator () {
-    return this.listPoiCreator() && this.listPoiCreator().count();
-  },
   listRooms (search) {
     // if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {
     const query = {};
@@ -662,7 +641,7 @@ Events.helpers({
       queryone.status = status;
     }
     queryone.parentId = { $in: [this._id._str] };
-    
+
     if (Meteor.isClient) {
       if (search) {
         queryone = searchQuery(queryone, search);
@@ -675,7 +654,7 @@ Events.helpers({
     }
     querytwo.endDate = { $exists: false };
     querytwo.parentId = { $in: [this._id._str] };
-    
+
     if (Meteor.isClient) {
       if (search) {
         querytwo = searchQuery(querytwo, search);
@@ -730,14 +709,6 @@ Events.helpers({
   },
   countActionsCreator(type = 'all', status = 'todo', search) {
     return this.listActionsCreator(type, status, search) && this.listActionsCreator(type, status, search).count();
-  },
-  listGamesCreator() {
-    const query = {};
-    query.parentId = this._id._str;
-    return Gamesmobile.find(query);
-  },
-  countGamesCreator() {
-    return this.listGamesCreator() && this.listGamesCreator().count();
   },
   newsJournal (target, userId, limit) {
     const query = {};

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { userTest } from './reactive.js';
+import { Tracker } from 'meteor/tracker';
+// import { userTest } from './reactive.js';
 
 const userTestClient = {
   config() {
@@ -25,7 +26,7 @@ const userTestClient = {
     }
   },
   status() {
-    Tracker.autorun((c) => {
+    Tracker.autorun(() => {
       console.log(Meteor.status());
     });
   },

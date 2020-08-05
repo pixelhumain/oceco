@@ -16,11 +16,10 @@ import { Citoyens } from './citoyens.js';
 import { Organizations } from './organizations.js';
 import { Documents } from './documents.js';
 import { Events } from './events.js';
-import { Poi } from './poi.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, searchQuerySort, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions, nameToCollection } from './helpers.js';
+import { searchQuery, searchQuerySort, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Projects = new Mongo.Collection('projects', { idGeneration: 'MONGO' });
 
@@ -477,16 +476,6 @@ Projects.helpers({
         return childrenParent;
       }
     }
-  },
-  listPoiCreator () {
-    const query = {};
-    query[`parent.${this._id._str}`] = {
-      $exists: true,
-    };
-    return Poi.find(query);
-  },
-  countPoiCreator () {
-    return this.listPoiCreator() && this.listPoiCreator().count();
   },
   listRooms (search) {
     if (Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }).isScope(this.scopeVar(), this._id._str)) {

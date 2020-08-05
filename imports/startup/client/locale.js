@@ -4,7 +4,6 @@ import { Template } from 'meteor/templating';
 import { Helpers } from 'meteor/raix:handlebar-helpers';
 import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
-import SimpleSchema from 'simpl-schema';
 import '../../../i18n/en.i18n.json';
 import '../../../i18n/fr.i18n.json';
 
@@ -15,7 +14,7 @@ i18n.setOptions({
   close: '__',
   defaultLocale: 'en',
   sameLocaleOnServerConnection: true,
-  purify: string => string
+  purify: string => string,
   // translationsHeaders: {'Cache-Control':'no-cache'},
 });
 

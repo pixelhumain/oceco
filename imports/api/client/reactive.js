@@ -6,15 +6,15 @@ export const pageDirectory = new ReactiveDict('pageDirectory');
 
 export const searchAction = new ReactiveDict('searchAction');
 
-export const pageCollections = new ReactiveDict('pageCollections');
+// export const pageCollections = new ReactiveDict('pageCollections');
 
 export const geoId = new ReactiveDict('geoId');
 
 export const SessionGeo = new ReactiveDict('sessionGeo');
 
-export const SessionSensors = new ReactiveDict('SessionSensors');
+// export const SessionSensors = new ReactiveDict('SessionSensors');
 
-export const pageVideo = new ReactiveDict('pageVideo');
+// export const pageVideo = new ReactiveDict('pageVideo');
 
 export const userTest = new ReactiveDict('userTest');
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import SimpleSchema from 'simpl-schema';
 import i18n from 'meteor/universe:i18n';
 
@@ -57,5 +58,4 @@ SimpleSchema.setDefaultMessages({
 });
 
 SimpleSchema.extendOptions(['autoform']);
-
 

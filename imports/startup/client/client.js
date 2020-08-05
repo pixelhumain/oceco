@@ -27,8 +27,6 @@ import { Documents } from '../../api/documents.js';
 import { SchemasEventsRest, BlockEventsRest } from '../../api/events.js';
 import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../../api/organizations.js';
 import { SchemasProjectsRest, BlockProjectsRest } from '../../api/projects.js';
-import { SchemasPoiRest, BlockPoiRest } from '../../api/poi.js';
-import { SchemasClassifiedRest } from '../../api/classified.js';
 import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest, Citoyens } from '../../api/citoyens.js';
 import { SchemasNewsRest, SchemasNewsRestBase } from '../../api/news.js';
 import { SchemasCommentsRest, SchemasCommentsEditRest } from '../../api/comments.js';
@@ -282,10 +280,8 @@ Meteor.startup(function () {
     SchemasOrganizationsOcecoRest.i18n('schemas.organizationsocecorest');
     SchemasLogUserActionsRest.i18n('schemas.loguseractionsrest');
     SchemasValidateUserActionsRest.i18n('schemas.loguseractionsrest');
-    SchemasPoiRest.i18n('schemas.poirest');
     SchemasEventsRest.i18n('schemas.eventsrest');
     SchemasProjectsRest.i18n('schemas.projectsrest');
-    SchemasClassifiedRest.i18n('schemas.classifiedrest');
     SchemasRoomsRest.i18n('schemas.roomsrest');
     SchemasProposalsRest.i18n('schemas.proposalsrest');
     BlockProposalsRest.i18n('schemas.blockproposalsrest');
@@ -325,9 +321,6 @@ Meteor.startup(function () {
     BlockProjectsRest.when.i18n('schemas.global');
     BlockProjectsRest.locality.i18n('schemas.global');
     BlockProjectsRest.preferences.i18n('schemas.global');
-    BlockPoiRest.info.i18n('schemas.global');
-    BlockPoiRest.descriptions.i18n('schemas.global');
-    BlockPoiRest.locality.i18n('schemas.global');
   };
 
   i18n.onChangeLocale(registerSchemaMessages);
@@ -440,7 +433,7 @@ Meteor.startup(function () {
 
   Template.registerHelper('htmlToText', (html) => {
     if (html) {
-      return html.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
+      return html.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '');
     }
   });
 
@@ -516,8 +509,6 @@ Meteor.startup(function () {
   Template.registerHelper('SchemasEventsRest', SchemasEventsRest);
   Template.registerHelper('SchemasOrganizationsRest', SchemasOrganizationsRest);
   Template.registerHelper('SchemasOrganizationsOcecoRest', SchemasOrganizationsOcecoRest);
-  Template.registerHelper('SchemasPoiRest', SchemasPoiRest);
-  Template.registerHelper('SchemasClassifiedRest', SchemasClassifiedRest);
   Template.registerHelper('SchemasProjectsRest', SchemasProjectsRest);
   Template.registerHelper('SchemasCommentsRest', SchemasCommentsRest);
   Template.registerHelper('SchemasCommentsEditRest', SchemasCommentsEditRest);
@@ -530,5 +521,4 @@ Meteor.startup(function () {
   Template.registerHelper('SchemasActionsRest', SchemasActionsRest);
   Template.registerHelper('SchemasLogUserActionsRest', SchemasLogUserActionsRest);
   Template.registerHelper('SchemasValidateUserActionsRest', SchemasValidateUserActionsRest);
-  
 });

@@ -1,3 +1,6 @@
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable no-underscore-dangle */
+import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Tracker } from 'meteor/tracker';

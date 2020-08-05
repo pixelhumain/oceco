@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
@@ -31,7 +32,7 @@ window.Citoyens = Citoyens;
 
 const pageSession = new ReactiveDict('pageSearchInvitations');
 
-Template.Page_invitations.onCreated(function() {
+Template.pageInvitations.onCreated(function() {
   this.ready = new ReactiveVar();
   pageSession.set('searchGlobal', null);
   pageSession.set('filter', null);
@@ -50,7 +51,7 @@ Template.Page_invitations.onCreated(function() {
 });
 
 
-Template.Page_invitations.helpers({
+Template.pageInvitations.helpers({
   scope () {
     if (Router.current().params.scope) {
       const collection = nameToCollection(Router.current().params.scope);
@@ -75,7 +76,7 @@ Template.Page_invitations.helpers({
   },
 });
 
-Template.Page_invitations.events({
+Template.pageInvitations.events({
   'keyup #search, change #search': _.throttle((event) => {
     if (event.currentTarget.value.length > 2) {
       pageSession.set('filter', event.currentTarget.value);
@@ -209,7 +210,6 @@ AutoForm.addHooks(['formInvitations'], {
   onError(formType, error) {
     if (error.errorType && error.errorType === 'Meteor.Error') {
       if (error && error.error === 'error_call') {
-        
         if (error.reason === "Problème à l'insertion du nouvel utilisateur : une personne avec cet mail existe déjà sur la plateforme") {
           pageSession.set('error', error.reason.replace(':', ' '));
           IonPopup.alert({ template: i18n.__(error.reason.replace(':', ' ')) });
@@ -227,7 +227,7 @@ AutoForm.addHooks(['formInvitations'], {
         }
       } else {
         pageSession.set('error', error.reason.replace(':', ' '));
-        //IonPopup.alert({ template: i18n.__(error.reason.replace(':', ' ')) });
+        // IonPopup.alert({ template: i18n.__(error.reason.replace(':', ' ')) });
       }
     }
   },

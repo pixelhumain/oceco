@@ -1,88 +1,4 @@
-<template name="listOrganizations">
-  {{> testgeo}}
-  {{#contentFor "headerTitle"}}
-  <h1 class="title">{{__ "organizations"}} {{> cityTitle}}</h1>
-  {{/contentFor}}
-  {{#contentFor "headerButtonLeft"}}
-  <button class="button button-clear pull-left" data-ion-menu-toggle="left">
-  {{#if isAndroid}}
-    {{> ionIcon icon='android-more-vertical'}}
-  {{else}}
-    {{> ionIcon icon='navicon'}}
-  {{/if}}
-  </button>
-  {{/contentFor}}
 
-  {{#contentFor "headerButtonRight"}}
-
-  <button class="button button-clear icon ion-android-notifications brand-base-text-color pull-right all-seen" data-ion-menu-toggle="right">
-    {{#transition in="bounceInDown" out="bounceOutUp"}}
-    {{#if notificationsCount}}
-    <div class="new-notification-bubble animated out">{{notificationsCount}}</div>
-    {{/if}}
-    {{/transition}}
-  </button>
-
-  {{/contentFor}}
-
-{{#if dataReady}}
-  {{#ionView}}
-  {{#ionContent class="scroll-bg"}}
-  <div class="list list-inset">
-    <label class="item item-input">
-      <i class="icon ion-search placeholder-icon"></i>
-      <input id="search" type="text" placeholder="{{__ "searchPlaceholder"}}" value="{{searchOrganizations}}">
-    </label>
-    <div class="button-bar button-small">
-    {{#each listOrganisationTypes}}
-      <a class="button button-small {{#if equals selectorga value}}button-positive activated{{else}}button-positive{{/if}} selectorga" id="{{value}}" data-id="{{value}}">{{label}}</a>
-    {{/each}}
-    </div>
-  </div>
-
-    <div class="list list-inset">
-
-      <div class="item item-divider">
-        <i class="icon fa fa-users"></i> {{__ "organizations"}} <span class="badge badge-dark">{{countOrganizations}}</span>
-      </div>
-
-      {{#if dataReady}}
-      {{#transition in="zoomIn" out="bounceOut"}}
-
-      {{#each item in organizations}}
-      {{> scopeItemList item=item count=(item.countMembers '')}}
-       {{else}}
-
-      {{/each}}
-      {{/transition}}
-      {{/if}}
-    </div>
-
-    <ul id="floating-button">
-      <li class="organization-bg"><a href="{{pathFor 'organizationsAdd' _id=currentUser._id scope='citoyens'}}" style="color:white;">
-        <i class="icon menu-icon ion-plus"></i></a>
-      </li>
-    </ul>
-
-  {{/ionContent}}
-  {{/ionView}}
-
-  {{#if currentUser}}
-  {{#ionTabs class="tabs-dark tabs-icon-only"}}
-  {{> ionTab title=_events path="listOrganizations" iconOff="navicon-round" iconOn="navicon-round"}}
-  {{#unless dataReady}}
-  <a class="tab-item">
-   <i class="fa fa-refresh fa-spin" style="font-size: 18px;"></i>
-  </a>
-  {{else}}
-  {{> ionTab title=_cartes href="map/organizations" iconOff="android-pin" iconOn="android-pin"}}
-  {{/unless}}
-  {{/ionTabs}}
-  {{/if}}
-  {{else}}
-  {{> loading}}
-  {{/if}}
-</template>
 
 <template name="organizationsAdd">
   {{#contentFor "headerButtonLeft"}}
@@ -341,13 +257,13 @@
       Configuration Oceco
     </div>
     {{#if error}}
-    <div class="card">ddataReadyataReady
+    <div class="card">
       <div class="item item-text-wrap animated shake homestead text-center">
         {{__ error}}
       </div>
     </div>
     {{/if}}
-    {{#autoForm id="editOceco" schema=SchemasOrganizationsOcecoRest type="method-update" meteormethod="updateOceco" doc=oceco template="ionic" class="padding"}}
+    {{#autoForm id="editOceco" schema=SchemasOrganizationsOcecoRest type="method-update" meteormethod="updateOceco" doc=oceco template="ionic"}}
     {{> afQuickField name='oceco.pole'}}
     {{> afQuickField name='oceco.organizationAction'}}
     {{> afQuickField name='oceco.projectAction'}}

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 

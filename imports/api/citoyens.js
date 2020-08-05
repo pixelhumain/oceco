@@ -15,8 +15,6 @@ import { Lists } from './lists.js';
 import { News } from './news.js';
 import { Events } from './events.js';
 import { Projects } from './projects.js';
-import { Poi } from './poi.js';
-import { Classified } from './classified.js';
 import { Organizations } from './organizations.js';
 import { Documents } from './documents.js';
 import { Rooms } from './rooms.js';
@@ -318,8 +316,6 @@ if (Meteor.isClient) {
   window.Citoyens = Citoyens;
   window.Projects = Projects;
   window.Events = Events;
-  window.Poi = Poi;
-  window.Classified = Classified;
 
   Citoyens.helpers({
     userCredit() {
@@ -534,16 +530,6 @@ Citoyens.helpers({
   countProjectsCreator () {
     return this.listProjectsCreator() && this.listProjectsCreator().count();
   },
-  listPoiCreator () {
-    const query = {};
-    query[`parent.${this._id._str}`] = {
-      $exists: true,
-    };
-    return Poi.find(query);
-  },
-  countPoiCreator () {
-    return this.listPoiCreator() && this.listPoiCreator().count();
-  },
   listEventsCreator () {
     queryOptions.fields.startDate = 1;
     queryOptions.fields.startDate = 1;
@@ -563,7 +549,7 @@ Citoyens.helpers({
     return this.listOrganizationsCreator() && this.listOrganizationsCreator().count();
   },
   listActionsCreator(type = 'all', status = 'todo', search, searchSort) {
-    const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
+    const bothUserId = Meteor.userId();
     const query = {};
     const inputDate = new Date();
     const linkUserID = `links.contributors.${bothUserId}`;

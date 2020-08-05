@@ -1,3 +1,7 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-shadow */
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Mongo } from 'meteor/mongo';
@@ -211,15 +215,14 @@ export const searchQuerySort = (type, sort) => {
         if (item.existField) {
           return [item.field, order];
           // return { [item.field]: order };
-        } else {
-          if (item.field === 'withContributor') {
-            // 
-          }
+        }
+        if (item.field === 'withContributor') {
+          //
         }
       });
       return arraySort;
+    }
   }
-}
   return false;
 };
 
@@ -426,6 +429,30 @@ export const arrayParent = (array, arrayType) => {
   return arrayIds;
 };
 
+export const queryOrPrivatescopeIds = (query, scope, scopeIds, userId) => {
+  const queryOrPrivate = {};
+  queryOrPrivate._id = { $in: scopeIds };
+  queryOrPrivate['preferences.private'] = true;
+  queryOrPrivate[`links.${scope}.${userId}`] = {
+    $exists: true,
+  };
+  queryOrPrivate[`links.${scope}.${userId}.toBeValidated`] = {
+    $exists: false,
+  };
+  query.$or.push(queryOrPrivate);
+
+  const queryOrPrivateInvite = {};
+  queryOrPrivateInvite._id = { $in: scopeIds };
+  queryOrPrivateInvite['preferences.private'] = true;
+  queryOrPrivateInvite[`links.${scope}.${userId}`] = {
+    $exists: true,
+  };
+  queryOrPrivateInvite[`links.${scope}.${userId}.isInviting`] = {
+    $exists: true,
+  };
+  query.$or.push(queryOrPrivateInvite);
+  return query;
+};
 
 export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, fields = {
   name: 1,
@@ -435,7 +462,7 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
 }) => {
   const childrenParent = [];
 
-  //console.log(scope);
+  // console.log(scope);
 
   if (scope === 'events') {
     // sous events
@@ -470,11 +497,11 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
     if (scope === 'events') {
       const parentPush = {
         find(scopeD) {
-          //console.log(scopeD);
+          // console.log(scopeD);
           if (scopeD.organizer) {
-            //console.log(parent);
+            // console.log(parent);
             const arrayIdsParent = arrayLinkParent(scopeD.organizer, parent);
-            //console.log(arrayIdsParent);
+            // console.log(arrayIdsParent);
             const collectionType = nameToCollection(parent);
             let query = {};
             if (_.contains(['events', 'projects', 'organizations'], parent)) {
@@ -500,7 +527,7 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
                 },
               };
             }
-            //console.log(query);
+            // console.log(query);
             return collectionType.find(query, {
               fields,
             });
@@ -512,12 +539,12 @@ export const arrayChildrenParent = (scope, parentAuthorise, scopeParent = null, 
     } else {
       const parentPush = {
         find(scopeD) {
-          //console.log(scopeD);
+          // console.log(scopeD);
           if (scopeParent) {
             if (_.contains(scopeParent, scope)) {
               if (scopeD.parent) {
                 const arrayIdsParent = arrayLinkParent(scopeD.parent, parent);
-                //console.log(arrayIdsParent);
+                // console.log(arrayIdsParent);
                 const collectionType = nameToCollection(parent);
                 let query = {};
                 if (_.contains(['events', 'projects', 'organizations'], parent)) {
@@ -747,30 +774,6 @@ export const queryOrPrivateScope = (query, scope, scopeId, userId) => {
   return query;
 };
 
-export const queryOrPrivatescopeIds = (query, scope, scopeIds, userId) => {
-  const queryOrPrivate = {};
-  queryOrPrivate._id = { $in: scopeIds };
-  queryOrPrivate['preferences.private'] = true;
-  queryOrPrivate[`links.${scope}.${userId}`] = {
-    $exists: true,
-  };
-  queryOrPrivate[`links.${scope}.${userId}.toBeValidated`] = {
-    $exists: false,
-  };
-  query.$or.push(queryOrPrivate);
-
-  const queryOrPrivateInvite = {};
-  queryOrPrivateInvite._id = { $in: scopeIds };
-  queryOrPrivateInvite['preferences.private'] = true;
-  queryOrPrivateInvite[`links.${scope}.${userId}`] = {
-    $exists: true,
-  };
-  queryOrPrivateInvite[`links.${scope}.${userId}.isInviting`] = {
-    $exists: true,
-  };
-  query.$or.push(queryOrPrivateInvite);
-  return query;
-};
 
 export const queryLinkAttendees = (array, search, type) => {
   const arrayIds = arrayLinkAttendees(array, type);

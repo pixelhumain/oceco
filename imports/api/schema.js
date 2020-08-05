@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 // SimpleSchema.debug = true;

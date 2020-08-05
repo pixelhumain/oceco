@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable meteor/no-session */
-/* global Session */
-import { Meteor } from 'meteor/meteor';
+/* global Session $ _ */
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -14,7 +13,7 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 
 import { searchAction } from '../../api/client/reactive.js';
-import { searchQuery, compareValues, searchQuerySort, searchQuerySortActived } from '../../api/helpers.js';
+import { compareValues, searchQuerySort, searchQuerySortActived } from '../../api/helpers.js';
 
 window.Organizations = Organizations;
 window.Projects = Projects;
@@ -66,7 +65,7 @@ Template.projectsView.helpers({
   poleProjects2() {
     const search = searchAction.get('search');
     const searchSort = searchAction.get('searchSort');
-    
+
     const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
     const query = {};
     const options = {};
@@ -122,9 +121,7 @@ Template.searchActions.helpers({
     }
     const searchTag = searchAction.get('searchTag');
     const arrayAll = orgaOne.actionsAll().map(action => action.tags).filter(Boolean);
-    const mergeDedupe = (arr) => {
-      return [...new Set([].concat(...arr))];
-    };
+    const mergeDedupe = arr => [...new Set([].concat(...arr))];
     const arrayAllMerge = mergeDedupe(arrayAll);
 
     return searchTag && searchTag.length > 1 ? arrayAllMerge.filter(item => item.includes(searchTag.substr(1))) : arrayAllMerge;
@@ -140,7 +137,7 @@ Template.searchActions.events({
       searchAction.set('search', null);
     }
   },
-  'click .searchfilter-js'(event, instance) {
+  'click .searchfilter-js'(event) {
     event.preventDefault();
     const filter = $(event.currentTarget).data('action');
     if (filter) {
@@ -176,7 +173,7 @@ Template.searchActions.events({
     }
   }, 500),
   // Pressing Ctrl+Enter should submit action
-  'keydown #search'(event, instance) {
+  'keydown #search'(event) {
     if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
       // savoir si je suis dans le detail d'un element
       // récupérer les valeurs utiles pour soit publier
@@ -237,7 +234,7 @@ Template.searchSort.helpers({
 });
 
 Template.searchSortItemToggle.events({
-  'click .sort-checked-js'(event, instance) {
+  'click .sort-checked-js'(event) {
     const self = this;
     if (this.type) {
       const sort = searchAction.get('searchSort');
@@ -258,7 +255,7 @@ Template.searchSortItemToggle.events({
       searchAction.set('searchSort', sort);
     }
   },
-  'click .sort-desc-js'(event, instance) {
+  'click .sort-desc-js'(event) {
     const self = this;
     if (this.type) {
       const sort = searchAction.get('searchSort');
