@@ -25,9 +25,7 @@
         </label>
       </div>
     {{> listInvitationsFollows citoyen=citoyen filter=filter scopeId=scopeId scopeVar=scopeVar }}
-    {{#if scope.isAdmin}}
-    {{> listInvitationsMemberOf citoyen=citoyen filter=filter scopeId=scopeId scopeVar=scopeVar }}
-    {{/if}}
+
     {{> searchGlobalInvitations scopeId=scopeId scopeVar=scopeVar filter=filter isAdmin=scope.isAdmin}}
     {{/ionList}}
 
