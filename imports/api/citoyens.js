@@ -640,7 +640,7 @@ Citoyens.helpers({
       };
     }
 
-    console.log(query);
+    // console.log(query);
 
     return Actions.find(query, options);
   },

@@ -834,6 +834,7 @@
   <div class="button-bar bar-positive">
     {{#if isAttendees}}
     <a href="{{pathFor 'listAttendees' _id=_id._str}}" class="button button-small">{{> ionIcon icon="ios-people"}}</a>
+    <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="person-add"}}</a>
 
     {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
 
@@ -887,6 +888,7 @@
       {{#if isMembers}}
       {{#if isAdmin}}
       <a href="{{pathFor 'projectsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un projet</a>
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
       {{/if}}
       {{/if}}
     </div>
@@ -944,6 +946,7 @@
       {{else}}
       {{#if isAdmin}}
       {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
       {{else}}
       {{> Bouton_card id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
       {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}

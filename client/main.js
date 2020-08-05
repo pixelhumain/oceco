@@ -87,9 +87,9 @@ import '../imports/ui/roles/roles.js';
 
 import '../imports/ui/search/search.js';
 import '../imports/ui/changeposition/changeposition.js';
-import '../imports/ui/contacts/contacts.js';
+import '../imports/ui/contacts/contacts.js'; */
 
-import '../imports/ui/invitations/invitations.js'; */
+import '../imports/ui/invitations/invitations.js';
 
 import '../imports/ui/notifications/notifications.js';
 import '../imports/ui/qrcode/qrcode.js';
