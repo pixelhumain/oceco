@@ -1,3 +1,4 @@
+/* eslint-disable key-spacing */
 /* eslint-disable import/prefer-default-export */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
@@ -56,5 +57,31 @@ Meteor.startup(function () {
       });
     });
   }
+
+  // correction de tools.chat.int vide
+  /* const chatProject = Projects.find({ hasRC:{ $exists:true }, slug:{ $exists:true }, 'tools.chat.int':{ $exists:false } });
+  if (chatProject.count() > 0) {
+    chatProject.forEach((project) => {
+      let path;
+      if (project.preferences.private === true || project.preferences.private === 'true') {
+        path = `/group/${project.slug}`;
+      } else {
+        path = `/channel/${project.slug}`;
+      }
+      Projects.update({ _id: project._id }, { $set: { hasRC: true }, $addToSet: { 'tools.chat.int': { name: project.slug, url: path } } });
+    });
+  }
+  const chatOrga = Organizations.find({ hasRC: { $exists: true }, slug: { $exists: true }, 'tools.chat.int': { $exists: false } });
+  if (chatOrga.count() > 0) {
+    chatOrga.forEach((project) => {
+      let path;
+      if (project.preferences.private === true || project.preferences.private === 'true') {
+        path = `/group/${project.slug}`;
+      } else {
+        path = `/channel/${project.slug}`;
+      }
+      Organizations.update({ _id: project._id }, { $set: { hasRC: true }, $addToSet: { 'tools.chat.int': { name: project.slug, url: path } } });
+    });
+  } */
 });
 
