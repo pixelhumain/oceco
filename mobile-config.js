@@ -5,11 +5,11 @@ App.info({
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.11',
-  buildNumber: '131',
+  version: '0.0.13',
+  buildNumber: '133',
 });
 
-App.setPreference('android-targetSdkVersion', '28');
+App.setPreference('android-targetSdkVersion', '29');
 App.setPreference('android-minSdkVersion', '21');
 
 // fix App Error connection to the server was unsuccessful.
@@ -22,14 +22,14 @@ App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: 653253366584,
 });
 
-App.configurePlugin('cordova-plugin-customurlscheme', {
+/* App.configurePlugin('cordova-plugin-customurlscheme', {
   URL_SCHEME: 'oceco',
-});
+}); */
 
-App.configurePlugin('net.yoik.cordova.plugins.intentfilter', {
+/* App.configurePlugin('net.yoik.cordova.plugins.intentfilter', {
   URL_SCHEME: 'https',
   HOST_NAME: 'oce.co.tools',
-});
+}); */
 
 // App.setPreference('onesignalappid', 'fa3e6afd-79f4-4217-a8b6-fb5921546a51');
 // App.setPreference('universallink', 'https://oce.co.tools');
@@ -106,6 +106,13 @@ App.appendToConfig(`<platform name="ios">
       <string>Your current location is used to show services that are nearby</string>
     </config-file>
   </platform>
+    <platform name="android">
+    <preference name="android-targetSdkVersion" value="29" />
+    <preference name="android-minSdkVersion" value="21" />
+  </platform>
+  <universal-links>
+    <host name="oce.co.tools" scheme="https" />
+  </universal-links>
   <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
     <application android:usesCleartextTraffic="true"></application>
   </edit-config>`);
@@ -125,6 +132,7 @@ App.appendToConfig(`<platform name="ios">
     <application android:usesCleartextTraffic="true"></application>
   </edit-config>
 `); */
+
 
 App.accessRule('*');
 App.accessRule('http://*', { type: 'network' });

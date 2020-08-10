@@ -25,7 +25,7 @@ const position = {
     };
 
     // Location.debug = true;
-    Location.getGPSState(success, failure, options);
+    // Location.getGPSState(success, failure, options);
     Location.enableDistanceFilter(5);
     Location.enableTimeFilter(60);
   },

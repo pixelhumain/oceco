@@ -84,7 +84,7 @@ if (Meteor.isDevelopment) {
     badge: true,
     alert: true,
     vibrate: true,
-    sendInterval: null,
+    // sendInterval: null,
     appName: 'main',
   });
 } else {

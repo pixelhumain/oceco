@@ -5,8 +5,8 @@ Package.describe({
 });
 
 Cordova.depends({
-  "cordova-plugin-customurlscheme": "4.2.0",
-  "net.yoik.cordova.plugins.intentfilter": "https://github.com/yoik/cordova-yoik-intent-filter/tarball/28807201240ca76fad7057ed89475d9ecfcedb1d",
+  //"cordova-plugin-customurlscheme": "4.2.0",
+  //"net.yoik.cordova.plugins.intentfilter": "https://github.com/yoik/cordova-yoik-intent-filter/tarball/28807201240ca76fad7057ed89475d9ecfcedb1d",
 });
 
 Package.onUse(function(api) {

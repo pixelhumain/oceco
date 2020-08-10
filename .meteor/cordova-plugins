@@ -1,7 +1,7 @@
 com-sarriaroman-photoviewer@1.1.5
-cordova-custom-config@2.0.3
+cordova-custom-config@5.1.0
 cordova-plugin-android-permissions@https://github.com/NeoLSN/cordova-plugin-android-permissions/tarball/master
 cordova-plugin-device@2.0.2
 cordova-plugin-dialogs@1.3.3
-cordova-plugin-inappbrowser@2.0.0
-cordova-plugin-statusbar@2.3.0
+cordova-plugin-inappbrowser@3.2.0
+fairmanager-cordova-plugin-universal-links@https://github.com/pathable/plugin-universal-links.git#e0177fa5f7084a679c061aa25bc2949ea6d5f95a

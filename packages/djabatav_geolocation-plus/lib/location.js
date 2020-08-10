@@ -97,14 +97,14 @@ Location = {
     debug: false,
     //This function calls my native utils package to retrieve the state of the GPS and if
     //dialog is set to true, will show the user a prompt asking the user to turn on their GPS
-    getGPSState: function(callback, failureCallback, options) {
+    /*getGPSState: function(callback, failureCallback, options) {
         if(Meteor.isCordova && window && window.plugins && window.plugins.nativeUtils.getGPSState) {
             window.plugins.nativeUtils.getGPSState(callback, failureCallback, options);
         } else {
             //Throw enabled back if client is browser
             callback && callback('Enabled');
         }
-    },
+    },*/
     getReactivePosition : function() {
         return reactiveLocation.get();
     },
