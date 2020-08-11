@@ -47,9 +47,19 @@
 
 <div class="item item-stable item-avatar item-content item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
+    {{#if settingOceco.projectAction}}
     <a href="{{pathFor 'actionsList' _id=project._id._str scope='projects'}}" class="dark">
         <h2 class="dark">{{htmlToText project.name}}</h2>
     </a>
+    {{else if settingOceco.eventAction}}
+    <a href="{{pathFor 'eventsList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{htmlToText project.name}}</h2>
+    </a>
+    {{else}}
+    <a href="{{pathFor 'detailList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{htmlToText project.name}}</h2>
+    </a>
+    {{/if}}
 
     {{#if scroll }}
     <button class="button button-dark button-see-event-js"> <span class="padding-right">{{projectEventsCount project._id}}</span> <i class="icon ion-ios-arrow-up"></i></button>
@@ -64,9 +74,19 @@
   <div class="item item-stable item-avatar item-content item-button-right">
     {{> imgDoc profilThumbImageUrl=project.profilThumbImageUrl}}
 
+    {{#if settingOceco.projectAction}}
     <a href="{{pathFor 'actionsList' _id=project._id._str scope='projects'}}" class="dark">
         <h2 class="dark">{{htmlToText project.name}}</h2>
     </a>
+    {{else if settingOceco.eventAction}}
+    <a href="{{pathFor 'eventsList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{htmlToText project.name}}</h2>
+    </a>
+    {{else}}
+    <a href="{{pathFor 'detailList' _id=project._id._str scope='projects'}}" class="dark">
+        <h2 class="dark">{{htmlToText project.name}}</h2>
+    </a>
+    {{/if}}
 
     {{#if scroll }}
       <button class="button button-dark button-see-event-js"> <span class="padding-right">{{projectActionsCount project._id}}</span> <i

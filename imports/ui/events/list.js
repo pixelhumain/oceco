@@ -6,6 +6,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Router } from 'meteor/iron:router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Mongo } from 'meteor/mongo';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Calendar } from '@fullcalendar/core';
 import frLocale from '@fullcalendar/core/locales/fr';
@@ -36,10 +37,11 @@ import { searchQuery, queryGeoFilter, matchTags } from '../../api/helpers.js';
 Template.listEvents.onCreated(function () {
   pageSession.set('sortEvents', null);
   pageSession.set('searchEvents', null);
+  pageSession.set('startDateCal', null);
   const self = this;
   self.ready = new ReactiveVar();
   self.autorun(function () {
-    const handle = self.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'));
+    const handle = self.subscribe('directoryProjectsListEvents', 'organizations', Session.get('orgaCibleId'), pageSession.get('startDateCal'));
     self.ready.set(handle.ready());
   });
 });
@@ -56,6 +58,22 @@ Template.listEvents.onRendered(function () {
         text: 'ical',
         click () {
           IonModal.open('ical');
+        }
+      },
+      prev: {
+        icon:'chevron-left',
+        click () {
+          calendar.prev();
+          const date = calendar.getDate();
+          pageSession.set('startDateCal', date);
+        }
+      },
+      next: {
+        icon:'chevron-right',
+        click() {
+          calendar.next();
+          const date = calendar.getDate();
+          pageSession.set('startDateCal', date);
         }
       }
     },
@@ -86,7 +104,7 @@ Template.listEvents.onRendered(function () {
       if (info.event.url) {
         Router.go(info.event.url);
       }
-    }
+    },
   });
 
   calendar.render();
@@ -110,12 +128,17 @@ Template.listEvents.onRendered(function () {
       if (searchEvents) {
         query = searchQuery(query, searchEvents);
       }
-      const events = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).listProjectsEventsCreator(query);
+      
+      const inputDate = pageSession.get('startDateCal');
+      const events = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).listProjectsEventsCreator(query, inputDate);
       if (events) {
         events.forEach((event) => {
+
+          const backgroundColor = event.endDate && moment().isAfter(event.endDate) ? '#ccc' : '#E33551';
           const eventParse = {
             id: event._id._str,
             title: event.name,
+            backgroundColor,
             description: event.description,
             start: event.startDate,
             end: event.endDate,

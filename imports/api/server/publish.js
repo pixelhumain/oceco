@@ -866,12 +866,13 @@ Meteor.publishComposite('directoryListEvents', function(scope, scopeId) {
     ] };
 });
 
-Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId) {
+Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId, startDateCal) {
   check(scopeId, String);
   check(scope, String);
   check(scope, Match.Where(function (name) {
     return _.contains(['organizations'], name);
   }));
+  check(startDateCal, Match.Maybe(Date));
   const collection = nameToCollection(scope);
   if (!this.userId) {
     return null;
@@ -926,7 +927,7 @@ Meteor.publishComposite('directoryProjectsListEvents', function (scope, scopeId)
     {
       find(scopeD) {
         if (scope === 'organizations') {
-          return scopeD.listProjectsEventsCreator();
+          return scopeD.listProjectsEventsCreator(null, startDateCal);
         }
       },
       children: arrayChildrenParent('events', ['citoyens', 'organizations', 'projects', 'events']),
