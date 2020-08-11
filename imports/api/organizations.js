@@ -645,7 +645,7 @@ Organizations.helpers({
     // return this.links && this.links.events && _.size(this.links.events);
     return this.listEventsCreator() && this.listEventsCreator().count();
   },
-  listProjectsEventsCreator(querySearch) {
+  listProjectsEventsCreator(querySearch, inputDate) {
     if (this.links && this.links.projects) {
       const projectIds = arrayLinkParentNoObject(this.links.projects, 'projects');
       const query = querySearch || {};
@@ -656,7 +656,9 @@ Organizations.helpers({
         query.$or.push(queryCo);
       });
       // queryOptions.fields.parentId = 1;
-      const inputDate = new Date();
+      
+      // eslint-disable-next-line no-param-reassign
+      inputDate = inputDate || new Date();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
       const options = {};

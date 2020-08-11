@@ -51,11 +51,10 @@
      <a class="tab-item {{#if equals selectview 'scopeDetailTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'detailList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeDetailTemplate"><i class="icon fa fa-home"></i> Detail</a>
     {{#if settingOceco.projectAction}}
      <a class="tab-item {{#if equals selectview 'scopeActionsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'actionsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeActionsTemplate"><i class="icon fa fa-inbox"></i> Actions</a>
-    <a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
-      href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
-        class="icon fa fa-bell"></i> Notifications</a>
      {{/if}}
-
+<a class="tab-item {{#if equals selectview 'scopeNotificationsTemplate'}}tab-item-active{{/if}}"
+  href="{{pathFor 'notificationsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeNotificationsTemplate"><i
+    class="icon fa fa-bell"></i> Notifications</a>
     <a class="tab-item {{#if equals selectview 'scopeProjectsContributorsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'contributorsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeProjectsContributorsTemplate"><i class="icon fa fa-users"></i> Contributeurs</a>
     
      <a class="tab-item {{#if equals selectview 'scopeEventsTemplate'}}tab-item-active{{/if}}" href="{{pathFor 'eventsList' _id=scope._id._str scope=scope.scopeVar}}" id="scopeEventsTemplate"><i class="icon fa fa-calendar"></i> Evénements</a>
@@ -814,8 +813,28 @@
 <template name="boutonCardactions">
   <div class="button-bar bar-positive">
     {{#if isAdmin}}
+    {{#if equals 'projects' scopeVar}}
+    {{#if settingOceco.projectAction}}
     <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
       action</a>
+    {{/if}}
+    {{/if}}
+    {{#if equals 'events' scopeVar}}
+    {{#if settingOceco.eventAction}}
+    <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+      action</a>
+    {{/if}}
+    {{/if}}
+    {{#if equals 'organizations' scopeVar}}
+    {{#if settingOceco.organizationAction}}
+    <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+      action</a>
+    {{/if}}
+    {{/if}}
+    {{#if equals 'citoyens' scopeVar}}
+    <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+      action</a>
+    {{/if}}
     {{/if}}
   </div>
 

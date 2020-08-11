@@ -7,6 +7,7 @@ import { Random } from 'meteor/random';
 import { DDPCommon } from 'meteor/ddp-common';
 import { DDP } from 'meteor/ddp';
 import { Mongo } from 'meteor/mongo';
+import { moment } from 'meteor/momentjs:moment';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import SimpleSchema from 'simpl-schema';
@@ -343,7 +344,6 @@ app.post('/api/action/listElement', verifyToken, function (req, res) {
 
 app.get('/api/action/listMe', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
-  console.log('ICI');
   runAsUser(userId, function () {
     try {
       // const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
@@ -513,8 +513,9 @@ app.get('/ical/organizations/:id/events', function (req, res) {
       queryCo[`organizer.${id}`] = { $exists: true };
       query.$or.push(queryCo);
     });
-    const inputDate = new Date();
+    // const inputDate = new Date();
     // query.startDate = { $lte: inputDate };
+    const inputDate = moment(new Date()).subtract(2, 'month').toDate();
     query.endDate = { $gte: inputDate };
     const options = {};
     options.sort = {
