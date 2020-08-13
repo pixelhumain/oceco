@@ -120,16 +120,20 @@ Template.layout.onCreated(function() {
 Template.layout.events({
   'click [target=_blank]'(event) {
     event.preventDefault();
+    const url = $(event.currentTarget).attr('href');
     if (Meteor.isCordova) {
-      const url = $(event.currentTarget).attr('href');
       cordova.InAppBrowser.open(url, '_system');
+    } else {
+      window.open(url, '_blank');
     }
   },
   'click [target=_system]'(event) {
     event.preventDefault();
+    const url = $(event.currentTarget).attr('href');
     if (Meteor.isCordova) {
-      const url = $(event.currentTarget).attr('href');
       cordova.InAppBrowser.open(url, '_system');
+    } else {
+      window.open(url, '_system');
     }
   },
   'change .all-read input'() {

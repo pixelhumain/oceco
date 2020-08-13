@@ -1,6 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-lonely-if */
 /* eslint-disable meteor/no-session */
-/* global Session IonPopup IonModal */
+/* global Session IonPopup IonModal cordova */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -9,6 +10,8 @@ import i18n from 'meteor/universe:i18n';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
+
+
 import './admin.html';
 
 // collection
@@ -23,7 +26,6 @@ import '../components/news/button-card.js';
 // import '../components/news/card.js';
 
 import { arrayLinkToModerate } from '../../api/helpers.js';
-
 
 const pageSession = new ReactiveDict('pageAdmin');
 
@@ -290,7 +292,7 @@ AutoForm.addHooks(['validateUserActions'], {
       doc.organizationId = Session.get('orgaCibleId');
       doc.userId = pageSession.get('citoyenId');
       doc.actionId = pageSession.get('actionId');
-      if (doc.credits !== pageSession.get('actionCredits')){
+      if (doc.credits !== pageSession.get('actionCredits')) {
         
       } else {
         doc.commentaire = 'nocomment';

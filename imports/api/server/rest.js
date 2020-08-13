@@ -102,6 +102,24 @@ function verifyToken(req, res, next) {
   next();
 }
 
+function verifyTokenMeteor(req, res, next) {
+  const token = req.headers['x-access-token'];
+  const userId = req.headers['x-user-id'];
+  const hash = crypto.createHash('sha256');
+  hash.update(token);
+  if (!token) {
+    return res.status(403).json({ auth: false, message: 'No token provided.' });
+  }
+
+  const user = Meteor.users.findOne({ _id: userId, 'services.resume.loginTokens.hashedToken': hash.digest('base64') });
+
+  if (!user) {
+    return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+  }
+
+  next();
+}
+
 const runAsUser = function (userId, func) {
   // const DDPCommon = Package['ddp-common'].DDPCommon;
   // put whatever you want in these properties
@@ -372,6 +390,7 @@ app.get('/api/action/listMe', verifyToken, function (req, res) {
           msg: 'no user',
         };
         res.status(200).json(valid);
+        return;
       }
     } catch (e) {
       // console.log(e);
@@ -437,7 +456,7 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
   //
 });
 
-app.post('/api/generatetokenchat', verifyToken, function (req, res) {
+/*app.post('/api/generatetokenchat', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
@@ -480,7 +499,7 @@ app.post('/api/generatetokenchat', verifyToken, function (req, res) {
     }
   });
   //
-});
+});*/
 
 // export ical des events de organizations
 app.get('/ical/organizations/:id/events', function (req, res) {
@@ -494,6 +513,7 @@ app.get('/ical/organizations/:id/events', function (req, res) {
       msg: 'not organizations',
     };
     res.status(200).json(valid);
+    return;
   }
 
   const eventParse = [];
@@ -503,7 +523,7 @@ app.get('/ical/organizations/:id/events', function (req, res) {
   // verifier si private
   if (orgaOne.links && orgaOne.links.projects && (preferences.private === false || preferences.private === 'false' || !preferences.private)) {
     const projectLinkIds = arrayLinkParent(orgaOne.links.projects, 'projects');
-    const projectsList = Projects.findOne({ _id: { $in: projectLinkIds }, 'preferences.private': false });
+    const projectsList = Projects.find({ _id: { $in: projectLinkIds }, 'preferences.private': false });
     const projectIds = projectsList.map(project => project._id._str);
 
     const query = {};
@@ -522,6 +542,7 @@ app.get('/ical/organizations/:id/events', function (req, res) {
       startDate: 1,
     };
     const events = Events.find(query, options);
+
     if (events) {
       events.forEach((event) => {
         const eventOne = {};
@@ -557,4 +578,104 @@ app.get('/ical/organizations/:id/events', function (req, res) {
   });
 
   cal.serve(res);
+});
+
+
+app.get('/ical/organizations/:id/events/archives', verifyTokenMeteor, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  // console.log(req.body);
+  /* Todo
+  verifier si user deja connecter ou pas à l'application
+  */
+  runAsUser(userId, function () {
+    try {
+      new SimpleSchema({
+        id: { type: String },
+      }).validate(req.params);
+
+      if (!Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id), oceco: { $exists: true } })) {
+        const valid = {
+          status: false,
+          msg: 'not organizations',
+        };
+        res.status(200).json(valid);
+        return;
+      }
+
+      if (!Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id), oceco: { $exists: true } }).isAdmin()) {
+        const valid = {
+          status: false,
+          msg: 'not admin',
+        };
+        res.status(200).json(valid);
+        return;
+      }
+
+      const eventParse = [];
+      // events
+      const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(req.params.id) });
+
+      // verifier si private
+      if (orgaOne.links && orgaOne.links.projects && (preferences.private === false || preferences.private === 'false' || !preferences.private)) {
+        const projectLinkIds = arrayLinkParent(orgaOne.links.projects, 'projects');
+        const projectsList = Projects.find({ _id: { $in: projectLinkIds }, 'preferences.private': false });
+        const projectIds = projectsList.map(project => project._id._str);
+
+        const query = {};
+        query.$or = [];
+        projectIds.forEach((id) => {
+          const queryCo = {};
+          queryCo[`organizer.${id}`] = { $exists: true };
+          query.$or.push(queryCo);
+        });
+        // const inputDate = new Date();
+        // query.startDate = { $lte: inputDate };
+        const inputDate = moment(new Date()).subtract(12, 'month').toDate();
+        query.endDate = { $gte: inputDate };
+        const options = {};
+        options.sort = {
+          startDate: 1,
+        };
+        const events = Events.find(query, options);
+        if (events) {
+          events.forEach((event) => {
+            const eventOne = {};
+            // console.log(event);
+            eventOne.id = event._id._str;
+
+            if (event.name) {
+              eventOne.summary = event.name;
+            }
+            if (event.description) {
+              eventOne.description = event.description;
+            }
+            if (event.startDate) {
+              eventOne.start = event.startDate;
+            }
+            if (event.endDate) {
+              eventOne.end = event.endDate;
+            }
+            if (event.timeZone) {
+              eventOne.timezone = event.timeZone;
+            }
+            if (event.startDate) {
+              eventParse.push(eventOne);
+            }
+          });
+        }
+      }
+
+      const cal = ical({
+        domain: 'oce.co.tools',
+        prodId: '//oce.co.tools//ical-generator//FR',
+        events: [...eventParse],
+      });
+
+      res.send(cal.toString());
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable meteor/no-session */
 /* global Session IonModal */
 import { Meteor } from 'meteor/meteor';
@@ -7,6 +8,8 @@ import { Router } from 'meteor/iron:router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Mongo } from 'meteor/mongo';
 import { moment } from 'meteor/momentjs:moment';
+import { Accounts } from 'meteor/accounts-base';
+import { HTTP } from 'meteor/http';
 
 import { Calendar } from '@fullcalendar/core';
 import frLocale from '@fullcalendar/core/locales/fr';
@@ -116,7 +119,7 @@ Template.listEvents.onRendered(function () {
       // const sortEvents = pageSession.get('sortEvents');
       const searchEvents = pageSession.get('searchEvents');
       let query = {};
-      /* 
+      /*
       if (sortEvents === 'Current') {
         query.startDate = { $lte: inputDate };
         query.endDate = { $gte: inputDate };
@@ -128,7 +131,7 @@ Template.listEvents.onRendered(function () {
       if (searchEvents) {
         query = searchQuery(query, searchEvents);
       }
-      
+
       const inputDate = pageSession.get('startDateCal');
       const events = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).listProjectsEventsCreator(query, inputDate);
       if (events) {
@@ -150,7 +153,6 @@ Template.listEvents.onRendered(function () {
           if (pushCalendarArray.includes(event._id._str) === false) {
             pushCalendarArray.push(event._id._str);
             calendar.addEvent(eventParse);
-          } else {
           }
         });
       }
@@ -274,6 +276,35 @@ Template.ical.events({
         }, function () {
           /* clipboard write failed */
         });
+      }
+    });
+  },
+  'click .ical-admin-js'(event) {
+    event.preventDefault();
+    HTTP.get(Meteor.absoluteUrl(`ical/organizations/${Session.get('orgaCibleId')}/events/archives`), {
+      headers: {
+        'x-access-token': Accounts._storedLoginToken(),
+        'x-user-id': Meteor.userId(),
+      },
+    }, function (error, result) {
+      if (result && result.content) {
+        let icalFile = null;
+        const makeTextFile = function (result) {
+          const data = new Blob([result.content], {
+            type: 'text/calendar;charset=utf-8',
+          });
+          if (icalFile !== null) {
+            window.URL.revokeObjectURL(icalFile);
+          }
+          icalFile = window.URL.createObjectURL(data);
+          return icalFile;
+        };
+        const downloadLink = makeTextFile(result);
+        if (Meteor.isCordova) {
+          cordova.InAppBrowser.open(downloadLink, '_system');
+        } else {
+          window.open(downloadLink, '_blank');
+        }
       }
     });
   },
