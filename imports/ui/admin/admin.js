@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-lonely-if */
 /* eslint-disable meteor/no-session */
-/* global Session IonPopup IonModal cordova */
+/* global Session IonPopup IonModal AutoForm */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -144,7 +144,7 @@ Template.listProjectsAValiderRaf.helpers({
 });
 
 Template.adminButton.events({
-  'click .admin-creditsdistributed-js'(event, instance) {
+  'click .admin-creditsdistributed-js'(event) {
     event.preventDefault();
     const usrId = $(event.currentTarget).attr('usrId');
     const actionId = $(event.currentTarget).attr('actionId');
@@ -292,8 +292,9 @@ AutoForm.addHooks(['validateUserActions'], {
       doc.organizationId = Session.get('orgaCibleId');
       doc.userId = pageSession.get('citoyenId');
       doc.actionId = pageSession.get('actionId');
+      // eslint-disable-next-line no-empty
       if (doc.credits !== pageSession.get('actionCredits')) {
-        
+
       } else {
         doc.commentaire = 'nocomment';
       }

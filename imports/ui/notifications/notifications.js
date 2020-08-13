@@ -62,7 +62,7 @@ Template.notificationsListSwip.events({
     Meteor.call('markRead', this._id._str);
   },
   'slip:beforewait .list .item'() {
-     // console.log('slip:beforewait');
+    // console.log('slip:beforewait');
   },
 });
 

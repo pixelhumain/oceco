@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-shadow */
 /* eslint-disable array-callback-return */
@@ -107,8 +108,8 @@ for (let i = 0; i < diacriticsApplyMap.default.length; i++) {
 }
 
 export const applyDiacritics = (str, which) => {
-  which = which || 'default';
-  const changes = diacriticsApplyMap[which];
+  const whichSelect = which || 'default';
+  const changes = diacriticsApplyMap[whichSelect];
   const lettres = str.split('');
   let newStr = '';
   for (let f = 0; f < lettres.length; f++) {
@@ -882,7 +883,7 @@ if (Meteor.isClient) {
 export const notifyDisplay = (notify, lang = null, html = false, chat = false) => {
   if (notify) {
     let label = notify.displayName;
-    let arrayReplace = {};
+    const arrayReplace = {};
     if (lang) {
       arrayReplace._locale = lang;
     }

@@ -83,7 +83,7 @@ Template.buttonsProposals.events({
   'click .action-proposal-js' (event) {
     event.preventDefault();
     const action = $(event.currentTarget).data('action');
-    Meteor.call('actionsType', { parentType: pageSession.get('scope'), parentId: pageSession.get('scopeId'), type: 'proposals', id: pageSession.get('proposalId'), name:'status', value: action }, (error) => {
+    Meteor.call('actionsType', { parentType: pageSession.get('scope'), parentId: pageSession.get('scopeId'), type: 'proposals', id: pageSession.get('proposalId'), name: 'status', value: action }, (error) => {
       if (error) {
         IonPopup.alert({ template: i18n.__(error.reason) });
       }
@@ -201,12 +201,12 @@ Template.proposalsFields.helpers({
 
 AutoForm.addHooks(['addProposal', 'editProposal'], {
   after: {
-    method(error, result) {
+    method(error) {
       if (!error) {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
       }
@@ -287,7 +287,7 @@ Template.amendementsEdit.helpers({
   amendement () {
     const query = {};
     query._id = new Mongo.ObjectID(Router.current().params.proposalId);
-    query[`amendements.${Router.current().params.amendementId}`] = {$exists: true};
+    query[`amendements.${Router.current().params.amendementId}`] = { $exists: true };
     const options = {};
     options.fields = {};
     options.fields._id = 1;
@@ -295,7 +295,7 @@ Template.amendementsEdit.helpers({
     const amendement = Proposals.findOne(query, options);
     const amendementEdit = {};
     amendementEdit._id = amendement._id._str;
-    amendementEdit.txtAmdt = amendement.amendements[Router.current().params.amendementId].textAdd
+    amendementEdit.txtAmdt = amendement.amendements[Router.current().params.amendementId].textAdd;
     return amendementEdit;
   },
   error () {
@@ -308,12 +308,12 @@ Template.amendementsEdit.helpers({
 
 AutoForm.addHooks(['addAmendement', 'editAmendement'], {
   after: {
-    method(error, result) {
+    method(error) {
       if (!error) {
         Router.go('proposalsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId'), proposalId: pageSession.get('proposalId') }, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         Router.go('proposalsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId'), proposalId: pageSession.get('proposalId') }, { replaceState: true });
       }

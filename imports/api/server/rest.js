@@ -141,11 +141,13 @@ const handleErrorAsJson = function (err, req, res) {
       err.sanitizedError.statusCode = err.statusCode || 400;
     }
 
+    // eslint-disable-next-line no-param-reassign
     err = err.sanitizedError;
   } else if (err.errorType === 'Meteor.Error') {
     if (!err.statusCode) err.statusCode = 400;
   } else {
     const statusCode = err.statusCode;
+    // eslint-disable-next-line no-param-reassign
     err = new Error();
     err.statusCode = statusCode;
   }
@@ -204,6 +206,7 @@ app.post('/api/action/create', verifyToken, function (req, res) {
     try {
       const actionPost = SchemasActionsRest.clean(req.body);
 
+      // eslint-disable-next-line no-unused-vars
       const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
 
       const retourCall = Meteor.call('insertAction', actionPost);
@@ -242,7 +245,7 @@ app.post('/api/action/comment/create', verifyToken, function (req, res) {
         };
         res.status(200).json(error);
       } else {
-
+        // eslint-disable-next-line no-unused-vars
         const synchroRetour = synchroAdmin({ parentId: actionOne.parentId, parentType: actionOne.parentType });
 
 
@@ -250,11 +253,11 @@ app.post('/api/action/comment/create', verifyToken, function (req, res) {
         commentPost.contextId = req.body.id;
         commentPost.contextType = 'actions';
         commentPost.text = req.body.text;
-        console.log(commentPost);
+        // console.log(commentPost);
 
 
         const retourCall = Meteor.call('insertComment', commentPost);
-        console.log(retourCall);
+        // console.log(retourCall);
         const valid = {
           status: true,
           msg: 'comment created',
@@ -281,8 +284,10 @@ app.post('/api/action/assign', verifyToken, function (req, res) {
         parentType: { type: String },
       }).validate(req.body);
 
+      // eslint-disable-next-line no-unused-vars
       const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
 
+      // eslint-disable-next-line no-unused-vars
       const retourCall = Meteor.call('assignMemberActionRooms', { id: req.body.id, memberId: req.body.memberId });
       // console.log(retourCall);
       const valid = {
@@ -306,6 +311,7 @@ app.post('/api/action/finishMe', verifyToken, function (req, res) {
         id: { type: String },
       }).validate(req.body);
 
+      // eslint-disable-next-line no-unused-vars
       const retourCall = Meteor.call('finishAction', { id: req.body.id });
       // console.log(retourCall);
       const valid = {
@@ -330,6 +336,7 @@ app.post('/api/action/listElement', verifyToken, function (req, res) {
         parentType: { type: String },
       }).validate(req.body);
 
+      // eslint-disable-next-line no-unused-vars
       const synchroRetour = synchroAdmin({ parentId: req.body.parentId, parentType: req.body.parentType });
 
       const collection = nameToCollection(req.body.parentType);
@@ -456,7 +463,7 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
   //
 });
 
-/*app.post('/api/generatetokenchat', verifyToken, function (req, res) {
+/* app.post('/api/generatetokenchat', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
     try {
@@ -499,7 +506,7 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
     }
   });
   //
-});*/
+}); */
 
 // export ical des events de organizations
 app.get('/ical/organizations/:id/events', function (req, res) {

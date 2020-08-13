@@ -5,7 +5,6 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { Router } from 'meteor/iron:router';
-import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { moment } from 'meteor/momentjs:moment';
 
@@ -289,7 +288,7 @@ Template.itemInputActionTags.events({
     } else {
       searchAction.set('search', null);
     }
-  }
+  },
 });
 
 Template.itemInputAction.helpers({
@@ -314,7 +313,7 @@ Template.buttonSubscribeAction.helpers({
   },
   startDateDefault() {
     return moment().format('YYYY-MM-DDTHH:mm');
-  }
+  },
 });
 
 Template.buttonSubscribeAction.events({
@@ -347,8 +346,6 @@ Template.buttonSubscribeAction.events({
         IonPopup.alert({ template: i18n.__(error.reason) });
       }
     });
-    
-
   },
   'click .action-assignme-js'(event, instance) {
     event.preventDefault();

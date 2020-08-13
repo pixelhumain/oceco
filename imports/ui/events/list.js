@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable meteor/no-session */
-/* global Session IonModal */
+/* global Session IonModal cordova */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -61,24 +61,24 @@ Template.listEvents.onRendered(function () {
         text: 'ical',
         click () {
           IonModal.open('ical');
-        }
+        },
       },
       prev: {
-        icon:'chevron-left',
+        icon: 'chevron-left',
         click () {
           calendar.prev();
           const date = calendar.getDate();
           pageSession.set('startDateCal', date);
-        }
+        },
       },
       next: {
-        icon:'chevron-right',
+        icon: 'chevron-right',
         click() {
           calendar.next();
           const date = calendar.getDate();
           pageSession.set('startDateCal', date);
-        }
-      }
+        },
+      },
     },
     header: {
       left: 'title',
@@ -89,7 +89,7 @@ Template.listEvents.onRendered(function () {
     locale: 'fr',
     timeZone: 'local',
     defaultView: 'listMonth',
-    eventRender (info) {
+    eventRender () {
       /* if (info.event.extendedProps.status === 'done') {
 
         // Change background color of row
@@ -136,7 +136,6 @@ Template.listEvents.onRendered(function () {
       const events = Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).listProjectsEventsCreator(query, inputDate);
       if (events) {
         events.forEach((event) => {
-
           const backgroundColor = event.endDate && moment().isAfter(event.endDate) ? '#ccc' : '#E33551';
           const eventParse = {
             id: event._id._str,
@@ -269,8 +268,8 @@ Template.ical.events({
     event.preventDefault();
     const element = instance.find('input[name="icalurl"]');
     element.select();
-    navigator.permissions.query({ name: 'clipboard-write' }).then(result => {
-      if (result.state == 'granted' || result.state == 'prompt') {
+    navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
+      if (result.state === 'granted' || result.state === 'prompt') {
         navigator.clipboard.writeText(element.value).then(function () {
           /* clipboard successfully set */
         }, function () {
@@ -289,8 +288,8 @@ Template.ical.events({
     }, function (error, result) {
       if (result && result.content) {
         let icalFile = null;
-        const makeTextFile = function (result) {
-          const data = new Blob([result.content], {
+        const makeTextFile = function (resultIcal) {
+          const data = new Blob([resultIcal.content], {
             type: 'text/calendar;charset=utf-8',
           });
           if (icalFile !== null) {
@@ -717,6 +716,7 @@ AutoForm.addHooks(['addEvent', 'editEvent'], {
       // console.log(doc);
       doc.organizerType = pageSession.get('organizerType');
       doc.organizerId = pageSession.get('organizerId');
+      // eslint-disable-next-line no-param-reassign
       doc = matchTags(doc, pageSession.get('tags'));
       // console.log(doc.tags);
       return doc;

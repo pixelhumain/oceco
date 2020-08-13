@@ -116,9 +116,11 @@ Meteor.startup(function () {
           // }
         }
       }
+      // eslint-disable-next-line no-alert
       window.confirm(notification.message, alertDismissed, 'notifications', ['Voir', 'fermer']);
     });
   } else if (!('Notification' in window)) {
+    // eslint-disable-next-line no-alert
     alert('This browser does not support desktop notification');
   } else {
     if (Notification.permission !== 'denied') {

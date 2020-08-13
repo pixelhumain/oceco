@@ -50,7 +50,7 @@
   <div class="item {{#if profilThumbImageUrl}}item-avatar{{else}}{{/if}} item-button-right">
   {{#if profilThumbImageUrl}}{{> imgDoc}}{{else}}<i {{icone typeSig}}></i>{{/if}} {{name}}
   {{#if address}}<p>{{address.postalCode}} {{address.addressLocality}}</p>{{/if}}
-  {{> Bouton_card id=../scopeId scope=../scopeVar childType=typeSig childId=_id isConnect=isAttendees classOff="button-dark invitations-link" classOn="button-dark invitations-link" iconOff="fa fa-send" iconOn="fa fa-hourglass-half" titleOff=""}}
+  {{> boutonCard id=../scopeId scope=../scopeVar childType=typeSig childId=_id isConnect=isAttendees classOff="button-dark invitations-link" classOn="button-dark invitations-link" iconOff="fa fa-send" iconOn="fa fa-hourglass-half" titleOff=""}}
   </div>
   {{/if}}
   {{else}}
@@ -77,7 +77,7 @@
       <div class="item item-divider">
         <i class="icon ion-ios-people"></i> {{__ "invitations.your_contacts"}} <span class="badge badge-dark">{{citoyen.countFollows filter}}</span>
       </div>
-      {{> Directory_list list=(citoyen.listFollows filter) isConnect="isInviting" person=true scope="citoyens" scopeId=scopeId scopeCible=scopeVar}}
+      {{> directoryList list=(citoyen.listFollows filter) isConnect="isInviting" person=true scope="citoyens" scopeId=scopeId scopeCible=scopeVar}}
   {{/if}}
 </template>
 
@@ -86,7 +86,7 @@
       <div class="item item-divider">
         <i class="icon ion-ios-people"></i> {{__ "invitations.your_organizations"}} <span class="badge badge-dark">{{citoyen.countMemberOf filter ''}}</span>
       </div>
-      {{> Directory_list list=(citoyen.listMemberOf filter '') isConnect="isInviting" person=false scope="organizations" scopeId=scopeId scopeCible=scopeVar}}
+      {{> directoryList list=(citoyen.listMemberOf filter '') isConnect="isInviting" person=false scope="organizations" scopeId=scopeId scopeCible=scopeVar}}
   {{/if}}
 </template>
 

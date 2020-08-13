@@ -15,7 +15,7 @@
   {{#ionView}}
   {{#ionContent}}
 
-  {{> Template.dynamic template="listAttendees_view" data=events}}
+  {{> Template.dynamic template="listAttendeesView" data=events}}
 
   {{/ionContent}}
   {{/ionView}}
@@ -25,14 +25,14 @@
 </template>
 
 
-<template name="listAttendees_search">
+<template name="listAttendeesSearch">
   <label class="item item-input">
     <i class="icon ion-search placeholder-icon"></i>
     <input id="search" type="text" placeholder="{{__ "Search"}}..." value="{{search}}">
   </label>
 </template>
 
-<template name="listAttendees_button_bar">
+<template name="listAttendeesButtonBar">
   <div class="button-bar button-positive">
     {{> Button_toggle condition=(equals view 'all') classOff="button button-small all" classOn="button button-small all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
     {{> Button_toggle condition=(equals view 'citoyens') classOff="button button-small citoyens" classOn="button button-small citoyens activated" iconOff="icon fa fa-user" iconOn="icon fa fa-user positive"}}
@@ -42,10 +42,10 @@
   </div>
 </template>
 
-<template name="listAttendees_view">
+<template name="listAttendeesView">
   <div class="list">
-  {{> listAttendees_search}}
-  {{> listAttendees_button_bar}}
+  {{> listAttendeesSearch}}
+  {{> listAttendeesButtonBar}}
   {{#if equals view 'all'}}
   {{> listAttendeesValidate}}
   {{> listAttendeesOrgaValidate}}
@@ -69,7 +69,7 @@
       <div class="item item-divider">
         <i class="icon fa fa-user"></i> {{__ "persons"}} <span class="badge badge-dark">{{countAttendeesValidate search}}</span>
       </div>
-      {{> Directory_list list=(listAttendeesValidate search) isConnect="isFollowersMe" person=true scope="citoyens" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
+      {{> directoryList list=(listAttendeesValidate search) isConnect="isFollowersMe" person=true scope="citoyens" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
   {{/if}}
 </template>
 
@@ -78,7 +78,7 @@
       <div class="item item-divider">
         <i class="icon fa fa-users"></i> {{__ "organizations"}} <span class="badge badge-dark">{{countAttendeesOrgaValidate search}}</span>
       </div>
-      {{> Directory_list list=(listAttendeesOrgaValidate search) isConnect="isMembers" person=false scope="organizations" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
+      {{> directoryList list=(listAttendeesOrgaValidate search) isConnect="isMembers" person=false scope="organizations" scopeCible=scopeVar scopeId=_id._str isScopeAdmin=false}}
   {{/if}}
 </template>
 
@@ -87,6 +87,6 @@
       <div class="item item-divider">
         <i class="icon fa fa-send"></i> {{__ "guests"}} <span class="badge badge-dark">{{countAttendeesIsInviting search}}</span>
       </div>
-      {{> Directory_list list=(listAttendeesIsInviting search) isConnect="isFollowersMe" person=true scope="citoyens"}}
+      {{> directoryList list=(listAttendeesIsInviting search) isConnect="isFollowersMe" person=true scope="citoyens"}}
   {{/if}}
 </template>

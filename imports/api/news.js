@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import { _ } from 'meteor/underscore';
 import { Router } from 'meteor/iron:router';
 import { Tracker } from 'meteor/tracker';
 

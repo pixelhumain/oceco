@@ -27,7 +27,7 @@ const userTestClient = {
   },
   status() {
     Tracker.autorun(() => {
-      console.log(Meteor.status());
+      // console.log(Meteor.status());
     });
   },
 };
