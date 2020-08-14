@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const iOS = () => {
   const iDevices = [
     'iPad Simulator',

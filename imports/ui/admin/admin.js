@@ -1,6 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-lonely-if */
 /* eslint-disable meteor/no-session */
-/* global Session IonPopup IonModal */
+/* global Session IonPopup IonModal AutoForm */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -9,6 +10,8 @@ import i18n from 'meteor/universe:i18n';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
+
+
 import './admin.html';
 
 // collection
@@ -23,7 +26,6 @@ import '../components/news/button-card.js';
 // import '../components/news/card.js';
 
 import { arrayLinkToModerate } from '../../api/helpers.js';
-
 
 const pageSession = new ReactiveDict('pageAdmin');
 
@@ -142,7 +144,7 @@ Template.listProjectsAValiderRaf.helpers({
 });
 
 Template.adminButton.events({
-  'click .admin-creditsdistributed-js'(event, instance) {
+  'click .admin-creditsdistributed-js'(event) {
     event.preventDefault();
     const usrId = $(event.currentTarget).attr('usrId');
     const actionId = $(event.currentTarget).attr('actionId');
@@ -290,8 +292,9 @@ AutoForm.addHooks(['validateUserActions'], {
       doc.organizationId = Session.get('orgaCibleId');
       doc.userId = pageSession.get('citoyenId');
       doc.actionId = pageSession.get('actionId');
-      if (doc.credits !== pageSession.get('actionCredits')){
-        
+      // eslint-disable-next-line no-empty
+      if (doc.credits !== pageSession.get('actionCredits')) {
+
       } else {
         doc.commentaire = 'nocomment';
       }

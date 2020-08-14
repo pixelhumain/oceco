@@ -4,6 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Mongo } from 'meteor/mongo';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Router } from 'meteor/iron:router';
+import { _ } from 'meteor/underscore';
 
 import { Rooms } from '../../api/rooms.js';
 
@@ -53,14 +54,14 @@ Template.detailRooms.helpers({
   },
 });
 
-Template.detailRooms_view.onCreated(function() {
+Template.detailRoomsView.onCreated(function() {
   pageSession.set('search', null);
   pageSession.set('view', 'all');
-  pageSession.set('viewActions', 'all')
+  pageSession.set('viewActions', 'all');
   pageSession.set('selectstatus', null);
 });
 
-Template.detailRooms_view.helpers({
+Template.detailRoomsView.helpers({
   search () {
     return pageSession.get('search');
   },
@@ -72,13 +73,13 @@ Template.detailRooms_view.helpers({
   },
 });
 
-Template.listRooms_search.helpers({
+Template.listRoomsSearch.helpers({
   search () {
     return pageSession.get('search');
   },
 });
 
-Template.listRooms_search.events({
+Template.listRoomsSearch.events({
   'keyup #search, change #search': _.throttle((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
@@ -89,7 +90,7 @@ Template.listRooms_search.events({
   }, 500),
 });
 
-Template.listProposals_button_bar.helpers({
+Template.listProposalsButtonBar.helpers({
   search () {
     return pageSession.get('search');
   },
@@ -98,7 +99,7 @@ Template.listProposals_button_bar.helpers({
   },
 });
 
-Template.listProposals_button_bar.events({
+Template.listProposalsButtonBar.events({
   'click .all' (event) {
     event.preventDefault();
     pageSession.set('view', 'all');
@@ -129,7 +130,7 @@ Template.listProposals_button_bar.events({
   },
 });
 
-Template.listActions_button_bar.helpers({
+Template.listActionsButtonBar.helpers({
   search () {
     return pageSession.get('search');
   },
@@ -138,7 +139,7 @@ Template.listActions_button_bar.helpers({
   },
 });
 
-Template.listActions_button_bar.events({
+Template.listActionsButtonBar.events({
   'click .all' (event) {
     event.preventDefault();
     pageSession.set('viewActions', 'all');
@@ -234,7 +235,7 @@ AutoForm.addHooks(['addRoom', 'editRoom'], {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: result.data.id }, { replaceState: true });
       }
     },
-    'method-update'(error, result) {
+    'method-update'(error) {
       if (!error) {
         Router.go('roomsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId') }, { replaceState: true });
       }

@@ -67,11 +67,11 @@ function _update(interval) {
 // reactive version of moment()
 // please install moment separately
 // example usage: Chronos.moment(someTimestamp).format('ss');
-function _moment(/* arguments */) {
+function _moment(...args) {
   if (!moment) throw new Error('moment not found. Please install it first');
 
   _update();
-  return moment(...arguments);
+  return moment(...args);
 }
 
 // reactive version of new Date() get the current date/time

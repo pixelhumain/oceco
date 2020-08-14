@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import i18n from 'meteor/universe:i18n';
-import { Router } from 'meteor/iron:router';
 import { IonPopup } from 'meteor/meteoric:ionic';
 
 // mixin
@@ -10,20 +9,20 @@ import '../mixin/button-toggle.js';
 
 import './button-card.html';
 
-Template.Bouton_card.onCreated(function () {
+Template.boutonCard.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
     call: false,
   });
 });
 
-Template.Bouton_card.helpers({
+Template.boutonCard.helpers({
   isCall() {
     return Template.instance().state.get('call');
   },
 });
 
-Template.Bouton_card.events({
+Template.boutonCard.events({
   'click .saveattendees-link' (event, instance) {
     event.preventDefault();
     instance.state.set('call', true);

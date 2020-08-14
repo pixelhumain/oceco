@@ -656,7 +656,7 @@ Organizations.helpers({
         query.$or.push(queryCo);
       });
       // queryOptions.fields.parentId = 1;
-      
+
       // eslint-disable-next-line no-param-reassign
       inputDate = inputDate || new Date();
       // query.startDate = { $lte: inputDate };

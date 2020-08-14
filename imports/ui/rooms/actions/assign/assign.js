@@ -6,6 +6,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
 import i18n from 'meteor/universe:i18n';
+import { _ } from 'meteor/underscore';
 
 import { Organizations } from '../../../../api/organizations.js';
 import { Actions } from '../../../../api/actions.js';

@@ -2871,6 +2871,7 @@ Meteor.publish('all.avatarOne', function (raffId) {
       const arrayContributors = arrayLinkProperNoObject(k.links.contributors);
       return arrayContributors[0];
     }
+    return false;
   }).filter(Boolean);
   const mergeDedupe = arr => [...new Set([].concat(...arr))];
   const arrayAllMerge = mergeDedupe(allIdsCitoyens);

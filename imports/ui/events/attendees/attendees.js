@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
+import { _ } from 'meteor/underscore';
 
 import { Citoyens } from '../../../api/citoyens.js';
 import { Events } from '../../../api/events.js';
@@ -38,13 +39,13 @@ Template.listAttendees.helpers({
   },
 });
 
-Template.listAttendees_view.onCreated(function() {
+Template.listAttendeesView.onCreated(function() {
   pageDirectory.set('search', null);
   pageDirectory.set('view', 'all');
   pageDirectory.set('selectorga', null);
 });
 
-Template.listAttendees_view.helpers({
+Template.listAttendeesView.helpers({
   search () {
     return pageDirectory.get('search');
   },
@@ -53,13 +54,13 @@ Template.listAttendees_view.helpers({
   },
 });
 
-Template.listAttendees_search.helpers({
+Template.listAttendeesSearch.helpers({
   search () {
     return pageDirectory.get('search');
   },
 });
 
-Template.listAttendees_search.events({
+Template.listAttendeesSearch.events({
   'keyup #search, change #search': _.throttle((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
@@ -70,7 +71,7 @@ Template.listAttendees_search.events({
   }, 500),
 });
 
-Template.listAttendees_button_bar.helpers({
+Template.listAttendeesButtonBar.helpers({
   search () {
     return pageDirectory.get('search');
   },
@@ -79,7 +80,7 @@ Template.listAttendees_button_bar.helpers({
   },
 });
 
-Template.listAttendees_button_bar.events({
+Template.listAttendeesButtonBar.events({
   'click .all' (event) {
     event.preventDefault();
     pageDirectory.set('view', 'all');

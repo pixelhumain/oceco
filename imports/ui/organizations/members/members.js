@@ -9,6 +9,7 @@ import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
 import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
 
 import { Citoyens } from '../../../api/citoyens.js';
 import { Organizations } from '../../../api/organizations.js';

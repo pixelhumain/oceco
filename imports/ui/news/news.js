@@ -4,7 +4,7 @@
 /* eslint-disable meteor/template-names */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable meteor/no-session */
-/* global Session  cordova */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';

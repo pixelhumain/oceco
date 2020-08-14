@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
-import { Meteor } from 'meteor/meteor';
-import request from 'request';
+// import { Meteor } from 'meteor/meteor';
+// import request from 'request';
 
-import { ONE_SIGNAL_APP_ID, ONE_SIGNAL_REST_API_KEY } from './native';
+/* import { ONE_SIGNAL_APP_ID, ONE_SIGNAL_REST_API_KEY } from './native';
 
 // TODO mobile send push example
 export const sendPush = ({ heading, content, playersIds, data = {} }) =>
@@ -30,3 +30,4 @@ export const sendPush = ({ heading, content, playersIds, data = {} }) =>
       });
     });
   });
+*/

@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
-import { Meteor } from 'meteor/meteor';
+// import { Meteor } from 'meteor/meteor';
 // TODO mobile add accounts
-import { Accounts } from 'meteor/accounts-base';
+// import { Accounts } from 'meteor/accounts-base';
 
-import { methodCall } from './methodCall';
+/* import { methodCall } from './methodCall';
 
 let currentPlayerId = null;
 
@@ -86,4 +86,4 @@ Meteor.startup(() => {
       );
     },
   );
-});
+}); */

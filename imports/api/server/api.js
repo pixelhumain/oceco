@@ -143,7 +143,7 @@ apiCommunecter.callRCInfo = (name) => {
 };
 
 
-apiCommunecter.callRCPostMessage = (name, params, userId) => {
+apiCommunecter.callRCPostMessage = (name, params) => {
   const info = apiCommunecter.callRCInfo(name);
   if (info) {
     params.roomId = info._id;
@@ -165,6 +165,7 @@ const dataUriToBuffer = (uri) => {
   }
 
   // strip newlines
+  // eslint-disable-next-line no-param-reassign
   uri = uri.replace(/\r?\n/g, '');
 
   // split the URI up into the "metadata" and the "data" portions
@@ -179,7 +180,7 @@ const dataUriToBuffer = (uri) => {
     if (meta[i] === 'base64') {
       base64 = true;
     } else if (meta[i].indexOf('charset=') === 0) {
-      charset = meta[i].substring(8);
+      /* charset = meta[i].substring(8); */
     }
   }
 
@@ -188,6 +189,7 @@ const dataUriToBuffer = (uri) => {
 
   const encoding = base64 ? 'base64' : 'ascii';
   // const buffer = new Buffer(data, encoding);
+  // eslint-disable-next-line new-cap
   const buffer = new Buffer.from(data, encoding);
 
   // set `.type` property to MIME type

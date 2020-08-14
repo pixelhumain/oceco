@@ -32,7 +32,7 @@
             Gestion de l'application
             {{#if isAdminOrga}}
             <a href="{{pathFor 'ocecoEdit' _id=scope._id._str}}" class="button button-positive"><i
-                    class="icon fa fa-cog"></i> </a>
+                    class="icon fa fa-cog"></i> </a>    
             {{/if}}
         </div>
 
@@ -263,17 +263,17 @@
         {{/if}}
         <div class="item item-text-wrap">Gestions des projets</div>
 
-        {{> Directory_list_projects list=listProjectsCreatorAdmin scope="projects"}}
+        {{> directoryList_projects list=listProjectsCreatorAdmin scope="projects"}}
 
 </template>
 
-<template name="Directory_list_projects">
+<template name="directoryList_projects">
     {{#each item in list}}
-    {{> Directory_item_projects item=item scope=scope }}
+    {{> directoryItem_projects item=item scope=scope }}
     {{/each}}
 </template>
 
-<template name="Directory_item_projects">
+<template name="directoryItem_projects">
     <div class="item item-avatar item-content item-button-right">
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
         <h2><a href="{{pathFor 'detailList' _id=item._id._str scope=scope}}" class="dark">{{htmlToText item.name}}</a></h2>
@@ -289,17 +289,17 @@
         </div>
         <div class="item item-text-wrap">Gestion des évenements</div>
 
-        {{> Directory_list_projects_events list=listProjectsEventsCreatorAdmin1M scope="events"}}
+        {{> directoryList_projects_events list=listProjectsEventsCreatorAdmin1M scope="events"}}
 
 </template>
 
-<template name="Directory_list_projects_events">
+<template name="directoryList_projects_events">
     {{#each item in list}}
-    {{> Directory_item_projects_events item=item scope=scope }}
+    {{> directoryItem_projects_events item=item scope=scope }}
     {{/each}}
 </template>
 
-<template name="Directory_item_projects_events">
+<template name="directoryItem_projects_events">
     <div class="item {{#if item.profilThumbImageUrl}}item-avatar{{/if}} item-content item-button-right">
         {{#if item.profilThumbImageUrl}}
         {{> imgDoc profilThumbImageUrl=item.profilThumbImageUrl}}
@@ -323,7 +323,7 @@
     <div class="item item-text-wrap">Gestion des actions</div>
 
     
-    {{> Directory_list_projects_events_action list=(listProjectsEventsActionsCreatorAdmin 'all' limit)  scope="actions"}}
+    {{> directoryList_projects_events_action list=(listProjectsEventsActionsCreatorAdmin 'all' limit)  scope="actions"}}
     
 
     {{#if dataReady}}
@@ -337,13 +337,13 @@
     {{/if}}
 </template>
 
-<template name="Directory_list_projects_events_action">
+<template name="directoryList_projects_events_action">
     {{#each item in list}}
-    {{> Directory_item_projects_events_action item=item scope=scope }}
+    {{> directoryItem_projects_events_action item=item scope=scope }}
     {{/each}}
 </template>
 
-<template name="Directory_item_projects_events_action">
+<template name="directoryItem_projects_events_action">
     <div class="item item-content">
         <h2><a href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}" class="dark">{{item.name}}</a></h2>
     </div>
