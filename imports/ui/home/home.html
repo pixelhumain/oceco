@@ -72,6 +72,25 @@
     <button class="button button-block disabled">
         <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
     </button>
+    {{#transition in="zoomIn" out="bounceOut"}}
+    <div class="list">
+        {{#with scope.InvitingUser 'members' currentUser._id}}
+        <div class="item item-text-wrap animated out">
+            <p><a href="{{pathFor 'detailList' _id=invitorId scope=type}}" class="dark">{{invitorName}}</a>
+                {{#if isAdmin}}
+                {{__ "invited you to become an administrator"}}
+                {{else}}
+                {{__ "invited you"}}
+                {{/if}}
+            </p>
+        </div>
+        {{/with}}
+        <div class="button-bar bar-clear">
+            {{> boutonCard id=scope._id._str scope=scope.scopeVar isConnect=(scope.isInviting 'members' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+            {{> boutonCard id=scope._id._str scope=scope.scopeVar isConnect=(scope.isInviting 'members' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+        </div>
+    </div>
+    {{/transition}}
     {{else}}
     {{> boutonCard id=scope._id._str scope=scope.scopeVar isConnect=scope.isMembers classOff="button-block connectscope-link" classOn="button-block disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOn="Ne plus être membre de l'organisation" titleOff="Devenir membre de l'organisation"}}
     {{/if}}
