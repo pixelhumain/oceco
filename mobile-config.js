@@ -102,6 +102,9 @@ App.appendToConfig(`<platform name="ios">
     <config-file platform="ios" target="*-Info.plist" parent="NSLocationUsageDescription">
       <string>Your current location is used to show services that are nearby</string>      
     </config-file>
+    <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+      <string>Your current location is used to show services that are nearby</string>
+    </config-file>
     <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
       <string>Your current location is used to show services that are nearby</string>
     </config-file>
