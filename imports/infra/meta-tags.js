@@ -37,6 +37,7 @@ export const getContext = (sink) => {
     return { baseUrl };
     // it's important to catch any errors here to not break the initial render
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(`Error trying to get details from URL ${url.path}`, e);
     return { baseUrl };
   }
@@ -145,6 +146,7 @@ onPageLoad((sink) => {
     appendMetaTags(sink, tags);
     appendAppTags(sink, context);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error trying to generate initial HTML', e);
   }
 });

@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* global L */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Mapbox } from 'meteor/communecter:mapbox';
@@ -12,7 +14,6 @@ Template.map.onCreated(function () {
 });
 
 Template.map.onRendered(function () {
-
   if (Mapbox.loaded()) {
     const self = this;
     L.mapbox.accessToken = Meteor.settings.public.mapbox;

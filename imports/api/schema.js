@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import SimpleSchema from 'simpl-schema';
-import { Tracker } from 'meteor/tracker';
 // SimpleSchema.debug = true;
 
 export const Countries_SELECT = ['FR', 'GP', 'MQ', 'YT', 'NC', 'RE', 'BE'];

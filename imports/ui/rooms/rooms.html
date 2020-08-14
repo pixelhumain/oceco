@@ -15,7 +15,7 @@
   {{#ionView}}
   {{#ionContent}}
 
-  {{> Template.dynamic template="detailRooms_view" data=scope}}
+  {{> Template.dynamic template="detailRoomsView" data=scope}}
 
   {{/ionContent}}
   {{/ionView}}
@@ -25,14 +25,14 @@
 </template>
 
 
-<template name="listRooms_search">
+<template name="listRoomsSearch">
   <label class="item item-input">
     <i class="icon ion-search placeholder-icon"></i>
     <input id="search" type="text" placeholder="{{__ "Search..."}}" value="{{search}}">
   </label>
 </template>
 
-<template name="listProposals_button_bar">
+<template name="listProposalsButtonBar">
   <div class="button-bar button-positive">
     {{> Button_toggle condition=(equals view 'all') classOff="button button-small button-dark all" classOn="button button-small button-dark all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
     {{> Button_toggle condition=(equals view 'amendable') classOff="button button-small amendable" classOn="button button-small amendable activated" iconOff="icon fa fa-pencil" iconOn="icon fa fa-pencil positive"}}
@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<template name="listActions_button_bar">
+<template name="listActionsButtonBar">
   <div class="button-bar button-positive">
     {{> Button_toggle condition=(equals viewActions 'all') classOff="button button-small button-dark all" classOn="button button-small button-dark all activated" iconOff="icon fa fa-th-list" iconOn="icon fa fa-th-list positive"}}
     {{> Button_toggle condition=(equals viewActions 'todo') classOff="button button-small todo" classOn="button button-small todo activated" iconOff="icon fa fa-ticket" iconOn="icon fa fa-ticket positive"}}
@@ -53,7 +53,7 @@
   </div>
 </template>
 
-<template name="detailRooms_view">
+<template name="detailRoomsView">
   <div class="list">
     {{#with room }}
     <div class="item item-divider">
@@ -81,7 +81,7 @@
       </p>
       {{/if}}
     </div>
-      {{> listRooms_search}}
+      {{> listRoomsSearch}}
     <div class="item item-divider">
     <i class="icon fa fa-inbox"></i> {{__ "proposals"}}
     </div>
@@ -91,7 +91,7 @@
       <a href="{{pathFor 'proposalsAdd' _id=../_id._str scope=../scopeVar roomId=_id._str}}" class="button button-small">{{> ionIcon icon="plus"}}</a>
     </div>
     {{/if}}
-  {{> listProposals_button_bar}}
+  {{> listProposalsButtonBar}}
   {{#if equals view 'all'}}
   {{> listProposalsStatus status='amendable' room=this}}
   {{> listProposalsStatus status='tovote' room=this}}
@@ -112,7 +112,7 @@
     <a href="{{pathFor 'actionsAdd' _id=../_id._str scope=../scopeVar roomId=_id._str}}" class="button button-small">{{> ionIcon icon="plus"}}</a>
   </div>
   {{/if}}
-  {{> listActions_button_bar}}
+  {{> listActionsButtonBar}}
   {{#if equals viewActions 'all'}}
   {{> listActionsStatus status='todo' room=this}}
   {{> listActionsStatus status='disabled' room=this}}

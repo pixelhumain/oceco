@@ -1,7 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Router } from 'meteor/iron:router';
-import { Counts } from 'meteor/tmeasday:publish-counts';
 
 // collections
 import { Events } from '../../../api/events.js';
@@ -24,7 +23,7 @@ Template.listeventSous.onCreated(function () {
 
   // sub listEvents
   self.autorun(function() {
-    //const handle = listSousEventsSubs.subscribe('listeventSous', Router.current().params._id);
+    // const handle = listSousEventsSubs.subscribe('listeventSous', Router.current().params._id);
     const handle = listSousEventsSubs.subscribe('directoryListEvents', 'events', Router.current().params._id);
     self.ready.set(handle.ready());
   });

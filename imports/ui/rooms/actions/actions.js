@@ -277,7 +277,7 @@ Template.actionsFields.events({
       pageSession.set('credits', parseInt(event.currentTarget.value));
       pageSession.set('isDepense', false);
     } else if (event.currentTarget && event.currentTarget.value && event.currentTarget.value < 0) {
-      console.log('depense');
+      // console.log('depense');
       pageSession.set('isCredits', true);
       pageSession.set('credits', parseInt(event.currentTarget.value));
       pageSession.set('isDepense', true);
@@ -512,7 +512,7 @@ AutoForm.addHooks(['addAction', 'editAction'], {
       doc.parentId = pageSession.get('scopeId');
       // doc.idParentRoom = pageSession.get('roomId');
       // console.log(pageSession.get('scopeId'));
-      console.log(doc);
+      // console.log(doc);
       return doc;
     },
     'method-update'(modifier) {

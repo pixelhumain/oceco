@@ -25,7 +25,7 @@ import { Documents } from '../../api/documents.js';
 
 // schemas
 import { SchemasEventsRest, BlockEventsRest } from '../../api/events.js';
-import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../../api/organizations.js';
+import { SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../../api/organizations.js';
 import { SchemasProjectsRest, BlockProjectsRest } from '../../api/projects.js';
 import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest, Citoyens } from '../../api/citoyens.js';
 import { SchemasNewsRest, SchemasNewsRestBase } from '../../api/news.js';

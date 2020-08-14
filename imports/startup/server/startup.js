@@ -2,6 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { moment } from 'meteor/momentjs:moment';
 import i18n from 'meteor/universe:i18n';
 
 import { Citoyens } from '../../api/citoyens.js';

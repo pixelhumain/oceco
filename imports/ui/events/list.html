@@ -61,6 +61,11 @@
       <div class="item">
         <a href="{{absoluteUrl}}ical/organizations/{{orgaCibleId}}/events" class="button button-block button-positive" target="_blank"><i class="fa fa-file-download"></i> Télécharger .ics</a>
       </div>
+      {{#if isAdminOrga}}
+      <div class="item">
+        <a href="" class="button button-block button-positive ical-admin-js"><i class="fa fa-file-download"></i> Télécharger archive sur 12 mois .ics</a>
+      </div>
+      {{/if}}
 
     </div>
   </div>

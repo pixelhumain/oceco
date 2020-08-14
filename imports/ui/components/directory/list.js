@@ -1,12 +1,10 @@
 import { Template } from 'meteor/templating';
-import SimpleSchema from 'simpl-schema';
-import { Mongo } from 'meteor/mongo';
 
 import './item.js';
 import './list.html';
 
-Template.Directory_list.onCreated(function () {
-   // console.log(Template.currentData());
+Template.directoryList.onCreated(function () {
+  // console.log(Template.currentData());
   this.autorun(() => {
     /* new SimpleSchema({
       isConnect: { type: String, optional: true },

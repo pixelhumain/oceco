@@ -7,6 +7,7 @@ import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { IonActionSheet } from 'meteor/meteoric:ionic';
+import { _ } from 'meteor/underscore';
 
 // collection
 import { Events } from '../../../../api/events.js';
@@ -127,6 +128,7 @@ Template.commentsAdd.onRendered(function () {
     displayTpl(item) {
       return item.avatar ? `<li><img src='${item.avatar}' height='20' width='20'/> ${item.name}</li>` : `<li>${item.name}</li>`;
     },
+    // eslint-disable-next-line no-template-curly-in-string
     insertTpl: '${atwho-at}${slug}',
     searchKey: 'name',
   }).on('matched.atwho', function (event, flag, query) {
@@ -216,6 +218,7 @@ Template.commentsEdit.onRendered(function () {
     displayTpl(item) {
       return item.avatar ? `<li><img src='${item.avatar}' height='20' width='20'/> ${item.name}</li>` : `<li>${item.name}</li>`;
     },
+    // eslint-disable-next-line no-template-curly-in-string
     insertTpl: '${atwho-at}${slug}',
     searchKey: 'name',
   }).on('matched.atwho', function (event, flag, query) {

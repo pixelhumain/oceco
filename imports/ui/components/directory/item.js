@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import i18n from 'meteor/universe:i18n';
-import { Router } from 'meteor/iron:router';
 import { IonPopup } from 'meteor/meteoric:ionic';
 
 // mixin
@@ -10,14 +9,14 @@ import '../mixin/button-toggle.js';
 
 import './item.html';
 
-Template.Directory_item.onCreated(function () {
+Template.directoryItem.onCreated(function () {
   this.state = new ReactiveDict();
   this.state.setDefault({
     call: false,
   });
 });
 
-Template.Directory_item.helpers({
+Template.directoryItem.helpers({
   isConnectFunc (isConnect) {
     return isConnect && this && this.item && isConnect && this.item[isConnect] && this.item[isConnect]();
   },
@@ -41,7 +40,7 @@ Template.Directory_item.helpers({
   },
 });
 
-Template.Directory_item.events({
+Template.directoryItem.events({
   'click .disconnectscope-link-js' (event, instance) {
     event.preventDefault();
     const self = this;

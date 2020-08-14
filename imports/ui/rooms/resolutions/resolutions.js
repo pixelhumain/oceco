@@ -1,13 +1,8 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
-import i18n from 'meteor/universe:i18n';
-import { IonPopup } from 'meteor/meteoric:ionic';
 
-import { Resolutions } from '../../../api/resolutions.js';
-import { Proposals } from '../../../api/proposals.js';
 import { Events } from '../../../api/events.js';
 import { Organizations } from '../../../api/organizations.js';
 import { Projects } from '../../../api/projects.js';

@@ -316,7 +316,7 @@
     </div>
     {{> Template.dynamic template=scopeBoutonOrganizationsTemplate data=this}}
 
-    {{> Directory_list list=listOrganizationsCreator isConnect="isMembers" person=false scope="organizations"}}
+    {{> directoryList list=listOrganizationsCreator isConnect="isMembers" person=false scope="organizations"}}
   </div>
 </template>
 
@@ -526,7 +526,7 @@
     </div>
     {{> Template.dynamic template=scopeBoutonEventsTemplate data=this}}
 
-    {{> Directory_list list=listEventsCreator isConnect="isAttendees" person=false scope="events"}}
+    {{> directoryList list=listEventsCreator isConnect="isAttendees" person=false scope="events"}}
   </div>
 </template>
 
@@ -537,7 +537,7 @@
     </div>
     {{> Template.dynamic template=scopeBoutonPoiTemplate data=this}}
 
-    {{> Directory_list list=listPoiCreator isConnect="" person=false scope="poi" notButton=true}}
+    {{> directoryList list=listPoiCreator isConnect="" person=false scope="poi" notButton=true}}
   </div>
 </template>
 
@@ -855,7 +855,7 @@
     <a href="{{pathFor 'listAttendees' _id=_id._str}}" class="button button-small">{{> ionIcon icon="ios-people"}}</a>
     <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button button-small">{{> ionIcon icon="person-add"}}</a>
 
-    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
+    {{> boutonCard id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
 
     {{else}}
     {{#if isInviting 'attendees' currentUser._id}}
@@ -863,7 +863,7 @@
       <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
     </button>
     {{else}}
-    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
+    {{> boutonCard id=_id._str scope=scopeVar isConnect=isAttendees classOff="button-small saveattendees-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff=(__ "Participate")}}
     {{/if}}
     {{/if}}
 
@@ -884,8 +884,8 @@
     </div>
     {{/with}}
     <div class="button-bar bar-clear">
-      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
-      {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'attendees' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
     </div>
   </div>
   {{/transition}}
@@ -927,8 +927,8 @@
       </div>
       {{/with}}
       <div class="button-bar bar-clear">
-        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
-        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+        {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+        {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'members' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
       </div>
     </div>
     {{/transition}}
@@ -964,11 +964,11 @@
       </button>
       {{else}}
       {{#if isAdmin}}
-      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
       <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
       {{else}}
-      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
-      {{> Bouton_card id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
       {{/if}}
       {{/if}}
       {{/if}}
@@ -991,8 +991,8 @@
       </div>
       {{/with}}
       <div class="button-bar bar-clear">
-        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
-        {{> Bouton_card id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
+        {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small disconnectscope-link" classOn="button-small validatescope-link" iconOff="fa fa-remove positive" iconOn="fa fa-check balanced" titleOff=""}}
+        {{> boutonCard id=_id._str scope=scopeVar isConnect=(isInviting 'contributors' currentUser._id) classOff="button-small validatescope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-check balanced" iconOn="fa fa-remove positive" titleOff=""}}
       </div>
     </div>
     {{/transition}}
@@ -1012,7 +1012,7 @@
 
 <template name="boutonCardpoi">
   <div class="button-bar bar-positive">
-    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+    {{> boutonCard id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
   </div>
 </template>
 
@@ -1022,7 +1022,7 @@
 
 <template name="boutonCardclassified">
   <div class="button-bar bar-positive">
-    {{> Bouton_card id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
+    {{> boutonCard id=_id._str scope=scopeVar isConnect=isFavorites classOff="button-small favorites-link" classOn="button-small favorites-link" iconOff="fa fa-star" iconOn="fa fa-star-o"}}
   </div>
 </template>
 
