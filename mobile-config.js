@@ -5,8 +5,8 @@ App.info({
   description: 'oceco mobile',
   author: 'thomas',
   email: 'thomas.craipeau@gmail.com',
-  version: '0.0.14',
-  buildNumber: '134',
+  version: '0.0.18',
+  buildNumber: '138',
 });
 
 App.setPreference('android-targetSdkVersion', '29');
@@ -108,6 +108,9 @@ App.appendToConfig(`<platform name="ios">
     <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
       <string>Your current location is used to show services that are nearby</string>
     </config-file>
+    <config-file target="*.entitlements" parent="aps-environment">
+          <string>production</string>
+        </config-file>
   </platform>
     <platform name="android">
     <preference name="android-targetSdkVersion" value="29" />
