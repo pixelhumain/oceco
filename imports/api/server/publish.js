@@ -1167,7 +1167,37 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
     {
       find(scopeD) {
         if (scope === 'citoyens' || scope === 'organizations' || scope === 'projects' || scope === 'events') {
-          return scopeD.listProjectsEventsCreator1M();
+          if (scopeD.links && scopeD.links.projects) {
+            const projectIds = arrayLinkParentNoObject(scopeD.links.projects, 'projects');
+            const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+            const query = {};
+            query.$or = [];
+
+            projectIds.forEach((id) => {
+              const queryCo = {};
+              if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
+              queryCo[`organizer.${id}`] = { $exists: true };
+              query.$or.push(queryCo);
+              }
+            });
+            if (query.$or.length === 0) {
+              delete query.$or;
+            }
+
+            // queryOptions.fields.parentId = 1;
+            // const inputDate = new Date();
+            const inputDate = moment(new Date()).subtract(15, 'day').toDate();
+            // query.startDate = { $lte: inputDate };
+            query.endDate = { $gte: inputDate };
+
+            const options = {};
+            options.sort = {
+              startDate: -1,
+            };
+            // console.log(query);
+            return Events.find(query, options);
+          }
+          // return scopeD.listProjectsEventsCreator1M();
         }
       },
       children:
