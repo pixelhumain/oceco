@@ -230,7 +230,12 @@
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
             class="dark">{{action.name}}</a></h2>
             {{#if action.startDate}}
-        <p>{{> actionDate action=action}}</p>
+        <p>{{> actionDate action=action}} 
+            {{#if equals action.parentType 'events'}}
+            {{#if action.min}}
+            | <span class="{{#if action.isNotMin}}positive{{else}}balanced{{/if}} bold">{{action.countContributorsArray}}/{{action.min}}</span>
+            {{/if}}
+            {{/if}}</p>
         {{/if}}
                 {{>itemInputActionTags tags=action.tags}}
             {{#if displayDesc}}
@@ -588,7 +593,12 @@
 </template>
 
 <template name="actionDate">
+    {{#if equals action.parentType 'events'}}
+    <span><i class="ion-android-calendar"></i>{{action.projectDayHour}}{{#if action.endDate}} - {{action.projectDayHourEnd}}{{/if}}</span>
+    {{else}}
     <span><i class="ion-android-calendar"></i>{{action.projectDayHour}}</span>
+    {{/if}}
+
 </template>
 
 <template name="linkForAction">

@@ -343,9 +343,14 @@
     {{/each}}
 </template>
 
-<template name="directoryItem_projects_events_action">
+<template name="directoryItem_projects_events_actionold">
     <div class="item item-content">
         <h2><a href="{{pathFor 'actionsDetail' _id=item.parentId scope=item.parentType roomId=item.idParentRoom actionId=item._id._str}}" class="dark">{{item.name}}</a></h2>
     </div>
 </template>
+
+<template name="directoryItem_projects_events_action">
+    {{> itemInputAction action=item}}
+</template>
+
 

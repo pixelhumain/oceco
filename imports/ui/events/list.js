@@ -89,18 +89,21 @@ Template.listEvents.onRendered(function () {
     locale: 'fr',
     timeZone: 'local',
     defaultView: 'listMonth',
-    eventRender () {
-      /* if (info.event.extendedProps.status === 'done') {
+    eventRender (info) {
+      // console.log(info);
+      if (info.event.extendedProps.event.actionsCount && info.event.extendedProps.event.actionsCount.todo && info.event.extendedProps.event.actionsCount.todo > 0) {
 
         // Change background color of row
-        info.el.style.backgroundColor = 'red';
+        // info.el.style.backgroundColor = '#E33551';
+
+        // info.el.querySelector('.fc-list-item-title').innerHTML += `<i class='fa fa-inbox pull-right'>Actions</i>`;
 
         // Change color of dot marker
-        var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+        /* var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
         if (dotEl) {
           dotEl.style.backgroundColor = 'white';
-        }
-      } */
+        } */
+      }
     },
     eventClick (info) {
       info.jsEvent.preventDefault(); // don't let the browser navigate

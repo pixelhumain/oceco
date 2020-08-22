@@ -315,15 +315,15 @@ export const queryLink = (array, search, selectorga) => {
   return query;
 };
 
-export const arrayLinkIsAdmin = (array) => {
+export const arrayLinkIsAdmin = (array, arrayOrga) => {
   const arrayIds = Object.keys(array)
-    .filter(k => array[k].isAdmin && !array[k].toBeValidated && !array[k].isAdminPending && !array[k].isInviting)
+    .filter(k => arrayOrga && arrayOrga[k] && array[k].isAdmin && !array[k].toBeValidated && !array[k].isAdminPending && !array[k].isInviting)
     .map(k => new Mongo.ObjectID(k));
   return arrayIds;
 };
 
-export const queryLinkIsAdmin = (array, search) => {
-  const arrayIds = arrayLinkIsAdmin(array);
+export const queryLinkIsAdmin = (array, arrayOrga, search) => {
+  const arrayIds = arrayLinkIsAdmin(array, arrayOrga);
   let query = {};
   query._id = { $in: arrayIds };
   if (Meteor.isClient) {

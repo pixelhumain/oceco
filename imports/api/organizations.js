@@ -606,7 +606,7 @@ Organizations.helpers({
   listProjectsCreatorAdmin(search) {
     if (this.links && this.links.projects) {
       const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
-      const query = queryLinkIsAdmin(userC.links.projects, search);
+      const query = queryLinkIsAdmin(userC.links.projects, this.links.projects, search);
       return Projects.find(query, queryOptions);
     }
   },
@@ -844,11 +844,9 @@ Organizations.helpers({
   listProjectsEventsActionsCreatorAdmin(status = 'todo', limit) {
     const query = {};
     const listEvents = this.listProjectsEventsCreatorAdmin1M();
-
     if (Meteor.isClient) {
       if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
         const listProjects = this.listProjects();
-
         const eventIds = listEvents.map(event => event._id._str);
         const projectIds = listProjects.map(project => project._id._str);
         const mergeArray = [...eventIds, ...projectIds, this._id._str];
