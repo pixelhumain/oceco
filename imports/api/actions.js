@@ -419,6 +419,15 @@ Actions.helpers({
   projectDay() {
     return moment(this.startDate).format(' ddd Do MMM ');
   },
+  projectDayHourEnd() {
+    if (this.projectDay() === this.projectDayEnd()) {
+      return moment(this.endate).format('HH:mm');
+    }
+    return moment(this.endate).format('ddd Do MMM à HH:mm');
+  },
+  projectDayEnd() {
+    return moment(this.endate).format(' ddd Do MMM ');
+  },
   projectDuration() {
     const startDate = moment(this.startDate);
     const endDate = moment(this.endDate);
@@ -448,6 +457,16 @@ Actions.helpers({
   countContributors (search) {
     // return this.links && this.links.contributors && _.size(this.links.contributors);
     return this.listContributors(search) && this.listContributors(search).count() ? this.listContributors(search).count() : 0;
+  },
+  countContributorsArray() {
+    if (this.links && this.links.contributors) {
+      const arrayContributors = arrayLinkProperNoObject(this.links.contributors);
+      return arrayContributors && arrayContributors.length > 0 ? arrayContributors.length : 0;
+    }
+    return 0;
+  },
+  isNotMin() {
+    return this.min ? (this.min > this.countContributorsArray()) : true;
   },
   creditPartage() {
     if (this.options && this.options.creditSharePorteur) {
