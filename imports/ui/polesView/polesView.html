@@ -236,6 +236,9 @@
             | <span class="{{#if action.isNotMin}}positive{{else}}balanced{{/if}} bold">{{action.countContributorsArray}}/{{action.min}}</span>
             {{/if}}
             {{/if}}</p>
+            {{#if viewParent}}
+            <p><span class="positive bold">{{action.parentScope.name}}</span></p>
+            {{/if}}
         {{/if}}
                 {{>itemInputActionTags tags=action.tags}}
             {{#if displayDesc}}
