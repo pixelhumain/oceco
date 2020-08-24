@@ -421,12 +421,12 @@ Actions.helpers({
   },
   projectDayHourEnd() {
     if (this.projectDay() === this.projectDayEnd()) {
-      return moment(this.endate).format('HH:mm');
+      return moment(this.endDate).format('HH:mm');
     }
-    return moment(this.endate).format('ddd Do MMM à HH:mm');
+    return moment(this.endDate).format('ddd Do MMM à HH:mm');
   },
   projectDayEnd() {
-    return moment(this.endate).format(' ddd Do MMM ');
+    return moment(this.endDate).format(' ddd Do MMM ');
   },
   projectDuration() {
     const startDate = moment(this.startDate);
