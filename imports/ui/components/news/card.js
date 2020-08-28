@@ -1,6 +1,8 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import { Counts } from 'meteor/tmeasday:publish-counts';
+import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import i18n from 'meteor/universe:i18n';
 import { IonActionSheet } from 'meteor/meteoric:ionic';
 
@@ -17,6 +19,43 @@ Template.scopeCard.helpers({
     return !!((value === true || value === 'true'));
   },
 });
+
+Template.scopeBoardActions.onCreated(function () {
+  this.autorun(function () {
+    Meteor.subscribe('scopeActionIndicatorCount', this.data.scope, this.data._id, 'all');
+  }.bind(this));
+});
+
+Template.scopeBoardActions.helpers({
+  countActionsStatus(status) {
+    return Counter.get(`countScopeAction.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+  },
+});
+
+Template.scopeBoardActionsItem.onCreated(function () {
+  this.autorun(function () {
+    Meteor.subscribe('scopeActionIndicatorCount', this.data.scope, this.data._id, this.data.status);
+  }.bind(this));
+});
+
+Template.scopeBoardActionsItem.helpers({
+  countActionsStatus(status) {
+    return Counter.get(`countScopeAction.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+  },
+  pourActionsStatus(totalStatus, status) {
+    const total = Counter.get(`countScopeAction.${Template.instance().data._id}.${Template.instance().data.scope}.${totalStatus}`);
+    const count = Counter.get(`countScopeAction.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+    if (total === 0) {
+      return 0;
+    }
+    const pourcentage = (100 * count) / total;
+    if (Number.isInteger(pourcentage)) {
+      return pourcentage;
+    }
+    return parseFloat(pourcentage).toFixed(2);
+  },
+});
+
 
 Template.actionSheet.events({
   'click .action-card-citoyen' (event) {

@@ -929,6 +929,12 @@
       "memberAuto": {
         "label": "Ajouter des membres automatiquement"
       },
+      "contributorAuto": {
+        "label": "Ajouter des contributeurs au projet automatiquement (à la participation ou assignation à une action)"
+      },
+      "attendeAuto": {
+        "label": "Ajouter des participants à l'événement automatiquement (à la participation ou assignation à une action)"
+      },
       "agenda": {
         "label": "Activer agenda évenement"
       },

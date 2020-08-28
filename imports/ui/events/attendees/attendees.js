@@ -61,7 +61,7 @@ Template.listAttendeesSearch.helpers({
 });
 
 Template.listAttendeesSearch.events({
-  'keyup #search, change #search': _.throttle((event) => {
+  'keyup #search, change #search': _.debounce((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
       pageDirectory.set('search', event.currentTarget.value);

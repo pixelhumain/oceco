@@ -1176,8 +1176,8 @@ Meteor.publishComposite('directoryProjectsListEventsActions', function (scope, s
             projectIds.forEach((id) => {
               const queryCo = {};
               if (userC && userC.links && userC.links.projects && userC.links.projects[id] && userC.links.projects[id].isAdmin && !userC.links.projects[id].toBeValidated && !userC.links.projects[id].isAdminPending && !userC.links.projects[id].isInviting) {
-              queryCo[`organizer.${id}`] = { $exists: true };
-              query.$or.push(queryCo);
+                queryCo[`organizer.${id}`] = { $exists: true };
+                query.$or.push(queryCo);
               }
             });
             if (query.$or.length === 0) {
@@ -2738,34 +2738,6 @@ Meteor.publishComposite('newsDetailComments', function(scope, scopeId, newsId) {
   };
 });
 
-Meteor.publish('citoyenOnlineProx', function(latlng, radius) {
-  check(latlng, { longitude: Number, latitude: Number });
-  check(radius, Number);
-  if (!this.userId) {
-    return null;
-  }
-  // moulinette pour mettre à jour les Point pour que l'index soit bon
-  /*
-                                      Citoyens.find({}).fetch().map(function(c){
-                                      if(c.geo && c.geo.longitude){
-                                      Citoyens.update({_id:c._id}, {$set: {'geoPosition': {
-                                      type: "Point",
-                                      'coordinates': [parseFloat(c.geo.longitude), parseFloat(c.geo.latitude)]
-                                    }}});
-                                  }
-                                }); */
-
-  return Citoyens.find({ geoPosition: {
-    $nearSphere: {
-      $geometry: {
-        type: 'Point',
-        coordinates: [latlng.longitude, latlng.latitude],
-      },
-      $maxDistance: radius,
-    } } }, { _disableOplog: true, fields: { pwd: 0 } });
-});
-
-
 Meteor.publish('users', function() {
   if (!this.userId) {
     return null;
@@ -3241,3 +3213,41 @@ Meteor.publish('poles.events', function (raffId, poleName) {
 // })
 
 // Meteor.publish('poles.list', function())
+
+Meteor.publish('scopeActionIndicatorCount', function (scope, scopeId, status) {
+  check(scopeId, String);
+  check(scope, String);
+  check(status, String);
+  check(status, Match.Where(function (name) {
+    return _.contains(['todo', 'done', 'disabled', 'contributors', 'finished', 'toValidated', 'all'], name);
+  }));
+  check(scope, Match.Where(function (name) {
+    return _.contains(['events', 'projects', 'organizations', 'citoyens'], name);
+  }));
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
+  }
+  if (!collection.findOne({ _id: new Mongo.ObjectID(scopeId) })) {
+    return null;
+  }
+
+  const query = {};
+  query.parentId = scopeId;
+  query.parentType = scope;
+  if (status !== 'all' && status !== 'contributors' && status !== 'finished' && status !== 'toValidated') {
+    query.status = status;
+  }
+  if (status === 'contributors') {
+    query['links.contributors'] = { $exists: true };
+  }
+  if (status === 'finished') {
+    query.finishedBy = { $exists: true };
+  }
+  if (status === 'toValidated') {
+    query.status = 'todo';
+    query.finishedBy = { $exists: true };
+  }
+
+  return new Counter(`countScopeAction.${scopeId}.${scope}.${status}`, Actions.find(query));
+});

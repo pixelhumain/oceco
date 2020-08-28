@@ -1112,12 +1112,13 @@ Meteor.methods({
     const retour = apiCommunecter.postPixel('co2/collections', 'add', doc);
     return retour;
   },
-  connectEntity (connectId, parentType, childId, connectType) {
+  connectEntity(connectId, parentType, childId, connectType, orgId) {
     check(connectId, String);
     check(parentType, String);
     check(parentType, Match.Where(function(name) {
       return _.contains(['events', 'projects', 'organizations', 'citoyens', 'actions'], name);
     }));
+    check(orgId, Match.Maybe(String));
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -1150,6 +1151,8 @@ Meteor.methods({
 
     // WARNING passe l'user en member
     // si auto member true
+    
+
     if (parentType === 'organizations' && connectType !== 'admin') {
       const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(connectId) });
       if (orgaOne && orgaOne.oceco && orgaOne.oceco.memberAuto) {
@@ -1166,6 +1169,52 @@ Meteor.methods({
         }, {
           $unset: {
             [`links.members.${doc.childId}.toBeValidated`]: '',
+          },
+        });
+      }
+    }
+
+    if (parentType === 'projects' && connectType !== 'admin') {
+      const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
+      if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
+        Citoyens.update({
+          _id: new Mongo.ObjectID(doc.childId),
+        }, {
+          $unset: {
+            [`links.projects.${connectId}.toBeValidated`]: '',
+            [`links.projects.${connectId}.isInviting`]: '',
+          },
+        });
+
+        Projects.update({
+          _id: new Mongo.ObjectID(connectId),
+        }, {
+          $unset: {
+            [`links.contributors.${doc.childId}.toBeValidated`]: '',
+            [`links.contributors.${doc.childId}.isInviting`]: '',
+          },
+        });
+      }
+    }
+
+    if (parentType === 'events' && connectType !== 'admin') {
+      const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
+      if (orgaOne && orgaOne.oceco && orgaOne.oceco.attendeAuto) {
+        Citoyens.update({
+          _id: new Mongo.ObjectID(doc.childId),
+        }, {
+          $unset: {
+            [`links.events.${connectId}.toBeValidated`]: '',
+            [`links.events.${connectId}.isInviting`]: '',
+          },
+        });
+
+        Events.update({
+          _id: new Mongo.ObjectID(connectId),
+        }, {
+          $unset: {
+            [`links.attendees.${doc.childId}.toBeValidated`]: '',
+            [`links.attendees.${doc.childId}.isInviting`]: '',
           },
         });
       }
@@ -3176,7 +3225,6 @@ export const assignmeActionRooms = new ValidatedMethod({
       }
     }
 
-
     const parent = `finishedBy.${Meteor.userId()}`;
 
     function userCredits() {
@@ -3210,6 +3258,19 @@ export const assignmeActionRooms = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
 
+    // projects auto true
+    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
+    if (userC && actionOne.parentType === 'projects') {
+      if (!userC.isScope('projects', actionOne.parentId)) {
+        console.log(actionOne.parentType);
+        Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+      }
+    } else if (userC && actionOne.parentType === 'events') {
+      if (!userC.isScope('events', actionOne.parentId)) {
+        console.log(actionOne.parentType);
+        Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+      }
+    }
 
     // TODO verifier si id est une room existante et les droit pour ce l'assigner
     // id action > recupérer idParentRoom,parentType,parentId > puis roles dans room
@@ -3316,6 +3377,7 @@ export const assignMemberActionRooms = new ValidatedMethod({
     const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
     const parentType = actionOne.parentType;
     const collection = nameToCollection(parentType);
+
     const orgOne = Organizations.findOne({ _id: parentObjectId });
     let orgId;
     if (orgOne) {
@@ -3371,6 +3433,18 @@ export const assignMemberActionRooms = new ValidatedMethod({
     // verifier si member existe
     if (!Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) })) {
       throw new Meteor.Error('not-exist-member-id');
+    }
+
+    // projects auto true
+    const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) }, { fields: { pwd: 0 } });
+    if (userC && parentType === 'projects') {
+      if (!userC.isScope('projects', actionOne.parentId)) {
+        Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+      }
+    } else if (userC && parentType === 'events') {
+      if (!userC.isScope('events', actionOne.parentId)) {
+        Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+      }
     }
 
     // TODO verifier si id est une room existante et les droit pour ce l'assigner

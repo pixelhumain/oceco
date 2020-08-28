@@ -9,3 +9,74 @@ progress {
   margin: $progress-margin;
   width: $progress-width;
 }
+
+.progress-bar {
+  @include item-style($item-default-bg, $item-default-border, $item-default-text);
+				width: 100%;
+				//background-color: #e0e0e0;
+				//padding: 3px;
+				border-radius: 3px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+        
+        .progress-bar-fill {
+        @include item-style($item-positive-bg, $item-positive-border, $item-positive-text);
+				display: block;
+				height: 22px;
+				//background-color: #659cef;
+				border-radius: 3px;
+				
+        transition: width 500ms ease-in-out;
+        &.progress-bar-light {
+          @include item-style($item-light-bg, $item-light-border, $item-light-text);
+        }
+        &.progress-bar-fill-stable {
+          @include item-style($item-stable-bg, $item-stable-border, $item-stable-text);
+        }
+        &.progress-bar-fill-calm {
+          @include item-style($item-calm-bg, $item-calm-border, $item-calm-text);
+        }
+        &.progress-bar-fill-assertive {
+          @include item-style($item-assertive-bg, $item-assertive-border, $item-assertive-text);
+        }
+        &.progress-bar-fill-balanced {
+          @include item-style($item-balanced-bg, $item-balanced-border, $item-balanced-text);
+        }
+        &.progress-bar-fill-energized {
+          @include item-style($item-energized-bg, $item-energized-border, $item-energized-text);
+        }
+        &.progress-bar-fill-royal {
+          @include item-style($item-royal-bg, $item-royal-border, $item-royal-text);
+        }
+        &.progress-bar-fill-dark {
+          @include item-style($item-dark-bg, $item-dark-border, $item-dark-text);
+        }
+      }
+
+  &.progress-bar-light {
+    @include item-style($item-light-bg, $item-light-border, $item-light-text);
+  }
+  &.progress-bar-stable {
+    @include item-style($item-stable-bg, $item-stable-border, $item-stable-text);
+  }
+  &.progress-bar-positive {
+    @include item-style($item-positive-bg, $item-positive-border, $item-positive-text);
+  }
+  &.progress-bar-calm {
+    @include item-style($item-calm-bg, $item-calm-border, $item-calm-text);
+  }
+  &.progress-bar-assertive {
+    @include item-style($item-assertive-bg, $item-assertive-border, $item-assertive-text);
+  }
+  &.progress-bar-balanced {
+    @include item-style($item-balanced-bg, $item-balanced-border, $item-balanced-text);
+  }
+  &.progress-bar-energized {
+    @include item-style($item-energized-bg, $item-energized-border, $item-energized-text);
+  }
+  &.progress-bar-royal {
+    @include item-style($item-royal-bg, $item-royal-border, $item-royal-text);
+  }
+  &.progress-bar-dark {
+    @include item-style($item-dark-bg, $item-dark-border, $item-dark-text);
+  }
+}

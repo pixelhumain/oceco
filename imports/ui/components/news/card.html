@@ -215,9 +215,53 @@
     </div>
     {{/if}}
 
+
+    {{> scopeBoardActions _id=_id._str scope=scopeVar}}
+
     {{/with}}
+
+    
+    
   </div>
 </template>
+
+<template name="scopeBoardActions">
+{{#if countActionsStatus 'all'}}
+<div class="item item-divider">
+  <h2><i class="fa fa-chart-line"></i> Tableau de bord des actions</h2>
+</div>
+<div class="">
+  <div class="row">
+    <div class="col col-25 col-center">Total</div>
+    <div class="col col-20 col-center text-center">{{countActionsStatus 'all'}}</div>
+    <div class="col col-center text-center">
+      <div class="progress-bar">
+        <span class="progress-bar-fill progress-bar-fill-dark" style="width: 100%;">100%</span>
+      </div>
+    </div>
+  </div>
+  {{> scopeBoardActionsItem _id=_id scope=scope label=(__ "todo") status="todo" classBar="progress-bar-stable" classFill=""}}
+  {{> scopeBoardActionsItem _id=_id scope=scope label=(__ "done") status="done" classBar="progress-bar-stable" classFill="progress-bar-fill-balanced"}}
+  {{> scopeBoardActionsItem _id=_id scope=scope label=(__ "disabled") status="disabled" classBar="progress-bar-stable" classFill="progress-bar-fill-assertive"}}
+  {{> scopeBoardActionsItem _id=_id scope=scope label="Assignées" status="contributors" classBar="progress-bar-stable" classFill="progress-bar-fill-balanced"}}
+  {{> scopeBoardActionsItem _id=_id scope=scope label="En cours (à valider)" status="toValidated" classBar="progress-bar-stable" classFill="progress-bar-fill-energized"}}
+</div>
+{{/if}}
+</template>
+
+<template name="scopeBoardActionsItem">
+<div class="row">
+  <div class="col col-25 col-center">{{label}}</div>
+  <div class="col col-20 col-center text-center">{{countActionsStatus status}}</div>
+  <div class="col col-center text-center">
+    <div class="progress-bar {{classBar}}">
+      <span class="progress-bar-fill {{classFill}}"
+        style="width: {{pourActionsStatus 'all' status}}%;">{{pourActionsStatus 'all' status}}%</span>
+    </div>
+  </div>
+</div>
+</template>
+
 
 <template name="scopeCreator">
 {{#if organizer}}

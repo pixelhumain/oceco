@@ -639,9 +639,9 @@
   <i class='fa fa-info-circle'></i> {{__ 'schemas.proposalsrest.amendementActivated.information'}}
 </div>
 {{#if equalFieldValue 'amendementActivated' true}}
-{{> afQuickField name='amendementDateEnd' type="datetime-local"}}
+{{> afQuickField name='amendementDateEnd'  type="datetimepicker" opts=optsDatetimepicker}}
 {{/if}}
-{{> afQuickField name='voteDateEnd' type="datetime-local"}}
+{{> afQuickField name='voteDateEnd'  type="datetimepicker" opts=optsDatetimepicker}}
 {{> afQuickField name='majority'}}
 <div class="item item-text-wrap stable-bg">
   {{#if currentFieldValue 'majority'}}

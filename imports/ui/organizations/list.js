@@ -424,7 +424,7 @@ Template.organizationsFields.onDestroyed(function () {
 });
 
 Template.organizationsFields.events({
-  'keyup input[name="postalCode"],change input[name="postalCode"]': _.throttle((event, instance) => {
+  'keyup input[name="postalCode"],change input[name="postalCode"]': _.debounce((event, instance) => {
     event.preventDefault();
     pageSession.set('postalCode', instance.$(event.currentTarget).val());
   }, 500),
@@ -455,7 +455,7 @@ Template.organizationsFields.events({
     // console.log(insee.geo.latitude);
     // console.log(insee.geo.longitude);
   },
-  'change/keyup input[name="streetAddress"]': _.throttle((event, instance) => {
+  'change/keyup input[name="streetAddress"]': _.debounce((event, instance) => {
     // remplace les espaces par des +
     const transformNominatimUrl = (str) => {
       let res = '';

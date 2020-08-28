@@ -932,6 +932,12 @@
   "memberAuto": {
 "label": "member Auto"
   },
+  "contributorAuto": {
+    "label": "contributor Auto"
+  },
+  "attendeAuto": {
+    "label": "attende Auto"
+  },
   "agenda": {
 "label": "agenda display"
   },
