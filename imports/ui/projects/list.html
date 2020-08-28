@@ -152,8 +152,8 @@
   {{/if}}
 
   {{#if equals block 'when'}}
-  {{> afQuickField name='startDate' type="datetime-local"}}
-  {{> afQuickField name='endDate' type="datetime-local"}}
+  {{> afQuickField name='startDate'  type="datetimepicker" opts=optsDatetimepicker}}
+  {{> afQuickField name='endDate'  type="datetimepicker" opts=optsDatetimepicker}}
   {{/if}}
 
   {{#if equals block 'preferences'}}
@@ -202,8 +202,8 @@
   {{/if}}
 
   {{> afQuickField name='url'}}
-  {{> afQuickField name='startDate' type="datetime-local"}}
-  {{> afQuickField name='endDate' type="datetime-local"}}
+  {{> afQuickField name='startDate'  type="datetimepicker" opts=optsDatetimepicker}}
+  {{> afQuickField name='endDate'  type="datetimepicker" opts=optsDatetimepicker}}
   {{> afQuickField name='public'}}
 
   {{> afQuickField name='tags'}}

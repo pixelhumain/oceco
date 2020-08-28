@@ -77,7 +77,7 @@ Template.pageInvitations.helpers({
 });
 
 Template.pageInvitations.events({
-  'keyup #search, change #search': _.throttle((event) => {
+  'keyup #search, change #search': _.debounce((event) => {
     if (event.currentTarget.value.length > 2) {
       pageSession.set('filter', event.currentTarget.value);
     } else if (event.currentTarget.value.length === 0) {

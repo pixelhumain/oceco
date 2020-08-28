@@ -635,6 +635,32 @@ Template.eventsFields.helpers({
   dataReadyParent() {
     return Template.instance().readyParent.get();
   },
+  optsDatetimepicker() {
+    return {
+      formatValue: 'YYYY-MM-DD HH:mm:ssZ',
+      pikaday: {
+        format: 'DD/MM/YYY HH:mm',
+        showTime: true,
+        i18n: {
+          previousMonth: 'Mois précédent',
+          nextMonth: 'Mois prochain',
+          months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+          weekdays: ['dimanche', ' lundi ', ' mardi ', ' mercredi ', ' jeudi ', ' vendredi ', ' samedi '],
+          weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+          midnight: 'minuit',
+          moon: 'midi',
+        },
+        showMinutes: true,
+        showSeconds: false,
+        use24hour: true,
+        incrementHourBy: 1,
+        incrementMinuteBy: 1,
+        incrementSecondBy: 1,
+        autoClose: true,
+        timeLabel: null,
+      }
+    }
+  }
 });
 
 

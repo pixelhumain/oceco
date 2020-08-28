@@ -147,7 +147,7 @@ Template.searchActions.events({
       searchAction.set('search', null);
     }
   },
-  'keyup #search, change #search': _.throttle((event) => {
+  'keyup #search, change #search': _.debounce((event) => {
     if (event.currentTarget.value.length > 0) {
       // console.log(event.currentTarget.value);
 

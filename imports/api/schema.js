@@ -17,7 +17,6 @@ export const rolesPlusSelect = ['Organisateur', 'Partenaire', 'Financeur', 'Pré
 
 export const statusProposals = ['amendable', 'tovote', 'resolved', 'disabled', 'closed', 'archived'];
 
-
 export const SchemasOcecoText = new SimpleSchema({
   textTitre: {
     type: String,
@@ -109,6 +108,28 @@ export const SchemasOcecoObj = new SimpleSchema({
         return this.value;
       }
       return true;
+    },
+    optional: true,
+  },
+  contributorAuto: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
+  attendeAuto: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
     },
     optional: true,
   },
