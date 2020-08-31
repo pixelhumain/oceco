@@ -432,7 +432,7 @@ Template.eventsEdit.helpers({
         eventEdit.preferences.isOpenEdition = false;
       }
     }
-    eventEdit.allDay = event.allDay;
+    // eventEdit.allDay = event.allDay;
     eventEdit.country = event.address.addressCountry;
     eventEdit.postalCode = event.address.postalCode;
     eventEdit.city = event.address.codeInsee;
@@ -507,7 +507,7 @@ Template.eventsBlockEdit.helpers({
         }
       }
     } else if (Router.current().params.block === 'when') {
-      eventEdit.allDay = event.allDay;
+      // eventEdit.allDay = event.allDay;
       eventEdit.startDate = event.startDate;
       eventEdit.endDate = event.endDate;
     } else if (Router.current().params.block === 'locality') {
