@@ -113,7 +113,7 @@ const baseDocRetour = (docRetour, doc, scope) => {
         docRetour.url = doc.url ? doc.url : '';
       }
       if (doc.block === 'when') {
-        docRetour.allDay = doc.allDay;
+        // docRetour.allDay = doc.allDay;
         docRetour.startDate = moment(doc.startDate).format();
         docRetour.endDate = moment(doc.endDate).format();
       }
