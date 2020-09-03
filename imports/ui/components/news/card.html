@@ -218,6 +218,24 @@
 
     {{> scopeBoardActions _id=_id._str scope=scopeVar}}
 
+    {{#if equals scopeVar 'projects'}}
+
+    {{#each listMembers}}
+    {{> scopeBoardUserActions _id=../_id._str scope=../scopeVar userId=this }}
+    {{/each}}
+    
+
+    {{/if}}
+
+    {{#if equals scopeVar 'organizations'}}
+    
+    {{#each listMembers}}
+    {{> scopeBoardUserActions _id=../_id._str scope=../scopeVar userId=this }}
+    {{/each}}
+    
+    
+    {{/if}}
+
     {{/with}}
 
     
@@ -262,6 +280,35 @@
 </div>
 </template>
 
+<template name="scopeBoardUserActions">
+{{#if countUserActionsStatus 'all' userId}}
+  <div class="item item-divider item-light">
+    <h2><i class="fa fa-user"></i> {{userItem.name}}</h2> <span class="badge badge-stable">{{countUserActionsStatus 'all' userId}}</span>
+  </div>
+
+  <div class="">
+    {{> scopeBoardUserActionsItem _id=_id scope=scope userId=userId label="Valider" status="validated" classBar="progress-bar-stable" classFill="progress-bar-fill-balanced"}}
+    {{> scopeBoardUserActionsItem _id=_id scope=scope userId=userId label="Refuser" status="novalidated" classBar="progress-bar-stable" classFill="progress-bar-fill-assertive"}}
+    {{> scopeBoardUserActionsItem _id=_id scope=scope userId=userId label="En cours" status="inProgress" classBar="progress-bar-stable" classFill=""}}
+    {{> scopeBoardUserActionsItem _id=_id scope=scope userId=userId label="A valider" status="toModerate" classBar="progress-bar-stable" classFill="progress-bar-fill-energized"}}
+  </div>
+{{/if}}
+</template>
+
+<template name="scopeBoardUserActionsItem">
+  {{#if countUserActionsStatus status userId}}
+  <div class="row">
+    <div class="col col-25 col-center">{{label}}</div>
+    <div class="col col-20 col-center text-center">{{countUserActionsStatus status userId}}</div>
+    <div class="col col-center text-center">
+      <div class="progress-bar {{classBar}}">
+        <span class="progress-bar-fill {{classFill}}"
+          style="width: {{pourUserActionsStatus 'all' status userId}}%;">{{pourUserActionsStatus 'all' status userId}}%</span>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+</template>
 
 <template name="scopeCreator">
 {{#if organizer}}

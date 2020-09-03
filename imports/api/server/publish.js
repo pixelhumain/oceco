@@ -188,6 +188,16 @@ Meteor.publish('citoyen', function() {
   return citoyen;
 });
 
+Meteor.publish('citoyenLight', function (userId) {
+  check(userId, String);
+  if (!this.userId) {
+    return null;
+  }
+  const objectId = new Mongo.ObjectID(userId);
+  const citoyen = Citoyens.find({ _id: objectId }, { fields: { _id: 1, name: 1 } });
+  return citoyen;
+});
+
 // eslint-disable-next-line meteor/audit-argument-checks
 Meteor.publish('geo.dashboard', function (geoId, latlng, radius) {
   if (!this.userId) {
@@ -1349,15 +1359,15 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       },
       children: [{
         find(action) {
-          if (action.avatarOneUserAction()) {
+          //if (action.avatarOneUserAction()) {
             if (action && action.links && action.links.contributors) {
               const arrayContributors = arrayLinkProperNoObject(action.links.contributors);
               if (arrayContributors && arrayContributors[0]) {
                 const arrayAllMergeMongoId = arrayContributors.map(k => new Mongo.ObjectID(k));
-                return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { profilThumbImageUrl: 1 } });
+                return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { name: 1, username: 1, profilThumbImageUrl: 1 } });
               }
             }
-          }
+          //}
         },
       }],
     },
@@ -2869,16 +2879,16 @@ Meteor.publish('all.avatarOne', function (raffId) {
   }
   const allActions = orgaOne.actionsAll();
   const allIdsCitoyens = allActions.map((k) => {
-    if (k.avatarOneUserAction()) {
+    if (k.links && k.links.contributors) {
       const arrayContributors = arrayLinkProperNoObject(k.links.contributors);
-      return arrayContributors[0];
+      return arrayContributors;
     }
     return false;
   }).filter(Boolean);
   const mergeDedupe = arr => [...new Set([].concat(...arr))];
   const arrayAllMerge = mergeDedupe(allIdsCitoyens);
   const arrayAllMergeMongoId = arrayAllMerge.map(k => new Mongo.ObjectID(k));
-  return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { profilThumbImageUrl: 1 } });
+  return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { name: 1, username: 1, profilThumbImageUrl: 1 } });
 });
 
 Meteor.publish('all.actions2', function (raffId) {
@@ -3224,30 +3234,42 @@ Meteor.publish('scopeActionIndicatorCount', function (scope, scopeId, status) {
   check(scope, Match.Where(function (name) {
     return _.contains(['events', 'projects', 'organizations', 'citoyens'], name);
   }));
+
   const collection = nameToCollection(scope);
   if (!this.userId) {
     return null;
   }
-  if (!collection.findOne({ _id: new Mongo.ObjectID(scopeId) })) {
+  const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(scopeId) });
+  if (!scopeOne) {
     return null;
   }
 
-  const query = {};
-  query.parentId = scopeId;
-  query.parentType = scope;
-  if (status !== 'all' && status !== 'contributors' && status !== 'finished' && status !== 'toValidated') {
-    query.status = status;
+  return new Counter(`countScopeAction.${scopeId}.${scope}.${status}`, scopeOne.actionIndicatorCount(status));
+});
+
+Meteor.publish('scopeUserActionIndicatorCount', function (scope, scopeId, status, userId) {
+  check(scopeId, String);
+  check(scope, String);
+  check(status, String);
+  check(status, Match.Where(function (name) {
+    return _.contains(['inProgress', 'toModerate', 'validated', 'novalidated', 'all'], name);
+  }));
+  check(scope, Match.Where(function (name) {
+    return _.contains(['events', 'projects', 'organizations', 'citoyens'], name);
+  }));
+  check(userId, String);
+
+  const collection = nameToCollection(scope);
+  if (!this.userId) {
+    return null;
   }
-  if (status === 'contributors') {
-    query['links.contributors'] = { $exists: true };
+  const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(scopeId) });
+  if (!scopeOne) {
+    return null;
   }
-  if (status === 'finished') {
-    query.finishedBy = { $exists: true };
-  }
-  if (status === 'toValidated') {
-    query.status = 'todo';
-    query.finishedBy = { $exists: true };
+  if (!Citoyens.findOne({ _id: new Mongo.ObjectID(userId) })) {
+    return null;
   }
 
-  return new Counter(`countScopeAction.${scopeId}.${scope}.${status}`, Actions.find(query));
+  return new Counter(`countScopeUserAction.${userId}.${scopeId}.${scope}.${status}`, scopeOne.userActionIndicatorCount(status, userId));
 });

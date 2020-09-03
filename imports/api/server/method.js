@@ -1174,7 +1174,7 @@ Meteor.methods({
       }
     }
 
-    if (parentType === 'projects' && connectType !== 'admin') {
+    /* if (parentType === 'projects' && connectType !== 'admin') {
       const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
       if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
         Citoyens.update({
@@ -1218,7 +1218,7 @@ Meteor.methods({
           },
         });
       }
-    }
+    } */
 
     return retour;
   },
@@ -3012,7 +3012,8 @@ export const updateAction = new ValidatedMethod({
       }
       delete docRetour.tagsText;
     }
-    if (modifier.$unset.tagsText === '') {
+    
+    if (modifier && modifier.$unset && 'tagsText' in modifier.$unset) {
       docRetour.tags = '';
       delete docRetour.tagsText;
     }
@@ -3039,6 +3040,8 @@ export const updateAction = new ValidatedMethod({
     docRetour.key = 'action';
     docRetour.collection = 'actions';
     docRetour.id = _id;
+
+    console.log(docRetour);
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },
@@ -3258,17 +3261,106 @@ export const assignmeActionRooms = new ValidatedMethod({
       throw new Meteor.Error('not-authorized');
     }
 
+
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
     // projects auto true
     const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(Meteor.userId()) }, { fields: { pwd: 0 } });
     if (userC && actionOne.parentType === 'projects') {
       if (!userC.isScope('projects', actionOne.parentId)) {
-        console.log(actionOne.parentType);
-        Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+        if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
+          console.log(actionOne.parentType);
+          if (userC.isInviting('projects', actionOne.parentId)) {
+            console.log('isInviting');
+
+            if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $unset: {
+                  [`links.projects.${actionOne.parentId}.toBeValidated`]: '',
+                  [`links.projects.${actionOne.parentId}.isInviting`]: '',
+                },
+              });
+
+              Projects.update({
+                _id: new Mongo.ObjectID(actionOne.parentId),
+              }, {
+                $unset: {
+                  [`links.contributors.${userC._id._str}.toBeValidated`]: '',
+                  [`links.contributors.${userC._id._str}.isInviting`]: '',
+                },
+              });
+            }
+          } else {
+            const retour = Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+            if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $unset: {
+                  [`links.projects.${actionOne.parentId}.toBeValidated`]: '',
+                  [`links.projects.${actionOne.parentId}.isInviting`]: '',
+                },
+              });
+
+              Projects.update({
+                _id: new Mongo.ObjectID(actionOne.parentId),
+              }, {
+                $unset: {
+                  [`links.contributors.${userC._id._str}.toBeValidated`]: '',
+                  [`links.contributors.${userC._id._str}.isInviting`]: '',
+                },
+              });
+            }
+          }
+        }
       }
     } else if (userC && actionOne.parentType === 'events') {
       if (!userC.isScope('events', actionOne.parentId)) {
-        console.log(actionOne.parentType);
-        Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+        if (orgaOne && orgaOne.oceco && orgaOne.oceco.attendeAuto) {
+          if (userC.isInviting('events', actionOne.parentId)) {
+            if (orgaOne && orgaOne.oceco && orgaOne.oceco.attendeAuto) {
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $unset: {
+                  [`links.events.${actionOne.parentId}.toBeValidated`]: '',
+                  [`links.events.${actionOne.parentId}.isInviting`]: '',
+                },
+              });
+
+              Events.update({
+                _id: new Mongo.ObjectID(actionOne.parentId),
+              }, {
+                $unset: {
+                  [`links.attendees.${userC._id._str}.toBeValidated`]: '',
+                  [`links.attendees.${userC._id._str}.isInviting`]: '',
+                },
+              });
+            }
+          } else {
+            const retour = Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+            if (orgaOne && orgaOne.oceco && orgaOne.oceco.attendeAuto) {
+              Citoyens.update({
+                _id: new Mongo.ObjectID(userC._id._str),
+              }, {
+                $unset: {
+                  [`links.events.${actionOne.parentId}.toBeValidated`]: '',
+                  [`links.events.${actionOne.parentId}.isInviting`]: '',
+                },
+              });
+
+              Events.update({
+                _id: new Mongo.ObjectID(actionOne.parentId),
+              }, {
+                $unset: {
+                  [`links.attendees.${userC._id._str}.toBeValidated`]: '',
+                  [`links.attendees.${userC._id._str}.isInviting`]: '',
+                },
+              });
+            }
+          }
+        }
       }
     }
 
@@ -3435,15 +3527,94 @@ export const assignMemberActionRooms = new ValidatedMethod({
       throw new Meteor.Error('not-exist-member-id');
     }
 
+    const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
     // projects auto true
     const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) }, { fields: { pwd: 0 } });
     if (userC && parentType === 'projects') {
       if (!userC.isScope('projects', actionOne.parentId)) {
-        Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+        if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
+          if (userC.isInviting('projects', actionOne.parentId)) {
+            Citoyens.update({
+              _id: new Mongo.ObjectID(userC._id._str),
+            }, {
+              $unset: {
+                [`links.projects.${actionOne.parentId}.toBeValidated`]: '',
+                [`links.projects.${actionOne.parentId}.isInviting`]: '',
+              },
+            });
+
+            Projects.update({
+              _id: new Mongo.ObjectID(actionOne.parentId),
+            }, {
+              $unset: {
+                [`links.contributors.${userC._id._str}.toBeValidated`]: '',
+                [`links.contributors.${userC._id._str}.isInviting`]: '',
+              },
+            });
+          } else {
+            const retour = Meteor.call('connectEntity', actionOne.parentId, 'projects', userC._id._str, 'contributor', orgId);
+            Citoyens.update({
+              _id: new Mongo.ObjectID(userC._id._str),
+            }, {
+              $unset: {
+                [`links.projects.${actionOne.parentId}.toBeValidated`]: '',
+                [`links.projects.${actionOne.parentId}.isInviting`]: '',
+              },
+            });
+
+            Projects.update({
+              _id: new Mongo.ObjectID(actionOne.parentId),
+            }, {
+              $unset: {
+                [`links.contributors.${userC._id._str}.toBeValidated`]: '',
+                [`links.contributors.${userC._id._str}.isInviting`]: '',
+              },
+            });
+          }
+        }
       }
     } else if (userC && parentType === 'events') {
       if (!userC.isScope('events', actionOne.parentId)) {
-        Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+        if (orgaOne && orgaOne.oceco && orgaOne.oceco.attendeAuto) {
+          if (userC.isInviting('events', actionOne.parentId)) {
+            Citoyens.update({
+              _id: new Mongo.ObjectID(userC._id._str),
+            }, {
+              $unset: {
+                [`links.events.${actionOne.parentId}.toBeValidated`]: '',
+                [`links.events.${actionOne.parentId}.isInviting`]: '',
+              },
+            });
+
+            Events.update({
+              _id: new Mongo.ObjectID(actionOne.parentId),
+            }, {
+              $unset: {
+                [`links.attendees.${userC._id._str}.toBeValidated`]: '',
+                [`links.attendees.${userC._id._str}.isInviting`]: '',
+              },
+            });
+          } else {
+            const retour = Meteor.call('connectEntity', actionOne.parentId, 'events', userC._id._str, 'attendee', orgId);
+            Citoyens.update({
+              _id: new Mongo.ObjectID(userC._id._str),
+            }, {
+              $unset: {
+                [`links.events.${actionOne.parentId}.toBeValidated`]: '',
+                [`links.events.${actionOne.parentId}.isInviting`]: '',
+              },
+            });
+
+            Events.update({
+              _id: new Mongo.ObjectID(actionOne.parentId),
+            }, {
+              $unset: {
+                [`links.attendees.${userC._id._str}.toBeValidated`]: '',
+                [`links.attendees.${userC._id._str}.isInviting`]: '',
+              },
+            });
+          }
+        }
       }
     }
 
@@ -3808,5 +3979,77 @@ export const validateUserActions = new ValidatedMethod({
     ActivityStream.api.add(notif, 'validate', 'isUser', doc.userId);
 
     return true;
+  },
+});
+
+export const dashboardType = new ValidatedMethod({
+  name: 'dashboardType',
+  validate: new SimpleSchema({
+    parentType: { type: String, allowedValues: ['projects', 'organizations', 'events', 'citoyens'] },
+    parentId: { type: String },
+  }).validator(),
+  run({ parentType, parentId }) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const collection = nameToCollection(parentType);
+    const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(parentId) });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('not-parent');
+    }
+
+    const statusObj = [
+      { label: 'À faire', status: 'todo' },
+      { label: 'Terminées', status: 'done' },
+      { label: 'Désactivées', status: 'disabled' },
+      { label: 'Assignées', status: 'contributors' },
+      { label: 'En cours (à valider)', status: 'toValidated' },
+      { label: 'Total', status: 'all' },
+    ];
+    const parentCounts = statusObj.map((obj) => {
+      const count = {};
+      count.status = obj.label;
+      count.count = scopeOne.actionIndicatorCount(obj.status).count();
+      return count;
+    });
+
+    return parentCounts;
+  },
+});
+
+export const dashboardUserType = new ValidatedMethod({
+  name: 'dashboardUserType',
+  validate: new SimpleSchema({
+    parentType: { type: String, allowedValues: ['projects', 'organizations', 'events', 'citoyens'] },
+    parentId: { type: String },
+    userId: { type: String },
+  }).validator(),
+  run({ parentType, parentId, userId }) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const collection = nameToCollection(parentType);
+    const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(parentId) });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('not-parent');
+    }
+
+    const statusObj = [
+      { label: 'En cours', status: 'inProgress' },
+      { label: 'A valider', status: 'toModerate' },
+      { label: 'Valider', status: 'validated' },
+      { label: 'Refuser', status: 'novalidated' },
+      { label: 'Total', status: 'all' },
+    ];
+    const parentCounts = statusObj.map((obj) => {
+      const count = {};
+      count.status = obj.label;
+      count.count = scopeOne.userActionIndicatorCount(obj.status, userId).count();
+      return count;
+    });
+
+    return parentCounts;
   },
 });

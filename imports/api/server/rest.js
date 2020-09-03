@@ -463,6 +463,73 @@ app.post('/api/action/listMe', verifyToken, function (req, res) {
   //
 });
 
+app.post('/api/action/dashboardElement', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+      new SimpleSchema({
+        parentId: { type: String },
+        parentType: { type: String },
+      }).validate(req.body);
+
+      const retour = Meteor.call('dashboardType', { parentId: req.body.parentId, parentType: req.body.parentType });
+
+      if (retour) {
+        const valid = {
+          status: true,
+          dashboard: retour,
+          msg: 'action element dashboard',
+        };
+        res.status(200).json(valid);
+      } else {
+        const valid = {
+          status: false,
+          msg: 'no dashboard',
+        };
+        res.status(200).json(valid);
+      }
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
+app.post('/api/action/dashboardUserElement', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+      new SimpleSchema({
+        parentId: { type: String },
+        parentType: { type: String },
+        userId: { type: String },
+      }).validate(req.body);
+
+      const retour = Meteor.call('dashboardUserType', { parentId: req.body.parentId, parentType: req.body.parentType, userId: req.body.userId });
+
+      if (retour) {
+        const valid = {
+          status: true,
+          dashboard: retour,
+          msg: 'action element user dashboard',
+        };
+        res.status(200).json(valid);
+      } else {
+        const valid = {
+          status: false,
+          msg: 'no dashboard',
+        };
+        res.status(200).json(valid);
+      }
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
 /* app.post('/api/generatetokenchat', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {
