@@ -711,6 +711,86 @@ Events.helpers({
   countActionsCreator(type = 'all', status = 'todo', search) {
     return this.listActionsCreator(type, status, search) && this.listActionsCreator(type, status, search).count();
   },
+  actionIndicatorCount(status) {
+    const query = {};
+    query.parentId = this._id._str;
+    query.parentType = 'events';
+    if (status !== 'all' && status !== 'contributors' && status !== 'finished' && status !== 'toValidated') {
+      query.status = status;
+    }
+    if (status === 'contributors') {
+      query['links.contributors'] = { $exists: true };
+    }
+    if (status === 'finished') {
+      query.finishedBy = { $exists: true };
+    }
+    if (status === 'toValidated') {
+      query.status = 'todo';
+      query.finishedBy = { $exists: true };
+    }
+    return Actions.find(query);
+  },
+  userActionIndicatorCount(status, userId) {
+    const query = {};
+    query.parentId = this._id._str;
+    query.parentType = 'events';
+
+    // inProgress , validated , novalidated , toModerate
+
+    // en cours
+    if (status === 'inProgress') {
+      query.status = 'todo';
+      query[`links.contributorsscope.${userId}`] = { $exists: true };
+      query[`finishedBy.${userId}`] = { $exists: false };
+    }
+
+    // a valider
+    if (status === 'toModerate') {
+      query.status = 'todo';
+      query[`links.contributors.${userId}`] = { $exists: true };
+      query[`finishedBy.${userId}`] = 'toModerate';
+    }
+
+    // valider
+    if (status === 'validated') {
+      query[`links.contributors.${userId}`] = { $exists: true };
+      query[`finishedBy.${userId}`] = 'validated';
+    }
+
+    // no valider
+    if (status === 'novalidated') {
+      query[`links.contributors.${userId}`] = { $exists: true };
+      query[`finishedBy.${userId}`] = 'novalidated';
+    }
+
+    // all
+    if (status === 'all') {
+      const queryInProgress = {};
+      queryInProgress.status = 'todo';
+      queryInProgress[`links.contributors.${userId}`] = { $exists: true };
+      queryInProgress[`finishedBy.${userId}`] = { $exists: false };
+
+      const queryToModerate = {};
+      queryToModerate.status = 'todo';
+      queryToModerate[`links.contributors.${userId}`] = { $exists: true };
+      queryToModerate[`finishedBy.${userId}`] = 'toModerate';
+
+      const queryValidated = {};
+      queryValidated[`links.contributors.${userId}`] = { $exists: true };
+      queryValidated[`finishedBy.${userId}`] = 'validated';
+
+      const queryNovalidated = {};
+      queryNovalidated[`links.contributors.${userId}`] = { $exists: true };
+      queryNovalidated[`finishedBy.${userId}`] = 'novalidated';
+
+      query.$or = [];
+      query.$or.push(queryInProgress);
+      query.$or.push(queryToModerate);
+      query.$or.push(queryValidated);
+      query.$or.push(queryNovalidated);
+    }
+    return Actions.find(query);
+  },
   newsJournal (target, userId, limit) {
     const query = {};
     const options = {};

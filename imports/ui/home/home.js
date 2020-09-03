@@ -13,7 +13,8 @@ import { Organizations } from '../../api/organizations.js';
 import { Projects } from '../../api/projects.js';
 
 import { searchAction } from '../../api/client/reactive.js';
-import { compareValues, searchQuerySort, searchQuerySortActived } from '../../api/helpers.js';
+import { compareValues, searchQuerySort, searchQuerySortActived, applyDiacritics } from '../../api/helpers.js';
+import { Citoyens } from '../../api/citoyens';
 
 window.Organizations = Organizations;
 window.Projects = Projects;
@@ -100,6 +101,9 @@ Template.searchActions.helpers({
   searchTag() {
     return searchAction.get('searchTag');
   },
+  searchUser() {
+    return searchAction.get('searchUser');
+  },
   searchHelp() {
     return searchAction.get('searchHelp');
   },
@@ -126,6 +130,22 @@ Template.searchActions.helpers({
 
     return searchTag && searchTag.length > 1 ? arrayAllMerge.filter(item => item.includes(searchTag.substr(1))) : arrayAllMerge;
   },
+  allUsers() {
+    const search = searchAction.get('search');
+    if (search && search.charAt(0) === '@' && search.length > 1) {
+      const searchApplyDiacritics = applyDiacritics(search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'regex');
+      const query = {};
+      query.$or = [];
+      const queryName = {};
+      const queryUsername = {};
+      queryName.name = { $regex: `.*${searchApplyDiacritics}.*`, $options: 'i' };
+      queryUsername.username = { $regex: `.*${search.substr(1)}.*`, $options: 'i' };
+      query.$or.push(queryName);
+      query.$or.push(queryUsername);
+      return Citoyens.find(query);
+    }
+    return Citoyens.find();
+  }
 });
 
 Template.searchActions.events({
@@ -133,6 +153,14 @@ Template.searchActions.events({
     event.preventDefault();
     if (this) {
       searchAction.set('search', `#${this}`);
+    } else {
+      searchAction.set('search', null);
+    }
+  },
+  'click .searchuser-js'(event) {
+    event.preventDefault();
+    if (this) {
+      searchAction.set('search', `@${this.username}`);
     } else {
       searchAction.set('search', null);
     }
@@ -163,6 +191,12 @@ Template.searchActions.events({
         searchAction.set('searchHelp', null);
       }
 
+      if (event.currentTarget.value.length > 0 && event.currentTarget.value.charAt(0) === '@') {
+        searchAction.set('searchUser', true);
+      } else {
+        searchAction.set('searchUser', null);
+      }
+
       searchAction.set('search', event.currentTarget.value);
       searchAction.set('actionName', event.currentTarget.value);
     } else {
@@ -170,6 +204,7 @@ Template.searchActions.events({
       searchAction.set('searchTag', null);
       searchAction.set('searchHelp', null);
       searchAction.set('actionName', null);
+      searchAction.set('searchUser', null);
     }
   }, 500),
   // Pressing Ctrl+Enter should submit action

@@ -1,12 +1,16 @@
+/* global Session*/
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
+import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
 import { IonActionSheet } from 'meteor/meteoric:ionic';
 
 import './card.html';
+import { Citoyens } from '../../../api/citoyens';
+import { Organizations } from '../../../api/organizations';
 
 Template.scopeCard.helpers({
   countsousEvents () {
@@ -18,6 +22,10 @@ Template.scopeCard.helpers({
   preferenceTrue (value) {
     return !!((value === true || value === 'true'));
   },
+  listMembers() {
+    // eslint-disable-next-line meteor/no-session
+    return Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).membersPopMap();
+  }
 });
 
 Template.scopeBoardActions.onCreated(function () {
@@ -55,6 +63,48 @@ Template.scopeBoardActionsItem.helpers({
     return parseFloat(pourcentage).toFixed(2);
   },
 });
+
+Template.scopeBoardUserActions.onCreated(function () {
+  this.autorun(function () {
+    Meteor.subscribe('citoyenLight', this.data.userId);
+    Meteor.subscribe('scopeUserActionIndicatorCount', this.data.scope, this.data._id, 'all', this.data.userId);
+  }.bind(this));
+});
+
+Template.scopeBoardUserActions.helpers({
+  userItem() {
+    return Citoyens.findOne({ _id: new Mongo.ObjectID(Template.instance().data.userId) });
+  },
+  countUserActionsStatus(status, userId) {
+    return Counter.get(`countScopeUserAction.${userId}.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+  },
+});
+
+
+Template.scopeBoardUserActionsItem.onCreated(function () {
+  this.autorun(function () {
+    Meteor.subscribe('scopeUserActionIndicatorCount', this.data.scope, this.data._id, this.data.status, this.data.userId);
+  }.bind(this));
+});
+
+Template.scopeBoardUserActionsItem.helpers({
+  countUserActionsStatus(status, userId) {
+    return Counter.get(`countScopeUserAction.${userId}.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+  },
+  pourUserActionsStatus(totalStatus, status, userId) {
+    const total = Counter.get(`countScopeUserAction.${userId}.${Template.instance().data._id}.${Template.instance().data.scope}.${totalStatus}`);
+    const count = Counter.get(`countScopeUserAction.${userId}.${Template.instance().data._id}.${Template.instance().data.scope}.${status}`);
+    if (total === 0) {
+      return 0;
+    }
+    const pourcentage = (100 * count) / total;
+    if (Number.isInteger(pourcentage)) {
+      return pourcentage;
+    }
+    return parseFloat(pourcentage).toFixed(2);
+  },
+});
+
 
 
 Template.actionSheet.events({

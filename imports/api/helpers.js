@@ -7,6 +7,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
+import { Citoyens } from './citoyens';
 
 const diacriticsApplyMap = {
   default: [
@@ -190,6 +191,12 @@ export const searchQuery = (query, search) => {
           break;
         default:
           // console.log(`Sorry, we are out of ${search.substr(1)}.`);
+      }
+    } else if (search && search.charAt(0) === '@' && search.length > 1) {
+      const username = search.substr(1);
+      const userOne = Citoyens.findOne({ username });
+      if (userOne){
+        query[`links.contributors.${userOne._id._str}`] = { $exists: true };
       }
     } else if (search && search.charAt(0) === ':' && search.length > 1) {
     // search projet donc pas de recherche dans actions

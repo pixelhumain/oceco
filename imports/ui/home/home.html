@@ -122,6 +122,16 @@
     </div>
     {{/each}}
     {{/if}}
+    {{#if searchUser}}
+    <div class="item item-divider">
+        Filtrer par user
+    </div>
+    {{#each allUsers}}
+    <div class="item item-icon-left item-positive searchuser-js">
+        <i class="icon fa fa-user"></i> {{name}}
+    </div>
+    {{/each}}
+    {{/if}}
     {{#if searchHelp}}
     <div class="item item-divider">
         Filtrer les actions

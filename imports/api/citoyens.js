@@ -668,6 +668,25 @@ Citoyens.helpers({
   listScope () {
     return 'listCitoyens';
   },
+  actionIndicatorCount(status) {
+    const query = {};
+    query.parentId = this._id._str;
+    query.parentType = 'citoyens';
+    if (status !== 'all' && status !== 'contributors' && status !== 'finished' && status !== 'toValidated') {
+      query.status = status;
+    }
+    if (status === 'contributors') {
+      query['links.contributors'] = { $exists: true };
+    }
+    if (status === 'finished') {
+      query.finishedBy = { $exists: true };
+    }
+    if (status === 'toValidated') {
+      query.status = 'todo';
+      query.finishedBy = { $exists: true };
+    }
+    return Actions.find(query);
+  },
   newsJournal (target, userId, limit) {
     const query = {};
     const options = {};
