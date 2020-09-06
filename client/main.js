@@ -49,6 +49,7 @@ import '../imports/ui/rooms/actions/assign/assign.js';
 import '../imports/ui/rooms/resolutions/resolutions.js';
 
 import '../imports/ui/invitations/invitations.js';
+import '../imports/ui/messages/messages.js';
 
 import '../imports/ui/notifications/notifications.js';
 

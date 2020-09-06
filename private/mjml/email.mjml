@@ -1,0 +1,50 @@
+<mjml>
+  <mj-head>
+     <mj-font name="Raleway" href="https://fonts.googleapis.com/css?family=Raleway" />
+    <mj-title>Oceco</mj-title>
+   <mj-preview>{{subject}}</mj-preview>
+   </mj-head>
+  <mj-body background-color="#ccc">
+    <mj-section>
+      <mj-column border-radius="15px" background-color="#eee" inner-background-color="#fff" padding="15px">
+
+        <mj-image width="100px" src="https://oce.co.tools/oceco.png"></mj-image>
+
+        <mj-text font-size="20px" color="#E33551" font-family="Raleway, Arial">{{subject}}</mj-text>
+        <mj-divider border-color="#E33551"></mj-divider>
+
+        <mj-text font-size="15px" color="#324553" font-family="Raleway, Arial" line-height="20px">Bonjour {{name}},</mj-text>
+        <mj-text font-size="15px" color="#324553" font-family="Raleway, Arial" line-height="20px">{{message}}</mj-text>
+        <mj-spacer height="30px" />
+        
+        {{#if scope}}
+        <mj-table>
+          <tr>
+            <td style="padding: 0 15px 0 0;">Type</td>
+            <td style="padding: 0 0 0 15px;">{{scope}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 0 15px 0 0;">Nom</td>
+            <td style="padding: 0 0 0 15px;"><a href="{{scopeUrl}}">{{scopeName}}</a></td>
+          </tr>
+        </mj-table>
+        {{/if}}
+        
+        {{#if signature}}
+        <mj-spacer height="30px" />
+        
+        <mj-text font-size="12px" color="#324553" font-family="Raleway, Arial">{{signature}}</mj-text>
+        {{/if}}
+        
+        <mj-spacer height="30px" />
+        
+        <mj-divider border-color="#E33551"></mj-divider>
+        
+        <mj-button font-family="Raleway, Arial" background-color="#E33551" color="white" href="http://www.oce.co.tools">
+          http://www.oce.co.tools
+         </mj-button>
+        
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

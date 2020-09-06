@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-empty */
@@ -14,6 +15,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 import { Mongo } from 'meteor/mongo';
 import { ValidEmail, IsValidEmail } from 'meteor/froatsnook:valid-email';
+import { Email } from 'meteor/email';
+import MJML from 'meteor/djabatav:mjml';
 // collection et schemas
 // import { NotificationHistory } from '../notification_history.js';
 import { ActivityStream } from '../activitystream.js';
@@ -25,6 +28,7 @@ import { Events, SchemasEventsRest, BlockEventsRest } from '../events.js';
 import { Organizations, SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../organizations.js';
 import { Projects, SchemasProjectsRest, BlockProjectsRest } from '../projects.js';
 import { Comments, SchemasCommentsRest, SchemasCommentsEditRest } from '../comments.js';
+import { LogEmailOceco, SchemasMessagesRest } from '../logemailsend.js';
 import { SchemasShareRest, SchemasRolesRest } from '../schema.js';
 // DDA
 import { Actions, SchemasActionsRest } from '../actions.js';
@@ -3041,7 +3045,7 @@ export const updateAction = new ValidatedMethod({
     docRetour.collection = 'actions';
     docRetour.id = _id;
 
-    console.log(docRetour);
+    // console.log(docRetour);
     const retour = apiCommunecter.postPixel('co2/element', 'save', docRetour);
     return retour;
   },
@@ -4051,5 +4055,93 @@ export const dashboardUserType = new ValidatedMethod({
     });
 
     return parentCounts;
+  },
+});
+
+// Meteor.call('sendEmailScope', {parentType:'', parentId:'', subject:'', text:''})
+export const sendEmailScope = new ValidatedMethod({
+  name: 'sendEmailScope',
+  validate: SchemasMessagesRest.validator(),
+  run({ parentType, parentId, actionId, subject, text }) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const collection = nameToCollection(parentType);
+    const scopeOne = collection.findOne({ _id: new Mongo.ObjectID(parentId) });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('not-parent');
+    }
+
+    const citoyenOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) });
+
+    /* if (parentType === 'citoyens') {
+
+      this.unblock();
+
+      const msg = {};
+      msg.to = scopeOne.email;
+      msg.from = '';
+      msg.subject = subject;
+      msg.text = text;
+      Email.send(msg);
+
+    } else { */
+    if (!scopeOne.isAdmin()) {
+      throw new Meteor.Error('not-authorized isAdmin');
+    }
+
+    let citoyensList;
+
+    if (parentType === 'organizations') {
+      if (actionId) {
+        citoyensList = scopeOne.listMembersActions(actionId);
+      } else {
+        citoyensList = scopeOne.listMembers();
+      }
+      citoyensList = scopeOne.listMembers();
+    } else if (parentType === 'projects') {
+      citoyensList = scopeOne.listContributors();
+    } else if (parentType === 'events') {
+      citoyensList = scopeOne.listAttendees();
+    }
+
+    // email history log
+    LogEmailOceco.insert({ parentType, parentId, actionId, subject, text, userId: this.userId });
+
+    this.unblock();
+
+    if (citoyensList.count() > 0) {
+      const arrayIds = citoyensList.map(citoyen => citoyen._id);
+      const citoyensListEmail = Citoyens.find({ _id: { $in: arrayIds } }, { fields: { email: 1, name: 1 } });
+      const emailTpl = Assets.getText('mjml/email.mjml');
+      citoyensListEmail.forEach((citoyen) => {
+        if ((Meteor.isProduction && citoyen.email) || (Meteor.isDevelopment && (citoyen.email === 'thomas.craipeau@gmail.com'))) {
+          // eslint-disable-next-line no-undef
+          const email = new MJML(emailTpl);
+          email.helpers({
+            message: text,
+            name: citoyen.name,
+            signature: citoyenOne.name,
+            subject,
+            scope: scopeOne.scopeVar(),
+            scopeName: scopeOne.name,
+            scopeUrl: `https://oce.co.tools/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`
+          });
+          const options = {};
+          options.subject = `${subject} - ${scopeOne.name}`;
+          if (Meteor.isDevelopment) {
+            options.from = Meteor.settings.mailSetting.dev.from;
+            options.to = Meteor.settings.mailSetting.dev.to;
+          } else {
+            options.from = Meteor.settings.mailSetting.prod.from;
+            options.to = citoyen.email;
+          }
+          email.send(options);
+        }
+      });
+    }
+    // }
+    return true;
   },
 });

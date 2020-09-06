@@ -145,7 +145,7 @@ Template.searchActions.helpers({
       return Citoyens.find(query);
     }
     return Citoyens.find();
-  }
+  },
 });
 
 Template.searchActions.events({

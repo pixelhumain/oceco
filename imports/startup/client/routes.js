@@ -440,6 +440,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('messages', {
+    template: 'pageMessages',
+    path: '/:scope/messages/:_id',
+    loadingTemplate: 'loading',
+  });
+
   this.route('listeventSous', {
     template: 'listeventSous',
     path: '/events/sous/:_id',

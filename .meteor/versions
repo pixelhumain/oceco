@@ -36,6 +36,7 @@ ddp-server@2.3.2
 deps@1.0.12
 diff-sequence@1.1.1
 djabatav:geolocation-plus@1.1.9
+djabatav:mjml@0.1.5
 djedi:sanitize-html@1.11.3
 dynamic-import@0.5.2
 ecmascript@0.14.3
@@ -43,6 +44,7 @@ ecmascript-runtime@0.7.0
 ecmascript-runtime-client@0.11.0
 ecmascript-runtime-server@0.10.0
 ejson@1.1.1
+email@2.0.0
 es5-shim@4.8.0
 fastclick@1.0.13
 fetch@0.1.1

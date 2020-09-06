@@ -1122,7 +1122,7 @@ Organizations.helpers({
     // en cours
     if (status === 'inProgress') {
       query.status = 'todo';
-      query[`links.contributorsscope.${userId}`] = { $exists: true };
+      query[`links.contributors.${userId}`] = { $exists: true };
       query[`finishedBy.${userId}`] = { $exists: false };
     }
 
