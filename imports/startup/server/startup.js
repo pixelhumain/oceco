@@ -84,5 +84,20 @@ Meteor.startup(function () {
       Organizations.update({ _id: project._id }, { $set: { hasRC: true }, $addToSet: { 'tools.chat.int': { name: project.slug, url: path } } });
     });
   } */
-});
 
+  if (Meteor.isDevelopment) {
+    const protocol = Meteor.settings.mailSetting.dev.protocol;
+    const username = Meteor.settings.mailSetting.dev.username;
+    const password = Meteor.settings.mailSetting.dev.password;
+    const host = Meteor.settings.mailSetting.dev.host;
+    const port = Meteor.settings.mailSetting.dev.port;
+    process.env.MAIL_URL = `${protocol}://${username}:${password}@${host}:${port}/`;
+  } else if (Meteor.isProduction) {
+    const protocol = Meteor.settings.mailSetting.prod.protocol;
+    const username = Meteor.settings.mailSetting.prod.username;
+    const password = Meteor.settings.mailSetting.prod.password;
+    const host = Meteor.settings.mailSetting.prod.host;
+    const port = Meteor.settings.mailSetting.prod.port;
+    process.env.MAIL_URL = `${protocol}://${username}:${password}@${host}:${port}/`;
+  }
+});

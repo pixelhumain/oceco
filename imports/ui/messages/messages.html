@@ -1,0 +1,50 @@
+<template name="pageMessages">
+    {{#contentFor "headerTitle"}}
+    <h1 class="title">Envoyer message</h1>
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonLeft"}}
+    {{>ionNavBackButton}}
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonRight"}}
+
+    {{/contentFor}}
+
+    {{#if dataReady}}
+    {{#ionView}}
+    {{#ionContent}}
+    
+    <div class="item item-divider">
+        Envoyer message
+    </div>
+    {{#if error}}
+    <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+    </div>
+    {{/if}}
+
+    <div class="item item-text-wrap">
+        Envoyer un message à tous {{#if equals scopeVar 'organizations'}}les membres{{else if equals scopeVar 'projects'}}les contributeurs{{else if equals scopeVar 'events'}}les participants{{/if}} de <strong>{{scope.name}}</strong>
+    </div>
+
+    <div class="item item-assertive item-icon-left item-text-wrap">
+        <i class="icon fa fa-warning"></i>Attention à utiliser avec modération pour prévenir de choses importantes (annulation, problèmes, etc...)
+    </div>
+
+    {{#autoForm id="formMessages" schema=SchemasMessagesRest type="method" meteormethod="sendEmailScope" template="ionic" class=""}}
+    {{> afQuickField name='subject' label-type='placeholder' autofocus=''}}
+    {{> afQuickField name='text' label-type='placeholder' rows=8}}
+    <div class="item">
+        <div class="button-bar">
+            <button type="submit" class="button button-dark">Envoyer message</button>
+        </div>
+    </div>
+    {{/autoForm}}
+
+    {{/ionContent}}
+    {{/ionView}}
+    {{else}}
+    {{> loading}}
+    {{/if}}
+</template>

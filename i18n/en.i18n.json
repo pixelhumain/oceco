@@ -605,6 +605,16 @@
           "placeholder": "Add as admin"
       }
     },
+    "messages": {
+      "subject": {
+        "label": "subject",
+        "placeholder": "subject"
+      },
+      "text": {
+        "label": "message",
+        "placeholder": "message"
+      }
+    },
     "followrest":{
       "invitedUserName":{
           "label": "name"

@@ -604,6 +604,16 @@
           "placeholder": "Ajouter en tant qu’admin"
       }
     },
+    "messages": {
+      "subject": {
+        "label": "sujet",
+        "placeholder": "sujet"
+      },
+      "text": {
+        "label": "message",
+        "placeholder": "message"
+      }
+    },
     "followrest":{
       "invitedUserName":{
           "label": "Nom"

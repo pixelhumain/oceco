@@ -83,3 +83,5 @@ cultofcoders:persistent-session
 ostrio:cron-jobs
 server-render
 notorii:autoform-datetimepicker
+email
+djabatav:mjml
