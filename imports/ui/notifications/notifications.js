@@ -6,25 +6,47 @@ import { Router } from 'meteor/iron:router';
 import { ReactiveVar } from 'meteor/reactive-var';
 import i18n from 'meteor/universe:i18n';
 import { IonPopup } from 'meteor/meteoric:ionic';
+import { ReactiveDict } from 'meteor/reactive-dict';
 
 import { ActivityStream } from '../../api/activitystream.js';
 
 // submanager
-import { singleSubs } from '../../api/client/subsmanager.js';
+// import { singleSubs } from '../../api/client/subsmanager.js';
 
 import './notifications.html';
+
+const pageSession = new ReactiveDict('pageNotification');
 
 Template.notifications.onCreated(function () {
   const self = this;
   self.ready = new ReactiveVar();
+  pageSession.setDefault('limit', 100);
+  pageSession.setDefault('incremente', 50);
 
   self.autorun(function() {
-    const handle = singleSubs.subscribe('notificationsUser');
-    self.ready.set(handle.ready());
+    if (pageSession.get('limit')) {
+      const handle = Meteor.subscribe('notificationsUser', pageSession.get('limit'));
+      const handleCount = Meteor.subscribe('notificationsCountUser');
+      self.ready.set(handle.ready() && handleCount.ready());
+    }
   });
 });
 
-Template.notificationsListSwip.onRendered(function () {
+Template.notificationsListSwipMenu.onCreated(function () {
+  const self = this;
+  self.ready = new ReactiveVar();
+  pageSession.setDefault('limit', 100);
+  pageSession.setDefault('incremente', 50);
+
+  self.autorun(function () {
+    if (pageSession.get('limit')) {
+      const handle = Meteor.subscribe('notificationsUser', pageSession.get('limit'));
+      self.ready.set(handle.ready());
+    }
+  });
+});
+
+/* Template.notificationsListSwip.onRendered(function () {
   const self = this;
   self.autorun(function (c) {
     if (self.data && self.data.notifications) {
@@ -34,7 +56,29 @@ Template.notificationsListSwip.onRendered(function () {
       c.stop();
     }
   });
-});
+
+  const showMoreVisible = () => {
+    const $target = $('#showMoreResults');
+    if (!$target.length) {
+      return;
+    }
+    const threshold =
+      $('.menu-right .content').scrollTop() +
+      $('.menu-right .content').height() + 10;
+    const heightLimit = $('.menu-right .content .list').height();
+    if (heightLimit < threshold) {
+      if (!$target.data('visible')) {
+        $target.data('visible', true);
+        pageSession.set('limit', pageSession.get('limit') + pageSession.get('incremente'));
+      }
+    } else if ($target.data('visible')) {
+      $target.data('visible', false);
+    }
+  };
+
+  $('.menu-right .content').scroll(showMoreVisible);
+
+}); */
 
 Template.notificationsListSwip.events({
   'slip:beforeswipe .list .no-swipe'(event) {
@@ -66,10 +110,16 @@ Template.notificationsListSwip.events({
   },
 });
 
-Template.notificationsListSwipMenu.inheritsHelpersFrom('notificationsListSwip');
+
+// Template.notificationsListSwipMenu.inheritsHelpersFrom('notificationsListSwip');
 Template.notificationsListSwipMenu.inheritsEventsFrom('notificationsListSwip');
 Template.notificationsListSwipMenu.inheritsHooksFrom('notificationsListSwip');
 
+Template.notificationsListSwipMenu.helpers({
+  notifications() {
+    return ActivityStream.api.isUnread();
+  },
+});
 
 Template.notifications.helpers({
   dataReady() {

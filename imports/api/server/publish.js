@@ -98,13 +98,26 @@ Meteor.publish('lists', function(name) {
   return lists;
 });
 
-Meteor.publish('notificationsUser', function() {
+Meteor.publish('notificationsUser', function(limit) {
   if (!this.userId) {
     return null;
   }
-  Counts.publish(this, `notifications.${this.userId}.Unseen`, ActivityStream.api.queryUnseen(this.userId), { noReady: true });
-  Counts.publish(this, `notifications.${this.userId}.Unread`, ActivityStream.api.queryUnread(this.userId), { noReady: true });
-  return ActivityStream.api.isUnread(this.userId);
+  check(limit, Match.Maybe(Number));
+
+  return ActivityStream.api.isUnread(this.userId, undefined, limit);
+});
+
+Meteor.publish('notificationsCountUser', function() {
+  if (!this.userId) {
+    return null;
+  }
+  const counterUnseen = new Counter(`notifications.${this.userId}.Unseen`, ActivityStream.api.queryUnseen(this.userId));
+  const counterUnread = new Counter(`notifications.${this.userId}.Unread`, ActivityStream.api.queryUnread(this.userId));
+
+  return [
+    counterUnseen,
+    counterUnread,
+  ];
 });
 
 Meteor.publish('notificationsScope', function(scope, scopeId) {
@@ -121,10 +134,16 @@ Meteor.publish('notificationsScope', function(scope, scopeId) {
     return null;
   }
   const scopeCap = scope.charAt(0).toUpperCase() + scope.slice(1, -1);
-  Counts.publish(this, `notifications.${scopeId}.Unseen`, ActivityStream.api.queryUnseen(this.userId, scopeId, scopeCap), { noReady: true });
-  Counts.publish(this, `notifications.${scopeId}.Unread`, ActivityStream.api.queryUnread(this.userId, scopeId, scopeCap), { noReady: true });
-  Counts.publish(this, `notifications.${scopeId}.UnseenAsk`, ActivityStream.api.queryUnseenAsk(this.userId, scopeId, scopeCap), { noReady: true });
-  return collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listNotifications(this.userId);
+  const counterUnseen = new Counter(`notifications.${scopeId}.Unseen`, ActivityStream.api.queryUnseen(this.userId, scopeId, scopeCap));
+  const counterUnread = new Counter(`notifications.${scopeId}.Unread`, ActivityStream.api.queryUnread(this.userId, scopeId, scopeCap));
+  const counterUnseenAsk = new Counter(`notifications.${scopeId}.UnseenAsk`, ActivityStream.api.queryUnseenAsk(this.userId, scopeId, scopeCap));
+
+  return [
+    counterUnseen,
+    counterUnread,
+    counterUnseenAsk,
+    collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listNotifications(this.userId),
+  ]
 });
 
 Meteor.publish('getcitiesbylatlng', function(latlng) {
@@ -1360,13 +1379,13 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       children: [{
         find(action) {
           //if (action.avatarOneUserAction()) {
-            if (action && action.links && action.links.contributors) {
-              const arrayContributors = arrayLinkProperNoObject(action.links.contributors);
-              if (arrayContributors && arrayContributors[0]) {
-                const arrayAllMergeMongoId = arrayContributors.map(k => new Mongo.ObjectID(k));
-                return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { name: 1, username: 1, profilThumbImageUrl: 1 } });
-              }
+          if (action && action.links && action.links.contributors) {
+            const arrayContributors = arrayLinkProperNoObject(action.links.contributors);
+            if (arrayContributors && arrayContributors[0]) {
+              const arrayAllMergeMongoId = arrayContributors.map(k => new Mongo.ObjectID(k));
+              return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { name: 1, username: 1, profilThumbImageUrl: 1 } });
             }
+          }
           //}
         },
       }],

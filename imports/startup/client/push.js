@@ -9,7 +9,8 @@ import { Meteor } from 'meteor/meteor';
 import { Push } from 'meteor/raix:push';
 import { Router } from 'meteor/iron:router';
 import { Tracker } from 'meteor/tracker';
-import { Counts } from 'meteor/tmeasday:publish-counts';
+// import { Counts } from 'meteor/tmeasday:publish-counts';
+import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 
 import { ActivityStream } from '../../api/activitystream.js';
 
@@ -175,11 +176,11 @@ Meteor.startup(function () {
 
 Tracker.autorun(() => {
   if (Meteor.userId()) {
-    if (Counts.has(`notifications.${Meteor.userId()}.Unseen`)) {
+    if (Counter.get(`notifications.${Meteor.userId()}.Unseen`)) {
       if (Meteor.isDesktop) {
-        Desktop.send('systemNotifications', 'setBadge', Counts.get(`notifications.${Meteor.userId()}.Unseen`));
+        Desktop.send('systemNotifications', 'setBadge', Counter.get(`notifications.${Meteor.userId()}.Unseen`));
       } else if (Meteor.isCordova) {
-        Push.setBadge(Counts.get(`notifications.${Meteor.userId()}.Unseen`));
+        Push.setBadge(Counter.get(`notifications.${Meteor.userId()}.Unseen`));
       } else {
         // console.log(Counts.get(`notifications.${Meteor.userId()}.Unseen`));
       }

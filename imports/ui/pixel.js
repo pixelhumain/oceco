@@ -10,6 +10,8 @@ import { $ } from 'meteor/jquery';
 
 import { ActivityStream } from '../api/activitystream.js';
 
+import { singleSubs } from '../api/client/subsmanager.js';
+
 
 // import './settings/settings.js';
 import './notifications/notifications.js';
@@ -29,7 +31,9 @@ window.Citoyens = Citoyens;
 window.Actions = Actions;
 
 Template.layout.onCreated(function() {
-  Meteor.subscribe('notificationsUser');
+  // Meteor.subscribe('notificationsUser');
+  Meteor.subscribe('notificationsCountUser');
+
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     if (Session.get('orgaCibleId')) {
@@ -137,6 +141,7 @@ Template.layout.events({
     }
   },
   'change .all-read input'() {
+    Meteor.call('allSeen');
     Meteor.call('allRead');
   },
   'click .all-seen'() {
