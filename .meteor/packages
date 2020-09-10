@@ -60,7 +60,6 @@ djabatav:geolocation-plus
 tmeasday:publish-counts
 reactive-var@1.0.11
 standard-minifier-css@1.5.3
-standard-minifier-js@2.4.1
 froatsnook:request
 froatsnook:valid-email
 shell-server@0.4.0
@@ -85,3 +84,6 @@ server-render
 notorii:autoform-datetimepicker
 email
 djabatav:mjml
+montiapm:agent
+zodern:standard-minifier-js
+zodern:hide-production-sourcemaps

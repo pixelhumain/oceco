@@ -70,6 +70,7 @@ jameslefrere:atjs@0.0.1
 jameslefrere:caretjs@0.0.1
 jamielob:reloader@1.3.0
 jquery@1.11.11
+lamhieu:meteorx@2.1.1
 launch-screen@1.1.1
 less@2.8.0
 livedata@1.0.18
@@ -83,7 +84,6 @@ meteoric:autoform-ionic@0.1.6
 meteoric:camera@1.0.3
 meteoric:ionic@0.2.0
 minifier-css@1.4.2
-minifier-js@2.4.1
 minimongo@1.4.5
 mizzao:timesync@0.5.0
 mizzao:user-status@0.6.8
@@ -97,6 +97,8 @@ mongo@1.6.2
 mongo-decimal@0.1.1
 mongo-dev-server@1.1.0
 mongo-id@1.0.7
+mongo-livedata@1.0.12
+montiapm:agent@2.39.0
 multiply:iron-router-progress@1.0.2
 natestrauser:publish-performant-counts@0.1.2
 notorii:autoform-datetimepicker@1.0.6
@@ -128,7 +130,6 @@ socket-stream-client@0.2.2
 spacebars@1.0.15
 spacebars-compiler@1.1.3
 standard-minifier-css@1.5.3
-standard-minifier-js@2.4.1
 templating@1.3.2
 templating-compiler@1.3.3
 templating-runtime@1.3.2
@@ -144,3 +145,7 @@ url@1.2.0
 webapp@1.7.4
 webapp-hashing@1.0.9
 webtempest:animate@0.1.9
+zodern:hide-production-sourcemaps@1.2.0
+zodern:meteor-package-versions@0.2.1
+zodern:minifier-js@3.0.0
+zodern:standard-minifier-js@3.0.0
