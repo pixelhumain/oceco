@@ -4106,6 +4106,10 @@ export const sendEmailScope = new ValidatedMethod({
       citoyensList = scopeOne.listAttendees();
     }
 
+    let actionOne;
+    if (actionId) {
+      actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+    }
     // email history log
     LogEmailOceco.insert({ parentType, parentId, actionId, subject, text, userId: this.userId });
 
@@ -4116,20 +4120,39 @@ export const sendEmailScope = new ValidatedMethod({
       const citoyensListEmail = Citoyens.find({ _id: { $in: arrayIds } }, { fields: { email: 1, name: 1 } });
       const emailTpl = Assets.getText('mjml/email.mjml');
       citoyensListEmail.forEach((citoyen) => {
+        // console.log(citoyen.email);
         if ((Meteor.isProduction && citoyen.email) || (Meteor.isDevelopment && (citoyen.email === 'thomas.craipeau@gmail.com'))) {
           // eslint-disable-next-line no-undef
           const email = new MJML(emailTpl);
-          email.helpers({
-            message: text,
-            name: citoyen.name,
-            signature: citoyenOne.name,
-            subject,
-            scope: scopeOne.scopeVar(),
-            scopeName: scopeOne.name,
-            scopeUrl: `https://oce.co.tools/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`
-          });
+          if (actionId && actionOne) {
+            email.helpers({
+              message: text,
+              name: citoyen.name,
+              signature: citoyenOne.name,
+              subject,
+              scope: 'actions',
+              scopeName: actionOne.name,
+              scopeUrl: `https://oce.co.tools/${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`
+            });
+          } else {
+            email.helpers({
+              message: text,
+              name: citoyen.name,
+              signature: citoyenOne.name,
+              subject,
+              scope: scopeOne.scopeVar(),
+              scopeName: scopeOne.name,
+              scopeUrl: `https://oce.co.tools/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`
+            });
+          }
+          
           const options = {};
-          options.subject = `${subject} - ${scopeOne.name}`;
+          if (actionId && actionOne) {
+            options.subject = `${subject} - ${actionOne.name}`;
+          } else {
+            options.subject = `${subject} - ${scopeOne.name}`;
+          }
+          
           if (Meteor.isDevelopment) {
             options.from = Meteor.settings.mailSetting.dev.from;
             options.to = Meteor.settings.mailSetting.dev.to;

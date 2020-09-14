@@ -440,6 +440,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('messagesActions', {
+    template: 'pageMessages',
+    path: '/:scope/messagesaction/:_id/room/:roomId/action/:actionId',
+    loadingTemplate: 'loading',
+  });
+
   this.route('messages', {
     template: 'pageMessages',
     path: '/:scope/messages/:_id',
