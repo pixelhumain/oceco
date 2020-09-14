@@ -1,0 +1,4 @@
+/* iOS skinny input fields (too short) fix */
+.autoform-datetimepicker-input.ios {
+  min-height: 30px;
+}
