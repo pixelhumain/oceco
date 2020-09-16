@@ -46,7 +46,7 @@ Template.notificationsListSwipMenu.onCreated(function () {
   });
 });
 
-/* Template.notificationsListSwip.onRendered(function () {
+Template.notificationsListSwip.onRendered(function () {
   const self = this;
   self.autorun(function (c) {
     if (self.data && self.data.notifications) {
@@ -57,7 +57,7 @@ Template.notificationsListSwipMenu.onCreated(function () {
     }
   });
 
-  const showMoreVisible = () => {
+  /* const showMoreVisible = () => {
     const $target = $('#showMoreResults');
     if (!$target.length) {
       return;
@@ -76,9 +76,9 @@ Template.notificationsListSwipMenu.onCreated(function () {
     }
   };
 
-  $('.menu-right .content').scroll(showMoreVisible);
+  $('.menu-right .content').scroll(showMoreVisible);*/
 
-}); */
+});
 
 Template.notificationsListSwip.events({
   'slip:beforeswipe .list .no-swipe'(event) {
