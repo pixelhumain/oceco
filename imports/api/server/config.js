@@ -102,6 +102,7 @@ if (Meteor.isDevelopment) {
     alert: true,
     vibrate: true,
     appName: 'main',
+    sendBatchSize: 1000,
   });
 }
 
