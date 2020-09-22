@@ -13,6 +13,6 @@ Npm.depends({
 Package.onUse(function(api) {
   api.versionsFrom('1.8.1');
   api.use('ecmascript');
-  api.use(['email'], 'server');
+  api.use(['email@1.0.0||2.0.0'], 'server');
   api.mainModule('mjml.js', 'server');
 });
