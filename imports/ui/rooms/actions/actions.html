@@ -193,6 +193,7 @@
   
   {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
   {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-thumbs-up" class="button-small action-action-js"}}
+  <a href="{{pathFor 'messagesActions' _id=orgaCibleId scope='organizations' roomId=roomId actionId=actionId}}" class="button button-small">{{> ionIcon icon="email"}}</a>
 </div>
 {{else if isCreator}}
 <div class="button-bar bar-positive">

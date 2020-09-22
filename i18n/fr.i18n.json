@@ -135,6 +135,7 @@
   "edit address":"modifier adresse",
   "edit dates":"modifier dates",
   "edit privacy settings":"modifier paramètres de confidentialité",
+  "edit notification oceco": "modifier paramètres de notifications oceco",
   "Waiting for a response":"En attente de réponse",
   "wants to become a member of the organization":"Veut devenir membre de l'organisation",
   "wants to become a contributor to the project":"Veut devenir un contributeur au projet",
@@ -913,6 +914,16 @@
         },
         "isOpenEdition":{
           "label": "Open Edition"
+        }
+      }
+    },
+    "citoyensocecorest": {
+      "oceco": {
+        "notificationPush": {
+          "label": "Notification Push"
+        },
+        "notificationEmail": {
+          "label": "Notification Email"
         }
       }
     },

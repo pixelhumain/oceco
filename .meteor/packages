@@ -85,3 +85,8 @@ server-render@0.3.1
 notorii:autoform-datetimepicker
 email
 djabatav:mjml
+#montiapm:agent
+#zodern:standard-minifier-js
+#zodern:hide-production-sourcemaps
+ostrio:logger
+ostrio:loggermongo

@@ -27,7 +27,7 @@ import { Documents } from '../../api/documents.js';
 import { SchemasEventsRest, BlockEventsRest } from '../../api/events.js';
 import { SchemasOrganizationsRest, BlockOrganizationsRest, SchemasOrganizationsOcecoRest } from '../../api/organizations.js';
 import { SchemasProjectsRest, BlockProjectsRest } from '../../api/projects.js';
-import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest, Citoyens } from '../../api/citoyens.js';
+import { SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasInvitationsRest, SchemasCitoyensRest, BlockCitoyensRest, SchemasCitoyensOcecoRest, Citoyens } from '../../api/citoyens.js';
 import { SchemasNewsRest, SchemasNewsRestBase } from '../../api/news.js';
 import { SchemasCommentsRest, SchemasCommentsEditRest } from '../../api/comments.js';
 import { SchemasRoomsRest } from '../../api/rooms.js';
@@ -279,6 +279,7 @@ Meteor.startup(function () {
   const registerSchemaMessages = () => {
     SchemasOrganizationsRest.i18n('schemas.organizationsrest');
     SchemasOrganizationsOcecoRest.i18n('schemas.organizationsocecorest');
+    SchemasCitoyensOcecoRest.i18n('schemas.citoyensocecorest');
     SchemasLogUserActionsRest.i18n('schemas.loguseractionsrest');
     SchemasValidateUserActionsRest.i18n('schemas.loguseractionsrest');
     SchemasEventsRest.i18n('schemas.eventsrest');
@@ -537,6 +538,7 @@ Meteor.startup(function () {
   Template.registerHelper('SchemasEventsRest', SchemasEventsRest);
   Template.registerHelper('SchemasOrganizationsRest', SchemasOrganizationsRest);
   Template.registerHelper('SchemasOrganizationsOcecoRest', SchemasOrganizationsOcecoRest);
+  Template.registerHelper('SchemasCitoyensOcecoRest', SchemasCitoyensOcecoRest);
   Template.registerHelper('SchemasProjectsRest', SchemasProjectsRest);
   Template.registerHelper('SchemasCommentsRest', SchemasCommentsRest);
   Template.registerHelper('SchemasCommentsEditRest', SchemasCommentsEditRest);

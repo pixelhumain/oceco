@@ -786,8 +786,8 @@ Organizations.helpers({
       if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
         const listProjects = this.listProjects();
 
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
+        const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+        const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
         const mergeArray = [...eventIds, ...projectIds, this._id._str];
 
         query.parentId = {
@@ -795,8 +795,8 @@ Organizations.helpers({
         };
       } else {
         const listProjects = this.listProjectsCreatorAdmin();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
+        const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+        const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
         const mergeArray = [...eventIds, ...projectIds];
 
         query.parentId = {
@@ -805,16 +805,16 @@ Organizations.helpers({
       }
     } else if (this.isAdmin()) {
       const listProjects = this.listProjects();
-      const eventIds = listEvents.map(event => event._id._str);
-      const projectIds = listProjects.map(project => project._id._str);
+      const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+      const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
       const mergeArray = [...eventIds, ...projectIds, this._id._str];
       query.parentId = {
         $in: mergeArray,
       };
     } else {
       const listProjects = this.listProjectsCreatorAdmin();
-      const eventIds = listEvents.map(event => event._id._str);
-      const projectIds = listProjects.map(project => project._id._str);
+      const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+      const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
       const mergeArray = [...eventIds, ...projectIds];
       query.parentId = {
         $in: mergeArray,
@@ -847,8 +847,8 @@ Organizations.helpers({
     if (Meteor.isClient) {
       if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {
         const listProjects = this.listProjects();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
+        const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+        const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
         const mergeArray = [...eventIds, ...projectIds, this._id._str];
 
         query.parentId = {
@@ -856,8 +856,8 @@ Organizations.helpers({
         };
       } else {
         const listProjects = this.listProjectsCreatorAdmin();
-        const eventIds = listEvents.map(event => event._id._str);
-        const projectIds = listProjects.map(project => project._id._str);
+        const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+        const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
         const mergeArray = [...eventIds, ...projectIds];
 
         query.parentId = {
@@ -866,16 +866,16 @@ Organizations.helpers({
       }
     } else if (this.isAdmin()) {
       const listProjects = this.listProjects();
-      const eventIds = listEvents.map(event => event._id._str);
-      const projectIds = listProjects.map(project => project._id._str);
+      const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+      const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
       const mergeArray = [...eventIds, ...projectIds, this._id._str];
       query.parentId = {
         $in: mergeArray,
       };
     } else {
       const listProjects = this.listProjectsCreatorAdmin();
-      const eventIds = listEvents.map(event => event._id._str);
-      const projectIds = listProjects.map(project => project._id._str);
+      const eventIds = listEvents ? listEvents.map(event => event._id._str) : [];
+      const projectIds = listProjects ? listProjects.map(project => project._id._str) : [];
       const mergeArray = [...eventIds, ...projectIds];
       query.parentId = {
         $in: mergeArray,
@@ -905,13 +905,13 @@ Organizations.helpers({
   actionsInWaiting(search, searchSort) {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
+    const raffEventsArray = this.listProjectsEventsCreator1M() ? this.listProjectsEventsCreator1M().map(event => event._id._str) : [];
 
     let raffProjectsArray;
     if (search && search.charAt(0) === ':' && search.length > 1) {
-      raffProjectsArray = this.listProjects(search).map(project => project._id._str);
+      raffProjectsArray = this.listProjects(search) ? this.listProjects(search).map(project => project._id._str) : [];
     } else {
-      raffProjectsArray = this.listProjects().map(project => project._id._str);
+      raffProjectsArray = this.listProjects() ? this.listProjects().map(project => project._id._str) : [];
     }
 
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
@@ -944,24 +944,24 @@ Organizations.helpers({
   actionsToValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const raffEventsArray = this.listProjectsEventsCreator1M() ? this.listProjectsEventsCreator1M().map(event => event._id._str) : [];
+    const raffProjectsArray = this.listProjects() ? this.listProjects().map(project => project._id._str) : [];
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'toModerate', parentId: { $in: mergeArray }, status: 'todo' });
   },
   actionsValidate() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const raffEventsArray = this.listProjectsEventsCreator1M() ? this.listProjectsEventsCreator1M().map(event => event._id._str) : [];
+    const raffProjectsArray = this.listProjects() ? this.listProjects().map(project => project._id._str) : [];
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $gt: 0 }, parentId: { $in: mergeArray } });
   },
   actionsSpend() {
     const finished = `finishedBy.${Meteor.userId()}`;
     const UserId = `links.contributors.${Meteor.userId()}`;
-    const raffEventsArray = this.listProjectsEventsCreator1M().map(event => event._id._str);
-    const raffProjectsArray = this.listProjects().map(project => project._id._str);
+    const raffEventsArray = this.listProjectsEventsCreator1M() ? this.listProjectsEventsCreator1M().map(event => event._id._str) : [];
+    const raffProjectsArray = this.listProjects() ? this.listProjects().map(project => project._id._str) : [];
     const mergeArray = [...raffEventsArray, ...raffProjectsArray, this._id._str];
     return Actions.find({ [UserId]: { $exists: 1 }, [finished]: 'validated', credits: { $lt: 0 }, parentId: { $in: mergeArray } });
   },

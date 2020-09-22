@@ -3,7 +3,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
-import { Counts } from 'meteor/tmeasday:publish-counts';
+// import { Counts } from 'meteor/tmeasday:publish-counts';
+import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 
 import { Events } from './events.js';
 import { Organizations } from './organizations.js';
@@ -18,22 +19,22 @@ export const ActivityStream = new Mongo.Collection('activityStream', { idGenerat
 ActivityStream.api = {
   Unseen (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    if (Counts.has(`notifications.${bothUserId}.Unseen`)) {
-      return Counts.get(`notifications.${bothUserId}.Unseen`);
+    if (Counter.get(`notifications.${bothUserId}.Unseen`)) {
+      return Counter.get(`notifications.${bothUserId}.Unseen`);
     }
     return undefined;
   },
   UnseenAsk (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    if (Counts.has(`notifications.${bothUserId}.UnseenAsk`)) {
-      return Counts.get(`notifications.${bothUserId}.UnseenAsk`);
+    if (Counter.get(`notifications.${bothUserId}.UnseenAsk`)) {
+      return Counter.get(`notifications.${bothUserId}.UnseenAsk`);
     }
     return undefined;
   },
   Unread (userId) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
-    if (Counts.has(`notifications.${bothUserId}.Unread`)) {
-      return Counts.get(`notifications.${bothUserId}.Unread`);
+    if (Counter.get(`notifications.${bothUserId}.Unread`)) {
+      return Counter.get(`notifications.${bothUserId}.Unread`);
     }
     return undefined;
   },
@@ -77,7 +78,7 @@ ActivityStream.api = {
     }
     return ActivityStream.find(queryUnread, { fields: { _id: 1 } });
   },
-  isUnread(userId, scopeId, scope) {
+  isUnread(userId, scopeId, scope, limit) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     const bothScopeId = (typeof scopeId !== 'undefined') ? scopeId : false;
     const bothScope = (typeof scope !== 'undefined') ? scope : false;
@@ -110,6 +111,9 @@ ActivityStream.api = {
     options.fields.created = 1;
     options.fields.author = 1;
     options.fields.type = 1; */
+    if (limit) {
+      options.limit = limit;
+    }
     return ActivityStream.find(query, options);
   },
   isUnseen (userId, scopeId, scope) {
@@ -174,7 +178,7 @@ ActivityStream.api = {
     options['fields']['type'] = 1; */
     return ActivityStream.find(query, options);
   },
-  isUnreadAsk(userId, scopeId, scope) {
+  isUnreadAsk(userId, scopeId, scope, limit) {
     const bothUserId = (typeof userId !== 'undefined') ? userId : Meteor.userId();
     const bothScopeId = (typeof scopeId !== 'undefined') ? scopeId : false;
     const bothScope = (typeof scope !== 'undefined') ? scope : false;
@@ -205,6 +209,9 @@ ActivityStream.api = {
     options.fields.created = 1;
     options.fields.author = 1;
     options.fields.type = 1; */
+    if (limit) {
+      options.limit = limit;
+    }
     return ActivityStream.find(query, options);
   },
   listUserOrga(array, type, idUser = null, author = null) {
@@ -233,14 +240,14 @@ ActivityStream.api = {
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        if (author && author.id && author.id === id) {
+       // if (author && author.id && author.id === id) {
           // author not notif
-        } else {
+        //} else {
           idUsersObj[id] = {
             isUnread: true,
             isUnseen: true,
           };
-        }
+        //}
       });
       return idUsersObj;
     }
@@ -275,7 +282,7 @@ ActivityStream.api = {
       notificationObj.targetProject = {};
       notificationObj.targetProject.type = 'projects';
       notificationObj.targetProject.id = projectOne._id._str;
-      notificationObj.targetProject.name = projectOne.name;
+      notificationObj.targetProject.name = projectOne.name.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '');
     }
     // event
     if (eventOne) {

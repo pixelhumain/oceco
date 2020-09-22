@@ -967,7 +967,7 @@
       </button>
       {{else}}
       {{#if isAdmin}}
-      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button connectscopeadmin-link-js" classOn="button disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
       <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
       <a href="{{pathFor 'messages' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="email"}} Message</a>
       {{else}}

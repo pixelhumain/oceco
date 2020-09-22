@@ -32,12 +32,22 @@ Template.pageMessages.onCreated(function () {
   this.autorun(function () {
     pageSession.set('scopeId', Router.current().params._id);
     pageSession.set('scope', Router.current().params.scope);
+    if (Router.current().params.actionId) {
+      pageSession.set('actionId', Router.current().params.actionId);
+    }
   });
 
   this.autorun(function () {
-    const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
-    if (handle.ready()) {
-      this.ready.set(handle.ready());
+    if (Router.current().params.actionId) {
+      const handle = Meteor.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
+      if (handle.ready()) {
+        this.ready.set(handle.ready());
+      }
+    } else {
+      const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
+      if (handle.ready()) {
+        this.ready.set(handle.ready());
+      }
     }
   }.bind(this));
 });
@@ -46,8 +56,13 @@ Template.pageMessages.onCreated(function () {
 Template.pageMessages.helpers({
   scope() {
     if (Router.current().params.scope) {
-      const collection = nameToCollection(Router.current().params.scope);
-      return collection.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+      if (Router.current().params.actionId){
+        return Actions.findOne({ _id: new Mongo.ObjectID(Router.current().params.actionId) });
+      } else {
+        const collection = nameToCollection(Router.current().params.scope);
+        return collection.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+      }
+      
     }
     // return undefined;
   },
@@ -56,6 +71,9 @@ Template.pageMessages.helpers({
   },
   scopeVar() {
     return pageSession.get('scope');
+  },
+  actionId() {
+    return pageSession.get('actionId');
   },
   dataReady() {
     return Template.instance().ready.get();
@@ -72,6 +90,9 @@ AutoForm.addHooks(['formMessages'], {
       pageSession.set('error', null);
       const scopeId = pageSession.get('scopeId');
       const scope = pageSession.get('scope');
+      if (pageSession.get('actionId')) {
+        doc.actionId = pageSession.get('actionId');
+      }
       doc.parentId = scopeId;
       doc.parentType = scope;
       return doc;

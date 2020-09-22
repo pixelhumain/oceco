@@ -140,6 +140,11 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('ocecoCitoyenEdit', {
+    template: 'ocecoCitoyenEdit',
+    path: '/oceco-citoyen/:_id/edit',
+    loadingTemplate: 'loading',
+  });
 
   this.route('poiBlockEdit', {
     template: 'poiBlockEdit',
@@ -437,6 +442,12 @@ Router.map(function() {
   this.route('invitations', {
     template: 'pageInvitations',
     path: '/:scope/invitations/:_id',
+    loadingTemplate: 'loading',
+  });
+
+  this.route('messagesActions', {
+    template: 'pageMessages',
+    path: '/:scope/messagesaction/:_id/room/:roomId/action/:actionId',
     loadingTemplate: 'loading',
   });
 

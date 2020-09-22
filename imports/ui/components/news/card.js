@@ -1,4 +1,4 @@
-/* global Session*/
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
@@ -119,6 +119,7 @@ Template.actionSheet.events({
         { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit notification oceco')} <i class="icon ion-edit"></i>` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -144,6 +145,10 @@ Template.actionSheet.events({
         if (index === 4) {
           // console.log('Edit!');
           Router.go('citoyensBlockEdit', { _id: Router.current().params._id, block: 'preferences' });
+        }
+        if (index === 5) {
+          // console.log('Edit!');
+          Router.go('ocecoCitoyenEdit', { _id: Router.current().params._id });
         }
         return true;
       },

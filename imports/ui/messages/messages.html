@@ -25,7 +25,12 @@
     {{/if}}
 
     <div class="item item-text-wrap">
+        {{#if actionId}}
+        Envoyer un message à tous les participants de <strong>{{scope.name}}</strong>
+        {{else}}
         Envoyer un message à tous {{#if equals scopeVar 'organizations'}}les membres{{else if equals scopeVar 'projects'}}les contributeurs{{else if equals scopeVar 'events'}}les participants{{/if}} de <strong>{{scope.name}}</strong>
+        {{/if}}
+        
     </div>
 
     <div class="item item-assertive item-icon-left item-text-wrap">
