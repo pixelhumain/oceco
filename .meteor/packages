@@ -88,3 +88,5 @@ djabatav:mjml
 #montiapm:agent
 #zodern:standard-minifier-js
 #zodern:hide-production-sourcemaps
+ostrio:logger
+ostrio:loggermongo

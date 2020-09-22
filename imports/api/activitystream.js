@@ -240,14 +240,14 @@ ActivityStream.api = {
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        if (author && author.id && author.id === id) {
+       // if (author && author.id && author.id === id) {
           // author not notif
-        } else {
+        //} else {
           idUsersObj[id] = {
             isUnread: true,
             isUnseen: true,
           };
-        }
+        //}
       });
       return idUsersObj;
     }
@@ -282,7 +282,7 @@ ActivityStream.api = {
       notificationObj.targetProject = {};
       notificationObj.targetProject.type = 'projects';
       notificationObj.targetProject.id = projectOne._id._str;
-      notificationObj.targetProject.name = projectOne.name;
+      notificationObj.targetProject.name = projectOne.name.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '');
     }
     // event
     if (eventOne) {

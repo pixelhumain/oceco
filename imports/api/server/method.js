@@ -17,10 +17,13 @@ import { Mongo } from 'meteor/mongo';
 import { ValidEmail, IsValidEmail } from 'meteor/froatsnook:valid-email';
 import { Email } from 'meteor/email';
 import MJML from 'meteor/djabatav:mjml';
+
+import log from '../../startup/server/logger.js';
+
 // collection et schemas
 // import { NotificationHistory } from '../notification_history.js';
 import { ActivityStream } from '../activitystream.js';
-import { Citoyens, BlockCitoyensRest, SchemasCitoyensRest, SchemasInvitationsRest, SchemasFollowRest, SchemasInviteAttendeesEventRest } from '../citoyens.js';
+import { Citoyens, BlockCitoyensRest, SchemasCitoyensRest, SchemasInvitationsRest, SchemasFollowRest, SchemasInviteAttendeesEventRest, SchemasCitoyensOcecoRest } from '../citoyens.js';
 import { News, SchemasNewsRest, SchemasNewsRestBase } from '../news.js';
 import { Cities } from '../cities.js';
 import { Tags } from '../lists.js';
@@ -546,8 +549,22 @@ Meteor.methods({
     }
     const orgaOne = Organizations.findOne({ _id: new Mongo.ObjectID(id) });
 
-    // membre auto true
     const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { pwd: 0 } });
+    // setting user oceco
+    if (userC && !userC.oceco) {
+      Citoyens.update({
+        _id: new Mongo.ObjectID(userC._id._str),
+      }, {
+        $set: {
+          oceco: {
+            notificationPush: true,
+            notificationEmail: true,
+          },
+        },
+      });
+    }
+
+    // membre auto true
     if (orgaOne && orgaOne.oceco && orgaOne.oceco.memberAuto) {
       if (!userC.isScope('organizations', id)) {
         Meteor.call('connectEntity', id, 'organizations', userC._id._str, 'member');
@@ -2555,6 +2572,40 @@ export const updateOceco = new ValidatedMethod({
   },
 });
 
+export const updateCitoyenOceco = new ValidatedMethod({
+  name: 'updateCitoyenOceco',
+  validate: new SimpleSchema({
+    modifier: {
+      type: Object,
+      blackbox: true,
+    },
+    _id: {
+      type: String,
+    },
+  }).validator(),
+  run({ modifier, _id }) {
+    SchemasCitoyensOcecoRest.clean(modifier);
+    SchemasCitoyensOcecoRest.validate(modifier, { modifier: true });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    // console.log(_id);
+    // console.log(modifier);
+
+    if (_id !== this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const retour = Citoyens.update({ _id: new Mongo.ObjectID(this.userId) }, modifier);
+    // console.log(retour);
+    if (retour) {
+      return _id;
+    }
+    throw new Meteor.Error('error');
+  },
+});
 
 export const insertRoom = new ValidatedMethod({
   name: 'insertRoom',
@@ -4092,26 +4143,26 @@ export const sendEmailScope = new ValidatedMethod({
     }
 
     let citoyensList;
+    let actionOne;
+    if (actionId) {
+      actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+    }
 
     if (parentType === 'organizations') {
       if (actionId) {
-        citoyensList = scopeOne.listMembersActions(actionId);
+        citoyensList = actionOne.listContributors();
       } else {
         citoyensList = scopeOne.listMembers();
       }
-      citoyensList = scopeOne.listMembers();
     } else if (parentType === 'projects') {
       citoyensList = scopeOne.listContributors();
     } else if (parentType === 'events') {
       citoyensList = scopeOne.listAttendees();
     }
 
-    let actionOne;
-    if (actionId) {
-      actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
-    }
+    
     // email history log
-    LogEmailOceco.insert({ parentType, parentId, actionId, subject, text, userId: this.userId });
+    const logEmailId = LogEmailOceco.insert({ parentType, parentId, actionId, subject, text, userId: this.userId });
 
     this.unblock();
 
@@ -4121,7 +4172,7 @@ export const sendEmailScope = new ValidatedMethod({
       const emailTpl = Assets.getText('mjml/email.mjml');
       citoyensListEmail.forEach((citoyen) => {
         // console.log(citoyen.email);
-        if ((Meteor.isProduction && citoyen.email) || (Meteor.isDevelopment && (citoyen.email === 'thomas.craipeau@gmail.com'))) {
+        if ((Meteor.isProduction && citoyen.email) || Meteor.isDevelopment) {
           // eslint-disable-next-line no-undef
           const email = new MJML(emailTpl);
           if (actionId && actionOne) {
@@ -4132,7 +4183,7 @@ export const sendEmailScope = new ValidatedMethod({
               subject,
               scope: 'actions',
               scopeName: actionOne.name,
-              scopeUrl: `https://oce.co.tools/${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`
+              scopeUrl: Meteor.absoluteUrl(`/${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`),
             });
           } else {
             email.helpers({
@@ -4142,7 +4193,7 @@ export const sendEmailScope = new ValidatedMethod({
               subject,
               scope: scopeOne.scopeVar(),
               scopeName: scopeOne.name,
-              scopeUrl: `https://oce.co.tools/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`
+              scopeUrl: Meteor.absoluteUrl(`/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`),
             });
           }
           
@@ -4160,7 +4211,14 @@ export const sendEmailScope = new ValidatedMethod({
             options.from = Meteor.settings.mailSetting.prod.from;
             options.to = citoyen.email;
           }
-          email.send(options);
+          Meteor.defer(() => {
+            try {
+              email.send(options);
+            } catch (e) {
+              // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
+              throw log.error(`Problem sending email ${logEmailId._str} to ${options.to}`, e);
+            }
+          });
         }
       });
     }

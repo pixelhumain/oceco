@@ -158,3 +158,47 @@
   {{/if}}
 
 </template>
+
+<template name="ocecoCitoyenEdit">
+  {{#contentFor "headerButtonLeft"}}
+  {{>ionNavBackButton}}
+  {{/contentFor}}
+
+  {{#contentFor "headerButtonRight"}}
+
+  {{/contentFor}}
+
+  {{#contentFor "headerTitle"}}
+  <h1 class="title">Configuration</h1>
+  {{/contentFor}}
+
+  {{#if dataReady}}
+  {{#ionView}}
+  {{#ionContent}}
+  <div class="list" data-snap-ignore="true">
+    <div class="item item-divider">
+      Configuration Oceco
+    </div>
+    {{#if error}}
+    <div class="card">
+      <div class="item item-text-wrap animated shake homestead text-center">
+        {{__ error}}
+      </div>
+    </div>
+    {{/if}}
+    {{#autoForm id="editCitoyenOceco" schema=SchemasCitoyensOcecoRest type="method-update" meteormethod="updateCitoyenOceco" doc=oceco template="ionic"}}
+    {{> afQuickField name='oceco.notificationPush'}}
+    {{> afQuickField name='oceco.notificationEmail'}}
+    <div class="item">
+      <div class="button-bar">
+        <button type="submit" class="button button-dark">{{__ "edit"}}</button>
+      </div>
+    </div>
+    {{/autoForm}}
+  </div>
+  {{/ionContent}}
+  {{/ionView}}
+  {{else}}
+  {{> loading}}
+  {{/if}}
+</template>

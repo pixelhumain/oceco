@@ -310,6 +310,48 @@ parentType:events
 parentId:59c1f2fedd04528a6c695ede
 connectType:member */
 
+export const SchemasOcecoCitoyenObj = new SimpleSchema({
+  notificationPush: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  notificationEmail: {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+});
+
+export const SchemasOceco = new SimpleSchema({
+  oceco: {
+    type: SchemasOcecoCitoyenObj,
+  },
+});
+
+export const SchemasCitoyensOcecoRest = new SimpleSchema(SchemasOceco, {
+  tracker: Tracker,
+  clean: {
+    filter: true,
+    autoConvert: true,
+    removeEmptyStrings: true,
+    trimStrings: true,
+    getAutoValues: true,
+    removeNullsFromArrays: true,
+  },
+});
 
 if (Meteor.isClient) {
   window.Organizations = Organizations;

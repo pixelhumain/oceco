@@ -333,3 +333,48 @@ AutoForm.addHooks(['editBlockCitoyen'], {
     }
   },
 });
+
+Template.ocecoCitoyenEdit.onCreated(function () {
+  const template = Template.instance();
+  template.ready = new ReactiveVar();
+
+  this.autorun(function () {
+    const handle = Meteor.subscribe('scopeDetail', 'citoyens', Router.current().params._id);
+    if (handle.ready()) {
+      template.ready.set(handle.ready());
+    }
+  });
+});
+
+Template.ocecoCitoyenEdit.helpers({
+  oceco() {
+    const citoyen = Citoyens.findOne({ _id: new Mongo.ObjectID(Router.current().params._id) });
+    const oceco = {};
+    oceco._id = citoyen._id._str;
+    oceco.oceco = citoyen.oceco;
+    return oceco;
+  },
+  error() {
+    return pageSession.get('error');
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+AutoForm.addHooks(['editCitoyenOceco'], {
+  after: {
+    'method-update'(error) {
+      if (!error) {
+        Router.go('detailList', { _id: pageSession.get('scopeId'), scope: 'citoyens' }, { replaceState: true });
+      }
+    },
+  },
+  onError(formType, error) {
+    if (error.errorType && error.errorType === 'Meteor.Error') {
+      if (error && error.error === 'error_call') {
+        pageSession.set('error', error.reason.replace(': ', ''));
+      }
+    }
+  },
+});

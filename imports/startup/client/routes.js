@@ -140,6 +140,11 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('ocecoCitoyenEdit', {
+    template: 'ocecoCitoyenEdit',
+    path: '/oceco-citoyen/:_id/edit',
+    loadingTemplate: 'loading',
+  });
 
   this.route('poiBlockEdit', {
     template: 'poiBlockEdit',
