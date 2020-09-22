@@ -43,6 +43,6 @@ Meteor._debug = (message, stack) => {
 }; */
 
 // push log
-Push.Log = log.debug;
+// Push.Log = log.debug;
 
 export default log;
