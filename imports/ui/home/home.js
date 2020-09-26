@@ -88,6 +88,18 @@ Template.projectsView.helpers({
   },
 });
 
+Template.searchActions.onRendered(function () {
+  const wrap = $('.content.overflow-scroll');
+  wrap.on('scroll', function (e) {
+    if (this.scrollTop > 147) {
+      wrap.addClass('fix-search');
+    } else {
+      wrap.removeClass('fix-search');
+    }
+  });
+});
+
+
 Template.searchActions.helpers({
   search() {
     const search = searchAction.get('search');

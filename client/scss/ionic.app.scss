@@ -510,3 +510,11 @@ $button-follower-active-border:   darken($assertive, 10%) !default;
   border-left-width: 1px;
   border-left-style: solid;
 }
+
+.fix-search .search {
+  width: 100%;
+  position: fixed;
+  top: $bar-height;
+  margin: 0;
+  z-index: 99;
+}
