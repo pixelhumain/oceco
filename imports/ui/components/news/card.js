@@ -249,7 +249,7 @@ Template.actionSheet.events({
         // { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
         // { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        // { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -267,15 +267,15 @@ Template.actionSheet.events({
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'descriptions' });
         }
-        if (index === 3) {
+        /* if (index === 3) {
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'locality' });
-        }
-        if (index === 4) {
+        } */
+        if (index === 2) {
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'when' });
         }
-        if (index === 5) {
+        if (index === 3) {
           // console.log('Edit!');
           Router.go('projectsBlockEdit', { _id: Router.current().params._id, block: 'preferences' });
         }
