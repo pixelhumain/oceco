@@ -306,7 +306,13 @@ ActivityStream.api = {
     }
     return false;
   },
-  add({ target, object, author, mention }, verb, type = 'isMember', idUser = null) {
+};
+
+if (Meteor.isServer) {
+  import { apiCommunecter } from './server/api.js';
+  import log from '../startup/server/logger.js';
+
+  ActivityStream.api.add = ({ target, object, author, mention }, verb, type = 'isMember', idUser = null) => {
     let notificationObj = {};
     notificationObj.type = 'oceco';
     notificationObj.verb = verb;
@@ -423,17 +429,17 @@ ActivityStream.api = {
     }
 
     if (author) {
-    // author
+      // author
       notificationObj = ActivityStream.api.authorNotif(notificationObj, author);
     }
 
     if (targetObj) {
-    // target
+      // target
       notificationObj = ActivityStream.api.targetNotif(notificationObj, targetObj);
     }
 
     if (object) {
-    // object
+      // object
       notificationObj = ActivityStream.api.objectNotif(notificationObj, object);
     }
 
@@ -870,15 +876,19 @@ ActivityStream.api = {
           // mais en fr direct
           const text = notifyDisplay(notificationObj.notify, 'fr', false, true);
           // sous quel user je l'envoie ?
-          ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text);
+          Meteor.defer(() => {
+            try {
+              ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text);
+            } catch (e) {
+              // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
+              throw log.error(`Problem sending chat notif ${object.parentType} to ${object.parentId}`, e);
+            }
+          });
+
         }
       }
     }
-  },
-};
-
-if (Meteor.isServer) {
-  import { apiCommunecter } from './server/api.js';
+  };
 
   ActivityStream.api.sendRC = (userId, parentType, parentId, msg) => {
     const collectionScope = nameToCollection(parentType);
