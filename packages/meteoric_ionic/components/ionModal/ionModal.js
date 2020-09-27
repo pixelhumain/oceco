@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* global Template Meteor Blaze _ $ */
 /* global IonModal Platform */
-import { get as lodashGet } from 'lodash';
 // eslint-disable-next-line no-global-assign
 IonModal = {
   transitionEndEvent: 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
