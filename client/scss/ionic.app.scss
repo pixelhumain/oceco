@@ -510,3 +510,18 @@ $button-follower-active-border:   darken($assertive, 10%) !default;
   border-left-width: 1px;
   border-left-style: solid;
 }
+
+
+.fix-search .search {
+  width: 100%;
+  position: fixed;
+  top: $bar-height;
+  margin: 0;
+  border-right: 0;
+  border-left: 0;
+  box-shadow: 0px 0px 10px 0px #aaa;
+  z-index: 99;
+  @include transition-timing-function(ease-in-out);
+  @include transition-duration(300ms);
+  @include transition-property((box-shadow, height, width, z-index));
+}

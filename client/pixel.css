@@ -46,4 +46,8 @@ i.icon.ion-ios-arrow-left{
     display: none;
 }
 
+.snapjs-left .snap-drawer-right{
+display: block;
+}
+
 }
