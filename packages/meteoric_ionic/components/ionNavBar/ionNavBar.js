@@ -1,4 +1,8 @@
-Template.ionNavBar.created = function () {
+/* eslint-disable meteor/no-session */
+/* global Template Meteor Session $ */
+/* global Platform IonHeaderBar IonNavigation */
+
+Template.ionNavBar.onCreated(function () {
   this.data = this.data || {};
 
   if (Platform.isAndroid()) {
@@ -17,21 +21,22 @@ Template.ionNavBar.created = function () {
   } else {
     this.transitionDuration = 200;
   }
-};
+});
 
-Template.ionNavBar.rendered = function () {
+Template.ionNavBar.onRendered(function () {
   Session.set('hasHeader', true);
 
   IonHeaderBar.alignTitle.call(this);
   IonHeaderBar.positionTitle.call(this);
 
-  var template = this;
-  var container = this.find('[data-navbar-container]');
+  const template = this;
+  const container = this.find('[data-navbar-container]');
+  // eslint-disable-next-line no-underscore-dangle
   container._uihooks = {
-    insertElement: function(node, next) {
-      var $node = $(node);
+    insertElement (node, next) {
+      const $node = $(node);
 
-      if (!$node.hasClass('title') && !$node.hasClass('button') || IonNavigation.skipTransitions) {
+      if ((!$node.hasClass('title') && !$node.hasClass('button')) || IonNavigation.skipTransitions) {
         container.insertBefore(node, next);
         // Changing tabs skips transition animations, but we still want to update the position of the title
         IonHeaderBar.alignTitle.call(template);
@@ -46,7 +51,7 @@ Template.ionNavBar.rendered = function () {
         IonHeaderBar.alignTitle.call(template);
         IonHeaderBar.positionTitle.call(template);
 
-        Meteor.setTimeout(function() {
+        Meteor.setTimeout(function () {
           $node.removeClass('title-stage').addClass('title-active');
         }, 16);
 
@@ -59,7 +64,7 @@ Template.ionNavBar.rendered = function () {
       if ($node.hasClass('button')) {
         container.insertBefore(node, next);
         $node.addClass('button-entering button-stage');
-        Meteor.setTimeout(function() {
+        Meteor.setTimeout(function () {
           $node.removeClass('button-stage').addClass('button-active');
         }, 16);
 
@@ -69,16 +74,16 @@ Template.ionNavBar.rendered = function () {
       }
     },
 
-    removeElement: function(node) {
-      var $node = $(node);
-      if (!$node.hasClass('title') && !$node.hasClass('button') || IonNavigation.skipTransitions) {
+    removeElement (node) {
+      const $node = $(node);
+      if ((!$node.hasClass('title') && !$node.hasClass('button')) || IonNavigation.skipTransitions) {
         $node.remove();
         return;
       }
 
       if ($node.hasClass('title')) {
         $node.addClass('title-leaving title-stage');
-        Meteor.setTimeout(function() {
+        Meteor.setTimeout(function () {
           $node.removeClass('title-stage').addClass('title-active');
         }, 16);
 
@@ -90,17 +95,17 @@ Template.ionNavBar.rendered = function () {
       if ($node.hasClass('button')) {
         $node.remove();
       }
-    }
+    },
   };
-};
+});
 
-Template.ionNavBar.destroyed = function () {
+Template.ionNavBar.onDestroyed(function () {
   Session.set('hasHeader', false);
-};
+});
 
 Template.ionNavBar.helpers({
-  classes: function () {
-    var classes = ['bar', 'bar-header'];
+  classes () {
+    const classes = ['bar', 'bar-header'];
 
     if (this.class) {
       classes.push(this.class);
@@ -111,7 +116,7 @@ Template.ionNavBar.helpers({
     return classes.join(' ');
   },
 
-  transition: function () {
+  transition () {
     return Template.instance().transition;
-  }
+  },
 });

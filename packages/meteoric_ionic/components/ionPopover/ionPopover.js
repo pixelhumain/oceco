@@ -1,32 +1,35 @@
-POPOVER_BODY_PADDING = 6;
+/* global Template Blaze $ */
+/* global IonPopover */
+const POPOVER_BODY_PADDING = 6;
 
+// eslint-disable-next-line no-global-assign
 IonPopover = {
-  show: function (templateName, data, button) {
+  show (templateName, data, button) {
     this.template = Template[templateName];
     this.view = Blaze.renderWithData(this.template, data, $('.ionic-body').get(0));
 
-    var $backdrop = $(this.view.firstNode());
-    var $popover = $backdrop.find('.popover');
-    var $button = $(button);
-    var $arrow = $backdrop.find('.popover-arrow');
+    const $backdrop = $(this.view.firstNode());
+    const $popover = $backdrop.find('.popover');
+    const $button = $(button);
+    const $arrow = $backdrop.find('.popover-arrow');
 
-    var bodyWidth = $('body').width();
-    var bodyHeight = $(window).innerHeight();
-    var buttonPosition = $button.offset();
-    var buttonWidth = $button.outerWidth();
-    var buttonHeight = $button.outerHeight();
-    var popoverWidth = $popover.outerWidth();
-    var popoverHeight = $popover.outerHeight();
+    const bodyWidth = $('body').width();
+    const bodyHeight = $(window).innerHeight();
+    const buttonPosition = $button.offset();
+    const buttonWidth = $button.outerWidth();
+    const buttonHeight = $button.outerHeight();
+    const popoverWidth = $popover.outerWidth();
+    const popoverHeight = $popover.outerHeight();
 
-    var popoverCSS = {
+    const popoverCSS = {
       marginLeft: '0',
       opacity: 1,
-      left: buttonPosition.left + buttonWidth / 2 - popoverWidth / 2
+      left: buttonPosition.left + buttonWidth / 2 - popoverWidth / 2,
     };
 
     if (popoverCSS.left < POPOVER_BODY_PADDING) {
       popoverCSS.left = POPOVER_BODY_PADDING;
-    } else if(popoverCSS.left + popoverWidth + POPOVER_BODY_PADDING > bodyWidth) {
+    } else if (popoverCSS.left + popoverWidth + POPOVER_BODY_PADDING > bodyWidth) {
       popoverCSS.left = bodyWidth - popoverWidth - POPOVER_BODY_PADDING;
     }
 
@@ -42,43 +45,41 @@ IonPopover = {
     $backdrop.addClass('active');
 
     $arrow.css({
-      left: buttonPosition.left + buttonWidth / 2 - $arrow.outerWidth() / 2 - popoverCSS.left + 'px'
+      left: `${buttonPosition.left + buttonWidth / 2 - $arrow.outerWidth() / 2 - popoverCSS.left}px`,
     });
     $popover.css(popoverCSS);
   },
 
-  hide: function () {
+  hide () {
     if (typeof this.view !== 'undefined') {
-      var $backdrop = $(this.view.firstNode());
-
-
-      var $popover = $backdrop.find('.popover');
+      const $backdrop = $(this.view.firstNode());
+      const $popover = $backdrop.find('.popover');
       $popover.addClass('fadeOut');
       $popover.removeClass('slideInDown');
-      //$popover.css({opacity: 0});
-      //$backdrop.removeClass('active');
+      // $popover.css({opacity: 0});
+      // $backdrop.removeClass('active');
       Blaze.remove(this.view);
     }
-  }
+  },
 };
 
-Template.ionPopover.rendered = function () {
-  $(window).on('keyup.ionPopover', function(event) {
-    if (event.which == 27) {
+Template.ionPopover.onRendered(function () {
+  $(window).on('keyup.ionPopover', function (event) {
+    if (event.which === 27) {
       IonPopover.hide();
     }
   });
-};
+});
 
-Template.ionPopover.destroyed = function () {
+Template.ionPopover.onDestroyed(function () {
   $(window).off('keyup.ionPopover');
-};
+});
 
 Template.ionPopover.events({
   // Handle clicking the backdrop
-  'click': function (event, template) {
+  click (event) {
     if ($(event.target).hasClass('popover-backdrop')) {
       IonPopover.hide();
     }
-  }
+  },
 });

@@ -1,18 +1,21 @@
-Template.ionView.rendered = function () {
+/* eslint-disable meteor/no-session */
+/* global Template Router $ */
+/* global IonNavigation IonScrollPositions */
+Template.ionView.onRendered(function () {
   // Reset our transition preference
   IonNavigation.skipTransitions = false;
 
   // Reset our scroll position
-  var routePath = Router.current().route.path(Router.current().params);
-  if(IonScrollPositions[routePath]) {
+  const routePath = Router.current().route.path(Router.current().params);
+  if (IonScrollPositions[routePath]) {
     $('.overflow-scroll').not('.nav-view-leaving .overflow-scroll').scrollTop(IonScrollPositions[routePath]);
     delete IonScrollPositions[routePath];
   }
-};
+});
 
 Template.ionView.helpers({
-  classes: function () {
-    var classes = ['view'];
+  classes () {
+    const classes = ['view'];
 
     if (this.class) {
       classes.push(this.class);
@@ -20,9 +23,9 @@ Template.ionView.helpers({
 
     return classes.join(' ');
   },
-  title: function () {
-    if ( Template.instance().data && Template.instance().data.title ) {
+  title () {
+    if (Template.instance().data && Template.instance().data.title) {
       return Template.instance().data.title;
     }
-  }
+  },
 });

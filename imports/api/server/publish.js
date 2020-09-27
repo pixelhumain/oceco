@@ -3,7 +3,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
-import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { _ } from 'meteor/underscore';
 import { HTTP } from 'meteor/http';
@@ -265,38 +264,6 @@ Meteor.publish('geo.dashboard', function (geoId, latlng, radius) {
     counterCitoyens,
   ];
 });
-
-// eslint-disable-next-line meteor/audit-argument-checks
-Meteor.publish('geo.dashboardOld', function(geoId, latlng, radius) {
-  const query = {};
-  if (radius) {
-    query.geoPosition = {
-      $nearSphere: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [latlng.longitude, latlng.latitude],
-        },
-        $maxDistance: radius,
-      } };
-  } else {
-    query.geoPosition = {
-      $geoIntersects: {
-        $geometry: {
-          type: latlng.type,
-          coordinates: latlng.coordinates,
-        },
-      },
-    };
-  }
-  // console.log(geoId);
-  Counts.publish(this, `countScopeGeo.${geoId}.events`, Events.find(query));
-  Counts.publish(this, `countScopeGeo.${geoId}.organizations`, Organizations.find(query));
-  Counts.publish(this, `countScopeGeo.${geoId}.projects`, Projects.find(query));
-
-  query._id = { $ne: new Mongo.ObjectID(this.userId) };
-  Counts.publish(this, `countScopeGeo.${geoId}.citoyens`, Citoyens.find(query));
-});
-
 
 // Geo scope
 // scope string collection

@@ -1,21 +1,24 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable meteor/no-session */
+/* global Template Session Blaze Router Spacebars _ */
 Template.ionItem.helpers({
-  idAttribute: function () {
+  idAttribute () {
     if (this.id) {
       return this.id;
     }
   },
-  itemClasses: function () {
-    var classes = ['item'];
+  itemClasses () {
+    const classes = ['item'];
 
     if (this.class) {
-      var customClasses = this.class.split(' ');
+      const customClasses = this.class.split(' ');
       _(customClasses).each(function (customClass) {
         classes.push(customClass);
       });
     }
 
     if (this.avatar) {
-      classes.push('item-avatar' + (this.avatar === 'right' ? '-right' : ''));
+      classes.push(`item-avatar${this.avatar === 'right' ? '-right' : ''}`);
     }
 
     if (this.iconLeft) {
@@ -30,7 +33,7 @@ Template.ionItem.helpers({
       classes.push('item-button-left');
     }
 
-    if(Session.get('ionSortable')){
+    if (Session.get('ionSortable')) {
       classes.push('item-complex', 'item-left-editable');
     }
 
@@ -45,44 +48,42 @@ Template.ionItem.helpers({
     return classes.join(' ');
   },
 
-  isAnchor: function () {
-    return _.some([this.href,this.path,this.url,this.route],function(path){return path != undefined});
+  isAnchor () {
+    return _.some([this.href, this.path, this.url, this.route], function(path) { return path !== undefined; });
   },
 
-  target: function () {
+  target () {
     return this.target;
   },
 
-  url: function () {
+  url () {
     if (this.href) {
       return this.href;
     }
 
-    if ( this.path || this.url || this.route ) {
+    if (this.path || this.url || this.route) {
+      const path = _.find([this.path, this.url, this.route], function (pathParam) { return pathParam !== undefined; });
 
-      var path = _.find([this.path,this.url,this.route],function(path){return path !=undefined});
-
-      if ( this.query || this.hash || this.data ){
-
-        var hash = {};
+      if (this.query || this.hash || this.data) {
+        const hash = {};
         hash.route = path;
         hash.query = this.query;
         hash.hash = this.hash;
         hash.data = this.data;
-        var options = new Spacebars.kw(hash);
+        // eslint-disable-next-line new-cap
+        const options = new Spacebars.kw(hash);
 
         // Devs may pass 'route=x' instead of 'path=' or 'url='
         // Should doing that throw an error? Not sure but we decided to
         // parse it as if the dev passed it as 'path='
-        if (this.url){
-          return Blaze._globalHelpers.urlFor(options)
-        } else if( this.path || this.route ) {
-          return Blaze._globalHelpers.pathFor(options)
+        if (this.url) {
+          return Blaze._globalHelpers.urlFor(options);
+        } else if (this.path || this.route) {
+          return Blaze._globalHelpers.pathFor(options);
         }
-
       } else {
         return Router.routes[path].path(Template.parentData(1));
       }
     }
-  }
+  },
 });

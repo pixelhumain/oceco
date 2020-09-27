@@ -1,13 +1,16 @@
+/* eslint-disable no-undef */
+/* global Template Blaze Meteor $ */
 IonBackdrop = {
   holds: 0,
-  retain: function () {
+  retain () {
+    // eslint-disable-next-line no-plusplus
     this.holds++;
 
     if (this.holds === 1) {
-      this.template = Template['ionBackdrop'];
+      this.template = Template.ionBackdrop;
       this.view = Blaze.renderWithData(this.template, {}, $('.ionic-body').get(0));
 
-      var $backdropEl = $(this.view.firstNode());
+      const $backdropEl = $(this.view.firstNode());
       $backdropEl.addClass('visible');
 
       Meteor.setTimeout(function () {
@@ -16,11 +19,12 @@ IonBackdrop = {
     }
   },
 
-  release: function () {
+  release () {
+    // eslint-disable-next-line no-plusplus
     this.holds--;
 
     if (this.holds === 0) {
-      var $backdropEl = $(this.view.firstNode());
+      const $backdropEl = $(this.view.firstNode());
       $backdropEl.removeClass('active');
 
       Meteor.setTimeout(function () {
@@ -28,5 +32,5 @@ IonBackdrop = {
         Blaze.remove(this.view);
       }.bind(this), 400);
     }
-  }
+  },
 };

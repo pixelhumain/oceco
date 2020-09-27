@@ -1,12 +1,15 @@
+/* global Template Meteor Blaze _ $ */
+// eslint-disable-next-line no-unused-vars
+/* global IonLoading IonBackdrop */
+// eslint-disable-next-line no-global-assign
 IonLoading = {
-  show: function (userOptions) {
-    var userOptions = userOptions || {};
-    var options = _.extend({
+  show (userOptions) {
+    const options = _.extend({
       delay: 0,
       duration: null,
       customTemplate: null,
-      backdrop: false
-    }, userOptions);
+      backdrop: false,
+    }, userOptions || {});
 
     if (options.backdrop) {
       IonBackdrop.retain();
@@ -14,10 +17,10 @@ IonLoading = {
     }
 
     Meteor.setTimeout(function () {
-      this.template = Template['ionLoading'];
-      this.view = Blaze.renderWithData(this.template, {template: options.customTemplate}, $('.ionic-body').get(0));
+      this.template = Template.ionLoading;
+      this.view = Blaze.renderWithData(this.template, { template: options.customTemplate }, $('.ionic-body').get(0));
 
-      var $loadingEl = $(this.view.firstNode());
+      const $loadingEl = $(this.view.firstNode());
       $loadingEl.addClass('visible');
 
       Meteor.setTimeout(function () {
@@ -32,20 +35,20 @@ IonLoading = {
     }
   },
 
-  hide: function () {
+  hide () {
     if (this.view) {
-      var $loadingEl = $(this.view.firstNode());
+      const $loadingEl = $(this.view.firstNode());
       $loadingEl.removeClass('active');
 
-      Meteor.setTimeout(function () {
+      Meteor.defer(function () {
         IonBackdrop.release();
         $loadingEl.removeClass('visible');
         Blaze.remove(this.view);
         this.view = null;
-      }.bind(this), 0);
+      }.bind(this));
     }
-    Meteor.setTimeout(function() {
+    Meteor.defer(function () {
       $('.loading-container').remove();
-    }, 0)
-  }
+    });
+  },
 };

@@ -1,94 +1,93 @@
+/* eslint-disable meteor/no-session */
+/* global Template Session Blaze $ _ Slip */
 Template.ionList.helpers({
-  classes: function () {
-    var classes = ['list'];
+  classes () {
+    const classes = ['list'];
 
     if (this.class) {
-      var customClasses = this.class.split(' ');
+      const customClasses = this.class.split(' ');
       _(customClasses).each(function (customClass) {
         classes.push(customClass);
       });
     }
 
     return classes.join(' ');
+  },
+});
+
+Template.ionList.onRendered(function () {
+  if (this.data && this.data.ionSortable) {
+    Session.set('ionSortable', true);
+    const list = this.$('.list')[0];
+    // eslint-disable-next-line no-new
+    new Slip(list);
   }
 });
 
 
-Template.ionList.rendered = function() {
-
- if (this.data && this.data.ionSortable){
-  Session.set("ionSortable", true );
-  var list = this.$('.list')[0]; 
-  new Slip(list);
-}
-
-};
-
-
 Template.ionList.events({
-  'click .item-delete' : function(e, template){
-    e.preventDefault();
+  'click .item-delete'(event, instance) {
+    event.preventDefault();
 
-    var target = $(e.target).closest('.item').get(0);
-    var targetData = Blaze.getData(target.getElementsByClassName('item-content')[0])._id || undefined;
+    const target = $(event.target).closest('.item').get(0);
+    const targetData = Blaze.getData(target.getElementsByClassName('item-content')[0])._id || undefined;
 
-    template.data.ionSortable.find({}).forEach(function(item, i) {
+    instance.data.ionSortable.find({}).forEach(function(item, i) {
       if (item._id === targetData) {
-        template.data.ionSortable._collection.remove({
-          _id: item._id
+        instance.data.ionSortable._collection.remove({
+          _id: item._id,
         }, function(error, result) { });
       }
     });
   },
-  'slip:swipe .list, slip:beforeswipe .list, slip:beforewait .list, slip:afterswipe .list': function(e, template) {
-    e.preventDefault();
+  'slip:swipe .list, slip:beforeswipe .list, slip:beforewait .list, slip:afterswipe .list'(event) {
+    event.preventDefault();
   },
-  'slip:beforereorder .list': function(e, template) {
-    if (e.originalEvent.target.className.indexOf('instant') == -1) {
-      e.preventDefault();
+  'slip:beforereorder .list'(event) {
+    if (event.originalEvent.target.className.indexOf('instant') === -1) {
+      event.preventDefault();
     }
   },
-  'slip:reorder .list': function(e, template) {
-    spliceIndex = e.originalEvent.detail.spliceIndex
-    originalIndex = e.originalEvent.detail.originalIndex
+  'slip:reorder .list'(event, instance) {
+    const spliceIndex = event.originalEvent.detail.spliceIndex;
+    const originalIndex = event.originalEvent.detail.originalIndex;
 
-    if (spliceIndex != originalIndex) {
-
-      template.data.ionSortable.find({}, {
+    if (spliceIndex !== originalIndex) {
+      instance.data.ionSortable.find({}, {
         sort: {
-          order: 1
-        }
+          order: 1,
+        },
       }).forEach(function(item, i) {
-        template.data.ionSortable._collection.pauseObservers()
-        if (item._id == Blaze.getData(e.target.getElementsByClassName('item-content')[0])._id) {
-          temp = template.data.ionSortable.update({
-            _id: item._id
+        instance.data.ionSortable._collection.pauseObservers();
+        if (item._id === Blaze.getData(event.target.getElementsByClassName('item-content')[0])._id) {
+          instance.data.ionSortable.update({
+            _id: item._id,
           }, {
             $set: {
-              order: spliceIndex
-            }
-          })
+              order: spliceIndex,
+            },
+          });
         } else {
+          let newOrder;
           if (spliceIndex > originalIndex) {
-            newOrder = ((spliceIndex >= i) && (originalIndex < i)) ? (i - 1) : i
-          } else if (spliceIndex == '0') {
-            newOrder = (originalIndex > i) ? (i + 1) : i
+            newOrder = ((spliceIndex >= i) && (originalIndex < i)) ? (i - 1) : i;
+          } else if (spliceIndex === '0') {
+            newOrder = (originalIndex > i) ? (i + 1) : i;
           } else {
-            newOrder = ((spliceIndex <= i) && (originalIndex > i)) ? (i + 1) : i
+            newOrder = ((spliceIndex <= i) && (originalIndex > i)) ? (i + 1) : i;
           }
 
-          temp = template.data.ionSortable.update({
-            _id: item._id
+          instance.data.ionSortable.update({
+            _id: item._id,
           }, {
             $set: {
-              order: newOrder
-            }
-          })
+              order: newOrder,
+            },
+          });
         }
-        template.data.ionSortable._collection.resumeObservers()
-      })
-
+        instance.data.ionSortable._collection.resumeObservers();
+      });
     }
-  }
+  },
 
 });

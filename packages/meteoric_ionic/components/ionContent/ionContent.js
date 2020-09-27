@@ -1,6 +1,8 @@
+/* eslint-disable meteor/no-session */
+/* global Template Session */
 Template.ionContent.helpers({
-  classes: function () {
-    var classes = ['content'];
+  classes () {
+    const classes = ['content'];
 
     if (this.class) {
       classes.push(this.class);
@@ -35,5 +37,5 @@ Template.ionContent.helpers({
     }
 
     return classes.join(' ');
-  }
+  },
 });

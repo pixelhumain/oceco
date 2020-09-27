@@ -44,7 +44,7 @@ The block syntax (also called block helpers) is much more interesting. A block h
 ```
 <template name="myTemplate">
   <div class="my-template">
-    {{> UI.contentBlock}}
+    {{> Template.contentBlock}}
   </div>
 </template>
 ```

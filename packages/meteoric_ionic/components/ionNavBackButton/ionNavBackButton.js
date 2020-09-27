@@ -1,3 +1,8 @@
+/* eslint-disable no-underscore-dangle */
+/* global Template Router $ */
+/* global IonScrollPositions Platform */
+
+// eslint-disable-next-line no-global-assign
 IonScrollPositions = {};
 
 Router.onStop(function () {
@@ -5,50 +10,51 @@ Router.onStop(function () {
 });
 
 Template.ionNavBackButton.events({
-  'click': function (event, template) {
+  click(event, instance) {
     $('[data-nav-container]').addClass('nav-view-direction-back');
     $('[data-navbar-container]').addClass('nav-bar-direction-back');
-    
-    //get most up-to-date url, if it exists
-    backUrl = template.getBackUrl()
+
+    // get most up-to-date url, if it exists
+    const backUrl = instance.getBackUrl();
     if (backUrl) {
       Router.go(backUrl);
     } else {
       window.history.back();
     }
-  }
+  },
 });
 
-Template.ionNavBackButton.created = function () {
+Template.ionNavBackButton.onCreated(function () {
   this.data = this.data || {};
-};
+});
 
-Template.ionNavBackButton.rendered = function () {
-  var self = this;
+Template.ionNavBackButton.onRendered(function () {
+  const self = this;
   this.getBackUrl = function () {
-    var backUrl = null;
+    let backUrl = null;
 
     self.data = self.data || {};
-  
+
     if (self.data.href) {
       backUrl = self.data.href;
     }
-  
+
     if (self.data.path) {
-      backRoute = Router.routes[self.data.path]
+      const backRoute = Router.routes[self.data.path];
       if (!backRoute) {
-        console.warn("back to nonexistent route: ", self.data.path);
+        // eslint-disable-next-line no-console
+        console.warn('back to nonexistent route: ', self.data.path);
         return;
       }
       backUrl = backRoute.path(Template.parentData(1));
     }
     return backUrl;
   };
-};
+});
 
 Template.ionNavBackButton.helpers({
-  classes: function () {
-    var classes = ['buttons button button-clear back-button pull-left'];
+  classes () {
+    const classes = ['buttons button button-clear back-button pull-left'];
 
     if (this.class) {
       classes.push(this.class);
@@ -57,7 +63,7 @@ Template.ionNavBackButton.helpers({
     return classes.join(' ');
   },
 
-  icon: function () {
+  icon () {
     if (this.icon) {
       return this.icon;
     }
@@ -69,11 +75,11 @@ Template.ionNavBackButton.helpers({
     return 'ios-arrow-back';
   },
 
-  text: function () {
+  text () {
     if (this.text) {
       return this.text;
-    } else if(this.text !== false) {
+    } else if (this.text !== false) {
       return 'Back';
     }
-  }
+  },
 });

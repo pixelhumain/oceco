@@ -1,18 +1,21 @@
+/* eslint-disable meteor/no-session */
+/* global Template Session Router */
+/* global IonNavigation */
 Template.ionTab.events({
-  'click': function (event, template) {
-    if (template.data.path) {
-      Session.set('ionTab.current', template.data.path);
+  click (event, instance) {
+    if (instance.data.path) {
+      Session.set('ionTab.current', instance.data.path);
     }
 
     // If the tab's content is being rendered inside of a ionNavView
     // we don't want to slide it in when switching tabs
     IonNavigation.skipTransitions = true;
-  }
+  },
 });
 
 Template.ionTab.helpers({
-  classes: function () {
-    var classes = ['tab-item'];
+  classes () {
+    const classes = ['tab-item'];
     if (this.class) {
       classes.push(this.class);
     }
@@ -22,7 +25,7 @@ Template.ionTab.helpers({
     return classes.join(' ');
   },
 
-  url: function () {
+  url () {
     if (this.href) {
       return this.href;
     }
@@ -32,8 +35,8 @@ Template.ionTab.helpers({
     }
   },
 
-  isActive: function () {
-    var ionTabCurrent = Session.get('ionTab.current');
+  isActive () {
+    const ionTabCurrent = Session.get('ionTab.current');
 
     if (this.path && this.path === ionTabCurrent) {
       return 'active';
@@ -42,33 +45,31 @@ Template.ionTab.helpers({
     // The initial case where there is no localStorage value and
     // no session variable has been set, this attempts to set the correct tab
     // to active based on the router
-    var route = Router.routes[this.path];
-    if(route && route.path(Template.currentData()) === ionTabCurrent){
+    const route = Router.routes[this.path];
+    if (route && route.path(Template.currentData()) === ionTabCurrent) {
       return 'active';
     }
   },
 
-  activeIcon: function () {
+  activeIcon () {
     if (this.iconOn) {
       return this.iconOn;
-    } else {
-      return this.icon;
     }
+    return this.icon;
   },
 
-  defaultIcon: function () {
+  defaultIcon () {
     if (this.iconOff) {
       return this.iconOff;
-    } else {
-      return this.icon;
     }
+    return this.icon;
   },
 
-  badgeNumber: function () {
+  badgeNumber () {
     return this.badgeNumber;
   },
 
-  badgeColor: function () {
-    return this.badgeColor||'assertive';
-  }
+  badgeColor () {
+    return this.badgeColor || 'assertive';
+  },
 });

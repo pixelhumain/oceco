@@ -1,7 +1,8 @@
+/* global Template */
 Template.ionRadio.helpers({
-  inputAttrs: function () {
-    var attrs = {
-      type: 'radio'
+  inputAttrs () {
+    const attrs = {
+      type: 'radio',
     };
 
     if (this.name) {
@@ -25,5 +26,5 @@ Template.ionRadio.helpers({
     }
 
     return attrs;
-  }
-})
+  },
+});

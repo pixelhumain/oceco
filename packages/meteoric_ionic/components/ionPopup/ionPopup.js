@@ -1,43 +1,46 @@
+/* global Template Blaze $ */
+/* global IonPopup */
+// eslint-disable-next-line no-global-assign
 IonPopup = {
-  show: function (options) {
+  show (options) {
     this.template = Template.ionPopup;
     this.buttons = [];
 
-    for (var i = 0; i < options.buttons.length; i++) {
-      var button = options.buttons[i];
+    for (let i = 0; i < options.buttons.length; i++) {
+      const button = options.buttons[i];
       this.buttons.push({
         text: button.text,
         type: button.type,
         index: i,
-        onTap: button.onTap
+        onTap: button.onTap,
       });
     }
 
     // Figure out if a template or just a html string was passed
-    var innerTemplate = '';
+    let innerTemplate = '';
     if (options.templateName) {
       innerTemplate = Template[options.templateName].renderFunction().value;
     } else if (options.template) {
-      innerTemplate = '<span>' + options.template + '</span>';
+      innerTemplate = `<span>${options.template}</span>`;
     }
 
-    var data = {
+    const data = {
       title: options.title,
       subTitle: options.subTitle,
       buttons: this.buttons,
-      template: innerTemplate
+      template: innerTemplate,
     };
 
     this.view = Blaze.renderWithData(this.template, data, $('.ionic-body').get(0));
     $('body').addClass('popup-open');
 
-    var $backdrop = $(this.view.firstNode());
+    const $backdrop = $(this.view.firstNode());
     $backdrop.addClass('visible active');
-    var $popup = $backdrop.find('.popup-container');
+    const $popup = $backdrop.find('.popup-container');
     $popup.addClass('popup-showing active');
   },
 
-  alert: function (options) {
+  alert (options) {
     IonPopup.show({
       title: options.title,
       subTitle: options.subTitle,
@@ -47,16 +50,16 @@ IonPopup = {
         {
           text: options.okText ? options.okText : 'Ok',
           type: options.okType ? options.okType : 'button-positive',
-          onTap: function(event, template) {
+          onTap(event, template) {
             if (options.onOk) options.onOk(event, template);
             return true;
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   },
 
-  confirm: function (options) {
+  confirm (options) {
     IonPopup.show({
       title: options.title,
       subTitle: options.subTitle,
@@ -66,65 +69,65 @@ IonPopup = {
         {
           text: options.cancelText ? options.cancelText : 'Cancel',
           type: options.cancelType ? options.cancelType : 'button-default',
-          onTap: function (event, template) {
+          onTap (event, template) {
             if (options.onCancel) options.onCancel(event, template);
             return true;
-          }
+          },
         },
         {
           text: options.okText ? options.okText : 'Ok',
           type: options.okType ? options.okType : 'button-positive',
-          onTap: function (event, template) {
+          onTap (event, template) {
             if (options.onOk) options.onOk(event, template);
             return true;
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   },
 
-  prompt: function (options) {
-
-    var template = '';
+  prompt (options) {
+    let template = '';
     if (options.templateName) {
       template = Template[options.templateName].renderFunction().value;
     } else if (options.template) {
-      template = '<span class="popup-prompt-text">' + options.template + '</span>';
+      template = `<span class="popup-prompt-text">${options.template}</span>`;
     }
 
     options.inputType = options.inputType || 'text';
     options.inputPlaceholder = options.inputPlaceholder || '';
-    template += '<input type="' + options.inputType + '" placeholder="' +
-      options.inputPlaceholder + '" name="prompt" >';
+    template += `<input type="${options.inputType}" placeholder="${
+      options.inputPlaceholder}" name="prompt" >`;
 
     IonPopup.show({
       title: options.title,
       subTitle: options.subTitle,
-      template: template,
+      template,
       buttons: [
         {
           text: options.cancelText ? options.cancelText : 'Cancel',
           type: options.cancelType ? options.cancelType : 'button-default',
-          onTap: function (event, template) {
-            if (options.onCancel) options.onCancel(event, template);
+          onTap (event, templatePop) {
+            if (options.onCancel) options.onCancel(event, templatePop);
             return true;
-          }
+          },
         },
         {
           text: options.okText ? options.okText : 'Ok',
           type: options.okType ? options.okType : 'button-positive',
-          onTap: function (event, template) {
-            var inputVal = $(template.firstNode).find('[name=prompt]').val();
+          onTap (event, templatePop) {
+            const inputVal = $(templatePop.firstNode).find('[name=prompt]').val();
             if (options.onOk) options.onOk(event, inputVal);
             return true;
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
   },
 
-  close: function () {
-    var $popup = this._domrange ? $(this.view.firstNode()).find('.popup-container') : $('.popup-container');
+  close () {
+    // eslint-disable-next-line no-underscore-dangle
+    const $popup = this._domrange ? $(this.view.firstNode()).find('.popup-container') : $('.popup-container');
     $popup.addClass('popup-hidden').removeClass('active');
 
     setTimeout(function () {
@@ -134,45 +137,45 @@ IonPopup = {
     }.bind(this), 100);
   },
 
-  buttonClicked: function (index, event, template) {
-    var callback = this.buttons[index].onTap;
-    if(callback){
+  buttonClicked (index, event, template) {
+    const callback = this.buttons[index].onTap;
+    if (callback) {
       if (callback(event, template) === true) {
         IonPopup.close();
       }
     }
-  }
+  },
 };
 
-Template.ionPopup.rendered = function () {
-  $(window).on('keyup.ionPopup', function(event) {
-    if (event.which == 27) {
+Template.ionPopup.onRendered(function () {
+  $(window).on('keyup.ionPopup', function (event) {
+    if (event.which === 27) {
       IonPopup.close();
     }
   });
-};
+});
 
-Template.ionPopup.destroyed = function () {
+Template.ionPopup.onDestroyed(function () {
   $(window).off('keyup.ionPopup');
-};
+});
 
 Template.ionPopup.events({
   // Handle clicking the backdrop
-  'click': function (event, template) {
+  click (event) {
     if ($(event.target).hasClass('popup-container')) {
       IonPopup.close();
     }
   },
 
-  'click [data-index]': function (event, template) {
-    var index = $(event.target).data('index');
-    IonPopup.buttonClicked(index, event, template);
-  }
+  'click [data-index]' (event, instance) {
+    const index = $(event.target).data('index');
+    IonPopup.buttonClicked(index, event, instance);
+  },
 
 });
 
 Template.ionPopup.helpers({
-  hasHead: function() {
+  hasHead() {
     return this.title || this.subTitle;
-  }
+  },
 });
