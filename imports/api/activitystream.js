@@ -240,14 +240,14 @@ ActivityStream.api = {
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        //if (author && author.id && author.id === id) {
+        if (author && author.id && author.id === id) {
           // author not notif
-        //} else {
+        } else {
           idUsersObj[id] = {
             isUnread: true,
             isUnseen: true,
           };
-        //}
+        }
       });
       return idUsersObj;
     }
