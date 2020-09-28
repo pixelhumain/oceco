@@ -16,6 +16,7 @@ import SimpleSchema from 'simpl-schema';
 import { Mongo } from 'meteor/mongo';
 import { ValidEmail, IsValidEmail } from 'meteor/froatsnook:valid-email';
 import { Email } from 'meteor/email';
+import { Jobs } from 'meteor/wildhart:jobs';
 import MJML from 'meteor/djabatav:mjml';
 
 import log from '../../startup/server/logger.js';
@@ -4169,14 +4170,12 @@ export const sendEmailScope = new ValidatedMethod({
     if (citoyensList.count() > 0) {
       const arrayIds = citoyensList.map(citoyen => citoyen._id);
       const citoyensListEmail = Citoyens.find({ _id: { $in: arrayIds } }, { fields: { email: 1, name: 1 } });
-      const emailTpl = Assets.getText('mjml/email.mjml');
       citoyensListEmail.forEach((citoyen) => {
         // console.log(citoyen.email);
         if ((Meteor.isProduction && citoyen.email) || Meteor.isDevelopment) {
-          // eslint-disable-next-line no-undef
-          const email = new MJML(emailTpl);
+          let helpers;
           if (actionId && actionOne) {
-            email.helpers({
+            helpers = {
               message: text,
               name: citoyen.name,
               signature: citoyenOne.name,
@@ -4184,9 +4183,9 @@ export const sendEmailScope = new ValidatedMethod({
               scope: 'actions',
               scopeName: actionOne.name,
               scopeUrl: Meteor.absoluteUrl(`/${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`),
-            });
+            };
           } else {
-            email.helpers({
+            helpers = {
               message: text,
               name: citoyen.name,
               signature: citoyenOne.name,
@@ -4194,7 +4193,7 @@ export const sendEmailScope = new ValidatedMethod({
               scope: scopeOne.scopeVar(),
               scopeName: scopeOne.name,
               scopeUrl: Meteor.absoluteUrl(`/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`),
-            });
+            };
           }
           
           const options = {};
@@ -4211,14 +4210,16 @@ export const sendEmailScope = new ValidatedMethod({
             options.from = Meteor.settings.mailSetting.prod.from;
             options.to = citoyen.email;
           }
-          Meteor.defer(() => {
+
+          Jobs.run('sendEmail', options, helpers, logEmailId._str);
+          /* Meteor.defer(() => {
             try {
               email.send(options);
             } catch (e) {
               // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
               throw log.error(`Problem sending email ${logEmailId._str} to ${options.to}`, e);
             }
-          });
+          }); */
         }
       });
     }

@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
+import { Jobs } from 'meteor/wildhart:jobs';
 
 import { Events } from './events.js';
 import { Organizations } from './organizations.js';
@@ -239,14 +240,14 @@ ActivityStream.api = {
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        if (author && author.id && author.id === id) {
+        //if (author && author.id && author.id === id) {
           // author not notif
-        } else {
+        //} else {
           idUsersObj[id] = {
             isUnread: true,
             isUnseen: true,
           };
-        }
+        //}
       });
       return idUsersObj;
     }
@@ -869,6 +870,8 @@ if (Meteor.isServer) {
       // console.log(notificationObj);
       if (notificationObj.notify && notificationObj.notify.id) {
         ActivityStream.insert(notificationObj);
+        Jobs.run('pushEmail', notificationObj);
+        Jobs.run('pushMobile', notificationObj);
       }
       if (notificationObj.notify) {
         if (notificationChat === true && type === 'isAdmin') {

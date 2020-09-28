@@ -90,3 +90,4 @@ djabatav:mjml
 #zodern:hide-production-sourcemaps
 ostrio:logger
 ostrio:loggermongo
+wildhart:jobs
