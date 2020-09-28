@@ -8,7 +8,7 @@
     <mj-section>
       <mj-column border-radius="15px" background-color="#eee" inner-background-color="#fff" padding="15px">
 
-        <mj-image width="100px" src="{{ocecoUrl}}/oceco.png"></mj-image>
+        <mj-image width="100px" src="{{ocecoUrl}}oceco.png"></mj-image>
 
         <mj-text font-size="20px" color="#E33551" font-family="Raleway, Arial">{{subject}}</mj-text>
         <mj-divider border-color="#E33551"></mj-divider>
@@ -46,7 +46,7 @@
         </mj-text>
 
         <mj-text font-size="14px" color="#324553" font-family="Raleway, Arial">
-         Pour désactiver les notifications par email ou mobile connecter vous à <a href="{{ocecoUrl}}">oceco</a> et cliquer sur ce <a href="{{ocecoUrl}}/oceco-citoyen/{{userId}}/edit">lien</a> pour arriver au réglage de l'envoie des notifications par email
+         Pour désactiver les notifications par email ou mobile connecter vous à <a href="{{ocecoUrl}}">oceco</a> et cliquer sur ce <a href="{{ocecoUrl}}oceco-citoyen/{{userId}}/edit">lien</a> pour arriver au réglage de l'envoie des notifications par email
          </mj-text>
         
         <mj-button font-family="Raleway, Arial" background-color="#E33551" color="white" href="{{ocecoUrl}}">
