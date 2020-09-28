@@ -580,6 +580,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
 
   });
+  this.route('homeredir', {
+    template: 'homeView',
+    path: '/home',
+    loadingTemplate: 'loading',
+
+  });
   this.route('actionView', {
     template: 'actionView',
     path: '/actionView/:id',
