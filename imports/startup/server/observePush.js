@@ -59,8 +59,7 @@ const pushUser = (title, text, payload, query, badge) => {
 
 const pushEmail = (title, text, payload, query) => {
   const citoyensListEmail = Citoyens.find({ _id: new Mongo.ObjectID(query.userId) }, { fields: { email: 1, name: 1, oceco: 1 } });
-  // eslint-disable-next-line no-undef
-  const emailTpl = Assets.getText('mjml/email.mjml');
+  const emailTpl = Assets.getText('mjml/notification.mjml');
   citoyensListEmail.forEach((citoyen) => {
     const notificationEmail = (citoyen && !citoyen.oceco) ? true : citoyen.oceco.notificationEmail;
     if (notificationEmail) {
@@ -72,11 +71,13 @@ const pushEmail = (title, text, payload, query) => {
         email.helpers({
           message: text,
           name: citoyen.name,
+          userId: citoyen._id._str,
           signature: payload.target.name,
           subject: title,
           scope: 'notifications',
           scopeName: 'Voir les notifications',
-          scopeUrl: Meteor.absoluteUrl('/notifications'),
+          scopeUrl: Meteor.absoluteUrl('notifications'),
+          ocecoUrl: Meteor.absoluteUrl(),
         });
 
         const options = {};

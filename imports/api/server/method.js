@@ -4182,7 +4182,8 @@ export const sendEmailScope = new ValidatedMethod({
               subject,
               scope: 'actions',
               scopeName: actionOne.name,
-              scopeUrl: Meteor.absoluteUrl(`/${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`),
+              scopeUrl: Meteor.absoluteUrl(`${actionOne.parentType}/rooms/${actionOne.parentId}/room/${actionOne.idParentRoom}/action/${actionOne._id._str}`),
+              ocecoUrl: Meteor.absoluteUrl(),
             };
           } else {
             helpers = {
@@ -4192,7 +4193,8 @@ export const sendEmailScope = new ValidatedMethod({
               subject,
               scope: scopeOne.scopeVar(),
               scopeName: scopeOne.name,
-              scopeUrl: Meteor.absoluteUrl(`/${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`),
+              scopeUrl: Meteor.absoluteUrl(`${scopeOne.scopeVar()}/detail/${scopeOne._id._str}`),
+              ocecoUrl: Meteor.absoluteUrl(),
             };
           }
           
