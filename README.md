@@ -30,26 +30,55 @@ MONGO_URL='xxx' MONGO_OPLOG_URL='xxx UNIVERSE_I18N_LOCALES=all meteor run --sett
 
 ## setting file
 
-```js
+``` json
 {
-"coenv": "prod",
-"environment": "production",
-"pushapiKey":"",
-"module":"co2",
-"endpoint":"",
-"mailgunpubkey":"",
-"public":{
-"module":"co2",
-"mapbox": "",
-"googlekey": "",
-"endpoint":"",
-"urlimage":"",
-"remoteUrl": "",
-"assetPath": "",
-"scope":{
-      "_id":"",
-      "type":""
-}
-}
+  "coenv": "prod",
+  "environment": "production",
+  "pushapiKey": "",
+  "module": "co2",
+  "endpoint": "",
+  "mailgunpubkey": "",
+  "rocketchat": {
+    "host": "",
+    "userId": "",
+    "email": "",
+    "password": "",
+    "token": ""
+  },
+  "mailSetting": {
+    "dev": {
+      "to": "",
+      "from": "",
+      "protocol": "smtp",
+      "username": "",
+      "password": "",
+      "host": "",
+      "port": "2525"
+    },
+    "prod": {
+      "from": "",
+      "protocol": "smtps",
+      "username": "",
+      "password": "",
+      "host": "",
+      "port": "465"
+    }
+  },
+  "ocecoApiToken": "",
+  "public": {
+    "native": {
+      "appleItunesAppId": "",
+      "appleTeamId": "",
+      "appleBundleId": "",
+      "googlePlayAppId": ""
+    },
+    "module": "co2",
+    "mapbox": "",
+    "googlekey": "",
+    "endpoint": "",
+    "urlimage": "",
+    "remoteUrl": "",
+    "assetPath": ""
+  }
 }
 ```
