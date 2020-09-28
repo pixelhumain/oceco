@@ -1,7 +1,11 @@
+/* eslint-disable meteor/no-session */
+/* global Template Session $ */
+/* global IonHeaderBar Platform */
+// eslint-disable-next-line no-global-assign
 IonHeaderBar = {
-  alignTitle: function () {
-    var align = this.data.alignTitle || 'center';
-    var $title = this.$('.title');
+  alignTitle () {
+    const align = this.data.alignTitle || 'center';
+    const $title = this.$('.title');
 
     if (Platform.isAndroid() && !this.alignTitle) {
       $title.addClass('title-left');
@@ -17,28 +21,28 @@ IonHeaderBar = {
     }
   },
 
-  positionTitle: function () {
-    var $title = this.$('.title');
-    var $leftButton = $('.bar.button.pull-left');
-    var $rightButton = $('.bar.button.pull-right');
+  positionTitle () {
+    const $title = this.$('.title');
+    const $leftButton = $('.bar.button.pull-left');
+    const $rightButton = $('.bar.button.pull-right');
 
     // Find out which button is wider,
     // use that to offset the title on both sides
-    var leftButtonWidth = 0;
-    var rightButtonWidth = 0;
+    let leftButtonWidth = 0;
+    let rightButtonWidth = 0;
     if ($leftButton.length) {
-      $leftButton.each(function(index, element){
-        leftButtonWidth += $(element).outerWidth();  
-      });  
+      $leftButton.each(function(index, element) {
+        leftButtonWidth += $(element).outerWidth();
+      });
     }
     if ($rightButton.length) {
-      $rightButton.each(function(index, element){
-        rightButtonWidth += $(element).outerWidth();  
-      });  
+      $rightButton.each(function(index, element) {
+        rightButtonWidth += $(element).outerWidth();
+      });
     }
 
     // If we're on Android, we only care about the left button
-    var margin;
+    let margin;
     if (Platform.isAndroid()) {
       margin = leftButtonWidth;
     } else {
@@ -46,26 +50,26 @@ IonHeaderBar = {
     }
     $title.css('left', margin);
     $title.css('right', margin);
-  }
+  },
 };
 
-Template.ionHeaderBar.created = function () {
+Template.ionHeaderBar.onCreated(function () {
   this.data = this.data || {};
-};
+});
 
-Template.ionHeaderBar.rendered = function () {
+Template.ionHeaderBar.onRendered(function () {
   Session.set('hasHeader', true);
   IonHeaderBar.alignTitle.call(this);
   IonHeaderBar.positionTitle.call(this);
-};
+});
 
-Template.ionHeaderBar.destroyed = function () {
+Template.ionHeaderBar.onDestroyed(function () {
   Session.set('hasHeader', false);
-};
+});
 
 Template.ionHeaderBar.helpers({
-  classes: function () {
-    var classes = ['bar', 'bar-header'];
+  classes () {
+    const classes = ['bar', 'bar-header'];
 
     if (this.class) {
       classes.push(this.class);
@@ -74,5 +78,5 @@ Template.ionHeaderBar.helpers({
     }
 
     return classes.join(' ');
-  }
+  },
 });

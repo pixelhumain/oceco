@@ -9,7 +9,6 @@ import { Meteor } from 'meteor/meteor';
 import { Push } from 'meteor/raix:push';
 import { Router } from 'meteor/iron:router';
 import { Tracker } from 'meteor/tracker';
-// import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 
 import { ActivityStream } from '../../api/activitystream.js';
@@ -182,7 +181,7 @@ Tracker.autorun(() => {
       } else if (Meteor.isCordova) {
         Push.setBadge(Counter.get(`notifications.${Meteor.userId()}.Unseen`));
       } else {
-        // console.log(Counts.get(`notifications.${Meteor.userId()}.Unseen`));
+        // web
       }
     }
   }

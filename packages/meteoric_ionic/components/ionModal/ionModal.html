@@ -4,7 +4,7 @@
       <div class="{{classes}}">
 
         {{#if customTemplate}}
-          {{> UI.contentBlock}}
+          {{> Template.contentBlock}}
         {{else}}
           <div class="{{barClass}}">
             <h2 class="{{titleClass}}">{{title}}</h2>
@@ -15,7 +15,7 @@
             {{/if}}
           </div>
           <div class="content has-header overflow-scroll">
-            {{> UI.contentBlock}}
+            {{> Template.contentBlock}}
           </div>
         {{/if}}
 

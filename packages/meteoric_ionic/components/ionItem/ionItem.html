@@ -1,11 +1,11 @@
 <template name="ionItem">
   {{#if isAnchor}}
     <a class="{{itemClasses}}" href="{{url}}" id="{{idAttribute}}" target="{{target}}">
-      {{> UI.contentBlock}}
+      {{> Template.contentBlock}}
     </a>
   {{else}}
     <div class="{{itemClasses}}" id="{{idAttribute}}">
-      {{> UI.contentBlock}}
+      {{> Template.contentBlock}}
     </div>
   {{/if}}
 </template>

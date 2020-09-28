@@ -1,14 +1,16 @@
-Template.ionSubfooterBar.rendered = function () {
+/* eslint-disable meteor/no-session */
+/* global Template Session */
+Template.ionSubfooterBar.onRendered(function () {
   Session.set('hasSubfooter', true);
-};
+});
 
-Template.ionSubfooterBar.destroyed = function () {
+Template.ionSubfooterBar.onDestroyed(function () {
   Session.set('hasSubfooter', false);
-};
+});
 
 Template.ionSubfooterBar.helpers({
-  classes: function () {
-    var classes = ['bar', 'bar-subfooter'];
+  classes () {
+    const classes = ['bar', 'bar-subfooter'];
 
     if (this.class) {
       classes.push(this.class);
@@ -17,5 +19,5 @@ Template.ionSubfooterBar.helpers({
     }
 
     return classes.join(' ');
-  }
+  },
 });

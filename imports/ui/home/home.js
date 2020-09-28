@@ -93,7 +93,8 @@ Template.searchActions.onRendered(function () {
   wrap.on('scroll', function (e) {
     if (this.scrollTop > 147) {
       wrap.addClass('fix-search');
-    } else {
+    }
+    if (this.scrollTop < 82) {
       wrap.removeClass('fix-search');
     }
   });

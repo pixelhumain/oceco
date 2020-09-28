@@ -3,7 +3,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
-// import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 
 import { Events } from './events.js';

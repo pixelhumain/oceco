@@ -57,7 +57,7 @@ sha@1.0.9
 communecter:mapbox@2.2.3_3
 raix:push@=3.1.0-pre.1
 djabatav:geolocation-plus
-tmeasday:publish-counts
+#tmeasday:publish-counts
 reactive-var@1.0.11
 standard-minifier-css@1.6.1
 standard-minifier-js@2.6.0
