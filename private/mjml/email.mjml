@@ -40,8 +40,8 @@
         
         <mj-divider border-color="#E33551"></mj-divider>
         
-        <mj-button font-family="Raleway, Arial" background-color="#E33551" color="white" href="http://www.oce.co.tools">
-          http://www.oce.co.tools
+        <mj-button font-family="Raleway, Arial" background-color="#E33551" color="white" href="https://www.oce.co.tools">
+          https://www.oce.co.tools
          </mj-button>
         
       </mj-column>
