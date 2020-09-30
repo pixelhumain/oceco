@@ -39,15 +39,25 @@
         <mj-spacer height="30px" />
         
         <mj-divider border-color="#E33551"></mj-divider>
+
         
         <mj-text font-size="12px" color="#324553" font-family="Raleway, Arial">
         <strong>Oceco application</strong> : <a href="{{ocecoUrl}}">web</a>, <a href="{{ocecoUrl}}" title="Progressive web app">PWA</a>, <a href="https://play.google.com/store/apps/details?id=org.communecter.oceco&hl=fr">android</a> et ios (en cours)
         </mj-text>
+
+        <mj-text font-size="14px" color="#324553" font-family="Raleway, Arial">
+         Pour désactiver les notifications par email ou mobile connecter vous à <a href="{{ocecoUrl}}">oceco</a> et cliquer sur ce <a href="{{ocecoUrl}}oceco-citoyen/{{userId}}/edit">lien</a> pour arriver au réglage de l'envoie des notifications par email
+         </mj-text>
         
         <mj-button font-family="Raleway, Arial" background-color="#E33551" color="white" href="{{ocecoUrl}}">
           {{ocecoUrl}}
          </mj-button>
         
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+         
       </mj-column>
     </mj-section>
   </mj-body>

@@ -11,7 +11,7 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { ActivityStream } from '../../api/activitystream.js';
 
 // submanager
-// import { singleSubs } from '../../api/client/subsmanager.js';
+import { notificationsSubs } from '../../api/client/subsmanager.js';
 
 import './notifications.html';
 
@@ -25,7 +25,7 @@ Template.notifications.onCreated(function () {
 
   self.autorun(function() {
     if (pageSession.get('limit')) {
-      const handle = Meteor.subscribe('notificationsUser', pageSession.get('limit'));
+      const handle = notificationsSubs.subscribe('notificationsUser', pageSession.get('limit'));
       const handleCount = Meteor.subscribe('notificationsCountUser');
       self.ready.set(handle.ready() && handleCount.ready());
     }

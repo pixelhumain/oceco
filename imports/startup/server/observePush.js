@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable object-shorthand */
 /* eslint-disable no-shadow */
 /* eslint-disable no-var */
 /* eslint-disable vars-on-top */
@@ -6,6 +6,8 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Push } from 'meteor/raix:push';
 import MJML from 'meteor/djabatav:mjml';
+import { Jobs } from 'meteor/wildhart:jobs';
+import { Mongo } from 'meteor/mongo';
 
 import { ActivityStream } from '../../api/activitystream.js';
 import { notifyDisplay } from '../../api/helpers.js';
@@ -57,9 +59,9 @@ const pushUser = (title, text, payload, query, badge) => {
 
 const pushEmail = (title, text, payload, query) => {
   const citoyensListEmail = Citoyens.find({ _id: new Mongo.ObjectID(query.userId) }, { fields: { email: 1, name: 1, oceco: 1 } });
-  const emailTpl = Assets.getText('mjml/email.mjml');
+  const emailTpl = Assets.getText('mjml/notification.mjml');
   citoyensListEmail.forEach((citoyen) => {
-    const notificationEmail = (citoyen && !citoyen.oceco) ? true : citoyen.oceco.notificationEmail;
+    const notificationEmail = (citoyen && !citoyen.oceco) ? false : citoyen.oceco.notificationEmail;
     if (notificationEmail) {
       // console.log(citoyen.email);
       if ((Meteor.isProduction && citoyen.email) || (Meteor.isDevelopment && (citoyen.email === 'thomas.craipeau@gmail.com'))) {
@@ -69,11 +71,13 @@ const pushEmail = (title, text, payload, query) => {
         email.helpers({
           message: text,
           name: citoyen.name,
+          userId: citoyen._id._str,
           signature: payload.target.name,
           subject: title,
           scope: 'notifications',
           scopeName: 'Voir les notifications',
-          scopeUrl: Meteor.absoluteUrl('/notifications'),
+          scopeUrl: Meteor.absoluteUrl('notifications'),
+          ocecoUrl: Meteor.absoluteUrl(),
         });
 
         const options = {};
@@ -87,20 +91,93 @@ const pushEmail = (title, text, payload, query) => {
           options.from = Meteor.settings.mailSetting.prod.from;
           options.to = citoyen.email;
         }
-        Meteor.defer(() => {
-          try {
-            email.send(options);
-          } catch (e) {
-            // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
-            throw log.error(`Problem sending email notif ${title} to ${options.to}`, e);
-          }
-        });
+        // Meteor.defer(() => {
+        try {
+          email.send(options);
+
+        } catch (e) {
+          // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
+          throw log.error(`Problem sending email notif ${title} to ${options.to}`, e);
+        }
+        // });
       }
     }
   });
 };
 
-Meteor.startup(function() {
+Jobs.register({
+  sendEmail: function (options, helpers, logEmailId) {
+    // eslint-disable-next-line no-undef
+    const emailTpl = Assets.getText('mjml/email.mjml');
+    // eslint-disable-next-line no-undef
+    const email = new MJML(emailTpl);
+    email.helpers(helpers);
+    try {
+      email.send(options);
+    } catch (e) {
+      // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
+      throw log.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
+    }
+    this.success();
+  },
+  pushEmail: function (notification) {
+    if (notification && notification.notify && notification.notify.id && notification.notify.displayName) {
+      const title = 'notification';
+      // const text = notification.notify.displayName;
+
+      const notifsId = _.map(notification.notify.id, function (ids, key) {
+        return key;
+      });
+      // verifier que présent dans Meteor.users
+      const notifsIdMeteor = Meteor.users.find({ _id: { $in: notifsId } }, { fields: { _id: 1 } }).map(user => user._id);
+      // console.log(notifsIdMeteor);
+      if (notifsIdMeteor && notifsIdMeteor.length > 0) {
+        _.each(notifsIdMeteor, function (value) {
+          const query = {};
+          query.userId = value;
+          const lang = Meteor.users.findOne({ _id: value }, { fields: { 'profile.language': 1 } });
+          const text = lang && lang.profile.language ? notifyDisplay(notification.notify, lang.profile.language) : notifyDisplay(notification.notify, 'en');
+          const textTarget = `${text} - ${notification.target.name}`;
+          const payload = JSON.parse(JSON.stringify(notification));
+          // console.log({ value, badge });
+          // console.log(payload);
+          pushEmail(title, textTarget, payload, query);
+        }, title, notification);
+      }
+    }
+    this.success();
+  },
+  pushMobile: function (notification) {
+    if (notification && notification.notify && notification.notify.id && notification.notify.displayName) {
+      const title = 'notification';
+      // const text = notification.notify.displayName;
+
+      const notifsId = _.map(notification.notify.id, function (ids, key) {
+        return key;
+      });
+      // verifier que présent dans Meteor.users
+      const notifsIdMeteor = Meteor.users.find({ _id: { $in: notifsId } }, { fields: { _id: 1 } }).map(user => user._id);
+      // console.log(notifsIdMeteor);
+      if (notifsIdMeteor && notifsIdMeteor.length > 0) {
+        _.each(notifsIdMeteor, function (value) {
+          const query = {};
+          query.userId = value;
+          const lang = Meteor.users.findOne({ _id: value }, { fields: { 'profile.language': 1 } });
+          const text = lang && lang.profile.language ? notifyDisplay(notification.notify, lang.profile.language) : notifyDisplay(notification.notify, 'en');
+          const textTarget = `${text} - ${notification.target.name}`;
+          const payload = JSON.parse(JSON.stringify(notification));
+          const badge = ActivityStream.api.queryUnseen(value).count();
+          // console.log({ value, badge });
+          // console.log(payload);
+          pushUser(title, textTarget, payload, query, badge);
+        }, title, notification);
+      }
+    }
+    this.success();
+  },
+});
+
+/* Meteor.startup(function() {
   const query = { type: 'oceco' };
   query.created = { $gt: new Date() };
   const options = {};
@@ -147,4 +224,4 @@ Meteor.startup(function() {
     },
   },
   );
-});
+}); */

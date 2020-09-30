@@ -55,6 +55,7 @@ meteorhacks:subs-manager
 sha@1.0.9
 #dschulz:jquery-qrcode
 communecter:mapbox@2.2.3_3
+raix:eventstate@=0.0.4
 raix:push@=3.1.0-pre.1
 djabatav:geolocation-plus
 #tmeasday:publish-counts
@@ -90,3 +91,4 @@ djabatav:mjml
 #zodern:hide-production-sourcemaps
 ostrio:logger
 ostrio:loggermongo
+wildhart:jobs
