@@ -61,7 +61,7 @@ const pushEmail = (title, text, payload, query) => {
   const citoyensListEmail = Citoyens.find({ _id: new Mongo.ObjectID(query.userId) }, { fields: { email: 1, name: 1, oceco: 1 } });
   const emailTpl = Assets.getText('mjml/notification.mjml');
   citoyensListEmail.forEach((citoyen) => {
-    const notificationEmail = (citoyen && !citoyen.oceco) ? true : citoyen.oceco.notificationEmail;
+    const notificationEmail = (citoyen && !citoyen.oceco) ? false : citoyen.oceco.notificationEmail;
     if (notificationEmail) {
       // console.log(citoyen.email);
       if ((Meteor.isProduction && citoyen.email) || (Meteor.isDevelopment && (citoyen.email === 'thomas.craipeau@gmail.com'))) {
@@ -94,6 +94,7 @@ const pushEmail = (title, text, payload, query) => {
         // Meteor.defer(() => {
         try {
           email.send(options);
+
         } catch (e) {
           // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
           throw log.error(`Problem sending email notif ${title} to ${options.to}`, e);
