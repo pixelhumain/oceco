@@ -2414,21 +2414,41 @@ indexMax:20 */
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    const notif = {};
+    /* const notif = {};
     notif.action = 'read';
     notif.all = true;
     const retour = apiCommunecter.postPixel('co2/notification', 'update', notif);
-    return retour;
+    return retour; */
+
+    // update que les notification oceco
+    const query = {};
+    query[`notify.id.${this.userId}.isUnread`] = { $exists: true };
+    query.type = 'oceco';
+    const set = {};
+    set.$unset = {};
+    set.$unset[`notify.id.${this.userId}.isUnread`] = '';
+    const update = ActivityStream.update(query, set, { multi: true });
+    return update;
   },
   allSeen () {
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    const notif = {};
+    /* const notif = {};
     notif.action = 'seen';
     notif.all = true;
     const retour = apiCommunecter.postPixel('co2/notification', 'update', notif);
-    return retour;
+    return retour; */
+
+    // update que les notification oceco
+    const query = {};
+    query[`notify.id.${this.userId}.isUnseen`] = { $exists: true };
+    query.type = 'oceco';
+    const set = {};
+    set.$unset = {};
+    set.$unset[`notify.id.${this.userId}.isUnseen`] = '';
+    const update = ActivityStream.update(query, set, { multi: true });
+    return update;
   },
   isEmailValid(address) {
     check(address, String);
