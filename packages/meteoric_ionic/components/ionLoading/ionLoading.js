@@ -1,9 +1,10 @@
+/* eslint-disable meteor/no-zero-timeout */
 /* global Template Meteor Blaze _ $ */
 // eslint-disable-next-line no-unused-vars
 /* global IonLoading IonBackdrop */
 // eslint-disable-next-line no-global-assign
 IonLoading = {
-  show (userOptions) {
+  show(userOptions) {
     const options = _.extend({
       delay: 0,
       duration: null,
@@ -35,20 +36,21 @@ IonLoading = {
     }
   },
 
-  hide () {
+  hide() {
     if (this.view) {
       const $loadingEl = $(this.view.firstNode());
+
       $loadingEl.removeClass('active');
 
-      Meteor.defer(function () {
+      Meteor.setTimeout(function () {
         IonBackdrop.release();
         $loadingEl.removeClass('visible');
         Blaze.remove(this.view);
         this.view = null;
-      }.bind(this));
+      }.bind(this), 0);
     }
-    Meteor.defer(function () {
+    Meteor.setTimeout(function () {
       $('.loading-container').remove();
-    });
+    }, 0);
   },
 };

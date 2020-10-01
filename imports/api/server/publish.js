@@ -142,7 +142,7 @@ Meteor.publish('notificationsScope', function(scope, scopeId) {
     counterUnread,
     counterUnseenAsk,
     collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).listNotifications(this.userId),
-  ]
+  ];
 });
 
 Meteor.publish('getcitiesbylatlng', function(latlng) {
