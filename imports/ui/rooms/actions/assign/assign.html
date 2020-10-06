@@ -16,19 +16,19 @@
   {{#ionContent}}
     <div class="list">
       <div class="item item-divider">
-        <i class="icon ion-ios-people"></i> {{__ "members"}} <span class="badge badge-dark">{{organizations.countMembers}}</span>
+        <i class="icon ion-ios-people"></i> {{__ "members"}} <span class="badge badge-dark">{{countMembers search}}</span>
       </div>
       <label class="item item-input">
         <i class="icon ion-search placeholder-icon"></i>
         <input id="search" type="text" placeholder="Chercher un membre..." value="{{search}}">
       </label>
       {{#transition in="zoomIn" out="bounceOut"}}
-      {{#each organizations.listMembersActions actions._id._str search}}
+      {{#each listAssignActions search}}
       <div class="item item-avatar item-button-right animated out">
         {{> imgDoc}}
         <h2><a href="{{pathFor 'detailList' _id=_id._str scope='citoyens'}}" class="dark">{{name}}</a></h2>
         {{#if assign}}
-        <button class="button button-positive unassignmember-js">
+        <button class="button button-dark unassignmember-js">
           <i class="icon fa fa-unlink"></i>
         </button>
         {{else}}

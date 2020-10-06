@@ -44,7 +44,30 @@
         {{__ 'author'}} : <a href="{{pathFor 'detailList' _id=creatorProfile._id._str scope='citoyens'}}" class="dark">{{creatorProfile.name}}</a>
       </h2>
     </div>
+
+    {{#if ../../isAdmin}}
+    {{#if equals status 'todo'}}
+    <div class="button-bar bar-dark">
+      <button class="button button-small photo-link-action"><i class="icon ion-camera"></i> Ajouter Image</button>
+    </div>
+    {{> scopeFileUploadActions}}
+    {{/if}}
+    {{/if}}
+
     {{> statusActions status=status}}
+
+    {{#if photoActionsAlbums}}
+    <div class="item item-body" data-snap-ignore="true">
+      {{#ionSlideBox}}
+      {{#each photoActionsAlbums}}
+      {{#ionSlide class="light-bg"}}
+      <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/{{name}}" class="full-image photo-viewer" />
+      {{/ionSlide}}
+      {{/each}}
+      {{/ionSlideBox}}
+    </div>
+    {{/if}}
+    
     
       {{#if isActionDepense}}
       <div class="item item-text-wrap">
@@ -95,21 +118,20 @@
 
   </div>
 
-    {{#if equals status 'todo'}}
-
-    {{else if equals status 'disabled'}}
-
-    {{else if equals status 'done'}}
-
-    {{else if equals status 'closed'}}
-
-    {{/if}}
 
   {{#if nequals parentType 'citoyens'}}
   <div class="list padding">
     <div class="item item-divider">
     <i class="fa fa-group"></i> {{__ "dda.actions.theytakeaction"}}
     </div>
+    {{#if equals status 'todo'}}
+    {{#if ../../isAdmin}}
+    <div class="button-bar bar-dark">
+      <a href="{{pathFor 'messagesActions' _id=orgaCibleId scope='organizations' roomId=idParentRoom actionId=_id._str}}"
+        class="button button-small"><i class="fa fa-envelope"></i> Envoyer un e-mail aux participants</a>
+    </div>
+    {{/if}}
+    {{/if}}
 
     {{#each contributor in listContributors}}
     <div class="item item-button-right {{#if contributor.profilThumbImageUrl}}item-avatar{{/if}}">
@@ -186,18 +208,17 @@
 {{#if equals status 'todo'}}
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="fa fa-pencil"></i></a>
   {{#if nequals scope 'citoyens'}}
   <a href="{{pathFor 'actionsAssign' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="ion-ios-people"></i> Assigner</a>
   {{/if}}
   
   {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
   {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-thumbs-up" class="button-small action-action-js"}}
-  <a href="{{pathFor 'messagesActions' _id=orgaCibleId scope='organizations' roomId=roomId actionId=actionId}}" class="button button-small">{{> ionIcon icon="email"}}</a>
 </div>
 {{else if isCreator}}
 <div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="fa fa-pencil"></i></a>
   {{> buttonActionItem action="disabled" texte="Annuler" icon="fa fa-times" class="button-small action-action-js"}}
   {{> buttonActionItem action="done" texte=(__ "dda.actions.buttons.close") icon="fa fa-thumbs-up" class="button-small action-action-js"}}
 </div>
@@ -213,13 +234,13 @@
 {{else if equals status 'done'}}
 {{#if isAdmin}}
 <div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="fa fa-pencil"></i></a>
 {{> buttonActionItem action="todo" texte="Réouvrir" icon="fa fa-door-open" class="button-small action-action-js"}}
 </div>
 
 {{else if isCreator}}
 <div class="button-bar bar-positive">
-  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="icon fa fa-pencil"></i></a>
+  <a href="{{pathFor 'actionsEdit' _id=_id scope=scope roomId=roomId actionId=actionId}}" class="button button-small"><i class="fa fa-pencil"></i></a>
 </div>
 {{/if}}
 {{/if}}
@@ -420,4 +441,10 @@
 
 {{/if}}
 
+</template>
+
+<template name="scopeFileUploadActions">
+  <form>
+    <input type="file" id="file-upload-action" accept="image/*" style="display: block; opacity: 0;width:0px;height:0px;">
+  </form>
 </template>

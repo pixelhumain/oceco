@@ -12,6 +12,7 @@ import { baseSchema } from './schema.js';
 import { Events } from './events.js';
 import { Projects } from './projects.js';
 import { Organizations } from './organizations.js';
+import { Documents } from './documents.js';
 import { Citoyens } from './citoyens.js';
 import { Comments } from './comments.js';
 import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper, arrayLinkProperNoObject, nameToCollection } from './helpers.js';
@@ -297,6 +298,13 @@ if (Meteor.isClient) {
 }
 
 Actions.helpers({
+  photoActionsAlbums() {
+    if (this.media && this.media.images) {
+      const arrayId = this.media.images.map(_id => new Mongo.ObjectID(_id));
+      return Documents.find({ _id: { $in: arrayId } });
+    }
+    return undefined;
+  },
   isVisibleFields () {
     return true;
   },

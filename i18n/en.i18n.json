@@ -227,6 +227,7 @@
 "who_commented_on_proposal_what_in_where": "__who__ commented on proposal __what__ in __where__",
 "who_added_comments_on_proposal_what_in_where": "__who__ added comments on proposal __what__ in __where__",
 "who_commented_on_action_what_in_where": "__who__ commented on action __what__ in __where__",
+"who_commented_on_action_what_comment_in_where": "__who__ commented on action __what__ __comment__ in __where__",
 "who_added_comments_on_action_what_in_where": "__who__ added comments on action __what__ in __where__",
 "who_commented_on_discussion_what_in_where": "__who__ commented on discussion __what__ in __where__",
 "who_added_comments_on_discussion_what_in_where": "__who__ added comments on discussion __what__ in __where__",

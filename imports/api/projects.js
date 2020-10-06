@@ -19,7 +19,7 @@ import { Events } from './events.js';
 import { Rooms } from './rooms.js';
 import { Actions } from './actions.js';
 import { ActivityStream } from './activitystream.js';
-import { searchQuery, searchQuerySort, queryLink, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions } from './helpers.js';
+import { searchQuery, searchQuerySort, queryLink, queryLinkType, arrayLinkParent, arrayOrganizerParent, isAdminArray, queryLinkToBeValidated, queryOptions } from './helpers.js';
 
 export const Projects = new Mongo.Collection('projects', { idGeneration: 'MONGO' });
 
@@ -410,6 +410,27 @@ Projects.helpers({
     if (this.links && this.links.contributors) {
       const query = queryLink(this.links.contributors, search);
       return Citoyens.find(query, queryOptions);
+    }
+    return false;
+  },
+  listContributorsActions(actionId, search) {
+    if (this.links && this.links.contributors) {
+      const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+      const query = queryLinkType(this.links.contributors, search, 'citoyens');
+      const options = {};
+      options.transform = (item) => {
+        item.assign = actionOne && actionOne.isContributors(item._id._str) ? 1 : 0;
+        return item;
+      };
+      options.sort = {};
+      options.sort.assign = -1;
+      options.sort.name = 1;
+      options.fields = {};
+      options.fields[`links.projects.${this._id._str}`] = 1;
+      options.fields.name = 1;
+      options.fields.assign = 1;
+      options.fields.profilThumbImageUrl = 1;
+      return Citoyens.find(query, options);
     }
     return false;
   },

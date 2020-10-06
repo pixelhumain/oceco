@@ -9,6 +9,7 @@ import { Mongo } from 'meteor/mongo';
 import { Router } from 'meteor/iron:router';
 import i18n from 'meteor/universe:i18n';
 import { IonPopup } from 'meteor/meteoric:ionic';
+import { MeteorCameraUI } from 'meteor/aboire:camera-ui';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
 
@@ -148,6 +149,114 @@ Template.detailViewActions.events({
     event.preventDefault();
     searchAction.set('search', `#${this}`);
     Router.go('home');
+  },
+  'click .photo-link-action'(event, instance) {
+    const scope = pageSession.get('scope');
+    const scopeId = pageSession.get('scopeId');
+    const actionId = pageSession.get('actionId');
+
+    if (Meteor.isDesktop) {
+      instance.$('#file-upload-action').trigger('click');
+    } else if (Meteor.isCordova) {
+      const options = {
+        width: 640,
+        height: 480,
+        quality: 75,
+      };
+
+      const successCallback = () => {
+        IonPopup.confirm({
+          title: i18n.__('Photo'),
+          template: i18n.__('Do you want to add another photo to this news'),
+          onOk() {
+            MeteorCameraUI.getPicture(options, function (error, data) {
+              if (!error) {
+                const str = `${+new Date() + Math.floor((Math.random() * 100) + 1)}.jpg`;
+                Meteor.call('photoActions', data, str, scope, scopeId, actionId, function (errorCall, result) {
+                  if (!errorCall) {
+                    successCallback();
+                  } else {
+                    // console.log('error',error);
+                  }
+                });
+              }
+            });
+          },
+          onCancel() {
+            Router.go('actionsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId'), actionId: pageSession.get('actionId') });
+          },
+          cancelText: i18n.__('finish'),
+          okText: i18n.__('other picture'),
+        });
+      };
+
+      MeteorCameraUI.getPicture(options, function (error, data) {
+        if (!error) {
+          const str = `${+new Date() + Math.floor((Math.random() * 100) + 1)}.jpg`;
+          Meteor.call('photoActions', data, str, scope, scopeId, actionId, function (errorCall) {
+            if (!errorCall) {
+              successCallback();
+            } else {
+              // console.log('error',error);
+            }
+          });
+        }
+      });
+    } else {
+      instance.$('#file-upload-action').trigger('click');
+    }
+  },
+  'change #file-upload-action'(event, instance) {
+    event.preventDefault();
+    const scope = pageSession.get('scope');
+    const scopeId = pageSession.get('scopeId');
+    const actionId = pageSession.get('actionId');
+
+    function successCallback() {
+      IonPopup.confirm({
+        title: i18n.__('Photo'),
+        template: i18n.__('Do you want to add another photo to this news'),
+        onOk() {
+          instance.$('#file-upload-action').trigger('click');
+        },
+        onCancel() {
+          Router.go('actionsDetail', { _id: pageSession.get('scopeId'), scope: pageSession.get('scope'), roomId: pageSession.get('roomId'), actionId: pageSession.get('actionId') });
+        },
+        cancelText: i18n.__('finish'),
+        okText: i18n.__('other picture'),
+      });
+    }
+
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      _.each(instance.find('#file-upload-action').files, function (file) {
+        if (file.size > 1) {
+          const reader = new FileReader();
+          reader.onload = function () {
+            const str = file.name;
+            const dataURI = reader.result;
+            Meteor.call('photoActions', dataURI, str, scope, scopeId, actionId, function (error, result) {
+              if (!error) {
+                successCallback();
+              } else {
+                // console.log('error',error);
+              }
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  },
+  'click .photo-viewer'(event) {
+    event.preventDefault();
+    if (this.moduleId) {
+      const url = `${Meteor.settings.public.urlimage}/upload/${this.moduleId}/${this.folder}/${this.name}`;
+      if (Meteor.isCordova) {
+        PhotoViewer.show(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
   },
 });
 

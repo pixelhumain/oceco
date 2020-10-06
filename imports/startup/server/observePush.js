@@ -18,6 +18,10 @@ import log from '../../startup/server/logger.js';
 
 if (Meteor.isDevelopment) {
   Push.debug = true;
+} else {
+  Jobs.configure({
+    log: false,
+  });
 }
 
 const pushUser = (title, text, payload, query, badge) => {

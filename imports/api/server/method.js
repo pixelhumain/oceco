@@ -1605,6 +1605,8 @@ indexMax:20 */
     }
     const retour = apiCommunecter.postPixel('co2/comment', 'save', doc);
 
+    // console.log(retour);
+
     if (doc.contextType === 'actions') {
       // notif
       const actionOne = Actions.findOne({
@@ -1619,7 +1621,7 @@ indexMax:20 */
       // author
       notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
       // object
-      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom, comment: doc.text };
 
       ActivityStream.api.add(notif, 'addComment', 'isActionMembers');
       ActivityStream.api.add(notif, 'addComment', 'isAdmin');
@@ -2032,6 +2034,76 @@ indexMax:20 */
       /* } else {
         throw new Meteor.Error('insertDocument error');
       } */
+    } else {
+      throw new Meteor.Error('postUploadPixel error');
+    }
+  },
+  photoActions(photo, str, type, idType, actionId) {
+    check(str, String);
+    check(type, String);
+    check(idType, String);
+    check(actionId, String);
+    check(type, Match.Where(function (name) {
+      return _.contains(['events', 'projects', 'organizations', 'citoyens'], name);
+    }));
+
+    const collectionScope = nameToCollection(type);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(idType),
+    });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('scope-not-exist');
+    }
+
+    // verifier droit
+    if (type === 'events') {
+      // console.log('event is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized event');
+      }
+    } else if (type === 'projects') {
+      // console.log('project is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized project');
+      }
+    } else if (type === 'organizations') {
+      // console.log('organization is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized organizations');
+      }
+    } else if (type === 'citoyens') {
+      // console.log('citoyen is admin');
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized citoyen');
+      }
+    } else {
+      throw new Meteor.Error('not-authorized all');
+    }
+
+    const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+    if (!actionOne) {
+      throw new Meteor.Error('action-no-exit');
+    }
+
+    const doc = apiCommunecter.postUploadSavePixel(type, idType, 'newsImage', photo, str, 'image', 'slider');
+
+    if (doc) {
+      if (actionOne && actionOne.media && actionOne.media.images && actionOne.media.images.length > 0) {
+        // console.log(actionOne.media.images.length);
+        const countImages = actionOne.media.images.length + 1;
+        Actions.update({ _id: new Mongo.ObjectID(actionId) }, { $set: { 'media.countImages': countImages.toString() }, $push: { 'media.images': doc.id.$id } });
+        return { photoret: doc.id.$id, actionId };
+      }
+      const media = {};
+      media.type = 'gallery_images';
+      media.countImages = '1';
+      media.images = [doc.id.$id];
+      Actions.update({ _id: new Mongo.ObjectID(actionId) }, { $set: { media } });
+      return { photoret: doc.id.$id, actionId };
     } else {
       throw new Meteor.Error('postUploadPixel error');
     }
@@ -2811,7 +2883,7 @@ export const insertAction = new ValidatedMethod({
     });
 
     if (!scopeOne) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('scope-not-exist');
     }
 
     let orgaId;
@@ -2866,8 +2938,9 @@ export const insertAction = new ValidatedMethod({
     //
     }
     room = room || Rooms.findOne({ parentId: doc.parentId });
-    if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
-      // console.log('citoyen is scope');
+
+    /* if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
+      console.log('citoyen is scope');
       if (room.roles && room.roles.length > 0) {
         const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId).split(',') : null;
         if (roles && room.roles.some(role => roles.includes(role))) {
@@ -2878,36 +2951,37 @@ export const insertAction = new ValidatedMethod({
           throw new Meteor.Error('not-authorized role');
         }
       }
-    } else {
-      // si event difficile de voir le lien admin docn je remonte
-      // eslint-disable-next-line no-lonely-if
-      if (doc.parentType === 'events') {
-        // console.log('event is admin');
+    } else { */
 
-        if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized event');
-        }
-      } else if (doc.parentType === 'projects') {
-        // console.log('project is admin');
+    // si event difficile de voir le lien admin docn je remonte
+    // eslint-disable-next-line no-lonely-if
+    if (doc.parentType === 'events') {
+      // console.log('event is admin');
 
-        if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized project');
-        }
-      } else if (doc.parentType === 'organizations') {
-        // console.log('organization is admin');
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized event');
+      }
+    } else if (doc.parentType === 'projects') {
+      // console.log('project is admin');
 
-        if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized organizations');
-        }
-      } else if (doc.parentType === 'citoyens') {
-        // console.log('citoyen is admin');
-        /* if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized citoyen');
-        } */
-      } else {
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized project');
+      }
+    } else if (doc.parentType === 'organizations') {
+      // console.log('organization is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized organizations');
+      }
+    } else if (doc.parentType === 'citoyens') {
+      // console.log('citoyen is admin');
+      if (!(scopeOne && scopeOne.isAdmin())) {
         throw new Meteor.Error('not-authorized citoyen');
       }
+    } else {
+      throw new Meteor.Error('not-authorized all');
     }
+    // }
 
 
     let docRetour = docClean;
@@ -3607,6 +3681,30 @@ export const assignMemberActionRooms = new ValidatedMethod({
     // projects auto true
     const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) }, { fields: { pwd: 0 } });
     if (userC && parentType === 'projects') {
+      // verifier si membre orga
+      // testMembers
+      if (!userC.isScope('organizations', orgId)) {
+        const retour = Meteor.call('connectEntity', orgId, 'organizations', userC._id._str, 'member');
+        Citoyens.update({
+          _id: new Mongo.ObjectID(userC._id._str),
+        }, {
+          $unset: {
+            [`links.memberOf.${orgId}.toBeValidated`]: '',
+            [`links.memberOf.${orgId}.isInviting`]: '',
+          },
+        });
+
+        Organizations.update({
+          _id: new Mongo.ObjectID(orgId),
+        }, {
+          $unset: {
+            [`links.members.${userC._id._str}.toBeValidated`]: '',
+            [`links.members.${userC._id._str}.isInviting`]: '',
+          },
+        });
+        // todo faire email
+      }
+      //
       if (!userC.isScope('projects', actionOne.parentId)) {
         if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
           if (userC.isInviting('projects', actionOne.parentId)) {

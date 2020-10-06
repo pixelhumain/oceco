@@ -1345,7 +1345,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
       },
       children: [{
         find(action) {
-          //if (action.avatarOneUserAction()) {
+          // if (action.avatarOneUserAction()) {
           if (action && action.links && action.links.contributors) {
             const arrayContributors = arrayLinkProperNoObject(action.links.contributors);
             if (arrayContributors && arrayContributors[0]) {
@@ -1353,7 +1353,7 @@ Meteor.publishComposite('directoryListActions', function (scope, scopeId, etat) 
               return Citoyens.find({ _id: { $in: arrayAllMergeMongoId } }, { fields: { name: 1, username: 1, profilThumbImageUrl: 1 } });
             }
           }
-          //}
+          // }
         },
       }],
     },
@@ -2025,6 +2025,11 @@ Meteor.publishComposite('detailActions', function(scope, scopeId, roomId, action
                   return action.listContributors();
                 },
               },
+              {
+                find(action) {
+                  return action.photoActionsAlbums();
+                },
+              },
             ],
           },
         ],
@@ -2258,6 +2263,43 @@ Meteor.publishComposite('listMembersActions', function (scopeId, actionId) {
       },
     ],
   };
+});
+
+Meteor.publishComposite('listAssignActions', function (scopeId, actionId) {
+  check(scopeId, String);
+  check(actionId, String);
+
+  if (!this.userId) {
+    return null;
+  }
+  const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+
+  return [{
+    find() {
+      return Organizations.find({ _id: new Mongo.ObjectID(scopeId) });
+    },
+    children: [
+      {
+        find(organisation) {
+          return organisation.listMembersActions(actionId);
+        },
+      },
+    ],
+  },
+  {
+    find() {
+      if (actionOne.parentType === 'projects') {
+        return Projects.find({ _id: new Mongo.ObjectID(actionOne.parentId) });
+      }
+    },
+    children: [
+      {
+        find(project) {
+          return project.listContributorsActions(actionId);
+        },
+      },
+    ],
+  }];
 });
 
 Meteor.publishComposite('listMembersToBeValidated', function(scope, scopeId) {

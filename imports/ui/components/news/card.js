@@ -18,7 +18,7 @@ Template.scopeCard.helpers({
   listMembers() {
     // eslint-disable-next-line meteor/no-session
     return Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).membersPopMap();
-  }
+  },
 });
 
 Template.scopeBoardActions.onCreated(function () {
@@ -97,7 +97,6 @@ Template.scopeBoardUserActionsItem.helpers({
     return parseFloat(pourcentage).toFixed(2);
   },
 });
-
 
 
 Template.actionSheet.events({

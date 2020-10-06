@@ -808,6 +808,8 @@ if (Meteor.isServer) {
             if (type === 'isAdmin') {
               notificationObj.notify.id = idUsersObj;
               notificationObj.notify.displayName = '{who} commented on action {what} in {where}';
+              // notificationObj.notify.displayNameChat = '{who} commented on action {what} {comment} in {where}';
+
               notificationObj.notify.icon = 'fa-comments';
 
               notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
@@ -819,6 +821,7 @@ if (Meteor.isServer) {
               notificationObj.notify.labelArray['{whousername}'] = [author.username];
               notificationObj.notify.labelArray['{what}'] = [object.name];
               notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+              // notificationObj.notify.labelArray['{comment}'] = [object.comment];
             } else if (type === 'isActionMembers') {
               notificationObj.notify.id = idUsersObj;
               notificationObj.notify.displayName = '{who} commented on action {what} in {where}';
@@ -878,21 +881,27 @@ if (Meteor.isServer) {
           // mais en fr direct
           const text = notifyDisplay(notificationObj.notify, 'fr', false, true);
           // sous quel user je l'envoie ?
+          let attachments = null;
+          if (notificationObj.verb === 'addComment') {
+            attachments = [{
+              color: '#E33551',
+              text: object.comment,
+            }];
+          }
           Meteor.defer(() => {
             try {
-              ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text);
+              ActivityStream.api.sendRC(author.id, object.parentType, object.parentId, text, attachments);
             } catch (e) {
               // console.error(`Problem sending email ${logEmailId} to ${options.to}`, e);
               throw log.error(`Problem sending chat notif ${object.parentType} to ${object.parentId}`, e);
             }
           });
-
         }
       }
     }
   };
 
-  ActivityStream.api.sendRC = (userId, parentType, parentId, msg) => {
+  ActivityStream.api.sendRC = (userId, parentType, parentId, msg, attachments) => {
     const collectionScope = nameToCollection(parentType);
     const scopeOne = collectionScope.findOne({
       _id: new Mongo.ObjectID(parentId), 'tools.chat': { $exists: true }, slug: { $exists: true },
@@ -912,6 +921,9 @@ if (Meteor.isServer) {
     if (scopeOne) {
       const params = {};
       params.text = msg;
+      if (attachments) {
+        params.attachments = attachments;
+      }
       const retour = apiCommunecter.callRCPostMessage(scopeOne.slug, params, userId);
       return retour;
     }
