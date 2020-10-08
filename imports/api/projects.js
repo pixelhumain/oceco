@@ -466,6 +466,7 @@ Projects.helpers({
       query.endDate = {
         $gte: inputDate,
       };
+      query.status = { $exists: false };
       const options = {};
       options.sort = {
         startDate: 1,

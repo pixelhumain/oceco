@@ -1,3 +1,5 @@
+/* eslint-disable meteor/no-session */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
@@ -44,9 +46,16 @@ Template.actionsDetailComments.onCreated(function () {
     pageSession.set('roomId', template.roomId);
     pageSession.set('actionId', template.actionId);
     if (template.scope && template._id && template.roomId && template.actionId) {
-      // const handle = singleSubs.subscribe('detailActions', template.scope, template._id, template.roomId, template.actionId);
       const handle = Meteor.subscribe('actionsDetailComments', template.scope, template._id, template.roomId, template.actionId);
       if (handle.ready()) {
+        if (Organizations.find({}).count() === 2) {
+          const orgaOne = Organizations.findOne({
+            name: { $exists: false },
+          });
+          if (orgaOne && Session.get('orgaCibleId') !== orgaOne._id._str) {
+            Session.setPersistent('orgaCibleId', orgaOne._id._str);
+          }
+        }
         template.ready.set(handle.ready());
       }
     }

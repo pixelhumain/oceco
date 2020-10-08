@@ -37,6 +37,11 @@ export const notificationsSubs = new SubsManager({
   expireIn: 60,
 });
 
+export const actionsSubs = new SubsManager({
+  cacheLimit: 100,
+  expireIn: 60,
+});
+
 
 export const singleSubs = new SubsManager();
 

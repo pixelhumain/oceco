@@ -170,7 +170,7 @@
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}" class="subdued dark item-content item-text-wrap">{{action.name}}</a>
             {{#if action.parentScope}}
                 <a href="{{pathFor 'actionsList' _id=action.parentId scope=action.parentType}}"
-                    class="subdued positive item-content item-text-wrap">{{action.parentScope.name}}</a>
+                    class="subdued positive item-content item-text-wrap">{{htmlToText action.parentScope.name}}</a>
             {{/if}}
         </div>
         <div class="col-10">

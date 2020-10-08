@@ -37,7 +37,17 @@ Template.detailActions.onCreated(function() {
     pageSession.set('roomId', Router.current().params.roomId);
     pageSession.set('actionId', Router.current().params.actionId);
     const handle = Meteor.subscribe('detailActions', Router.current().params.scope, Router.current().params._id, Router.current().params.roomId, Router.current().params.actionId);
-    this.ready.set(handle.ready());
+    if (handle.ready()) {
+      if (Organizations.find({}).count() === 2) {
+        const orgaOne = Organizations.findOne({
+          name: { $exists: false },
+        });
+        if (orgaOne && Session.get('orgaCibleId') !== orgaOne._id._str) {
+          Session.setPersistent('orgaCibleId', orgaOne._id._str);
+        }
+      }
+      this.ready.set(handle.ready());
+    }
   }.bind(this));
 });
 

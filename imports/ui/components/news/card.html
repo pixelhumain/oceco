@@ -3,7 +3,7 @@
     {{#with scope}}
     <div class="item item-avatar item-text-wrap item-button-right">
       {{#if profilThumbImageUrl}}
-        <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
+        <img data-src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
       {{else}}
       {{> imgDoc imageDoc=imageDoc resized="50x50"}}
       {{/if}}
@@ -37,13 +37,13 @@
       {{#if profilImageUrl}}
       {{#if isAdmin}}
       {{#unless ../shareVisible}}
-      <a href="" class="photo-link-scope"><img src="{{urlImageCommunecter}}{{profilImageUrl}}"></a>
+      <a href="" class="photo-link-scope"><img data-src="{{urlImageCommunecter}}{{profilImageUrl}}"></a>
       {{> scopeFileUpload}}
       {{else}}
-      <img src="{{urlImageCommunecter}}{{profilImageUrl}}">
+      <img data-src="{{urlImageCommunecter}}{{profilImageUrl}}">
       {{/unless}}
       {{else}}
-      <img src="{{urlImageCommunecter}}{{profilImageUrl}}">
+      <img data-src="{{urlImageCommunecter}}{{profilImageUrl}}">
       {{/if}}
       {{else}}
       {{#if isAdmin}}
@@ -315,12 +315,12 @@
 <p>{{__ "organizer"}} :
 {{#each organizerItem in organizer}}
 {{#each organizerItemValue in organizerItem.values}}
- <a href="{{pathFor 'detailList' _id=organizerItemValue._id._str scope=organizerItem.type}}" class="positive">{{organizerItemValue.name}}</a>
+ <a href="{{pathFor 'detailList' _id=organizerItemValue._id._str scope=organizerItem.type}}" class="positive">{{htmlToText organizerItemValue.name}}</a>
 {{/each}}
 {{/each}}
 </p>
 {{else}}
-{{#if creatorProfile}}<p>{{__ "creator"}} : <a href="{{pathFor 'detailList' _id=creatorProfile._id._str scope='citoyens'}}" class="positive">{{creatorProfile.name}}</a></p>{{/if}}
+{{#if creatorProfile}}<p>{{__ "creator"}} : <a href="{{pathFor 'detailList' _id=creatorProfile._id._str scope='citoyens'}}" class="positive">{{htmlToText creatorProfile.name}}</a></p>{{/if}}
 {{/if}}
 </template>
 

@@ -1,15 +1,23 @@
-/* global Session */
+/* global Session IonPopup IonActionSheet */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
-import { IonActionSheet } from 'meteor/meteoric:ionic';
 
 import './card.html';
+import IOlazy from '../iolazyload.js';
 import { Citoyens } from '../../../api/citoyens';
 import { Organizations } from '../../../api/organizations';
+
+Template.scopeCard.onRendered(function () {
+  // eslint-disable-next-line no-new
+  new IOlazy({
+    image: 'img',
+    threshold: 1,
+  });
+});
 
 Template.scopeCard.helpers({
   preferenceTrue (value) {
@@ -158,6 +166,28 @@ Template.actionSheet.events({
         { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
         { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
       ],
+      destructiveText: 'Supprimer <i class="icon ion-trash-a"></i>',
+      destructiveButtonClicked() {
+        // console.log('Edit!');
+        IonPopup.confirm({
+          title: 'Supprimer',
+          template: 'Supprimer cette évènement ?',
+          onOk() {
+            Meteor.call('deleteElementAdmin', { scope: 'events', scopeId: Router.current().params._id }, (error) => {
+              if (error) {
+                IonPopup.alert({ template: i18n.__(error.reason) });
+              } else {
+                Router.go('/');
+              }
+            });
+          },
+          onCancel() {
+          },
+          cancelText: i18n.__('no'),
+          okText: i18n.__('yes'),
+        });
+        return true;
+      },
       cancelText: i18n.__('cancel'),
       cancel() {
         // console.log('Cancelled!');
@@ -183,10 +213,10 @@ Template.actionSheet.events({
           // console.log('Edit!');
           Router.go('eventsBlockEdit', { _id: Router.current().params._id, block: 'when' });
         }
-        if (index === 5) {
+        /* if (index === 5) {
           // console.log('Edit!');
           Router.go('eventsBlockEdit', { _id: Router.current().params._id, block: 'preferences' });
-        }
+        } */
         return true;
       },
     });

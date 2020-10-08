@@ -101,7 +101,17 @@ Template.newsList.onCreated(function() {
       Session.setPersistent('orgaCibleId', Router.current().params._id);
     }
     const handle = Meteor.subscribe('scopeDetail', Router.current().params.scope, Router.current().params._id);
-    this.readyScopeDetail.set(handle.ready());
+    if (handle.ready()) {
+      if (Organizations.find({}).count() === 2) {
+        const orgaOne = Organizations.findOne({
+          name: { $exists: false },
+        });
+        if (orgaOne && Session.get('orgaCibleId') !== orgaOne._id._str) {
+          Session.setPersistent('orgaCibleId', orgaOne._id._str);
+        }
+      }
+      this.readyScopeDetail.set(handle.ready());
+    }
   }.bind(this));
 });
 

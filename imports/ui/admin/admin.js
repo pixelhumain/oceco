@@ -11,13 +11,14 @@ import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 
+import { actionsSubs } from '../../api/client/subsmanager.js';
 
 import './admin.html';
 
 // collection
-import { Events } from '../../api/events.js';
+// import { Events } from '../../api/events.js';
 import { Organizations } from '../../api/organizations.js';
-import { Projects } from '../../api/projects.js';
+// import { Projects } from '../../api/projects.js';
 import { Citoyens } from '../../api/citoyens.js';
 import { Actions } from '../../api/actions';
 
@@ -29,12 +30,11 @@ import { arrayLinkToModerate } from '../../api/helpers.js';
 
 const pageSession = new ReactiveDict('pageAdmin');
 
-window.Events = Events;
+/* window.Events = Events;
 window.Organizations = Organizations;
 window.Projects = Projects;
 window.Citoyens = Citoyens;
-window.Actions = Actions;
-
+window.Actions = Actions; */
 
 Template.adminDashboard.onCreated(function() {
   this.ready = new ReactiveVar(false);

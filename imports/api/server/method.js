@@ -1583,6 +1583,27 @@ indexMax:20 */
     const retour = apiCommunecter.postPixel('co2/element', 'updatesettings', doc);
     return retour;
   },
+  'deleteElementAdmin'({ scope, scopeId }) {
+    check(scopeId, String);
+    check(scope, String);
+    check(scope, Match.Where(function (name) {
+      return _.contains(['events'], name);
+    }));
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const collection = nameToCollection(scope);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const retour = apiCommunecter.postPixel('co2/element', `delete/type/${scope}/id/${scopeId}`, {});
+
+    return retour;
+  },
   insertComment (docNoClean) {
     const doc = SchemasCommentsRest.clean(docNoClean);
     SchemasCommentsRest.validate(doc);
@@ -2900,7 +2921,7 @@ export const insertAction = new ValidatedMethod({
     } else if (doc.parentType === 'projects') {
       // projects > organizations > verifie oceco exists
       const project = `links.projects.${scopeOne._id._str}`;
-      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } }, { fields: { _id: 1, oceco: 1 } });
       if (!organizationOne) {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
@@ -2908,10 +2929,10 @@ export const insertAction = new ValidatedMethod({
     } else if (doc.parentType === 'events') {
       // events > projects > organizations > verifie oceco exists
       const event = `links.events.${scopeOne._id._str}`;
-      const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
+      const projectOne = Projects.findOne({ [event]: { $exists: 1 } }, { fields: { _id: 1 } });
       if (projectOne) {
         const project = `links.projects.${projectOne._id._str}`;
-        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } }, { fields: { _id: 1, oceco: 1 } });
         if (!organizationOne) {
           throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
         }
@@ -2922,7 +2943,7 @@ export const insertAction = new ValidatedMethod({
     }
 
     // membre ou membre avec roles si room à des roles
-    let room = Rooms.findOne({ parentId: doc.parentId });
+    let room = Rooms.findOne({ parentId: doc.parentId }, { fields: { _id: 1 } });
     if (!room) {
       // create room sur project auto
       const docRoom = {};
@@ -2937,7 +2958,7 @@ export const insertAction = new ValidatedMethod({
       const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
     //
     }
-    room = room || Rooms.findOne({ parentId: doc.parentId });
+    room = room || Rooms.findOne({ parentId: doc.parentId }, { fields: { _id: 1 } });
 
     /* if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
       console.log('citoyen is scope');

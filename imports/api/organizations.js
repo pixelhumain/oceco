@@ -635,6 +635,7 @@ Organizations.helpers({
       query._id = {
         $in: eventsIds,
       };
+      query.status = { $exists: false };
       queryOptions.fields.startDate = 1;
       queryOptions.fields.startDate = 1;
       queryOptions.fields.geo = 1;
@@ -661,6 +662,7 @@ Organizations.helpers({
       inputDate = inputDate || new Date();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
+      query.status = { $exists: false };
       const options = {};
       options.sort = {
         startDate: 1,
@@ -765,6 +767,7 @@ Organizations.helpers({
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
+      query.status = { $exists: false };
 
       const options = {};
       options.sort = {
