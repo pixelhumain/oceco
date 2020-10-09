@@ -2,11 +2,13 @@
   <div class="{{class}}">
     {{#with scope}}
     <div class="item item-avatar item-text-wrap item-button-right">
+
       {{#if profilThumbImageUrl}}
-        <img data-src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
+        <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
       {{else}}
       {{> imgDoc imageDoc=imageDoc resized="50x50"}}
       {{/if}}
+
       <h2 class="homestead">{{htmlToText name}}</h2>
 
       {{#if equals scopeVar 'events'}}
@@ -37,13 +39,13 @@
       {{#if profilImageUrl}}
       {{#if isAdmin}}
       {{#unless ../shareVisible}}
-      <a href="" class="photo-link-scope"><img data-src="{{urlImageCommunecter}}{{profilImageUrl}}"></a>
+      <a href="" class="photo-link-scope"><img src="{{urlImageCommunecter}}{{profilImageUrl}}"></a>
       {{> scopeFileUpload}}
       {{else}}
-      <img data-src="{{urlImageCommunecter}}{{profilImageUrl}}">
+      <img src="{{urlImageCommunecter}}{{profilImageUrl}}">
       {{/unless}}
       {{else}}
-      <img data-src="{{urlImageCommunecter}}{{profilImageUrl}}">
+      <img src="{{urlImageCommunecter}}{{profilImageUrl}}">
       {{/if}}
       {{else}}
       {{#if isAdmin}}

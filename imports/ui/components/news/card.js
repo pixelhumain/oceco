@@ -12,10 +12,14 @@ import { Citoyens } from '../../../api/citoyens';
 import { Organizations } from '../../../api/organizations';
 
 Template.scopeCard.onRendered(function () {
-  // eslint-disable-next-line no-new
-  new IOlazy({
+  const lazy = new IOlazy({
     image: 'img',
     threshold: 1,
+  });
+  this.autorun(function () {
+    if (Template.parentData().profilThumbImageUrl) {
+      lazy.lazyLoad();
+    }
   });
 });
 

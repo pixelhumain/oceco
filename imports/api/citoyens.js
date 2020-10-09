@@ -329,7 +329,7 @@ export const SchemasOcecoCitoyenObj = new SimpleSchema({
       if (this.isSet) {
         return this.value;
       }
-      return true;
+      return false;
     },
     optional: true,
   },
