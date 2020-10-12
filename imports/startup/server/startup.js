@@ -58,7 +58,7 @@ Meteor.startup(function () {
     });
   } */
 
-  const actionsArray = Actions.find({ credits: { $lt: 0 }, finishedBy: { $exists: true } });
+  /* const actionsArray = Actions.find({ credits: { $lt: 0 }, finishedBy: { $exists: true } });
   if (actionsArray.count() > 0) {
     actionsArray.forEach((action) => {
       // action.finishedBy
@@ -96,7 +96,7 @@ Meteor.startup(function () {
         }
       });
     });
-  }
+  } */
 
   // correction de tools.chat.int vide
   /* const chatProject = Projects.find({ hasRC:{ $exists:true }, slug:{ $exists:true }, 'tools.chat.int':{ $exists:false } });
