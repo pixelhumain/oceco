@@ -26,7 +26,7 @@
       {{#each organizations.listMembers search}}
       <div class="item item-avatar animated out">
         {{> imgDoc}}
-        <h2><a href="{{pathFor 'listMembersDetailCitoyens' _id=organizations._id._str citoyenId=this._id._str}}" class="dark">{{name}}</a> {{#if this.userCredit}}<span class="badge badge-balanced">{{this.userCredit}} {{#if settingOceco.account}}
+        <h2><a href="{{pathFor 'listMembersDetailCitoyens' _id=organizations._id._str citoyenId=this._id._str}}" class="dark">{{name}}</a> {{#if this.userCredit}}<span class="badge badge-{{badgeColorTest this.userCredit}}">{{this.userCredit}} {{#if settingOceco.account}}
         {{#if settingOceco.account.textUnite}}{{settingOceco.account.textUnite}}{{else}}R{{/if}}
         {{else}}
         R

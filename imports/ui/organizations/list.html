@@ -269,7 +269,17 @@
     {{> afQuickField name='oceco.projectAction'}}
     {{> afQuickField name='oceco.eventAction'}}
     {{> afQuickField name='oceco.commentsAction'}}
+
     {{> afQuickField name='oceco.spendView'}}
+
+    {{#if currentFieldValue "oceco.spendView"}}
+    {{> afQuickField name='oceco.spendNegative'}}
+    {{/if}}
+
+    {{#if currentFieldValue "oceco.spendNegative"}}
+    {{> afQuickField name='oceco.spendNegativeMax'}}
+    {{/if}}
+    
     {{> afQuickField name='oceco.memberAuto'}}
     {{> afQuickField name='oceco.contributorAuto'}}
     {{> afQuickField name='oceco.attendeAuto'}}

@@ -22,10 +22,9 @@ i18n.setOptions({
 
 Meteor.startup(function () {
   // liste les actions avec finishedBy exist true
-  const actionsArray = Actions.find({ finishedBy: { $exists: true } });
+  /* const actionsArray = Actions.find({ finishedBy: { $exists: true } });
   if (actionsArray.count() > 0 && LogUserActions.find().count() === 0) {
     actionsArray.forEach((action) => {
-      // action.finishedBy
       Object.keys(action.finishedBy).forEach((key) => {
         if (action.finishedBy[key] === 'validated') {
           const parentObjectId = new Mongo.ObjectID(action.parentId);
@@ -54,6 +53,46 @@ Meteor.startup(function () {
           }
           const userActions = `userWallet.${orgId}.userActions.${action._id._str}`;
           Citoyens.update({ _id: new Mongo.ObjectID(key) }, { $unset: { [userActions]: '' } });
+        }
+      });
+    });
+  } */
+
+  const actionsArray = Actions.find({ credits: { $lt: 0 }, finishedBy: { $exists: true } });
+  if (actionsArray.count() > 0) {
+    actionsArray.forEach((action) => {
+      // action.finishedBy
+      Object.keys(action.finishedBy).forEach((key) => {
+        if (action.finishedBy[key] === 'validated') {
+          const parentObjectId = new Mongo.ObjectID(action.parentId);
+          const orgOne = Organizations.findOne({ _id: parentObjectId });
+          let orgId;
+          if (orgOne) {
+            orgId = orgOne._id._str;
+          } else {
+            const eventId = Events.findOne({ _id: parentObjectId }) ? Events.findOne({ _id: parentObjectId })._id._str : null;
+            const event = eventId ? `links.events.${eventId}` : null;
+
+            const projectId = event ? Projects.findOne({ [event]: { $exists: 1 } })._id._str : null;
+            const project = projectId ? `links.projects.${projectId}` : `links.projects.${Projects.findOne({ _id: parentObjectId })._id._str}`;
+
+            orgId = Organizations.findOne({ [project]: { $exists: 1 } })._id._str;
+          }
+
+          const logInsert = {};
+          logInsert.userId = key;
+          logInsert.organizationId = orgId;
+          logInsert.actionId = action._id._str;
+          if (action.credits) {
+            logInsert.createdAt = moment(action.endDate).format();
+            logInsert.credits = action.credits;
+            const logOne = LogUserActions.findOne(logInsert);
+            if (logOne) {
+              LogUserActions.update({ _id: logOne._id }, logInsert);
+            } else {
+              LogUserActions.insert(logInsert);
+            }
+          }
         }
       });
     });

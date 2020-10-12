@@ -501,7 +501,7 @@ Meteor.startup(function () {
       const citoyenOne = Citoyens.findOne({
         _id: new Mongo.ObjectID(Meteor.userId()),
       });
-      return citoyenOne && citoyenOne.userCredit() > 0 ? citoyenOne.userCredit() : 0;
+      return citoyenOne && citoyenOne.userCredit() ? citoyenOne.userCredit() : 0;
     }
   });
 

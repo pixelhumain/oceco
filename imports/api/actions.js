@@ -1,5 +1,7 @@
+/* eslint-disable meteor/no-session */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { moment } from 'meteor/momentjs:moment';
@@ -277,6 +279,12 @@ if (Meteor.isClient) {
       }
       return false;
     },
+    isDepense() {
+      if (Session.get('settingOceco') && Session.get('settingOceco').spendNegative === true && ((Session.get('settingOceco').spendNegativeMax - this.userCredit()) * -1) >= (this.credits * -1)) {
+        return true;
+      }
+      return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
+    },
   });
 } else {
   Actions.helpers({
@@ -293,6 +301,9 @@ if (Meteor.isClient) {
         return moment().isBefore(end); // True
       }
       return false;
+    },
+    isDepense() {
+      return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
     },
   });
 }
@@ -405,9 +416,6 @@ Actions.helpers({
   },
   isActionDepense() {
     return Math.sign(this.credits) === -1;
-  },
-  isDepense() {
-    return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
   },
   isAFaire() {
     return this.credits > 0 || (this.options && this.options.creditAddPorteur);

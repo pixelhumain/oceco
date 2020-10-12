@@ -99,47 +99,6 @@ SchemasOrganizationsRest.extend({
   },
 });
 
-/* export const SchemasOrganizationsRest = new SimpleSchema([baseSchema, geoSchema, {
-  type: {
-    type: String,
-    autoform: {
-      type: 'select',
-      options () {
-        if (Meteor.isClient) {
-          const listSelect = Lists.findOne({ name: 'organisationTypes' });
-          if (listSelect && listSelect.list) {
-            return _.map(listSelect.list, function (value, key) {
-              return { label: value, value: key };
-            });
-          }
-        }
-        return undefined;
-      },
-    },
-  },
-  role: {
-    type: String,
-    min: 1,
-    denyUpdate: true,
-  },
-  email: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true,
-  },
-  fixe: {
-    type: String,
-    optional: true,
-  },
-  mobile: {
-    type: String,
-    optional: true,
-  },
-  fax: {
-    type: String,
-    optional: true,
-  },
-}]); */
 
 export const BlockOrganizationsRest = {};
 // BlockOrganizationsRest.descriptions = new SimpleSchema([blockBaseSchema, baseSchema.pick('shortDescription', 'description', 'tags', 'tags.$)]');

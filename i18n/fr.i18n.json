@@ -948,6 +948,12 @@
       "spendView": {
         "label": "Afficher le listing dépenses"
       },
+      "spendNegative": {
+        "label": "Autoriser les dépense négatives"
+      },
+      "spendNegativeMax": {
+        "label": "Dépense négatives maximum"
+      },
       "memberAuto": {
         "label": "Ajouter des membres automatiquement"
       },

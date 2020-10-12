@@ -951,6 +951,12 @@
   "spendView": {
     "label": "spend view"
   },
+  "spendNegative": {
+    "label": "spend negative"
+  },
+  "spendNegativeMax": {
+    "label": "spend negative max"
+  },
   "memberAuto": {
 "label": "member Auto"
   },

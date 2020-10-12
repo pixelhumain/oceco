@@ -3381,7 +3381,7 @@ export const assignmeActionRooms = new ValidatedMethod({
     const actionObjectId = new Mongo.ObjectID(id);
     const actionOne = Actions.findOne({ _id: actionObjectId });
     const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
-    const orgOne = Organizations.findOne({ _id: parentObjectId });
+    const orgOne = Organizations.findOne({ _id: parentObjectId }, { fields: { _id: 1 } });
     let orgId;
     if (orgOne) {
       orgId = orgOne._id._str;
@@ -3401,6 +3401,8 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     const parent = `finishedBy.${Meteor.userId()}`;
 
+    const orgaSetting = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
@@ -3412,16 +3414,32 @@ export const assignmeActionRooms = new ValidatedMethod({
       if (cost >= 0) {
         return true;
       } else if (userCredits() >= (cost * -1)) {
-        // const userActions = `userWallet.${orgId}.userActions.${id}`;
         const userCredit = `userWallet.${orgId}.userCredits`;
         const userObjectId = new Mongo.ObjectID(Meteor.userId());
         if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
-
-        // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        return true;
+      } else if (orgaSetting && orgaSetting.oceco && orgaSetting.oceco.spendNegative === true && ((orgaSetting.oceco.spendNegativeMax - userCredits()) * -1) >= (cost * -1)) {
+        const userCredit = `userWallet.${orgId}.userCredits`;
+        const userObjectId = new Mongo.ObjectID(Meteor.userId());
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
+          Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
+        }
+        Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
+        Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        // log user action credit
+        const logInsert = {};
+        logInsert.userId = Meteor.userId();
+        logInsert.organizationId = orgId;
+        logInsert.actionId = id;
+        if (cost) {
+          logInsert.credits = cost;
+          logInsert.createdAt = moment().format();
+          LogUserActions.insert(logInsert);
+        }
         return true;
       }
 
@@ -3658,6 +3676,8 @@ export const assignMemberActionRooms = new ValidatedMethod({
 
     const parent = `finishedBy.${memberId}`;
 
+    const orgaSetting = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) }, { fields: { _id: 1, oceco: 1 } });
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(memberId);
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
@@ -3676,9 +3696,27 @@ export const assignMemberActionRooms = new ValidatedMethod({
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
-
         // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        return true;
+      } else if (orgaSetting && orgaSetting.oceco && orgaSetting.oceco.spendNegative === true && ((orgaSetting.oceco.spendNegativeMax - userCredits()) * -1) >= (cost * -1)) {
+        const userCredit = `userWallet.${orgId}.userCredits`;
+        const userObjectId = new Mongo.ObjectID(memberId);
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
+          Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
+        }
+        Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
+        Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        // log user action credit
+        const logInsert = {};
+        logInsert.userId = memberId;
+        logInsert.organizationId = orgId;
+        logInsert.actionId = id;
+        if (cost) {
+          logInsert.credits = cost;
+          logInsert.createdAt = moment().format();
+          LogUserActions.insert(logInsert);
+        }
         return true;
       }
 

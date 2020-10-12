@@ -56,6 +56,9 @@ Template.listMembers.helpers({
   dataReady() {
     return Template.instance().ready.get();
   },
+  badgeColorTest(userCredit) {
+    return userCredit > 0 ? 'balanced' : 'assertive';
+  },
 });
 
 Template.listMembersDetailCitoyens.onCreated(function () {
