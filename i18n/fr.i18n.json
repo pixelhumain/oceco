@@ -954,6 +954,9 @@
       "spendNegativeMax": {
         "label": "Dépense négatives maximum"
       },
+      "memberAddAction": {
+        "label": "Autoriser les membres à ajouter des actions"
+      },
       "memberAuto": {
         "label": "Ajouter des membres automatiquement"
       },

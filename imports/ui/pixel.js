@@ -30,7 +30,7 @@ window.Actions = Actions; */
 
 Template.layout.onCreated(function() {
   Meteor.subscribe('notificationsCountUser');
-  
+
   this.ready = new ReactiveVar(false);
   this.autorun(function () {
     if (Session.get('orgaCibleId')) {
@@ -95,6 +95,11 @@ Template.layout.onCreated(function() {
           this.ready.set(handleScopeDetail.ready());
         }
         if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+
+          if (orgaOne && orgaOne.isMembers()) {
+            Session.setPersistent(`isMembreOrga${Session.get('orgaCibleId')}`, true);
+          } 
+
           if (orgaOne && orgaOne.isAdmin()) {
             Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
             Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, true);

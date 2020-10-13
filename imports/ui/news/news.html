@@ -419,8 +419,6 @@
     {{>searchActions}}
     {{#if equals selectsubview 'aFaire'}}
 
-    
-    
         {{#each item in listActionsCreator selectsubview 'todo' search searchSort}}
 
         {{> itemInputAction action=item}}
@@ -834,6 +832,27 @@
     {{#if equals 'citoyens' scopeVar}}
     <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
       action</a>
+    {{/if}}
+    {{ else if isMembreOrga}}
+    {{#if settingOceco.memberAddAction}}
+        {{#if equals 'projects' scopeVar}}
+        {{#if settingOceco.projectAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
+        {{#if equals 'events' scopeVar}}
+        {{#if settingOceco.eventAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
+        {{#if equals 'organizations' scopeVar}}
+        {{#if settingOceco.organizationAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
     {{/if}}
     {{/if}}
   </div>

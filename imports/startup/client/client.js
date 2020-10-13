@@ -456,6 +456,15 @@ Meteor.startup(function () {
     return false;
   });
 
+  Template.registerHelper('isMembreOrga', () => {
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+      if (Session.get(`isMembreOrga${Session.get('orgaCibleId')}`)) {
+        return true;
+      }
+    }
+    return false;
+  });
+
   Template.registerHelper('isAdminOrga', () => {
     if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
       if (Session.get(`isAdminOrga${Session.get('orgaCibleId')}`)) {

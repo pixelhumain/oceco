@@ -957,6 +957,9 @@
   "spendNegativeMax": {
     "label": "spend negative max"
   },
+  "memberAddAction": {
+    "label": "member add action"
+  },
   "memberAuto": {
 "label": "member Auto"
   },

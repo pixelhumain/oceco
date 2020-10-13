@@ -119,6 +119,17 @@ export const SchemasOceco = new SimpleSchema({
     max: 0,
     optional: true,
   },
+  'oceco.memberAddAction': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
   'oceco.memberAuto': {
     type: Boolean,
     defaultValue: false,

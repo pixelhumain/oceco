@@ -434,10 +434,13 @@
     {{/if}}
     {{/if}}
     {{else if equals status 'done'}}
-    <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
+    <span class="balanced"><i class="fa fa fa-check"></i> Terminé</span>
+    {{else if equals status 'disabled'}}
+    <span class="assertive"><i class="fa fa-warning"></i> Annulée</span>
     {{/if}}
 </div>
 {{else}}
+{{#if equals status 'todo'}}
 {{#if isAFaire}}
 {{#if isEndDate}}
 <div class="item col col-center text-center">
@@ -565,6 +568,17 @@
 {{/if}}
 {{/if}}
 
+{{/if}}
+{{else}}
+{{#if equals status 'done'}}
+<div class="item col col-center text-center">
+    <span class="balanced"><i class="fa fa-check"></i> Terminé</span>
+</div>
+{{else if equals status 'disabled'}}
+<div class="item col col-center text-center">
+    <span class="assertive"><i class="fa fa-warning"></i> Annulée</span>
+</div>
+{{/if}}
 {{/if}}
 {{/if}}
 </template>

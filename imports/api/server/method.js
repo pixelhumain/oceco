@@ -2907,6 +2907,7 @@ export const insertAction = new ValidatedMethod({
       throw new Meteor.Error('scope-not-exist');
     }
 
+    let orgaOne = null;
     let orgaId;
     // doit tester si oceco ou pas
     if (doc.parentType === 'citoyens') {
@@ -2917,6 +2918,7 @@ export const insertAction = new ValidatedMethod({
       if (!scopeOne.oceco) {
         throw new Meteor.Error('not-authorized organizations oceco');
       }
+      orgaOne = scopeOne;
       orgaId = scopeOne._id._str;
     } else if (doc.parentType === 'projects') {
       // projects > organizations > verifie oceco exists
@@ -2925,6 +2927,7 @@ export const insertAction = new ValidatedMethod({
       if (!organizationOne) {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
+      orgaOne = organizationOne;
       orgaId = organizationOne._id._str;
     } else if (doc.parentType === 'events') {
       // events > projects > organizations > verifie oceco exists
@@ -2936,6 +2939,7 @@ export const insertAction = new ValidatedMethod({
         if (!organizationOne) {
           throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
         }
+        orgaOne = organizationOne;
         orgaId = organizationOne._id._str;
       } else {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
@@ -2976,34 +2980,17 @@ export const insertAction = new ValidatedMethod({
 
     // si event difficile de voir le lien admin docn je remonte
     // eslint-disable-next-line no-lonely-if
-    if (doc.parentType === 'events') {
+    if (['events', 'projects', 'organizations', 'citoyens'].includes(doc.parentType)) {
       // console.log('event is admin');
-
-      if (!(scopeOne && scopeOne.isAdmin())) {
-        throw new Meteor.Error('not-authorized event');
-      }
-    } else if (doc.parentType === 'projects') {
-      // console.log('project is admin');
-
-      if (!(scopeOne && scopeOne.isAdmin())) {
-        throw new Meteor.Error('not-authorized project');
-      }
-    } else if (doc.parentType === 'organizations') {
-      // console.log('organization is admin');
-
-      if (!(scopeOne && scopeOne.isAdmin())) {
-        throw new Meteor.Error('not-authorized organizations');
-      }
-    } else if (doc.parentType === 'citoyens') {
-      // console.log('citoyen is admin');
-      if (!(scopeOne && scopeOne.isAdmin())) {
-        throw new Meteor.Error('not-authorized citoyen');
+      if (!(orgaOne && orgaOne.oceco && orgaOne.oceco.memberAddAction === true && orgaOne.isMembers())) {
+        if (!(scopeOne && scopeOne.isAdmin())) {
+          throw new Meteor.Error(`not-authorized admin ${doc.parentType}`);
+        }
       }
     } else {
       throw new Meteor.Error('not-authorized all');
     }
     // }
-
 
     let docRetour = docClean;
 
@@ -3728,7 +3715,9 @@ export const assignMemberActionRooms = new ValidatedMethod({
     }
     // verifier si admin
     if (!collection.findOne({ _id: parentObjectId }).isAdmin()) {
-      throw new Meteor.Error('not-authorized-admin');
+      if (!(orgaSetting.oceco && orgaSetting.oceco.memberAddAction && Actions.findOne({ _id: actionObjectId }).isCreator() && memberId === this.userId)) {
+        throw new Meteor.Error('not-authorized-admin');
+      }
     }
 
     // verifier si member existe
@@ -3742,7 +3731,7 @@ export const assignMemberActionRooms = new ValidatedMethod({
     if (userC && parentType === 'projects') {
       // verifier si membre orga
       // testMembers
-      if (!userC.isScope('organizations', orgId)) {
+      if (!userC.isScope('organizations', orgId)) {memberId
         const retour = Meteor.call('connectEntity', orgId, 'organizations', userC._id._str, 'member');
         Citoyens.update({
           _id: new Mongo.ObjectID(userC._id._str),
