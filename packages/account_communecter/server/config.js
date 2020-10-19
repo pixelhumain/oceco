@@ -1,4 +1,6 @@
+/* global Meteor */
 import { Accounts } from 'meteor/accounts-base';
+import { HTTP } from 'meteor/http';
 
 Accounts.registerLoginHandler(function(loginRequest) {
   if (!loginRequest.email || !loginRequest.pwd) {
@@ -9,7 +11,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
     params: {
       email: loginRequest.email,
       pwd: loginRequest.pwd,
-      tokenName: 'comobi'
+      tokenName: 'comobi',
     },
   });
 
@@ -48,10 +50,9 @@ Accounts.registerLoginHandler(function(loginRequest) {
         profile.token = token;
         Meteor.users.update(userId, { $set: { profile } });
       }
-      
     }
 
-
+    // eslint-disable-next-line no-underscore-dangle
     const stampedToken = Accounts._generateStampedLoginToken();
     Meteor.users.update(userId,
       { $push: { 'services.resume.loginTokens': stampedToken } },

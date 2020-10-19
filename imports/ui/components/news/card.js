@@ -1,15 +1,27 @@
-/* global Session */
+/* global Session IonPopup IonActionSheet */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Router } from 'meteor/iron:router';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
 import { Mongo } from 'meteor/mongo';
 import i18n from 'meteor/universe:i18n';
-import { IonActionSheet } from 'meteor/meteoric:ionic';
 
 import './card.html';
+import IOlazy from '../iolazyload.js';
 import { Citoyens } from '../../../api/citoyens';
 import { Organizations } from '../../../api/organizations';
+
+Template.scopeCard.onRendered(function () {
+  const lazy = new IOlazy({
+    image: 'img',
+    threshold: 1,
+  });
+  this.autorun(function () {
+    if (Template.parentData().profilThumbImageUrl) {
+      lazy.lazyLoad();
+    }
+  });
+});
 
 Template.scopeCard.helpers({
   preferenceTrue (value) {
@@ -18,7 +30,7 @@ Template.scopeCard.helpers({
   listMembers() {
     // eslint-disable-next-line meteor/no-session
     return Organizations.findOne({ _id: new Mongo.ObjectID(Session.get('orgaCibleId')) }).membersPopMap();
-  }
+  },
 });
 
 Template.scopeBoardActions.onCreated(function () {
@@ -99,7 +111,6 @@ Template.scopeBoardUserActionsItem.helpers({
 });
 
 
-
 Template.actionSheet.events({
   'click .action-card-citoyen' (event) {
     event.preventDefault();
@@ -107,12 +118,12 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Citoyens'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit notification oceco')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit privacy settings')}` },
+        { text: `${i18n.__('edit notification oceco')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -153,12 +164,34 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Events'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit dates')}` },
       ],
+      destructiveText: 'Supprimer <i class="icon ion-trash-a"></i>',
+      destructiveButtonClicked() {
+        // console.log('Edit!');
+        IonPopup.confirm({
+          title: 'Supprimer',
+          template: 'Supprimer cette évènement ?',
+          onOk() {
+            Meteor.call('deleteElementAdmin', { scope: 'events', scopeId: Router.current().params._id }, (error) => {
+              if (error) {
+                IonPopup.alert({ template: i18n.__(error.reason) });
+              } else {
+                Router.go('/');
+              }
+            });
+          },
+          onCancel() {
+          },
+          cancelText: i18n.__('no'),
+          okText: i18n.__('yes'),
+        });
+        return true;
+      },
       cancelText: i18n.__('cancel'),
       cancel() {
         // console.log('Cancelled!');
@@ -184,10 +217,10 @@ Template.actionSheet.events({
           // console.log('Edit!');
           Router.go('eventsBlockEdit', { _id: Router.current().params._id, block: 'when' });
         }
-        if (index === 5) {
+        /* if (index === 5) {
           // console.log('Edit!');
           Router.go('eventsBlockEdit', { _id: Router.current().params._id, block: 'preferences' });
-        }
+        } */
         return true;
       },
     });
@@ -198,10 +231,10 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Organizations'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -238,11 +271,11 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Projects'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        // { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        // { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        // { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        // { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit dates')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -282,7 +315,7 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Poi'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -303,7 +336,7 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Classified'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {

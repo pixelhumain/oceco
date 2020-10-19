@@ -273,6 +273,47 @@ app.post('/api/action/comment/create', verifyToken, function (req, res) {
   //
 });
 
+app.post('/api/action/comment/list', verifyToken, function (req, res) {
+  const userId = req.headers['x-user-id'];
+  runAsUser(userId, function () {
+    try {
+      new SimpleSchema({
+        id: { type: String },
+      }).validate(req.body);
+
+      const actionOne = Actions.findOne({
+        _id: new Mongo.ObjectID(req.body.id),
+      });
+
+      if (!actionOne) {
+        const error = {
+          status: false,
+          msg: 'erreur : l\'action n\'existe pas',
+        };
+        res.status(200).json(error);
+      } else {
+        // eslint-disable-next-line no-unused-vars
+        const synchroRetour = synchroAdmin({ parentId: actionOne.parentId, parentType: actionOne.parentType });
+
+        const comments = actionOne.listComments();
+        // authorComments
+        const arrayComments = comments.map(comment => ({ ...comment, username: comment.authorComments().username }));
+        // console.log(arrayComments);
+        const valid = {
+          status: true,
+          comments: arrayComments,
+          msg: 'action comment list',
+        };
+        res.status(200).json(valid);
+      }
+    } catch (e) {
+      // console.log(e);
+      handleErrorAsJson(e, req, res);
+    }
+  });
+  //
+});
+
 app.post('/api/action/assign', verifyToken, function (req, res) {
   const userId = req.headers['x-user-id'];
   runAsUser(userId, function () {

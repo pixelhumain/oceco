@@ -86,7 +86,8 @@ Template.projectList2.helpers({
     return Events.find(query, options);
   },
   projectGlobalCount(projectObjectId) {
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
     if (search && search.charAt(0) === ':' && search.length > 1) {
       return true;
@@ -108,7 +109,8 @@ Template.projectList2.helpers({
     return Events.find(query).count();
   },
   projectActionsCount(projectObjectId) {
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     const projectId = projectObjectId.valueOf();
 
     let query = {};
@@ -122,7 +124,8 @@ Template.projectList2.helpers({
   },
   projectActions(projectObjectId) {
     const projectId = projectObjectId.valueOf();
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     let query = {};
     query.parentId = projectId;
     query.status = 'todo';
@@ -142,7 +145,8 @@ Template.projectList2.helpers({
     return Actions.find(query, options);
   },
   scroll() {
-    if (searchAction.get('search')) {
+    const search = searchAction.get('search');
+    if (search) {
       return true;
     }
     return Template.instance().scroll.get();
@@ -155,7 +159,8 @@ Template.organizationList.onCreated(function () {
 
 Template.organizationList.helpers({
   organizationActionsCount() {
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     let query = {};
     query.parentId = Session.get('orgaCibleId');
     query.status = 'todo';
@@ -166,7 +171,8 @@ Template.organizationList.helpers({
     return Actions.find(query).count() > 0;
   },
   organizationActions() {
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     let query = {};
     query.parentId = Session.get('orgaCibleId');
     query.status = 'todo';
@@ -186,7 +192,8 @@ Template.organizationList.helpers({
     return Actions.find(query, options);
   },
   scrollOrga() {
-    if (searchAction.get('search')) {
+    const search = searchAction.get('search');
+    if (search) {
       return true;
     }
     return Template.instance().scrollOrga.get();

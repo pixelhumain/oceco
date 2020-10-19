@@ -553,6 +553,7 @@ Events.helpers({
       query._id = {
         $in: eventsIds,
       };
+      query.status = { $exists: false };
       queryOptions.fields.startDate = 1;
       queryOptions.fields.startDate = 1;
       queryOptions.fields.geo = 1;
@@ -705,7 +706,7 @@ Events.helpers({
         startDate: 1,
       };
     }
-
+    // console.log(query);
     return Actions.find(query, options);
   },
   countActionsCreator(type = 'all', status = 'todo', search) {

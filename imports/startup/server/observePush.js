@@ -18,6 +18,10 @@ import log from '../../startup/server/logger.js';
 
 if (Meteor.isDevelopment) {
   Push.debug = true;
+} else {
+  Jobs.configure({
+    log: false,
+  });
 }
 
 const pushUser = (title, text, payload, query, badge) => {
@@ -105,6 +109,42 @@ const pushEmail = (title, text, payload, query) => {
   });
 };
 
+const notifPermissionArray = ({ notification, linkSelect = 'follows' }) => {
+  const notifsId = Object.keys(notification.notify.id).map(key => key);
+  // DIRECT
+  const arrayIdsUsersObjId = notifsId.map(id => new Mongo.ObjectID(id));
+  const arrayEnvoieDirect = Citoyens.find({ _id: { $in: arrayIdsUsersObjId }, 'oceco.notificationAllOrga': true }, { fields: { _id: 1, 'oceco.notificationAllOrga': 1 } });
+  const arrayIdsUsersEnvoieDirect = arrayEnvoieDirect.map(citoyen => citoyen._id._str);
+
+  const queryPasDirect = {};
+  queryPasDirect._id = { $in: arrayIdsUsersObjId };
+  queryPasDirect['oceco.notificationAllOrga'] = false;
+
+  const fieldsSelect = `links.${linkSelect}`;
+
+  if (notification && notification.targetProject && notification.targetProject.id) {
+    // project
+    // PAS DIRECT
+    // links.follows
+    const linkFollowId = `${fieldsSelect}.${notification.targetProject.id}`;
+    queryPasDirect[linkFollowId] = { $exists: true };
+
+  } else if (notification && notification.target && notification.target.id) {
+    // orga
+    // PAS DIRECT
+    // links.follows
+    const linkFollowId = `${fieldsSelect}.${notification.target.id}`;
+    queryPasDirect[linkFollowId] = { $exists: true };
+  }
+
+  // PAS DIRECT
+  // links.follows
+  const arrayEnvoiePasDirect = Citoyens.find(queryPasDirect, { fields: { _id: 1, 'oceco.notificationAllOrga': 1, 'links.follows': 1 } });
+  const arrayIdsUsersyEnvoiePasDirect = arrayEnvoiePasDirect.map(citoyen => citoyen._id._str);
+  const arrayIdsUsersGroup = [...arrayIdsUsersEnvoieDirect, ...arrayIdsUsersyEnvoiePasDirect];
+  return arrayIdsUsersGroup;
+};
+
 Jobs.register({
   sendEmail: function (options, helpers, logEmailId) {
     // eslint-disable-next-line no-undef
@@ -125,9 +165,12 @@ Jobs.register({
       const title = 'notification';
       // const text = notification.notify.displayName;
 
-      const notifsId = _.map(notification.notify.id, function (ids, key) {
+      /* const notifsId = _.map(notification.notify.id, function (ids, key) {
         return key;
-      });
+      }); */
+
+      const notifsId = notifPermissionArray({ notification });
+
       // verifier que présent dans Meteor.users
       const notifsIdMeteor = Meteor.users.find({ _id: { $in: notifsId } }, { fields: { _id: 1 } }).map(user => user._id);
       // console.log(notifsIdMeteor);

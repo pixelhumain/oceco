@@ -48,6 +48,7 @@
 
     @include display-flex();
     @include flex-direction(column);
+    @include box-shadow(0 3px 7px rgba(0, 0, 0, 0.3))
   }
 
   input,

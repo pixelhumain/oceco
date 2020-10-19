@@ -148,7 +148,7 @@
       {{#each organizerItem in organizerEvent}}
       {{#each organizerItemValue in organizerItem.values}}
       <a href="{{pathFor 'detailList' _id=organizerItemValue._id._str scope=organizerItem.type}}"
-        class="positive">{{organizerItemValue.name}}</a>
+        class="positive">{{htmlToText organizerItemValue.name}}</a>
       {{/each}}
       {{/each}}
     </p>
@@ -228,7 +228,13 @@
             <i class="fa fa-comment balanced"></i> 
             {{/if}}
             <a href="{{pathFor 'actionsDetail' _id=action.parentId scope=action.parentType roomId=action.idParentRoom actionId=action._id._str}}"
-            class="dark">{{action.name}}</a></h2>
+            class="dark">{{action.name}}</a> 
+            {{#if equals action.status 'disabled'}}
+            <span class="badge badge-assertive">Annulée</span>
+            {{else if equals action.status 'done'}}
+            <span class="badge badge-balanced">Terminée</span>
+            {{/if}}
+        </h2>
             {{#if action.startDate}}
         <p>{{> actionDate action=action}} 
             {{#if equals action.parentType 'events'}}
@@ -237,7 +243,7 @@
             {{/if}}
             {{/if}}</p>
             {{#if viewParent}}
-            <p><span class="positive bold">{{action.parentScope.name}}</span></p>
+            <p><span class="positive bold">{{htmlToText action.parentScope.name}}</span></p>
             {{/if}}
         {{/if}}
                 {{>itemInputActionTags tags=action.tags}}
@@ -428,10 +434,13 @@
     {{/if}}
     {{/if}}
     {{else if equals status 'done'}}
-    <span class="assertive"><i class="fa fa-hourglass-end"></i> Terminé</span>
+    <span class="balanced"><i class="fa fa fa-check"></i> Terminé</span>
+    {{else if equals status 'disabled'}}
+    <span class="assertive"><i class="fa fa-warning"></i> Annulée</span>
     {{/if}}
 </div>
 {{else}}
+{{#if equals status 'todo'}}
 {{#if isAFaire}}
 {{#if isEndDate}}
 <div class="item col col-center text-center">
@@ -559,6 +568,17 @@
 {{/if}}
 {{/if}}
 
+{{/if}}
+{{else}}
+{{#if equals status 'done'}}
+<div class="item col col-center text-center">
+    <span class="balanced"><i class="fa fa-check"></i> Terminé</span>
+</div>
+{{else if equals status 'disabled'}}
+<div class="item col col-center text-center">
+    <span class="assertive"><i class="fa fa-warning"></i> Annulée</span>
+</div>
+{{/if}}
 {{/if}}
 {{/if}}
 </template>

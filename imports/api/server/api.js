@@ -257,7 +257,8 @@ const callPixelUploadSaveRest = (token, folder, ownerId, input, dataURI, name, d
   const requestWithToken = request.defaults({
     headers: { 'X-Auth-Token': token, 'X-User-Id': Meteor.userId(), 'X-Auth-Name': 'comobi' },
   });
-  const responsePost = requestWithToken.postSync(`${Meteor.settings.endpoint}/${Meteor.settings.module}/document/uploadSave/dir/communecter/folder/${folder}/ownerId/${ownerId}/input/${input}/docType/${doctype}/contentKey/${contentKey}`, {
+  const contentKeyUrl = contentKey ? `/contentKey/${contentKey}` : '';
+  const responsePost = requestWithToken.postSync(`${Meteor.settings.endpoint}/${Meteor.settings.module}/document/uploadSave/dir/communecter/folder/${folder}/ownerId/${ownerId}/input/${input}/docType/${doctype}${contentKeyUrl}`, {
     formData,
     jar: true,
   });

@@ -559,7 +559,8 @@ Meteor.methods({
         $set: {
           oceco: {
             notificationPush: true,
-            notificationEmail: true,
+            notificationEmail: false,
+            notificationAllOrga: true,
           },
         },
       });
@@ -776,6 +777,109 @@ Meteor.methods({
       ActivityStream.api.add(notif, 'leaveAssign', 'isUser', memberId);
     } else {
       ActivityStream.api.add(notif, 'leave', 'isAdmin');
+    }
+
+    return true;
+  },
+  'refundAdminAction'({
+    id, orgId, memberId,
+  }) {
+    new SimpleSchema({
+      id: {
+        type: String,
+      },
+      orgId: {
+        type: String,
+      },
+      memberId: {
+        type: String,
+        optional: true,
+      },
+    }).validate({
+      id, orgId, memberId,
+    });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+
+    if (!Organizations.findOne({
+      _id: new Mongo.ObjectID(orgId),
+    })) {
+      throw new Meteor.Error('not-orga');
+    }
+
+    if (memberId) {
+      // verifier admin
+      const collection = nameToCollection(action.parentType);
+
+      if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+        throw new Meteor.Error('not-admin');
+      }
+    }
+
+    const logOne = LogUserActions.findOne({ actionId: id, userId: memberId });
+    if (!logOne) {
+      throw new Meteor.Error('not-log_credit');
+    }
+
+    // efface user de l'action
+    const actionId = new Mongo.ObjectID(id);
+    memberId = memberId || Meteor.userId();
+    const parent = memberId ? `links.contributors.${memberId}` : `links.contributors.${Meteor.userId()}`;
+    const parentFinishedBy = memberId ? `finishedBy.${memberId}` : `finishedBy.${Meteor.userId()}`;
+    Actions.update({
+      _id: actionId,
+    }, {
+      $unset: {
+        [parent]: '',
+        [parentFinishedBy]: '',
+      },
+    });
+
+
+    // remboursement user
+    const creditsReverse = -(logOne.credits);
+    const userCredit = `userWallet.${orgId}.userCredits`;
+    const userObjectId = new Mongo.ObjectID(memberId);
+    Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: creditsReverse } });
+
+    // log remboursement
+    const logInsert = {};
+    logInsert.userId = memberId;
+    logInsert.organizationId = orgId;
+    logInsert.actionId = id;
+    logInsert.commentaire = 'Remboursement';
+    logInsert.credits = creditsReverse;
+    logInsert.createdAt = moment().format();
+    LogUserActions.insert(logInsert);
+
+
+    // notification
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(id),
+    });
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+    if (memberId) {
+      // mention
+      const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) });
+      notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens', username: mentionOne.username };
+      ActivityStream.api.add(notif, 'refundUser', 'isAdmin');
+      ActivityStream.api.add(notif, 'refundUser', 'isUser', memberId);
+    } else {
+      ActivityStream.api.add(notif, 'refund', 'isAdmin');
     }
 
     return true;
@@ -1583,6 +1687,27 @@ indexMax:20 */
     const retour = apiCommunecter.postPixel('co2/element', 'updatesettings', doc);
     return retour;
   },
+  'deleteElementAdmin'({ scope, scopeId }) {
+    check(scopeId, String);
+    check(scope, String);
+    check(scope, Match.Where(function (name) {
+      return _.contains(['events'], name);
+    }));
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const collection = nameToCollection(scope);
+
+    if (!collection.findOne({ _id: new Mongo.ObjectID(scopeId) }).isAdmin()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const retour = apiCommunecter.postPixel('co2/element', `delete/type/${scope}/id/${scopeId}`, {});
+
+    return retour;
+  },
   insertComment (docNoClean) {
     const doc = SchemasCommentsRest.clean(docNoClean);
     SchemasCommentsRest.validate(doc);
@@ -1605,6 +1730,8 @@ indexMax:20 */
     }
     const retour = apiCommunecter.postPixel('co2/comment', 'save', doc);
 
+    // console.log(retour);
+
     if (doc.contextType === 'actions') {
       // notif
       const actionOne = Actions.findOne({
@@ -1619,7 +1746,7 @@ indexMax:20 */
       // author
       notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
       // object
-      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+      notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', links: actionOne.links, parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom, comment: doc.text };
 
       ActivityStream.api.add(notif, 'addComment', 'isActionMembers');
       ActivityStream.api.add(notif, 'addComment', 'isAdmin');
@@ -2036,6 +2163,76 @@ indexMax:20 */
       throw new Meteor.Error('postUploadPixel error');
     }
   },
+  photoActions(photo, str, type, idType, actionId) {
+    check(str, String);
+    check(type, String);
+    check(idType, String);
+    check(actionId, String);
+    check(type, Match.Where(function (name) {
+      return _.contains(['events', 'projects', 'organizations', 'citoyens'], name);
+    }));
+
+    const collectionScope = nameToCollection(type);
+    const scopeOne = collectionScope.findOne({
+      _id: new Mongo.ObjectID(idType),
+    });
+
+    if (!scopeOne) {
+      throw new Meteor.Error('scope-not-exist');
+    }
+
+    // verifier droit
+    if (type === 'events') {
+      // console.log('event is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized event');
+      }
+    } else if (type === 'projects') {
+      // console.log('project is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized project');
+      }
+    } else if (type === 'organizations') {
+      // console.log('organization is admin');
+
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized organizations');
+      }
+    } else if (type === 'citoyens') {
+      // console.log('citoyen is admin');
+      if (!(scopeOne && scopeOne.isAdmin())) {
+        throw new Meteor.Error('not-authorized citoyen');
+      }
+    } else {
+      throw new Meteor.Error('not-authorized all');
+    }
+
+    const actionOne = Actions.findOne({ _id: new Mongo.ObjectID(actionId) });
+    if (!actionOne) {
+      throw new Meteor.Error('action-no-exit');
+    }
+
+    const doc = apiCommunecter.postUploadSavePixel(type, idType, 'newsImage', photo, str, 'image', 'slider');
+
+    if (doc) {
+      if (actionOne && actionOne.media && actionOne.media.images && actionOne.media.images.length > 0) {
+        // console.log(actionOne.media.images.length);
+        const countImages = actionOne.media.images.length + 1;
+        Actions.update({ _id: new Mongo.ObjectID(actionId) }, { $set: { 'media.countImages': countImages.toString() }, $push: { 'media.images': doc.id.$id } });
+        return { photoret: doc.id.$id, actionId };
+      }
+      const media = {};
+      media.type = 'gallery_images';
+      media.countImages = '1';
+      media.images = [doc.id.$id];
+      Actions.update({ _id: new Mongo.ObjectID(actionId) }, { $set: { media } });
+      return { photoret: doc.id.$id, actionId };
+    } else {
+      throw new Meteor.Error('postUploadPixel error');
+    }
+  },
   insertEvent(docNoClean) {
     const doc = SchemasEventsRest.clean(docNoClean);
     SchemasEventsRest.validate(doc);
@@ -2414,21 +2611,41 @@ indexMax:20 */
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    const notif = {};
+    /* const notif = {};
     notif.action = 'read';
     notif.all = true;
     const retour = apiCommunecter.postPixel('co2/notification', 'update', notif);
-    return retour;
+    return retour; */
+
+    // update que les notification oceco
+    const query = {};
+    query[`notify.id.${this.userId}.isUnread`] = { $exists: true };
+    query.type = 'oceco';
+    const set = {};
+    set.$unset = {};
+    set.$unset[`notify.id.${this.userId}.isUnread`] = '';
+    const update = ActivityStream.update(query, set, { multi: true });
+    return update;
   },
   allSeen () {
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
-    const notif = {};
+    /* const notif = {};
     notif.action = 'seen';
     notif.all = true;
     const retour = apiCommunecter.postPixel('co2/notification', 'update', notif);
-    return retour;
+    return retour; */
+
+    // update que les notification oceco
+    const query = {};
+    query[`notify.id.${this.userId}.isUnseen`] = { $exists: true };
+    query.type = 'oceco';
+    const set = {};
+    set.$unset = {};
+    set.$unset[`notify.id.${this.userId}.isUnseen`] = '';
+    const update = ActivityStream.update(query, set, { multi: true });
+    return update;
   },
   isEmailValid(address) {
     check(address, String);
@@ -2791,9 +3008,10 @@ export const insertAction = new ValidatedMethod({
     });
 
     if (!scopeOne) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error('scope-not-exist');
     }
 
+    let orgaOne = null;
     let orgaId;
     // doit tester si oceco ou pas
     if (doc.parentType === 'citoyens') {
@@ -2804,25 +3022,28 @@ export const insertAction = new ValidatedMethod({
       if (!scopeOne.oceco) {
         throw new Meteor.Error('not-authorized organizations oceco');
       }
+      orgaOne = scopeOne;
       orgaId = scopeOne._id._str;
     } else if (doc.parentType === 'projects') {
       // projects > organizations > verifie oceco exists
       const project = `links.projects.${scopeOne._id._str}`;
-      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+      const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } }, { fields: { _id: 1, oceco: 1 } });
       if (!organizationOne) {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
       }
+      orgaOne = organizationOne;
       orgaId = organizationOne._id._str;
     } else if (doc.parentType === 'events') {
       // events > projects > organizations > verifie oceco exists
       const event = `links.events.${scopeOne._id._str}`;
-      const projectOne = Projects.findOne({ [event]: { $exists: 1 } });
+      const projectOne = Projects.findOne({ [event]: { $exists: 1 } }, { fields: { _id: 1 } });
       if (projectOne) {
         const project = `links.projects.${projectOne._id._str}`;
-        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } });
+        const organizationOne = Organizations.findOne({ [project]: { $exists: 1 }, oceco: { $exists: 1 } }, { fields: { _id: 1, oceco: 1 } });
         if (!organizationOne) {
           throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
         }
+        orgaOne = organizationOne;
         orgaId = organizationOne._id._str;
       } else {
         throw new Meteor.Error('not-authorized-organizations-oceco', 'not authorized organizations oceco');
@@ -2830,7 +3051,7 @@ export const insertAction = new ValidatedMethod({
     }
 
     // membre ou membre avec roles si room à des roles
-    let room = Rooms.findOne({ parentId: doc.parentId });
+    let room = Rooms.findOne({ parentId: doc.parentId }, { fields: { _id: 1 } });
     if (!room) {
       // create room sur project auto
       const docRoom = {};
@@ -2845,9 +3066,10 @@ export const insertAction = new ValidatedMethod({
       const retourRoom = apiCommunecter.postPixel('co2/element', 'save', docRoom);
     //
     }
-    room = room || Rooms.findOne({ parentId: doc.parentId });
-    if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
-      // console.log('citoyen is scope');
+    room = room || Rooms.findOne({ parentId: doc.parentId }, { fields: { _id: 1 } });
+
+    /* if (Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).isScope(doc.parentType, doc.parentId)) {
+      console.log('citoyen is scope');
       if (room.roles && room.roles.length > 0) {
         const roles = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId) ? Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }).funcRoles(doc.parentType, doc.parentId).split(',') : null;
         if (roles && room.roles.some(role => roles.includes(role))) {
@@ -2858,37 +3080,21 @@ export const insertAction = new ValidatedMethod({
           throw new Meteor.Error('not-authorized role');
         }
       }
-    } else {
-      // si event difficile de voir le lien admin docn je remonte
-      // eslint-disable-next-line no-lonely-if
-      if (doc.parentType === 'events') {
-        // console.log('event is admin');
+    } else { */
 
+    // si event difficile de voir le lien admin docn je remonte
+    // eslint-disable-next-line no-lonely-if
+    if (['events', 'projects', 'organizations', 'citoyens'].includes(doc.parentType)) {
+      // console.log('event is admin');
+      if (!(orgaOne && orgaOne.oceco && orgaOne.oceco.memberAddAction === true && orgaOne.isMembers())) {
         if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized event');
+          throw new Meteor.Error(`not-authorized admin ${doc.parentType}`);
         }
-      } else if (doc.parentType === 'projects') {
-        // console.log('project is admin');
-
-        if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized project');
-        }
-      } else if (doc.parentType === 'organizations') {
-        // console.log('organization is admin');
-
-        if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized organizations');
-        }
-      } else if (doc.parentType === 'citoyens') {
-        // console.log('citoyen is admin');
-        /* if (!(scopeOne && scopeOne.isAdmin())) {
-          throw new Meteor.Error('not-authorized citoyen');
-        } */
-      } else {
-        throw new Meteor.Error('not-authorized citoyen');
       }
+    } else {
+      throw new Meteor.Error('not-authorized all');
     }
-
+    // }
 
     let docRetour = docClean;
 
@@ -3266,7 +3472,7 @@ export const assignmeActionRooms = new ValidatedMethod({
     const actionObjectId = new Mongo.ObjectID(id);
     const actionOne = Actions.findOne({ _id: actionObjectId });
     const parentObjectId = new Mongo.ObjectID(actionOne.parentId);
-    const orgOne = Organizations.findOne({ _id: parentObjectId });
+    const orgOne = Organizations.findOne({ _id: parentObjectId }, { fields: { _id: 1 } });
     let orgId;
     if (orgOne) {
       orgId = orgOne._id._str;
@@ -3286,6 +3492,8 @@ export const assignmeActionRooms = new ValidatedMethod({
 
     const parent = `finishedBy.${Meteor.userId()}`;
 
+    const orgaSetting = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) });
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(Meteor.userId());
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
@@ -3297,16 +3505,32 @@ export const assignmeActionRooms = new ValidatedMethod({
       if (cost >= 0) {
         return true;
       } else if (userCredits() >= (cost * -1)) {
-        // const userActions = `userWallet.${orgId}.userActions.${id}`;
         const userCredit = `userWallet.${orgId}.userCredits`;
         const userObjectId = new Mongo.ObjectID(Meteor.userId());
         if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
-
-        // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        return true;
+      } else if (orgaSetting && orgaSetting.oceco && orgaSetting.oceco.spendNegative === true && ((orgaSetting.oceco.spendNegativeMax - userCredits()) * -1) >= (cost * -1)) {
+        const userCredit = `userWallet.${orgId}.userCredits`;
+        const userObjectId = new Mongo.ObjectID(Meteor.userId());
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
+          Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
+        }
+        Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
+        Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        // log user action credit
+        const logInsert = {};
+        logInsert.userId = Meteor.userId();
+        logInsert.organizationId = orgId;
+        logInsert.actionId = id;
+        if (cost) {
+          logInsert.credits = cost;
+          logInsert.createdAt = moment().format();
+          LogUserActions.insert(logInsert);
+        }
         return true;
       }
 
@@ -3543,6 +3767,8 @@ export const assignMemberActionRooms = new ValidatedMethod({
 
     const parent = `finishedBy.${memberId}`;
 
+    const orgaSetting = Organizations.findOne({ _id: new Mongo.ObjectID(orgId) }, { fields: { _id: 1, oceco: 1 } });
+
     function userCredits() {
       const userObjId = new Mongo.ObjectID(memberId);
       const credits = Citoyens.findOne({ _id: userObjId }).userWallet[`${orgId}`].userCredits;
@@ -3561,9 +3787,27 @@ export const assignMemberActionRooms = new ValidatedMethod({
           Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
         }
         Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
-
         // Citoyens.update({ _id: userObjectId }, { $set: { [userActions]: cost } });
         Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        return true;
+      } else if (orgaSetting && orgaSetting.oceco && orgaSetting.oceco.spendNegative === true && ((orgaSetting.oceco.spendNegativeMax - userCredits()) * -1) >= (cost * -1)) {
+        const userCredit = `userWallet.${orgId}.userCredits`;
+        const userObjectId = new Mongo.ObjectID(memberId);
+        if (!Citoyens.findOne({ _id: userObjectId, [userCredit]: { $exists: 1 } })) {
+          Citoyens.update({ _id: userObjectId }, { $set: { [userCredit]: 0 } });
+        }
+        Actions.update({ _id: actionObjectId }, { $set: { [parent]: 'validated' } });
+        Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: cost } });
+        // log user action credit
+        const logInsert = {};
+        logInsert.userId = memberId;
+        logInsert.organizationId = orgId;
+        logInsert.actionId = id;
+        if (cost) {
+          logInsert.credits = cost;
+          logInsert.createdAt = moment().format();
+          LogUserActions.insert(logInsert);
+        }
         return true;
       }
 
@@ -3575,7 +3819,9 @@ export const assignMemberActionRooms = new ValidatedMethod({
     }
     // verifier si admin
     if (!collection.findOne({ _id: parentObjectId }).isAdmin()) {
-      throw new Meteor.Error('not-authorized-admin');
+      if (!(orgaSetting.oceco && orgaSetting.oceco.memberAddAction && Actions.findOne({ _id: actionObjectId }).isCreator() && memberId === this.userId)) {
+        throw new Meteor.Error('not-authorized-admin');
+      }
     }
 
     // verifier si member existe
@@ -3587,6 +3833,30 @@ export const assignMemberActionRooms = new ValidatedMethod({
     // projects auto true
     const userC = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) }, { fields: { pwd: 0 } });
     if (userC && parentType === 'projects') {
+      // verifier si membre orga
+      // testMembers
+      if (!userC.isScope('organizations', orgId)) {memberId
+        const retour = Meteor.call('connectEntity', orgId, 'organizations', userC._id._str, 'member');
+        Citoyens.update({
+          _id: new Mongo.ObjectID(userC._id._str),
+        }, {
+          $unset: {
+            [`links.memberOf.${orgId}.toBeValidated`]: '',
+            [`links.memberOf.${orgId}.isInviting`]: '',
+          },
+        });
+
+        Organizations.update({
+          _id: new Mongo.ObjectID(orgId),
+        }, {
+          $unset: {
+            [`links.members.${userC._id._str}.toBeValidated`]: '',
+            [`links.members.${userC._id._str}.isInviting`]: '',
+          },
+        });
+        // todo faire email
+      }
+      //
       if (!userC.isScope('projects', actionOne.parentId)) {
         if (orgaOne && orgaOne.oceco && orgaOne.oceco.contributorAuto) {
           if (userC.isInviting('projects', actionOne.parentId)) {

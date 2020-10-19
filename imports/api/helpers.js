@@ -195,7 +195,7 @@ export const searchQuery = (query, search) => {
     } else if (search && search.charAt(0) === '@' && search.length > 1) {
       const username = search.substr(1);
       const userOne = Citoyens.findOne({ username });
-      if (userOne){
+      if (userOne) {
         query[`links.contributors.${userOne._id._str}`] = { $exists: true };
       }
     } else if (search && search.charAt(0) === ':' && search.length > 1) {
@@ -974,6 +974,12 @@ export const notifyDisplay = (notify, lang = null, html = false, chat = false) =
           } else {
             arrayReplace.who = '';
           }
+        } else if (k === '{comment}') {
+          if (Array.isArray(notify.labelArray[k])) {
+            arrayReplace.comment = notify.labelArray[k].join(',');
+          } else {
+            arrayReplace.comment = '';
+          }
         }
       });
       if (Meteor.isClient && html) {
@@ -984,10 +990,18 @@ export const notifyDisplay = (notify, lang = null, html = false, chat = false) =
         Object.keys(arrayReplace).forEach(function (item) {
           if (item === 'who' || item === 'author' || item === 'mentions') {
             arrayReplace[item] = `@${arrayReplace[item]}`;
+          } else if (item === 'comment') {
+            arrayReplace[item] = `\n _${arrayReplace[item]}_ \n`;
           } else if (item !== '_locale') {
             arrayReplace[item] = `*${arrayReplace[item]}*`;
           }
         });
+
+        if (notify.displayNameChat) {
+          label = notify.displayNameChat;
+          label = label.replace(new RegExp(/[\{\}]+/, 'g'), '');
+          label = label.replace(new RegExp(' ', 'g'), '_');
+        }
       }
       // {author} invited {who} to join {where}
       return lang ? i18n.__(`activitystream.notification.${label}`, arrayReplace) : i18n.__(`activitystream.notification.${label}`, arrayReplace);

@@ -189,6 +189,18 @@
     {{#autoForm id="editCitoyenOceco" schema=SchemasCitoyensOcecoRest type="method-update" meteormethod="updateCitoyenOceco" doc=oceco template="ionic"}}
     {{> afQuickField name='oceco.notificationPush'}}
     {{> afQuickField name='oceco.notificationEmail'}}
+    {{> afQuickField name='oceco.notificationAllOrga'}}
+    {{#if currentFieldValue "oceco.notificationAllOrga"}}
+    <div class="item item-assertive item-text-wrap">
+    Recevoir <strong>toutes les notifications</strong> des organisations oceco dont vous êtes membres
+    </div>
+    {{else}}
+    <div class="item item-assertive item-text-wrap">
+      Recevoir les notifications des <strong>projets</strong> et <strong>organisations</strong> que vous suivez (sur oceco c'est sur la vue detail grace à l'icone <i
+        class="fa fa-rss"></i>)
+    </div>
+    {{/if}}
+
     <div class="item">
       <div class="button-bar">
         <button type="submit" class="button button-dark">{{__ "edit"}}</button>

@@ -64,7 +64,8 @@ Template.projectsView.onCreated(function () {
 
 Template.projectsView.helpers({
   poleProjects2() {
-    const search = searchAction.get('search');
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
     const searchSort = searchAction.get('searchSort');
 
     const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
@@ -160,6 +161,59 @@ Template.searchActions.helpers({
     return Citoyens.find();
   },
 });
+
+Template.usersViewUser.onCreated(function () {
+  this.ready = new ReactiveVar(false);
+  this.autorun(function () {
+    const handle = this.subscribe('all.actions2', Session.get('orgaCibleId'));
+    const handleAvatar = this.subscribe('all.avatarOne', Session.get('orgaCibleId'));
+    const handleEvents = this.subscribe('poles.events', Session.get('orgaCibleId'));
+    if (handle.ready() && handleEvents.ready() && handleAvatar.ready()) {
+      this.ready.set(handle.ready());
+    }
+  }.bind(this));
+});
+
+Template.usersViewUser.helpers({
+  allUsers() {
+    if (Template.instance().ready.get()){
+      return Citoyens.find();
+    }
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+
+Template.usersViewUserItem.helpers({
+  poleProjects2() {
+    const search = Template.instance().data && Template.instance().data.user ? `@${Template.instance().data.user.username}` : searchAction.get('search');
+    // const search = searchAction.get('search');
+    const searchSort = searchAction.get('searchSort');
+
+    const queryProjectId = `parent.${Session.get('orgaCibleId')}`;
+    const query = {};
+    const options = {};
+    query[queryProjectId] = { $exists: 1 };
+    if (search && search.charAt(0) === ':' && search.length > 1) {
+      query.name = { $regex: `.*${search.substr(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*`, $options: 'i' };
+    }
+    if (searchSort) {
+      const arraySort = searchQuerySort('projects', searchSort);
+      if (arraySort) {
+        // options.sort = { ...arraySort };
+        options.sort = arraySort;
+      }
+    }
+    return Projects.find(query, options);
+  },
+  dataReady() {
+    return Template.instance().ready.get();
+  },
+});
+
+
 
 Template.searchActions.events({
   'click .searchtag-js'(event) {

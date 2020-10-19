@@ -1,32 +1,32 @@
 
 <template name="imgDoc">
   {{#if profilThumbImageUrl}}
-    <img src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
+    <img data-src="{{urlImageCommunecter}}{{profilThumbImageUrl}}">
   {{else}}
   {{#with this.imageDoc}}
   {{#if equals ../resized '80x80'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else if  equals ../resized '50x50'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else if  equals ../resized '340x340'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{/if}}
   
   {{else}}
   {{#with imageDoc}}
   {{#if equals ../resized '80x80'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else if  equals ../resized '50x50'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else if  equals ../resized '340x340'}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{else}}
-  <img src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
+  <img data-src="{{urlImageCommunecter}}/upload/{{moduleId}}/{{folder}}/thumb/{{name}}">
   {{/if}}
   {{else}}
-  <img src="/pas-de-photo{{#if resized}}{{resized}}{{else}}50x50{{/if}}.png">
+  <img data-src="/pas-de-photo{{#if resized}}{{resized}}{{else}}50x50{{/if}}.png">
   {{/with}}
   {{/with}}
   {{/if}}

@@ -55,7 +55,6 @@
 
     {{else}}
 
-    
     {{>projectsView}}
 
     {{/if}}
@@ -236,4 +235,47 @@
       {{/each}} 
       </div>
       {{/if}}
+</template>
+
+<template name="usersView">
+    {{#contentFor "headerTitle"}}
+    <h1 class="title">Actions des Membres</h1>
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonLeft"}}
+    {{>ionNavBackButton}}
+    {{/contentFor}}
+
+    {{#contentFor "headerButtonRight"}}
+
+    {{/contentFor}}
+
+    {{> usersViewUser}}
+
+</template>
+
+<template name="usersViewUser">
+    {{#if dataReady}}
+    {{#ionView}}
+    {{#ionContent}}
+    <div class="list">
+        {{#each allUsers}}
+        {{> usersViewUserItem user=this}}
+        {{/each}}
+    </div>
+    {{/ionContent}}
+    {{/ionView}}
+    {{else}}
+    {{> loading}}
+    {{/if}}
+</template>
+
+<template name="usersViewUserItem">
+        <div class="item item-icon-left item-dark">
+            <i class="icon fa fa-user"></i> {{user.name}}
+        </div>
+        {{>organizationList user=user}}
+        {{#each project in (poleProjects2 user=user)}}
+        {{>projectList2 project=project user=user}}
+        {{/each}}
 </template>

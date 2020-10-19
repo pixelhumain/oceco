@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import SimpleSchema from 'simpl-schema';
+import { Tracker } from 'meteor/tracker';
 // SimpleSchema.debug = true;
 
 export const Countries_SELECT = ['FR', 'GP', 'MQ', 'YT', 'NC', 'RE', 'BE'];
@@ -32,9 +33,11 @@ export const SchemasOcecoText = new SimpleSchema({
   },
 });
 
-
-export const SchemasOcecoObj = new SimpleSchema({
-  pole: {
+export const SchemasOceco = new SimpleSchema({
+  oceco: {
+    type: Object,
+  },
+  'oceco.pole': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -45,7 +48,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  organizationAction: {
+  'oceco.organizationAction': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -56,7 +59,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  projectAction: {
+  'oceco.projectAction': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -67,7 +70,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  eventAction: {
+  'oceco.eventAction': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -78,7 +81,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  commentsAction: {
+  'oceco.commentsAction': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -89,7 +92,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  spendView: {
+  'oceco.spendView': {
     type: Boolean,
     defaultValue: true,
     autoValue() {
@@ -100,18 +103,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  memberAuto: {
-    type: Boolean,
-    defaultValue: false,
-    autoValue() {
-      if (this.isSet) {
-        return this.value;
-      }
-      return true;
-    },
-    optional: true,
-  },
-  contributorAuto: {
+  'oceco.spendNegative': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -122,7 +114,12 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  attendeAuto: {
+  'oceco.spendNegativeMax': {
+    type: Number,
+    max: 0,
+    optional: true,
+  },
+  'oceco.memberAddAction': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -133,7 +130,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  agenda: {
+  'oceco.memberAuto': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -144,7 +141,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  notificationChat: {
+  'oceco.contributorAuto': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -155,7 +152,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  membersAdminProjectAdmin: {
+  'oceco.attendeAuto': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -166,19 +163,7 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  costum: {
-    type: Object,
-    optional: true,
-  },
-  'costum.projects': {
-    type: Object,
-    optional: true,
-  },
-  'costum.projects.form': {
-    type: Object,
-    optional: true,
-  },
-  'costum.projects.form.geo': {
+  'oceco.agenda': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -189,15 +174,41 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  'costum.events': {
+  'oceco.notificationChat': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
+  'oceco.membersAdminProjectAdmin': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return false;
+    },
+    optional: true,
+  },
+  'oceco.costum': {
     type: Object,
     optional: true,
   },
-  'costum.events.form': {
+  'oceco.costum.projects': {
     type: Object,
     optional: true,
   },
-  'costum.events.form.geo': {
+  'oceco.costum.projects.form': {
+    type: Object,
+    optional: true,
+  },
+  'oceco.costum.projects.form.geo': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -208,15 +219,15 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  'costum.actions': {
+  'oceco.costum.events': {
     type: Object,
     optional: true,
   },
-  'costum.actions.form': {
+  'oceco.costum.events.form': {
     type: Object,
     optional: true,
   },
-  'costum.actions.form.min': {
+  'oceco.costum.events.form.geo': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -227,7 +238,15 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  'costum.actions.form.max': {
+  'oceco.costum.actions': {
+    type: Object,
+    optional: true,
+  },
+  'oceco.costum.actions.form': {
+    type: Object,
+    optional: true,
+  },
+  'oceco.costum.actions.form.min': {
     type: Boolean,
     defaultValue: false,
     autoValue() {
@@ -238,171 +257,137 @@ export const SchemasOcecoObj = new SimpleSchema({
     },
     optional: true,
   },
-  account: {
+  'oceco.costum.actions.form.max': {
+    type: Boolean,
+    defaultValue: false,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
+  'oceco.account': {
     type: Object,
     optional: true,
   },
-  'account.textVotreCreditTemps': {
+  'oceco.account.textVotreCreditTemps': {
     type: String,
     optional: true,
   },
-  'account.textUnite': {
+  'oceco.account.textUnite': {
     type: String,
     optional: true,
   },
-  home: {
+  'oceco.home': {
     type: Object,
     optional: true,
   },
-  'home.textTitre': {
+  'oceco.home.textTitre': {
     type: String,
     optional: true,
   },
-  'home.textInfo': {
+  'oceco.home.textInfo': {
     type: String,
     optional: true,
   },
-  listingElementActions: {
+  'oceco.listingElementActions': {
     type: Object,
     optional: true,
   },
-  'listingElementActions.tabProgrammes': {
+  'oceco.listingElementActions.tabProgrammes': {
     type: String,
     optional: true,
   },
-  'listingElementActions.tabDepenses': {
+  'oceco.listingElementActions.tabDepenses': {
     type: String,
     optional: true,
   },
-  wallet: {
+  'oceco.wallet': {
     type: Object,
     optional: true,
   },
-  'wallet.textTitre': {
+  'oceco.wallet.textTitre': {
     type: String,
     optional: true,
   },
-  'wallet.textInfo': {
+  'oceco.wallet.textInfo': {
     type: String,
     optional: true,
   },
-  'wallet.textBouton': {
+  'oceco.wallet.textBouton': {
     type: String,
     optional: true,
   },
-  'wallet.coupDeMain': {
+  'oceco.wallet.coupDeMain': {
     type: Object,
     optional: true,
   },
-  'wallet.coupDeMain.textTitre': {
+  'oceco.wallet.coupDeMain.textTitre': {
     type: String,
     optional: true,
   },
-  'wallet.coupDeMain.textInfo': {
+  'oceco.wallet.coupDeMain.textInfo': {
     type: String,
     optional: true,
   },
-  'wallet.coupDeMain.textBouton': {
+  'oceco.wallet.coupDeMain.textBouton': {
     type: String,
     optional: true,
   },
-  'wallet.enAttente': {
+  'oceco.wallet.enAttente': {
     type: Object,
     optional: true,
   },
-  'wallet.enAttente.textTitre': {
+  'oceco.wallet.enAttente.textTitre': {
     type: String,
     optional: true,
   },
-  'wallet.enAttente.textInfo': {
+  'oceco.wallet.enAttente.textInfo': {
     type: String,
     optional: true,
   },
-  'wallet.enAttente.textBouton': {
+  'oceco.wallet.enAttente.textBouton': {
     type: String,
     optional: true,
   },
-  'wallet.valides': {
+  'oceco.wallet.valides': {
     type: Object,
     optional: true,
   },
-  'wallet.valides.textTitre': {
+  'oceco.wallet.valides.textTitre': {
     type: String,
     optional: true,
   },
-  'wallet.valides.textInfo': {
+  'oceco.wallet.valides.textInfo': {
     type: String,
     optional: true,
   },
-  'wallet.valides.textBouton': {
+  'oceco.wallet.valides.textBouton': {
     type: String,
     optional: true,
   },
-  tags: {
+  'oceco.tags': {
     type: Array,
     optional: true,
   },
-  'tags.$': {
+  'oceco.tags.$': {
     type: String,
     optional: true,
   },
-});
-
-export const SchemasOceco = new SimpleSchema({
-  oceco: {
-    type: SchemasOcecoObj,
+}, {
+  tracker: Tracker,
+  clean: {
+    filter: true,
+    autoConvert: true,
+    removeEmptyStrings: true,
+    trimStrings: true,
+    getAutoValues: true,
+    removeNullsFromArrays: true,
   },
 });
 
-/* "oceco" : {
-        "pole" : true,
-        "organizationAction" : false,
-        "projectAction" : false,
-        "eventAction" : true,
-        "commentsAction": false,
-        "memberAuto" : false,
-        "agenda" : true,
-        "costum" : {
-            "projects" : {
-                "form" : {
-                    "geo" : false
-                }
-            },
-            "events" : {
-                "form" : {
-                    "geo" : false
-                }
-            }
-        },
-        account: {
-          textVotreCreditTemps:'Votre crédit temps',
-          textUnite : 'R'
-        },
-        home: {
-          textTitre: 'Choix du pole',
-          textInfo: 'Sur cette page vous devrez choisir parmis les differents poles de votre organisation afin de voir les évenements et les actions qui en font partie. Si vous voulez voir les évenement par date merci de vous rendre dans "agenda"'
-        },
-        wallet: {
-          textBouton: 'Espace temps',
-          textTitre: 'Espace temps',
-          textInfo: 'Votre éspace temps vous permet de voire à la fois vos crédits temps gagné ou dépensés et vos actions futur et à venir',
-          coupDeMain: {
-            textBouton: 'Coup de main',
-            textTitre: 'Coup de main',
-            textInfo: 'C\'est la liste de toute vos actions à faire au quels vous êtes inscrit'
-          },
-          enAttente: {
-            textBouton: 'En attente',
-            textTitre: 'En attente',
-            textInfo: 'C\'est la liste de toute vos actions finis qui doivent êtres validé par un administrateur'
-          },
-          valides: {
-            textBouton: 'Validés',
-            textTitre: 'Validés',
-            textInfo: 'C\'est la liste de vos 100 dernières anciennes actions qui vous ont rapporté ou qui vous ont couté des crédits'
-          }
-        }
-    } */
 
 export const SchemasRolesRest = new SimpleSchema({
   contextId: {

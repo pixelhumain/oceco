@@ -227,6 +227,7 @@
           "who_commented_on_proposal_what_in_where": "__who__ a commenté la proposition __what__ dans __where__",
           "who_added_comments_on_proposal_what_in_where": "__who__ ont commenté la proposition __what__ dans __where__",
           "who_commented_on_action_what_in_where": "__who__ a commenté l'action __what__ dans __where__",
+          "who_commented_on_action_what_comment_in_where": "__who__ a commenté l'action __what__ __comment__ dans __where__",
           "who_added_comments_on_action_what_in_where": "__who__ ont commenté l'action __what__ dans __where__",
           "who_commented_on_discussion_what_in_where": "__who__ a participé à la discussion __what__ dans __where__",
           "who_added_comments_on_discussion_what_in_where": "__who__ ont participé à la discussion __what__ dans __where__",
@@ -316,7 +317,9 @@
           "a_possible_expense_what_has_been_added_on_where": "une dépense possible __what__ a été ajoutée sur __where__",
           "who_spent_credit_on_what_from_where": "__who__ a dépensé du crédit : __what__ à __where__",
           "who_to_cancel_the_action_what_in_where": "__who__ a annuler l'action __what__ dans __where__",
-          "who_to_update_your_credits_what": "__who__ à mise à jour vos crédits __what__"
+          "who_to_update_your_credits_what": "__who__ à mise à jour vos crédits __what__",
+          "who_refunded_you_from_the_action_what_from_where": "__who__ vous a remboursé l'action __what__ de __where__",
+          "who_refund_mentions_from_the_action_what_from_where": "__who__ rembourse __mentions__ de l'action __what__ de __where__"
         }
   },
   "on the program of":"au programme de:",
@@ -924,6 +927,9 @@
         },
         "notificationEmail": {
           "label": "Notification Email"
+        },
+        "notificationAllOrga": {
+          "label": "Recevoir toutes les notifications"
         }
       }
     },
@@ -946,6 +952,15 @@
       },
       "spendView": {
         "label": "Afficher le listing dépenses"
+      },
+      "spendNegative": {
+        "label": "Autoriser les dépense négatives"
+      },
+      "spendNegativeMax": {
+        "label": "Dépense négatives maximum"
+      },
+      "memberAddAction": {
+        "label": "Autoriser les membres à ajouter des actions"
       },
       "memberAuto": {
         "label": "Ajouter des membres automatiquement"

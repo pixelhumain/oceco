@@ -1,5 +1,7 @@
+/* eslint-disable meteor/no-session */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
+/* global Session */
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { moment } from 'meteor/momentjs:moment';
@@ -12,6 +14,7 @@ import { baseSchema } from './schema.js';
 import { Events } from './events.js';
 import { Projects } from './projects.js';
 import { Organizations } from './organizations.js';
+import { Documents } from './documents.js';
 import { Citoyens } from './citoyens.js';
 import { Comments } from './comments.js';
 import { queryLink, queryLinkToBeValidated, queryOptions, arrayLinkProper, arrayLinkProperNoObject, nameToCollection } from './helpers.js';
@@ -276,6 +279,15 @@ if (Meteor.isClient) {
       }
       return false;
     },
+    isDepense() {
+      if (Session.get('settingOceco') && Session.get('settingOceco').spendNegative === true && ((Session.get('settingOceco').spendNegativeMax - this.userCredit()) * -1) >= (this.credits * -1)) {
+        return true;
+      }
+      return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
+    },
+    isCreditNeg() {
+      return this.credits && this.credits < 0;
+    },
   });
 } else {
   Actions.helpers({
@@ -293,10 +305,20 @@ if (Meteor.isClient) {
       }
       return false;
     },
+    isDepense() {
+      return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
+    },
   });
 }
 
 Actions.helpers({
+  photoActionsAlbums() {
+    if (this.media && this.media.images) {
+      const arrayId = this.media.images.map(_id => new Mongo.ObjectID(_id));
+      return Documents.find({ _id: { $in: arrayId } });
+    }
+    return undefined;
+  },
   isVisibleFields () {
     return true;
   },
@@ -397,9 +419,6 @@ Actions.helpers({
   },
   isActionDepense() {
     return Math.sign(this.credits) === -1;
-  },
-  isDepense() {
-    return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
   },
   isAFaire() {
     return this.credits > 0 || (this.options && this.options.creditAddPorteur);

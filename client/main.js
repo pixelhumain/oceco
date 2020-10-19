@@ -37,6 +37,8 @@ import '../imports/ui/events/list.js';
 import '../imports/ui/citoyens/follows/follows.js';
 import '../imports/ui/citoyens/list.js';
 
+import '../imports/ui/directory/directory.js';
+
 import '../imports/ui/projects/contributors/contributors.js';
 import '../imports/ui/projects/list.js';
 

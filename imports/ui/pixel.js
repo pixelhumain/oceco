@@ -7,31 +7,28 @@ import { Router } from 'meteor/iron:router';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { $ } from 'meteor/jquery';
-
 import { ActivityStream } from '../api/activitystream.js';
 
-import { singleSubs } from '../api/client/subsmanager.js';
-
+// import { singleSubs } from '../api/client/subsmanager.js';
 
 // import './settings/settings.js';
 import './notifications/notifications.js';
 
 import './pixel.html';
-import { Projects } from '../api/projects.js';
+// import { Projects } from '../api/projects.js';
 import { Organizations } from '../api/organizations.js';
-import { Actions } from '../api/actions.js';
+// import { Actions } from '../api/actions.js';
 import { Citoyens } from '../api/citoyens.js';
 import '../ui/components/scope/item.js';
 
 
 // window.Events = Events;
-window.Organizations = Organizations;
+/* window.Organizations = Organizations;
 window.Projects = Projects;
 window.Citoyens = Citoyens;
-window.Actions = Actions;
+window.Actions = Actions; */
 
 Template.layout.onCreated(function() {
-  // Meteor.subscribe('notificationsUser');
   Meteor.subscribe('notificationsCountUser');
 
   this.ready = new ReactiveVar(false);
@@ -98,6 +95,11 @@ Template.layout.onCreated(function() {
           this.ready.set(handleScopeDetail.ready());
         }
         if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.pixelhumain && Session.get('orgaCibleId')) {
+
+          if (orgaOne && orgaOne.isMembers()) {
+            Session.setPersistent(`isMembreOrga${Session.get('orgaCibleId')}`, true);
+          } 
+
           if (orgaOne && orgaOne.isAdmin()) {
             Session.setPersistent(`isAdmin${Session.get('orgaCibleId')}`, true);
             Session.setPersistent(`isAdminOrga${Session.get('orgaCibleId')}`, true);

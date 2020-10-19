@@ -99,47 +99,6 @@ SchemasOrganizationsRest.extend({
   },
 });
 
-/* export const SchemasOrganizationsRest = new SimpleSchema([baseSchema, geoSchema, {
-  type: {
-    type: String,
-    autoform: {
-      type: 'select',
-      options () {
-        if (Meteor.isClient) {
-          const listSelect = Lists.findOne({ name: 'organisationTypes' });
-          if (listSelect && listSelect.list) {
-            return _.map(listSelect.list, function (value, key) {
-              return { label: value, value: key };
-            });
-          }
-        }
-        return undefined;
-      },
-    },
-  },
-  role: {
-    type: String,
-    min: 1,
-    denyUpdate: true,
-  },
-  email: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true,
-  },
-  fixe: {
-    type: String,
-    optional: true,
-  },
-  mobile: {
-    type: String,
-    optional: true,
-  },
-  fax: {
-    type: String,
-    optional: true,
-  },
-}]); */
 
 export const BlockOrganizationsRest = {};
 // BlockOrganizationsRest.descriptions = new SimpleSchema([blockBaseSchema, baseSchema.pick('shortDescription', 'description', 'tags', 'tags.$)]');
@@ -635,6 +594,7 @@ Organizations.helpers({
       query._id = {
         $in: eventsIds,
       };
+      query.status = { $exists: false };
       queryOptions.fields.startDate = 1;
       queryOptions.fields.startDate = 1;
       queryOptions.fields.geo = 1;
@@ -661,6 +621,7 @@ Organizations.helpers({
       inputDate = inputDate || new Date();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
+      query.status = { $exists: false };
       const options = {};
       options.sort = {
         startDate: 1,
@@ -765,6 +726,7 @@ Organizations.helpers({
       const inputDate = moment(new Date()).subtract(15, 'day').toDate();
       // query.startDate = { $lte: inputDate };
       query.endDate = { $gte: inputDate };
+      query.status = { $exists: false };
 
       const options = {};
       options.sort = {

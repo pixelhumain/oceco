@@ -314,13 +314,14 @@
     <div class="item item-divider">
       <i class="icon fa fa-users"></i>  {{__ "organizations"}} <span class="badge badge-dark">{{countOrganizationsCreator}}</span>
     </div>
-    {{> Template.dynamic template=scopeBoutonOrganizationsTemplate data=this}}
-
+    {{#if dataReady}}
     {{> directoryList list=listOrganizationsCreator isConnect="isMembers" person=false scope="organizations"}}
+    {{/if}}
   </div>
 </template>
 
 <template name="scopeProjectsTemplate">
+  {{> boutonProjectorganizations}}
   <div class="list">
     <div class="item item-divider">
       <i class="icon fa fa-lightbulb-o"></i>  {{__ "projects"}} <span class="badge badge-dark">{{countProjectsCreator}}</span>
@@ -331,7 +332,7 @@
         <i class="icon ion-search placeholder-icon"></i>
         <input id="search" type="text" placeholder="{{__ "searchPlaceholder"}}" value="{{searchProjects}}">
       </label>
-
+{{#if dataReady}}
 {{#transition in="zoomIn" out="bounceOut"}}
 {{#each item in listProjectsCreator searchProjects}}
 {{> scopeItemList item=item scope="projects"}}
@@ -339,7 +340,7 @@
 
 {{/each}}
 {{/transition}}
-
+{{/if}}
   </div>
 </template>
 
@@ -419,8 +420,6 @@
     {{>searchActions}}
     {{#if equals selectsubview 'aFaire'}}
 
-    
-    
         {{#each item in listActionsCreator selectsubview 'todo' search searchSort}}
 
         {{> itemInputAction action=item}}
@@ -462,6 +461,7 @@
       <i class="icon ion-ios-people"></i> {{__ "contributors"}} <span
         class="badge badge-dark">{{countContributors}}</span>
     </div>
+    {{#if dataReady}}
     {{#transition in="zoomIn" out="bounceOut"}}
     {{#each listContributors}}
     <div class="item item-avatar item-button-right animated out">
@@ -470,6 +470,7 @@
     </div>
     {{/each}}
     {{/transition}}
+    {{/if}}
   </div>
 </template>
 
@@ -827,6 +828,7 @@
     {{/if}}
     {{#if equals 'organizations' scopeVar}}
     {{#if settingOceco.organizationAction}}
+    <a href="{{pathFor 'usersView' _id=_id._str}}" class="button"><i class="icon fa fa-tachometer-alt"></i></a>
     <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
       action</a>
     {{/if}}
@@ -834,6 +836,27 @@
     {{#if equals 'citoyens' scopeVar}}
     <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
       action</a>
+    {{/if}}
+    {{ else if isMembreOrga}}
+    {{#if settingOceco.memberAddAction}}
+        {{#if equals 'projects' scopeVar}}
+        {{#if settingOceco.projectAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
+        {{#if equals 'events' scopeVar}}
+        {{#if settingOceco.eventAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
+        {{#if equals 'organizations' scopeVar}}
+        {{#if settingOceco.organizationAction}}
+        <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
+          action</a>
+        {{/if}}
+        {{/if}}
     {{/if}}
     {{/if}}
   </div>
@@ -907,8 +930,8 @@
 <template name="boutonCardorganizations">
     <div class="button-bar bar-positive">
       {{#if isMembers}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="followperson-link" classOn="button-stable unfollowscope-link" iconOff="fa fa-rss" iconOn="fa fa-rss-square"}}
       {{#if isAdmin}}
-      <a href="{{pathFor 'projectsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un projet</a>
       <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
       <a href="{{pathFor 'messages' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="email"}} Message</a>
       {{/if}}
@@ -939,6 +962,19 @@
 
 </template>
 
+<template name="boutonProjectorganizations">
+  {{#if equals 'organizations' scopeVar}}
+  <div class="button-bar bar-positive">
+    {{#if isMembers}}
+    {{#if isAdmin}}
+    <a href="{{pathFor 'projectsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter un
+      projet</a>
+    {{/if}}
+    {{/if}}
+  </div>
+  {{/if}}
+</template>
+
 
 <template name="boutonNewsorganizations">
     <div class="button-bar bar-positive">
@@ -952,6 +988,7 @@
 
 <template name="boutonCardprojects">
     <div class="button-bar bar-positive">
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="followperson-link" classOn="button-stable unfollowscope-link" iconOff="fa fa-rss" iconOn="fa fa-rss-square"}}
       {{#if toBeValidated}}
       <button class="button button-small disabled">
         <i class="icon fa fa-hourglass-half"></i> {{__ "Pending"}}
@@ -967,12 +1004,12 @@
       </button>
       {{else}}
       {{#if isAdmin}}
-      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button connectscopeadmin-link-js" classOn="button disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
-      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}} Inviter</a>
-      <a href="{{pathFor 'messages' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="email"}} Message</a>
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button connectscopeadmin-link-js" classOn="button button-stable disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn=""}}
+      <a href="{{pathFor 'invitations' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="person-add"}}</a>
+      <a href="{{pathFor 'messages' _id=_id._str scope=scopeVar}}" class="button">{{> ionIcon icon="email"}}</a>
       {{else}}
-      {{> boutonCard id=_id._str scope=scopeVar isConnect=isContributors classOff="button-small connectscope-link" classOn="button-small disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
-      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="button-small connectscopeadmin-link-js" classOn="button-small disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isContributors classOff="connectscope-link" classOn="button-stable disconnectscope-link" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Contributeur" titleOn="Contributeur"}}
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isAdmin classOff="connectscopeadmin-link-js" classOn="button-stable disconnectscopeadmin-link-js" iconOff="fa fa-link" iconOn="fa fa-unlink" titleOff="Devenir admin" titleOn="Ne plus être admin"}}
       {{/if}}
       {{/if}}
       {{/if}}
@@ -1040,6 +1077,10 @@
   <a href="{{pathFor 'actionsAdd' _id=_id._str scope=scopeVar}}" class="button"><i class="fa fa-plus"></i> Ajouter une
     action</a>
   </div>
+  {{else}}
+    <div class="button-bar bar-positive">
+      {{> boutonCard id=_id._str scope=scopeVar isConnect=isFollowersMe classOff="followperson-link" classOn="button-stable unfollowscope-link" iconOff="fa fa-rss" iconOn="fa fa-rss-square"}}
+    </div>
   {{/if}}
 </template>
 
