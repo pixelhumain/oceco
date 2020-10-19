@@ -149,7 +149,11 @@
           </div>
         
         {{else if userIsValidated contributor._id._str}}
+        {{#if isCreditNeg}}
+        {{> adminButton class="button-clear button-assertive admin-rembourser-action-js" icon="icon fa fa-coins assertive" user=contributor action=this}}
+        {{else}}
         <button class="button button-clear button-balanced" disabled><i class="icon fa fa-check"></i></button>
+        {{/if}}
         {{else if userIsNoValidated contributor._id._str}}
         <button class="button button-clear button-positive" disabled><i class="icon fa fa-remove"></i></button>
         {{else}}

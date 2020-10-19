@@ -285,6 +285,9 @@ if (Meteor.isClient) {
       }
       return this.credits < 0 && this.userCredit() && (this.userCredit() + this.credits) >= 0;
     },
+    isCreditNeg() {
+      return this.credits && this.credits < 0;
+    },
   });
 } else {
   Actions.helpers({

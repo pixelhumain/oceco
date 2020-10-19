@@ -118,12 +118,12 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Citoyens'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit privacy settings')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit notification oceco')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit privacy settings')}` },
+        { text: `${i18n.__('edit notification oceco')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -164,11 +164,11 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Events'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit dates')}` },
       ],
       destructiveText: 'Supprimer <i class="icon ion-trash-a"></i>',
       destructiveButtonClicked() {
@@ -231,10 +231,10 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Organizations'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        { text: `${i18n.__('edit address')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -271,11 +271,11 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Projects'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
-        // { text: `${i18n.__('edit network')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit description')} <i class="icon ion-edit"></i>` },
-        // { text: `${i18n.__('edit address')} <i class="icon ion-edit"></i>` },
-        { text: `${i18n.__('edit dates')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
+        // { text: `${i18n.__('edit network')}` },
+        { text: `${i18n.__('edit description')}` },
+        // { text: `${i18n.__('edit address')}` },
+        { text: `${i18n.__('edit dates')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -315,7 +315,7 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Poi'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {
@@ -336,7 +336,7 @@ Template.actionSheet.events({
     IonActionSheet.show({
       titleText: i18n.__('Actions Classified'),
       buttons: [
-        { text: `${i18n.__('edit info')} <i class="icon ion-edit"></i>` },
+        { text: `${i18n.__('edit info')}` },
       ],
       cancelText: i18n.__('cancel'),
       cancel() {

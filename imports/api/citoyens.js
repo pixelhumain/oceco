@@ -333,6 +333,17 @@ export const SchemasOcecoCitoyenObj = new SimpleSchema({
     },
     optional: true,
   },
+  notificationAllOrga: {
+    type: Boolean,
+    defaultValue: true,
+    autoValue() {
+      if (this.isSet) {
+        return this.value;
+      }
+      return true;
+    },
+    optional: true,
+  },
 });
 
 export const SchemasOceco = new SimpleSchema({

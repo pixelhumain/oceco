@@ -317,7 +317,9 @@
 "a_possible_expense_what_has_been_added_on_where":"a possible expense __what__ has been added on __where__",
 "who_spent_credit_on_what_from_where": "__who__ spent credit on __what__ from __where__",
 "who_to_cancel_the_action_what_in_where": "__who__ to cancel the action __what__ in __where__",
-"who_to_update_your_credits_what": "__who__ to update your credits __what__"
+"who_to_update_your_credits_what": "__who__ to update your credits __what__",
+"who_refunded_you_from_the_action_what_from_where": "__who__ refunded you from the action __what__ from __where__",
+"who_refund_mentions_from_the_action_what_from_where": "__who__ refund __mentions__ from the action __what__ from __where__"
     }
   },
   "on the program of":"on the program of :",
@@ -928,6 +930,9 @@
         },
         "notificationEmail": {
           "label": "Notification Email"
+        },
+        "notificationAllOrga": {
+          "label": "Notification All"
         }
       }
     },

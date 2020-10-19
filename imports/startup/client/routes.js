@@ -482,6 +482,12 @@ Router.map(function() {
     loadingTemplate: 'loading',
   });
 
+  this.route('usersView', {
+    template: 'usersView',
+    path: '/usersView/:_id',
+    loadingTemplate: 'loading',
+  });
+
   this.route('listContributors', {
     template: 'listContributors',
     path: '/projects/contributors/:_id',

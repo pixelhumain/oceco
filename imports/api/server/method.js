@@ -559,7 +559,8 @@ Meteor.methods({
         $set: {
           oceco: {
             notificationPush: true,
-            notificationEmail: true,
+            notificationEmail: false,
+            notificationAllOrga: true,
           },
         },
       });
@@ -776,6 +777,109 @@ Meteor.methods({
       ActivityStream.api.add(notif, 'leaveAssign', 'isUser', memberId);
     } else {
       ActivityStream.api.add(notif, 'leave', 'isAdmin');
+    }
+
+    return true;
+  },
+  'refundAdminAction'({
+    id, orgId, memberId,
+  }) {
+    new SimpleSchema({
+      id: {
+        type: String,
+      },
+      orgId: {
+        type: String,
+      },
+      memberId: {
+        type: String,
+        optional: true,
+      },
+    }).validate({
+      id, orgId, memberId,
+    });
+
+    if (!this.userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const action = Actions.findOne({ _id: new Mongo.ObjectID(id) });
+
+    if (!action) {
+      throw new Meteor.Error('not-action');
+    }
+
+    if (!Organizations.findOne({
+      _id: new Mongo.ObjectID(orgId),
+    })) {
+      throw new Meteor.Error('not-orga');
+    }
+
+    if (memberId) {
+      // verifier admin
+      const collection = nameToCollection(action.parentType);
+
+      if (!collection.findOne({ _id: new Mongo.ObjectID(action.parentId) }).isAdmin()) {
+        throw new Meteor.Error('not-admin');
+      }
+    }
+
+    const logOne = LogUserActions.findOne({ actionId: id, userId: memberId });
+    if (!logOne) {
+      throw new Meteor.Error('not-log_credit');
+    }
+
+    // efface user de l'action
+    const actionId = new Mongo.ObjectID(id);
+    memberId = memberId || Meteor.userId();
+    const parent = memberId ? `links.contributors.${memberId}` : `links.contributors.${Meteor.userId()}`;
+    const parentFinishedBy = memberId ? `finishedBy.${memberId}` : `finishedBy.${Meteor.userId()}`;
+    Actions.update({
+      _id: actionId,
+    }, {
+      $unset: {
+        [parent]: '',
+        [parentFinishedBy]: '',
+      },
+    });
+
+
+    // remboursement user
+    const creditsReverse = -(logOne.credits);
+    const userCredit = `userWallet.${orgId}.userCredits`;
+    const userObjectId = new Mongo.ObjectID(memberId);
+    Citoyens.update({ _id: userObjectId }, { $inc: { [userCredit]: creditsReverse } });
+
+    // log remboursement
+    const logInsert = {};
+    logInsert.userId = memberId;
+    logInsert.organizationId = orgId;
+    logInsert.actionId = id;
+    logInsert.commentaire = 'Remboursement';
+    logInsert.credits = creditsReverse;
+    logInsert.createdAt = moment().format();
+    LogUserActions.insert(logInsert);
+
+
+    // notification
+    const actionOne = Actions.findOne({
+      _id: new Mongo.ObjectID(id),
+    });
+
+    const notif = {};
+    const authorOne = Citoyens.findOne({ _id: new Mongo.ObjectID(this.userId) }, { fields: { _id: 1, name: 1, email: 1, username: 1 } });
+    // author
+    notif.author = { id: authorOne._id._str, name: authorOne.name, type: 'citoyens', username: authorOne.username };
+    // object
+    notif.object = { id: actionOne._id._str, name: actionOne.name, type: 'actions', parentType: actionOne.parentType, parentId: actionOne.parentId, idParentRoom: actionOne.idParentRoom };
+
+    if (memberId) {
+      // mention
+      const mentionOne = Citoyens.findOne({ _id: new Mongo.ObjectID(memberId) });
+      notif.mention = { id: mentionOne._id._str, name: mentionOne.name, type: 'citoyens', username: mentionOne.username };
+      ActivityStream.api.add(notif, 'refundUser', 'isAdmin');
+      ActivityStream.api.add(notif, 'refundUser', 'isUser', memberId);
+    } else {
+      ActivityStream.api.add(notif, 'refund', 'isAdmin');
     }
 
     return true;

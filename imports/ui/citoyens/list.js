@@ -339,6 +339,7 @@ Template.ocecoCitoyenEdit.onCreated(function () {
   template.ready = new ReactiveVar();
 
   this.autorun(function () {
+    pageSession.set('scopeId', Router.current().params._id);
     const handle = Meteor.subscribe('scopeDetail', 'citoyens', Router.current().params._id);
     if (handle.ready()) {
       template.ready.set(handle.ready());

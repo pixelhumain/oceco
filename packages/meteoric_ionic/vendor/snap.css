@@ -34,13 +34,15 @@
   left: auto;
   width: 265px;
   height: auto;
-  overflow: auto;
+  /* overflow: auto; */
   -webkit-overflow-scrolling: touch;
   -webkit-transition: width 0.3s ease;
   -moz-transition: width 0.3s ease;
   -ms-transition: width 0.3s ease;
   -o-transition: width 0.3s ease;
   transition: width 0.3s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .snap-drawer-left {

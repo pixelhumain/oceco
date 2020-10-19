@@ -217,6 +217,34 @@ Template.adminButton.events({
       });
     }
   },
+  'click .admin-rembourser-action-js'(event) {
+    event.preventDefault();
+    const memberId = $(event.currentTarget).attr('usrId');
+    const id = $(event.currentTarget).attr('actionId');
+    if (memberId && id) {
+      IonPopup.confirm({
+        title: 'Remboursement',
+        template: 'Rembourser cet utilisateur ?',
+        onOk() {
+          Meteor.call('refundAdminAction', {
+            id,
+            memberId,
+            orgId: Session.get('orgaCibleId'),
+          }, (error) => {
+            if (error) {
+              IonPopup.alert({ template: i18n.__(error.reason) });
+            }
+          });
+        },
+        onCancel() {
+        },
+        cancelText: i18n.__('no'),
+        okText: i18n.__('yes'),
+      });
+    }
+  },
+  
+
 });
 
 Template.creditsDistributed.onCreated(function () {

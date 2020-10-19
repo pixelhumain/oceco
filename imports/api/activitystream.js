@@ -10,6 +10,7 @@ import { Events } from './events.js';
 import { Organizations } from './organizations.js';
 import { Projects } from './projects.js';
 import { Rooms } from './rooms.js';
+import { Citoyens } from './citoyens.js';
 
 import { nameToCollection, notifyDisplay } from './helpers.js';
 
@@ -214,7 +215,7 @@ ActivityStream.api = {
     }
     return ActivityStream.find(query, options);
   },
-  listUserOrga(array, type, idUser = null, author = null) {
+  listUserOrga(array, type, idUser = null, author = null, notificationObj, linkSelect = 'follows') {
     let arrayIdsUsers = [];
     if (type === 'isAdmin') {
       arrayIdsUsers = Object.keys(array)
@@ -236,18 +237,17 @@ ActivityStream.api = {
         .map(k => k);
     }
 
-
     if (arrayIdsUsers.length > 0) {
       const idUsersObj = {};
       arrayIdsUsers.forEach(function (id) {
-        if (author && author.id && author.id === id) {
+        //if (author && author.id && author.id === id) {
           // author not notif
-        } else {
+        //} else {
           idUsersObj[id] = {
             isUnread: true,
             isUnseen: true,
           };
-        }
+        //}
       });
       return idUsersObj;
     }
@@ -459,7 +459,7 @@ if (Meteor.isServer) {
     // list des citoyens membre de l'orga
     if (targetObj && targetObj.links && targetObj.links.members) {
       // users / admin
-      const idUsersObj = ActivityStream.api.listUserOrga(targetObj.links.members, type, idUser, author);
+      const idUsersObj = ActivityStream.api.listUserOrga(targetObj.links.members, type, idUser, author, notificationObj);
 
       // console.log(idUsersObj);
 
@@ -607,6 +607,62 @@ if (Meteor.isServer) {
               // isUser
               notificationObj.notify.id = idUsersObj;
               notificationObj.notify.displayName = '{who} removed you from the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            }
+          }
+        } else if (verb === 'refund') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} refund for the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              // isUser
+            }
+          }
+        } else if (verb === 'refundUser') {
+          if (object.type === 'actions') {
+            if (type === 'isAdmin') {
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} refund {mentions} from the action {what} from {where}';
+              notificationObj.notify.icon = 'fa-times';
+              notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
+              // labelAuthorObject ne sait pas a quoi ça sert
+              notificationObj.notify.labelAuthorObject = 'author';
+              // remplacement du pattern
+              notificationObj.notify.labelArray = {};
+              notificationObj.notify.labelArray['{who}'] = [author.name];
+              notificationObj.notify.labelArray['{whousername}'] = [author.username];
+              notificationObj.notify.labelArray['{what}'] = [object.name];
+              notificationObj.notify.labelArray['{where}'] = [targetNofifScope.name];
+              notificationObj.notify.labelArray['{mentions}'] = [mention.name];
+              notificationObj.notify.labelArray['{mentionsusername}'] = [mention.username];
+            } else if (type === 'isMember') {
+              // isMember
+            } else if (type === 'isUser') {
+              // isUser
+              notificationObj.notify.id = idUsersObj;
+              notificationObj.notify.displayName = '{who} refunded you from the action {what} from {where}';
               notificationObj.notify.icon = 'fa-times';
               notificationObj.notify.url = `page/type/${targetNofifScope.type}/id/${targetNofifScope.id}/view/coop/room/${notificationObj.targetRoom.id}/action/${object.id}`;
               // labelAuthorObject ne sait pas a quoi ça sert

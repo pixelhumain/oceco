@@ -23,7 +23,7 @@
 
 <template name="notificationsListSwipMenu">
 <div class="list" data-snap-ignore="true">
-  <div class="item item-stable item-checkbox item-checkbox-right no-swipe">
+  <div class="item item-borderless item-stable item-checkbox item-checkbox-right no-swipe">
     <label class="checkbox checkbox-positive all-read">
       <input type="checkbox" checked="{{allReadChecked}}">
     </label>
@@ -39,6 +39,12 @@
 <div class="list" data-snap-ignore="true">
   <div class="item item-divider no-swipe">
     <i class="icon ion-speakerphone"></i> {{__ "notifications"}} <span class="badge badge-dark">{{notificationsCount}}</span>
+  </div>
+  <div class="item item-stable item-checkbox item-checkbox-right no-swipe">
+    <label class="checkbox checkbox-positive all-read">
+      <input type="checkbox" checked="{{allReadChecked}}">
+    </label>
+    {{__ "All read"}}
   </div>
   {{> notificationsList notifications=notifications}}
 </div>
